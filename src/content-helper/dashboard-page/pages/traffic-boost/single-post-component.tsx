@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 
 /**
  * WordPress dependencies
@@ -12,7 +12,7 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { ContentHelperError } from '../../../common/content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { PageContainer } from '../../components';
 import { TrafficBoostPreview } from './preview/preview';
 import { TrafficBoostLink, TrafficBoostProvider } from './provider';
@@ -27,20 +27,22 @@ import './traffic-boost.scss';
  */
 export const TrafficBoostPostPage = (): React.JSX.Element => {
 	const { postId } = useParams();
+	// Location state is used to pass the post to the page when navigating from the posts table.
+	const { state } = useLocation();
 	const navigate = useNavigate();
 	const [ backgroundColor, setBackgroundColor ] = useState<string | undefined>();
 	const [ hasFetchedPost, setHasFetchedPost ] = useState<boolean>( false );
 	const {
-		isLoading,
+		isLoadingPost,
 		error,
 		currentPost: post,
 		selectedLink,
 	} = useSelect( ( select ) => ( {
-		isLoading: select( TrafficBoostStore ).isLoading(),
+		isLoadingPost: select( TrafficBoostStore ).isLoadingPost(),
 		error: select( TrafficBoostStore ).getError(),
-		currentPost: select( TrafficBoostStore ).getCurrentPost(),
+		currentPost: state?.post ?? select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
-	} ), [] );
+	} ), [ state?.post ] );
 
 	const {
 		setError,
@@ -49,19 +51,35 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		setSelectedLink,
 		setInboundLinks,
 		setSuggestions,
+		setIsGeneratingSuggestions,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
 	 * Sets the background color of the page container to the background color of the admin menu.
+	 * When the component unmounts, it cancels all the provider requests and cleans up the store state.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
+		// Set the background color of the page container to the background color of the admin menu.
 		const adminMenuBack = document.getElementById( 'adminmenuback' );
 		if ( adminMenuBack ) {
 			const computedStyle = window.getComputedStyle( adminMenuBack );
 			setBackgroundColor( computedStyle.backgroundColor );
 		}
+
+		return () => {
+			// When the component unmounts, make sure to cancel all the provider requests.
+			TrafficBoostProvider.getInstance().cancelAll();
+			// Clean up the store state.
+			setIsGeneratingSuggestions( false );
+			setLoading( false );
+			setError( null );
+			setInboundLinks( [] );
+			setSuggestions( [] );
+			setCurrentPost( null );
+			setSelectedLink( null );
+		};
 	}, [] );
 
 	/**
@@ -70,14 +88,22 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		const fetchPost = async () => {
-			try {
-				const fetchedPost = await TrafficBoostProvider.getInstance().getPosts( {
-					include: [ parseInt( postId ?? '0' ) ],
-				} );
+		// If the post is passed in the navigation state, use it.
+		if ( state?.post ) {
+			setCurrentPost( state.post );
+			return;
+		}
 
-				if ( fetchedPost.data.length > 0 ) {
-					setCurrentPost( fetchedPost.data[ 0 ] );
+		const fetchPost = async () => {
+			if ( ! postId ) {
+				return;
+			}
+
+			try {
+				const fetchedPost = await TrafficBoostProvider.getInstance().getPost( parseInt( postId ) );
+
+				if ( fetchedPost ) {
+					setCurrentPost( fetchedPost );
 				} else {
 					setCurrentPost( null );
 				}
@@ -85,14 +111,14 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				setError( err as ContentHelperError );
 				console.error( err ); // eslint-disable-line no-console
 			} finally {
-				setLoading( false );
+				setLoading( false, 'post' );
 				setHasFetchedPost( true );
 			}
 		};
 
-		setLoading( true );
+		setLoading( true, 'post' );
 		fetchPost();
-	}, [ postId, setLoading, setCurrentPost, setError, error ] );
+	}, [ postId, setLoading, setCurrentPost, setError, state ] );
 
 	/**
 	 * Clears the post and selected link when the component unmounts.
@@ -112,10 +138,10 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( hasFetchedPost && ! isLoading && ! post ) {
+		if ( hasFetchedPost && ! isLoadingPost && ! post ) {
 			navigate( '/traffic-boost' );
 		}
-	}, [ hasFetchedPost, isLoading, post, navigate ] );
+	}, [ hasFetchedPost, isLoadingPost, post, navigate ] );
 
 	/**
 	 * Handles the click event on a suggestion.
@@ -134,10 +160,32 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 *
 	 * @param {TrafficBoostLink} link The link that was accepted.
+	 *
+	 * @return {Promise<boolean>} Whether the suggestion was accepted.
 	 */
-	const handleAccept = async ( link: TrafficBoostLink ) => {
-		const acceptedLink = await TrafficBoostProvider.getInstance().acceptSuggestion( link );
-		return acceptedLink;
+	const handleAccept = async ( link: TrafficBoostLink ): Promise<boolean> => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return false;
+		}
+
+		return await TrafficBoostProvider.getInstance().acceptSuggestion( post.id, link.smartLink.smart_link_id );
+	};
+
+	/**
+	 * Handles the discard event on a suggestion.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link that was discarded.
+	 */
+	const handleDiscard = async ( link: TrafficBoostLink ) => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return;
+		}
+
+		// Discard the suggestion in the backend, if it has been saved.
+		// Not using await here because we don't need to wait for the response.
+		TrafficBoostProvider.getInstance().discardSuggestion( post.id, link.smartLink.smart_link_id );
 	};
 
 	/**
@@ -146,43 +194,50 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 *
 	 * @param {TrafficBoostLink} link The link that was removed.
+	 *
+	 * @return {Promise<boolean>} Whether the inbound link was removed.
 	 */
-	const handleRemoveInboundLink = async ( link: TrafficBoostLink ) => {
-		await TrafficBoostProvider.getInstance().removeInboundLink( link );
+	const handleRemoveInboundLink = async ( link: TrafficBoostLink ): Promise<boolean> => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return false;
+		}
+
+		return await TrafficBoostProvider.getInstance().removeInboundLink( post.id, link.smartLink.smart_link_id );
 	};
 
 	/**
-	 * Fetches the Boost Links for the post.
+	 * Fetches the inbound links for the post.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( ! post ) {
-			return;
-		}
-
 		const fetchInboundLinks = async () => {
+			if ( ! postId ) {
+				return;
+			}
+
 			try {
-				setLoading( true, 'inbound_links' );
-				let inboundLinks = await TrafficBoostProvider.getInstance().getInboundLinks( post.id );
+				setLoading( true, 'inbound-links' );
+				let inboundLinks = await TrafficBoostProvider.getInstance().getInboundLinks( parseInt( postId ) );
 
 				// Filter out the current post from the inbound links.
-				inboundLinks = inboundLinks.filter( ( link ) => link.targetPost?.id !== post.id );
-
-				// Filter out the inbound links that are not posts.
-				inboundLinks = inboundLinks.filter( ( link ) => link.smartLink?.source?.post_type === 'post' );
+				inboundLinks = inboundLinks.filter( ( link ) => link.targetPost?.id !== parseInt( postId ) );
 
 				setInboundLinks( inboundLinks );
 			} catch ( err ) {
-				setError( err as ContentHelperError );
+				if ( err instanceof ContentHelperError ) {
+					setError( err );
+				} else {
+					setError( new ContentHelperError( 'Failed to fetch inbound links', ContentHelperErrorCode.FetchError ) );
+				}
 				console.error( err ); // eslint-disable-line no-console
 			} finally {
-				setLoading( false, 'inbound_links' );
+				setLoading( false, 'inbound-links' );
 			}
 		};
 
 		fetchInboundLinks();
-	}, [ error, post, setInboundLinks, setError, setLoading ] );
+	}, [ postId, setInboundLinks, setError, setLoading ] );
 
 	/**
 	 * Fetches suggestions for Boost Links to the current post.
@@ -190,25 +245,52 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( ! post ) {
+		if ( ! postId ) {
 			return;
 		}
 
 		const fetchSuggestions = async () => {
 			try {
+				setError( null );
 				setLoading( true, 'suggestions' );
-				const fetchedSuggestions = await TrafficBoostProvider.getInstance().generateBoostLinks( post.id );
-				setSuggestions( fetchedSuggestions );
+				const trafficBoostProvider = TrafficBoostProvider.getInstance();
+				const fetchedSuggestions = await trafficBoostProvider.getExistingSuggestions( parseInt( postId ) );
+
+				// If there are no suggestions, trigger the generation of suggestions.
+				if ( fetchedSuggestions.length === 0 ) {
+					setIsGeneratingSuggestions( true );
+					const generatedSuggestions = await trafficBoostProvider.generateSuggestions(
+						parseInt( postId ),
+						{
+							max_items: 10, // TODO: use the settings.
+							save: true,
+						},
+					);
+					setSuggestions( generatedSuggestions );
+				} else {
+					// Otherwise, set the fetched suggestions.
+					setSuggestions( fetchedSuggestions );
+				}
+
+				// If there are suggestions, set the first one as the selected link.
+				if ( fetchedSuggestions.length > 0 ) {
+					setSelectedLink( fetchedSuggestions[ 0 ] );
+				} else {
+					setSelectedLink( null );
+				}
 			} catch ( err ) {
-				setError( err as ContentHelperError );
+				if ( err instanceof ContentHelperError ) {
+					setError( err );
+				}
 				console.error( err ); // eslint-disable-line no-console
 			} finally {
+				setIsGeneratingSuggestions( false );
 				setLoading( false, 'suggestions' );
 			}
 		};
 
 		fetchSuggestions();
-	}, [ error, post, setError, setLoading, setSuggestions ] );
+	}, [ postId, setError, setIsGeneratingSuggestions, setLoading, setSelectedLink, setSuggestions ] );
 
 	return (
 		<PageContainer name="traffic-boost-single-post" backgroundColor={ backgroundColor }>
@@ -223,13 +305,13 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				` }
 			</style>
 			<TrafficBoostSidebar
-				isLoading={ isLoading }
 				onLinkClick={ handleLinkClick }
 			/>
 			{ selectedLink && (
 				<TrafficBoostPreview
 					activeLink={ selectedLink }
 					onAccept={ handleAccept }
+					onDiscard={ handleDiscard }
 					onRemoveInboundLink={ handleRemoveInboundLink }
 				/>
 			) }

@@ -713,6 +713,15 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		isLoading( state: TrafficBoostState ): boolean {
 			return state.loading.length > 0;
 		},
+		isLoadingSuggestions( state: TrafficBoostState ): boolean {
+			return state.loading.includes( 'suggestions' );
+		},
+		isLoadingInboundLinks( state: TrafficBoostState ): boolean {
+			return state.loading.includes( 'inbound-links' );
+		},
+		isLoadingPost( state: TrafficBoostState ): boolean {
+			return state.loading.includes( 'post' );
+		},
 		getError( state: TrafficBoostState ): ContentHelperError | null {
 			return state.error;
 		},

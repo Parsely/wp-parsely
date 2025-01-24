@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
+import { Button, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { chevronLeft } from '@wordpress/icons';
 
@@ -17,8 +17,9 @@ import { PostDetailsSidebar } from './post-details';
  * @since 3.18.0
  */
 interface SidebarHeaderProps {
-    onBackClick: () => void;
-    post: HydratedPost;
+	onBackClick: () => void;
+	isLoading: boolean;
+	post?: HydratedPost;
 }
 
 /**
@@ -28,7 +29,7 @@ interface SidebarHeaderProps {
  *
  * @param {SidebarHeaderProps} props The component's props.
  */
-export const SidebarHeader = ( { onBackClick, post }: SidebarHeaderProps ): React.JSX.Element => (
+export const SidebarHeader = ( { onBackClick, isLoading, post }: SidebarHeaderProps ): React.JSX.Element => (
 	<div className="traffic-boost-sidebar-header">
 		<div className="traffic-boost-sidebar-header-nav">
 			<Button icon={ chevronLeft } onClick={ onBackClick }>
@@ -37,7 +38,7 @@ export const SidebarHeader = ( { onBackClick, post }: SidebarHeaderProps ): Reac
 		</div>
 
 		<div className="traffic-boost-sidebar-inner">
-			<PostDetailsSidebar post={ post } />
+			<PostDetailsSidebar post={ post } isLoading={ isLoading } />
 		</div>
 	</div>
 );

@@ -84,4 +84,13 @@
 			margin-left: var(--grid-unit-30);
 		}
 	}
+
+	.traffic-boost-links-list-loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		padding: var(--grid-unit-20);
+		gap: var(--grid-unit-10);
+	}
 }

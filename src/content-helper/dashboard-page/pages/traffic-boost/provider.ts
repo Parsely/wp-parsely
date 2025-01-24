@@ -1,7 +1,9 @@
 /**
  * Internal dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { BaseWordPressProvider, HydratedPost } from '../../../common/base-wordpress-provider';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 
 /**
@@ -40,21 +42,56 @@ export interface TrafficBoostLink {
  *
  * @since 3.18.0
  */
-interface TrafficBoostGenerateSuggestionsResponse {
+interface InboundSmartLinkDataResponse {
 	data: InboundSmartLink[];
 }
 
 /**
- * Represents the response from the Get Smart Links endpoint.
+ * Represents the response from the Discard Suggestions endpoint.
  *
  * @since 3.18.0
  */
-export interface GetSmartLinksResponse {
+interface DiscardSuggestionsResponse {
+	success: number;
+	failed: number;
+}
+
+/**
+ * Represents a success response.
+ *
+ * @since 3.18.0
+ */
+interface SuccessResponse {
 	data: {
-		inbound: InboundSmartLink[];
-		outbound: never[];
+		success: boolean;
 	};
 }
+
+/**
+ * Represents an error response.
+ *
+ * @since 3.18.0
+ */
+interface ErrorResponse {
+	data: {
+		error: string;
+		message: string;
+	};
+}
+
+/**
+ * Represents the response from the Accept Suggestion endpoint.
+ *
+ * @since 3.18.0
+ */
+type AcceptSuggestionResponse = SuccessResponse & ErrorResponse;
+
+/**
+ * Represents the response from the Discard Suggestion endpoint.
+ *
+ * @since 3.18.0
+ */
+type DiscardSuggestionResponse = SuccessResponse & ErrorResponse;
 
 /**
  * Traffic Boost provider class.
@@ -167,6 +204,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 
 		return {
 			uid: sourcePost.id.toString(),
+			smart_link_id: 0,
 			href: sourcePost.link,
 			text: trimmedText,
 			title: sourcePost.title.raw,
@@ -225,22 +263,74 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
+	 * Gets the existing suggestions for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number} postId The ID of the post to get suggestions for.
+	 *
+	 * @return {Promise<TrafficBoostLink[]>} The list of existing suggestions.
+	 */
+	public async getExistingSuggestions( postId: number ): Promise<TrafficBoostLink[]> {
+		console.log( 'calling getExistingSuggestions' );
+
+		const response = await this.fetch<InboundSmartLinkDataResponse>( {
+			method: 'GET',
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/get-suggestions`,
+		} );
+
+		console.log( 'response', response );
+
+		const postIds = response.data.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
+
+		if ( postIds.length === 0 ) {
+			return [];
+		}
+
+		const fetchedPosts = await this.getPosts( {
+			include: postIds,
+			posts_per_page: 100,
+		} );
+
+		return response.data.map( ( inboundSmartLink ) => {
+			// Find the target post for the inbound smart link.
+			const sourcePost = fetchedPosts.data.find( ( post ) => post.id === inboundSmartLink.source?.post_id );
+
+			if ( ! sourcePost ) {
+				return false;
+			}
+
+			return this.createTrafficBoostLink( inboundSmartLink, sourcePost );
+		} ).filter( ( link ) => link !== false );
+	}
+
+	/**
 	 * Generates suggestions for a given post.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {HydratedPost} post              The post to generate suggestions for.
-	 * @param {Object}       options           The options for the suggestions.
-	 * @param {number}       options.max_items The maximum number of items to generate.
+	 * @param {number}  postId                   The ID of the post to generate suggestions for.
+	 * @param {Object}  options                  The options for the suggestions.
+	 * @param {number}  options.max_items        The maximum number of items to generate.
+	 * @param {boolean} options.discard_previous Whether to discard previous suggestions.
+	 * @param {boolean} options.save             Whether to save the suggestions.
 	 *
 	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
 	 */
-	public async generateSuggestions( post: HydratedPost, options?: { max_items?: number } ): Promise<TrafficBoostLink[]> {
-		const response = await this.fetch<TrafficBoostGenerateSuggestionsResponse>( {
+	public async generateSuggestions(
+		postId: number,
+		options?: {
+			max_items?: number;
+			save?: boolean;
+			discard_previous?: boolean;
+		},
+	): Promise<TrafficBoostLink[]> {
+		const response = await this.fetch<InboundSmartLinkDataResponse>( {
 			method: 'POST',
-			path: `/wp-parsely/v2/content-helper/traffic-boost/${ post.id }/generate`,
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/generate`,
 			data: {
 				max_items: options?.max_items ?? 10,
+				save: options?.save ?? false,
 			},
 		} );
 
@@ -261,15 +351,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				return false;
 			}
 
-			const trafficBoostLink: TrafficBoostLink = {
-				uid: inboundSmartLink.uid,
-				smartLink: inboundSmartLink,
-				postLinks: this.populatePostLinks( sourcePost ),
-				targetPost: sourcePost,
-				isSuggestion: true,
-			};
-
-			return trafficBoostLink;
+			return this.createTrafficBoostLink( inboundSmartLink, sourcePost );
 		} ).filter( ( link ) => link !== false );
 
 		return trafficBoostLinks;
@@ -294,7 +376,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
-	 * Generates a suggestion for a given post.
+	 * Generates a placement suggestion for a given post.
 	 *
 	 * @since 3.18.0
 	 *
@@ -315,44 +397,24 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
-	 * Accepts a suggestion for a given post.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {TrafficBoostLink} suggestion The suggestion to accept.
-	 *
-	 * @return {Promise<TrafficBoostLink>} The accepted suggestion.
-	 */
-	public async acceptSuggestion( suggestion: TrafficBoostLink ): Promise<TrafficBoostLink> {
-		// TODO: Accept the suggestion and generate the placement.
-		// As a mockup, wait between 500 and 2000ms before resolving.
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				suggestion.isSuggestion = false;
-
-				resolve( suggestion );
-			}, Math.floor( Math.random() * 1500 ) + 500 ); // Random time between 500 and 2000ms.
-		} );
-	}
-
-	/**
 	 * Removes an inbound link from a given post.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} link The inbound link to remove.
+	 * @param {number} postId      The ID of the post to remove the inbound link from.
+	 * @param {number} smartLinkId The ID of the inbound smart link to remove.
 	 *
-	 * @return {Promise<void>} The promise that resolves when the inbound link is removed.
+	 * @return {Promise<boolean>} Whether the inbound link was removed.
 	 */
-	public async removeInboundLink( link: TrafficBoostLink ): Promise<void> {
-		// TODO: Remove the inbound link from the post.
-		// As a mockup, we'll just wait between 500 and 2000ms before resolving.
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				link.smartLink = undefined;
-				resolve();
-			}, Math.floor( Math.random() * 1500 ) + 500 ); // Random time between 500 and 2000ms.
+	public async removeInboundLink( postId: number, smartLinkId: number ): Promise<boolean> {
+		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/delete-inbound/${ smartLinkId }`;
+
+		const response = await this.fetch<SuccessResponse>( {
+			method: 'DELETE',
+			path: requestPath,
 		} );
+
+		return response.data.success;
 	}
 
 	/**
@@ -365,13 +427,13 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 * @return {Promise<InboundSmartLink[]>} The list of inbound smart links.
 	 */
 	public async getInboundSmartLinks( postId: number ): Promise<InboundSmartLink[]> {
-		const requestPath = `/wp-parsely/v2/content-helper/smart-linking/${ postId }/get`;
+		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/get-inbound`;
 
-		const inboundSmartLinks = await this.fetch<GetSmartLinksResponse>( {
+		const inboundSmartLinks = await this.fetch<InboundSmartLinkDataResponse>( {
 			path: requestPath,
 		} );
 
-		return inboundSmartLinks.data.inbound;
+		return inboundSmartLinks.data;
 	}
 
 	/**
@@ -411,5 +473,85 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				isSuggestion: false,
 			} ) )
 			.filter( ( link ) => link.smartLink !== undefined );
+	}
+
+	/**
+	 * Accepts a suggestion for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number} postId       The ID of the post to accept the suggestion for.
+	 * @param {number} suggestionId The ID of the suggestion to accept.
+	 *
+	 * @return {Promise<boolean>} Whether the suggestion was accepted.
+	 */
+	public async acceptSuggestion( postId: number, suggestionId: number ): Promise<boolean> {
+		const response = await this.fetch<AcceptSuggestionResponse>( {
+			method: 'POST',
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/accept-suggestion/${ suggestionId }`,
+		} );
+
+		if ( response.data.success ) {
+			return true;
+		}
+
+		throw new ContentHelperError( response.data.message, response.data.error as ContentHelperErrorCode );
+	}
+
+	/**
+	 * Discards all existing suggestions for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number} postId The ID of the post to discard suggestions for.
+	 *
+	 * @return {Promise<void>} The promise that resolves when the suggestions are discarded.
+	 */
+	public async discardSuggestions( postId: number ): Promise<DiscardSuggestionsResponse> {
+		const response = await this.fetch<{ data: DiscardSuggestionsResponse }>( {
+			method: 'DELETE',
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/discard-suggestions`,
+		} );
+
+		return response.data;
+	}
+
+	/**
+	 * Discards a specific suggestion for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number} postId       The ID of the post to discard the suggestion for.
+	 * @param {number} suggestionId The ID of the suggestion to discard.
+	 *
+	 * @return {Promise<DiscardSuggestionResponse>} The promise that resolves when the suggestion is discarded.
+	 */
+	public async discardSuggestion( postId: number, suggestionId: number ): Promise<DiscardSuggestionResponse> {
+		const response = await this.fetch<{ data: DiscardSuggestionResponse }>( {
+			method: 'DELETE',
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/discard-suggestion/${ suggestionId }`,
+		} );
+
+		return response.data;
+	}
+
+	/**
+	 * Creates a traffic boost link from an inbound smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {InboundSmartLink} inboundSmartLink The inbound smart link to create the traffic boost link from.
+	 * @param {HydratedPost}     targetPost       The target post to create the traffic boost link for.
+	 *
+	 * @return {TrafficBoostLink} The traffic boost link.
+	 */
+	protected createTrafficBoostLink( inboundSmartLink: InboundSmartLink, targetPost: HydratedPost ): TrafficBoostLink {
+		return {
+			uid: inboundSmartLink.uid + '-' + Date.now(),
+			targetPost,
+			postLinks: this.populatePostLinks( targetPost ),
+			smartLink: inboundSmartLink,
+			isSuggestion: ! inboundSmartLink.applied, // Suggestions are not applied.
+		};
 	}
 }

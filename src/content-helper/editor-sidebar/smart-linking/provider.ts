@@ -20,6 +20,7 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
  */
 export type SmartLink = {
 	uid: string;
+	smart_link_id: number;
 	href: string;
 	text: string;
 	title: string;

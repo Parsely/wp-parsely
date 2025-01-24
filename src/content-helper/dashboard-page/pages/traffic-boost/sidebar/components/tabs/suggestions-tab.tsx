@@ -1,10 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { Button, PanelBody, PanelRow } from '@wordpress/components';
+import { Button, Icon, PanelBody, PanelRow, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
-import { update } from '@wordpress/icons';
+import { __, sprintf } from '@wordpress/i18n';
+import { linkOff, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -114,6 +114,7 @@ const SuggestionsTab = ( {
 		currentPage,
 		itemsPerPage,
 		isGeneratingSuggestions,
+		isLoadingSuggestions,
 	} = useSelect( ( select ) => ( {
 		currentPost: select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
@@ -121,9 +122,11 @@ const SuggestionsTab = ( {
 		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
 		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
 		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
+		isLoadingSuggestions: select( TrafficBoostStore ).isLoadingSuggestions(),
 	} ), [] );
 
 	const {
+		setSelectedLink,
 		setSuggestionsPage,
 		setSuggestionsItemsPerPage,
 		addSuggestion,
@@ -132,6 +135,8 @@ const SuggestionsTab = ( {
 		setIsGeneratingSuggestions,
 		setIsGenerating,
 	} = useDispatch( TrafficBoostStore );
+
+	const { createSuccessNotice } = useDispatch( 'core/notices' );
 
 	/**
 	 * Adds a Traffic Boost link suggestion to the current post.
@@ -163,17 +168,56 @@ const SuggestionsTab = ( {
 			return;
 		}
 
-		setIsGeneratingSuggestions( true );
-		const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost );
+		try {
+			setIsGeneratingSuggestions( true );
+			const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id, {
+				save: true,
+				max_items: 10, // TODO: Get this from the settings.
+				discard_previous: true,
+			} );
 
-		setSuggestions( generatedSuggestions );
-		setIsGeneratingSuggestions( false );
+			// Update the suggestions list.
+			setSuggestions( generatedSuggestions );
+
+			// Change the active link to the first suggestion.
+			setSelectedLink( generatedSuggestions[ 0 ] );
+
+			// Show a snackbar success message.
+			createSuccessNotice(
+				sprintf(
+				/* translators: %d: number of suggestions generated */
+					__( 'Generated %d suggestions', 'wp-parsely' ), generatedSuggestions.length ),
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ linkOff } />,
+				}
+			);
+
+			setIsGeneratingSuggestions( false );
+		} catch ( error ) {
+			// eslint-disable-next-line no-console
+			console.error( error );
+			setIsGeneratingSuggestions( false );
+			// TODO: Show an error notice.
+		}
 	};
+
+	if ( isLoadingSuggestions && isGeneratingSuggestions ) {
+		return (
+			<div className="traffic-boost-suggestions-loading-generating">
+				<Spinner />
+				{ __( 'Hold on tight while we generate some suggestions for you.', 'wp-parsely' ) }
+			</div>
+		);
+	}
 
 	return (
 		<>
-			<SuggestionsSettings />
+			{ ! isLoadingSuggestions && (
+				<SuggestionsSettings />
+			) }
 			<LinksList
+				isLoading={ isLoadingSuggestions }
 				links={ suggestions }
 				onClick={ onSuggestionClick }
 				activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
@@ -192,16 +236,20 @@ const SuggestionsTab = ( {
 					</div>
 				) }
 			>
-				<GenerateButton
-					variant="secondary"
-					isGeneratingSuggestions={ isGeneratingSuggestions }
-					handleGenerateSuggestions={ handleGenerateSuggestions }
-				/>
-				<AddNewLinkButton
-					disabled={ isGeneratingSuggestions }
-					suggestions={ suggestions }
-					onPostClick={ addTrafficBoostLink }
-				/>
+				{ ! isLoadingSuggestions && (
+					<>
+						<GenerateButton
+							variant="secondary"
+							isGeneratingSuggestions={ isGeneratingSuggestions }
+							handleGenerateSuggestions={ handleGenerateSuggestions }
+						/>
+						<AddNewLinkButton
+							disabled={ isGeneratingSuggestions }
+							suggestions={ suggestions }
+							onPostClick={ addTrafficBoostLink }
+						/>
+					</>
+				) }
 			</LinksList>
 		</>
 	);

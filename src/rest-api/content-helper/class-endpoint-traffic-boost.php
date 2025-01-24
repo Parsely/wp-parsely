@@ -94,8 +94,104 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'description' => __( 'The maximum number of suggestions to return.', 'wp-parsely' ),
 					'default'     => 10,
 				),
+				'save' => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether to save the suggestions.', 'wp-parsely' ),
+					'default'     => false,
+				),
+				'discard_previous' => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether to discard the previous suggestions.', 'wp-parsely' ),
+					'default'     => true,
+				),
 			)
 		);
+
+		/**
+		 * GET /traffic-boost/{post_id}/get-suggestions.
+		 * Gets the existing inbound smart links for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/get-suggestions',
+			array( 'GET' ),
+			array( $this, 'get_existing_suggestions' ),
+		);
+
+		/**
+		 * GET /traffic-boost/{post_id}/get-inbound.
+		 * Gets the inbound smart links for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/get-inbound',
+			array( 'GET' ),
+			array( $this, 'get_inbound_smart_links' ),
+		);
+
+		/**
+		 * POST /traffic-boost/{post_id}/accept-suggestion/{suggestion_id}	
+		 * Accepts a specific suggestion for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/accept-suggestion/(?P<smart_link_id>[0-9]+)',
+			array( 'POST' ),
+			array( $this, 'accept_suggestion' ),
+			array(
+				'smart_link_id' => array(
+					'type'              => 'integer',
+					'description'       => __( 'The ID of the smart link to accept.', 'wp-parsely' ),
+					'required'          => true,
+					'validate_callback' => array( $this, 'validate_smart_link_id' ),
+				),
+			)
+		);
+
+		/**
+		 * DELETE /traffic-boost/{post_id}/discard-suggestions.
+		 * Discards all existing suggestions for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/discard-suggestions',
+			array( 'DELETE' ),
+			array( $this, 'discard_suggestions' )
+		);
+
+		/**
+		 * DELETE /traffic-boost/{post_id}/discard-suggestion/{suggestion_id}.
+		 * Discards a specific suggestion for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/discard-suggestion/(?P<smart_link_id>[0-9]+)',
+			array( 'DELETE' ),
+			array( $this, 'discard_suggestion' ),
+			array(
+				'smart_link_id' => array(
+					'type'              => 'integer',
+					'description'       => __( 'The ID of the smart link to discard.', 'wp-parsely' ),
+					'required'          => true,
+					'validate_callback' => array( $this, 'validate_smart_link_id' ),
+				),
+			)
+		);
+
+
+		/**
+		 * DELETE /traffic-boost/{post_id}/delete-inbound/{inbound_id}.
+		 * Deletes an inbound smart link for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/delete-inbound/(?P<smart_link_id>[0-9]+)',
+			array( 'DELETE' ),
+			array( $this, 'delete_inbound' ),
+			array(
+				'smart_link_id' => array(
+					'type'              => 'integer',
+					'description'       => __( 'The ID of the smart link to delete.', 'wp-parsely' ),
+					'required'          => true,
+					'validate_callback' => array( $this, 'validate_smart_link_id' ),
+				),
+			)
+		);
+
 	}
 
 	/**
@@ -123,7 +219,22 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$max_items = $request->get_param( 'max_items' );
 
-		$response = $this->suggestions_api->get_inbound_links(
+		/**
+		 * Whether to save the suggestions.
+		 *
+		 * @var bool $save
+		 */
+		$save = $request->get_param( 'save' );
+
+		/**
+		 * Whether to discard the previous suggestions.
+		 *
+		 * @var bool $discard_previous
+		 */
+		$discard_previous = $request->get_param( 'discard_previous' );
+		
+
+		$inbound_suggestions = $this->suggestions_api->get_inbound_links(
 			$post,
 			array(
 				'max_items'      => $max_items,
@@ -131,17 +242,254 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			)
 		);
 
-		if ( is_wp_error( $response ) ) {
-			return $response;
+		if ( is_wp_error( $inbound_suggestions ) ) {
+			return $inbound_suggestions;
 		}
 
+
+		// If the discard_previous flag is set, discard the previous suggestions.
+		if ( $discard_previous ) {
+			$discard_result = Inbound_Smart_Link::delete_pending_suggestions( $post->ID );
+			$response['discarded'] = $discard_result;
+		}
+
+		$suggestions = array_map(
+			function ( Inbound_Smart_Link $link ) use ( $save ) {
+				// If the save flag is set, save the smart link.
+				if ( $save ) {
+					$link->applied = false;
+					$link->save();
+				}
+
+				return $link->to_array();
+			},
+			$inbound_suggestions
+		);
+
+		$response = array(
+			'data' => $suggestions,
+		);
+
+		if ( null !== $discard_result ) {
+			$response['discarded'] = $discard_result;
+		}
+
+		return new WP_REST_Response( $response, 200 );
+	}
+
+	/**
+	 * API Endpoint: GET /traffic-boost/{post_id}/get-suggestions.
+	 *
+	 * Gets the existing inbound smart links for a post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response|WP_Error The response object.
+	 */
+	public function get_existing_suggestions( WP_REST_Request $request ) {
+		$post_id = $request->get_param( 'post_id' );
+
+		$suggestions = Inbound_Smart_Link::get_existing_suggestions( $post_id );
+
+		// Convert the inbound smart links to an array.
 		$suggestions = array_map(
 			function ( Inbound_Smart_Link $link ) {
 				return $link->to_array();
 			},
-			$response
+			$suggestions
 		);
 
 		return new WP_REST_Response( array( 'data' => $suggestions ), 200 );
 	}
-} 
+
+	/**
+	 * API Endpoint: GET /traffic-boost/{post_id}/get-inbound.
+	 *
+	 * Gets the inbound smart links for a post.
+	 *
+	 * @since 3.18.0
+	 */
+	public function get_inbound_smart_links( WP_REST_Request $request ) {
+		$post_id = $request->get_param( 'post_id' );
+
+		// Get the inbound smart links for the post.
+		$inbound_links = Inbound_Smart_Link::get_inbound_smart_links( $post_id, true );
+
+		// Convert the inbound smart links to an array.
+		$inbound_links = array_map(
+			function ( Inbound_Smart_Link $link ) {
+				return $link->to_array();
+			},
+			$inbound_links
+		);
+
+		return new WP_REST_Response( array( 'data' => $inbound_links ), 200 );
+	}
+
+	/**
+	 * API Endpoint: DELETE /traffic-boost/{post_id}/discard-suggestions.
+	 *
+	 * Discards all existing suggestions for a post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response|WP_Error The response object.
+	 */
+	public function discard_suggestions( WP_REST_Request $request ) {
+		$post_id = $request->get_param( 'post_id' );
+
+		$result = Inbound_Smart_Link::delete_pending_suggestions( $post_id );
+
+		return new WP_REST_Response( array( 'data' => $result ), 200 );
+	}
+
+	/**
+	 * API Endpoint: DELETE /traffic-boost/{post_id}/discard-suggestion/{suggestion_id}.
+	 *
+	 * Discards a specific suggestion for a post.
+	 *
+	 * @since 3.18.0
+	 */
+	public function discard_suggestion( WP_REST_Request $request ) {
+		/**
+		 * The post ID.
+		 *
+		 * @var int $post_id
+		 */
+		$post_id = intval( $request->get_param( 'post_id' ) );
+
+		/**
+		 * The suggestion ID.
+		 *
+		 * @var int $suggestion_id
+		 */
+		$smart_link_id = intval( $request->get_param( 'smart_link_id' ) );
+
+		/**
+		 * The inbound smart link.
+		 *
+		 * @var Inbound_Smart_Link $inbound_link
+		 */
+		$inbound_link = $request->get_param( 'inbound_link' );
+
+
+		$deleted = $inbound_link->delete();
+
+		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted ) ), 200 );
+	}
+
+	/**	
+	 * API Endpoint: DELETE /traffic-boost/{post_id}/delete-inbound/{smart_link_id}.
+	 *
+	 * Deletes an inbound smart link for a post.
+	 *
+	 * @since 3.18.0
+	 */
+	public function delete_inbound( WP_REST_Request $request ) {
+		/**
+		 * The post ID.
+		 *
+		 * @var int $post_id
+		 */
+		$post_id = intval( $request->get_param( 'post_id' ) );
+
+		/**
+		 * The smart link ID.
+		 *
+		 * @var int $smart_link_id
+		 */
+		$smart_link_id = intval( $request->get_param( 'smart_link_id' ) );
+
+		/**
+		 * The inbound smart link.
+		 *
+		 * @var Inbound_Smart_Link $inbound_link
+		 */
+		$inbound_link = $request->get_param( 'inbound_link' );
+
+		$deleted = $inbound_link->delete();
+
+		// TODO: Remove the actual inbound link from the post.
+
+		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted ) ), 200 );
+	}
+
+	/**
+	 * API Endpoint: POST /traffic-boost/{post_id}/accept-suggestion/{suggestion_id}.
+	 *
+	 * Accepts a specific suggestion for a post.
+	 *
+	 * @since 3.18.0
+	 */
+	public function accept_suggestion( WP_REST_Request $request ) {
+		/**
+		 * The post ID.
+		 *
+		 * @var int $post_id
+		 */
+		$post_id = intval( $request->get_param( 'post_id' ) );
+
+		/**
+		 * The suggestion ID.
+		 *
+		 * @var int $suggestion_id
+		 */
+		$suggestion_id = intval( $request->get_param( 'suggestion_id' ) );
+
+		/**
+		 * The inbound smart link.
+		 *
+		 * @var Inbound_Smart_Link $inbound_link
+		 */
+		$inbound_link = $request->get_param( 'inbound_link' );
+
+		$inbound_link->applied = true;
+		$inbound_link->save();
+
+		// TODO: Add the inbound link to the post at the correct position.
+
+		return new WP_REST_Response( array( 'data' => array( 'success' => true ) ), 200 );
+	}
+
+	/**
+	 * Validates a smart link ID.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $smart_link_id The smart link ID.
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool|WP_REST_Response True if the smart link ID is valid, false otherwise.
+	 */
+	public function validate_smart_link_id( int $smart_link_id, WP_REST_Request $request ) {
+		if ( ! is_numeric( $smart_link_id ) ) {
+			return false;
+		}
+
+		$smart_link_id = filter_var( $smart_link_id, FILTER_VALIDATE_INT );
+
+		if ( false === $smart_link_id ) {
+			return false;
+		}
+
+		// Validate if the smart link ID exists.
+		$inbound_link = Inbound_Smart_Link::get_by_id( $smart_link_id );
+
+		if ( ! $inbound_link ) {
+			return false;
+		}
+
+		// Set the inbound link in the request.
+		$request->set_param( 'inbound_link', $inbound_link );
+
+		// Validate if the smart link is associated with the post.
+		$post_id = intval( $request->get_param( 'post_id' ) );
+
+		if ( $inbound_link->destination_post_id !== $post_id ) {
+			return false;
+		}
+
+		return true;
+	}
+}

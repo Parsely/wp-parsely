@@ -5,7 +5,7 @@ import { Icon } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { link as linkIcon, linkOff } from '@wordpress/icons';
+import { error, link as linkIcon, linkOff } from '@wordpress/icons';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -13,7 +13,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
-import { TrafficBoostLink } from '../provider';
+import { TrafficBoostLink, TrafficBoostProvider } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -37,8 +37,9 @@ export interface TextSelection {
  */
 interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
-	onAccept: ( link: TrafficBoostLink ) => Promise<TrafficBoostLink>;
-	onRemoveInboundLink: ( link: TrafficBoostLink ) => Promise<void>;
+	onAccept: ( link: TrafficBoostLink ) => Promise<boolean>;
+	onDiscard: ( link: TrafficBoostLink ) => Promise<void>;
+	onRemoveInboundLink: ( link: TrafficBoostLink ) => Promise<boolean>;
 }
 
 /**
@@ -51,6 +52,7 @@ interface TrafficBoostPreviewProps {
 export const TrafficBoostPreview = ( {
 	activeLink: providedActiveLink,
 	onAccept,
+	onDiscard,
 	onRemoveInboundLink,
 }: TrafficBoostPreviewProps ): React.JSX.Element => {
 	const [ isFrontendPreview, setIsFrontendPreview ] = useState<boolean>( false );
@@ -67,6 +69,7 @@ export const TrafficBoostPreview = ( {
 
 	const {
 		createSuccessNotice,
+		createErrorNotice,
 	} = useDispatch( 'core/notices' );
 
 	const {
@@ -245,13 +248,25 @@ export const TrafficBoostPreview = ( {
 		setIsAccepting( link, true );
 
 		// Accept the suggestion.
-		const acceptedLink = await onAccept( link );
+		const accepted = await onAccept( link );
+
+		if ( ! accepted ) {
+			createErrorNotice(
+				__( 'Failed to accept suggestion.', 'wp-parsely' ),
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+			setIsAccepting( link, false );
+			return;
+		}
 
 		// Remove suggestion from the list.
 		removeSuggestion( link );
 
 		// Add the link to the inbound links list.
-		addInboundLink( acceptedLink );
+		addInboundLink( link );
 
 		setIsAccepting( link, false );
 
@@ -267,7 +282,7 @@ export const TrafficBoostPreview = ( {
 		// When accepting the only remaining suggestion, switch to inbound links tab.
 		if ( itemIndex === totalItems && totalItems === 1 ) {
 			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
-			setSelectedLink( acceptedLink );
+			setSelectedLink( link );
 		} else if ( itemIndex === totalItems ) {
 			// Navigate to previous suggestion when accepting the last one.
 			handlePrevious();
@@ -284,7 +299,10 @@ export const TrafficBoostPreview = ( {
 	 *
 	 * @param {TrafficBoostLink} link The link to discard.
 	 */
-	const handleDiscard = ( link: TrafficBoostLink ) => {
+	const handleDiscard = async ( link: TrafficBoostLink ) => {
+		await onDiscard( link );
+
+		// Remove the suggestion from the list.
 		removeSuggestion( link );
 
 		// When discarding the only remaining suggestion, switch to inbound links tab.
@@ -308,7 +326,20 @@ export const TrafficBoostPreview = ( {
 	 */
 	const handleRemove = async ( link: TrafficBoostLink ) => {
 		setIsRemoving( link, true );
-		await onRemoveInboundLink( link );
+		const removed = await onRemoveInboundLink( link );
+
+		if ( ! removed ) {
+			createErrorNotice(
+				__( 'Failed to remove link.', 'wp-parsely' ),
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+			setIsRemoving( link, false );
+			return;
+		}
+
 		removeInboundLink( link );
 		setIsRemoving( link, false );
 

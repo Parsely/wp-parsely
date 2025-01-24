@@ -45,7 +45,7 @@
 		"@types/jest": "^29.5.14",
 		"@types/js-cookie": "^3.0.6",
 		"@types/lodash.debounce": "^4.0.9",
-		"@types/react-router-dom": "^5.3.3",
+		"@types/react-router": "^5.1.20",
 		"@types/wordpress__block-editor": "^11.5.16",
 		"@types/wordpress__blocks": "^12.5.17",
 		"@types/wordpress__edit-post": "^8.4.2",
@@ -79,9 +79,9 @@
 		"husky": "^9.1.7",
 		"lodash.debounce": "^4.0.8",
 		"prettier": "^3.4.2",
-		"react-router-dom": "^6.22.3",
 		"ts-loader": "^9.5.2",
-		"typescript": "^5.7.3"
+		"typescript": "^5.7.3",
+		"react-router": "^7.1.3"
 	},
 	"devDependenciesComments": {
 		"@wordpress/babel-preset-default": "Don't upgrade to v8 or greater until the plugin requires WordPress 6.6. See https://github.com/WordPress/gutenberg/pull/62265/files",

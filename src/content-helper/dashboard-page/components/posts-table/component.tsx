@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { Link } from 'react-router';
+
+/**
  * WordPress dependencies
  */
 import {
@@ -21,7 +26,6 @@ import {
 /**
  * Internal dependencies
  */
-import { Link } from 'react-router-dom';
 import { HydratedPost, QueryParams } from '../../../common/base-wordpress-provider';
 import { Thumbnail } from '../../../common/components/thumbnail';
 import { DashboardProvider } from '../../provider';
@@ -182,6 +186,7 @@ export const PostsTable = ( {
 	className,
 	onPostClick,
 }: PostsTableType ): React.JSX.Element => {
+	// TODO: Add a global state to store the posts for faster loading.
 	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
 
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
@@ -302,7 +307,16 @@ export const PostsTable = ( {
 								<>
 									<td className="boost-perf">35%</td>
 									<td className="actions">
-										<Link to={ `/traffic-boost/${ post.id }` }>{ __( 'Boost Traffic', 'wp-parsely' ) }</Link>
+										<Link
+											to={ {
+												pathname: `/traffic-boost/${ post.id }`,
+											} }
+											state={ {
+												post,
+											} }
+										>
+											{ __( 'Boost Traffic', 'wp-parsely' ) }
+										</Link>
 										<ActionDropdown />
 									</td>
 								</>

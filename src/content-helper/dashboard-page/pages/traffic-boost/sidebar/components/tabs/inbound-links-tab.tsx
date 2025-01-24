@@ -9,6 +9,8 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { TrafficBoostLink } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { LinksList } from '../links-list/links-list';
+import { __ } from '@wordpress/i18n';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Defines the props structure for InboundLinksTab.
@@ -34,11 +36,13 @@ const InboundLinksTab = ( {
 		inboundLinks,
 		currentPage,
 		itemsPerPage,
+		isLoadingInboundLinks,
 	} = useSelect( ( select ) => ( {
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		currentPage: select( TrafficBoostStore ).getInboundLinksPage(),
 		itemsPerPage: select( TrafficBoostStore ).getInboundLinksItemsPerPage(),
+		isLoadingInboundLinks: select( TrafficBoostStore ).isLoadingInboundLinks(),
 	} ), [] );
 
 	const {
@@ -46,8 +50,13 @@ const InboundLinksTab = ( {
 		setInboundLinksPage,
 	} = useDispatch( TrafficBoostStore );
 
+	useEffect( () => {
+		console.log( 'isLoadingInboundLinks', isLoadingInboundLinks );
+	}, [ isLoadingInboundLinks ] );
+
 	return (
 		<LinksList
+			isLoading={ isLoadingInboundLinks }
 			links={ inboundLinks }
 			onClick={ onInboundLinkClick }
 			activeLink={ ! selectedLink?.isSuggestion ? selectedLink : null }
@@ -55,6 +64,11 @@ const InboundLinksTab = ( {
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setInboundLinksPage }
 			onItemsPerPageChange={ setInboundLinksItemsPerPage }
+			renderEmptyState={ () => (
+				<div className="traffic-boost-suggestions-empty-state">
+					<p>{ __( 'This post has no inbound links.', 'wp-parsely' ) }</p>
+				</div>
+			) }
 		/>
 	);
 };

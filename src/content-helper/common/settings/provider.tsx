@@ -96,6 +96,8 @@ const useSaveSettings = (
 			return;
 		}
 
+		console.log( 'saving settings', data );
+
 		apiFetch( {
 			path: '/wp-parsely/v2/settings/' + endpoint,
 			method: 'PUT',
@@ -160,6 +162,7 @@ export const SettingsProvider = (
 	const updateSettings = useCallback( ( updatedSettings: Partial<Settings> ) => {
 		setInternalSettings( ( currentSettings ) => ( { ...currentSettings, ...updatedSettings } ) );
 		setPartialSettings( endpoint, updatedSettings );
+		console.log( 'updated settings', updatedSettings );
 	}, [ endpoint, setPartialSettings ] );
 
 	/**

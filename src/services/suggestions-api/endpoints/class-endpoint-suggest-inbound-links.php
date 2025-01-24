@@ -3,19 +3,20 @@
  * Parse.ly Suggestions API Endpoint: Suggest Inbound Links
  *
  * @package Parsely
- * @since   3.17.0
+ * @since   3.18.0
  */
 
 declare(strict_types=1);
 
 namespace Parsely\Services\Suggestions_API\Endpoints;
 
+use Parsely\Models\Inbound_Smart_Link;
 use WP_Error;
 
 /**
  * The endpoint for the Suggest Inbound Links API request.
  *
- * @since 3.17.0
+ * @since 3.18.0
  *
  * @link https://content-suggestions-api.parsely.net/prod/docs#/default/suggest_inbound_links_suggest_inbound_links_post
  *
@@ -35,7 +36,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint for the API request.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @return string The endpoint for the API request.
 	 */
@@ -47,7 +48,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	 * Gets suggested inbound links for the given URL using the Parse.ly
 	 * Content Suggestion API.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @param \WP_Post                               $post    The post to get inbound link suggestions for.
 	 * @param Endpoint_Suggest_Inbound_Links_Options $options The options to pass to the API request.
@@ -87,44 +88,39 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 		$links = array();
 		foreach ( $response as $link ) {
 			$link     = apply_filters( 'wp_parsely_suggest_inbound_links_link', $link );
-			$link_obj = new \Parsely\Models\Inbound_Smart_Link(
-				esc_url( $link['canonical_url'] ),
+			$link_obj = new Inbound_Smart_Link(
+				esc_url( $link['source_url'] ),
 				esc_attr( $link['title'] ),
 				wp_kses_post( $link['text'] ),
 				$link['offset']
 			);
 
+
 			// Set the destination to be the current post.
 			$link_obj->set_destination_post( $post );
 
-			// Find post by URL.
-			if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
-				$source_post_id = wpcom_vip_url_to_postid( $link['source_url'] );
-			} else {
-				// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
-				$source_post_id = url_to_postid( $link['source_url'] );
-			}
+			// Set the source post from the URL.
+			$did_set_source = $link_obj->set_source_from_url( $link['source_url'] );
 
-			// If we couldn't find a post by URL, try to find a post with the same slug.
-			if ( ! $source_post_id ) {
-				// Get the slug from the URL.
-				$post_slug      = basename( $link['source_url'] );
-				$source_post_id = get_page_by_path( $post_slug, OBJECT, array( 'post', 'page' ) );
-			}
-
-			$source_post = get_post( $source_post_id );
-
-			if ( ! $source_post ) {
+			// If no source post was found or the source post is the same as the destination post, skip it.
+			if ( ! $did_set_source || $link_obj->source_post_id === $post->ID ) {
 				continue;
 			}
 
-			$link_obj->set_source_post( $source_post );
+			// Update the UID of the smart link.
+			$link_obj->update_uid();
+
+			// Validate the inbound link.
+			if ( ! $link_obj->has_valid_placement() ) {
+				continue;
+			}
+
 			$links[] = $link_obj;
 		}
 
 		return $links;
 	}
-
+	
 	/**
 	 * Executes the API request.
 	 *

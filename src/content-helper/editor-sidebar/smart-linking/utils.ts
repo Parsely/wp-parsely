@@ -450,6 +450,7 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 
 		const smartLink: SmartLink = {
 			uid,
+			smart_link_id: 0,
 			href,
 			text,
 			title,

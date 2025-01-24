@@ -93,8 +93,8 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 				'supports'        => array( 'title', 'custom-fields' ),
 				'taxonomies'      => array( 'smart_link_source', 'smart_link_destination' ),
 				'hierarchical'    => false,
-				'public'          => false,
-				'show_ui'         => false,
+				'public'          => true, // TODO: revert to false.
+				'show_ui'         => true, // TODO: revert to false.
 				'can_export'      => true,
 				'has_archive'     => false,
 				'rewrite'         => false,
@@ -121,8 +121,8 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 					'name'          => $singular_name,
 					'singular_name' => $singular_name,
 				),
-				'public'            => false,
-				'show_ui'           => false,
+				'public'            => true, // TODO: revert to false.
+				'show_ui'           => true, // TODO: revert to false.
 				'show_tagcloud'     => false,
 				'show_admin_column' => false,
 				'show_in_rest'      => false,

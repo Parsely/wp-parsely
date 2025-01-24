@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 /**
  * WordPress dependencies
@@ -26,7 +26,6 @@ import './sidebar.scss';
  * @since 3.18.0
  */
 interface TrafficBoostSidebarProps {
-    isLoading: boolean;
     onLinkClick?: ( link: TrafficBoostLink ) => void;
 }
 
@@ -39,13 +38,13 @@ interface TrafficBoostSidebarProps {
  * @param {TrafficBoostSidebarProps} props The component's props.
  */
 export const TrafficBoostSidebar = ( {
-	isLoading,
 	onLinkClick,
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
 	const {
 		post,
+		isLoadingPost,
 		selectedTab,
 		suggestions,
 		inboundLinks,
@@ -54,6 +53,7 @@ export const TrafficBoostSidebar = ( {
 		selectedTab: select( TrafficBoostStore ).getSelectedTab(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
+		isLoadingPost: select( TrafficBoostStore ).isLoadingPost(),
 	} ), [] );
 
 	const { setSelectedTab } = useDispatch( TrafficBoostStore );
@@ -107,13 +107,13 @@ export const TrafficBoostSidebar = ( {
 		}
 	}, [ selectedTab ] );
 
-	if ( ! post || isLoading ) {
-		return <Spinner />;
-	}
-
 	return (
 		<div className="traffic-boost-sidebar">
-			<SidebarHeader onBackClick={ () => navigate( '/traffic-boost' ) } post={ post } />
+			<SidebarHeader
+				isLoading={ isLoadingPost }
+				onBackClick={ () => navigate( '/traffic-boost' ) }
+				post={ post ?? undefined }
+			/>
 
 			<div className="traffic-boost-sidebar-content">
 				<TabPanel

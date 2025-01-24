@@ -6,7 +6,7 @@ import {
 	HashRouter as Router,
 	Routes,
 	useLocation,
-} from 'react-router-dom';
+} from 'react-router';
 
 /**
  * WordPress dependencies

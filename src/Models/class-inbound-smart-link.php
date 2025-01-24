@@ -77,7 +77,42 @@ class Inbound_Smart_Link extends Smart_Link {
 		$paragraph_data = $this->get_post_data();
 
 		// If the paragraph is empty, we assume that the Smart Link is not linked to a post.
-		return $object_exists && '' !== $paragraph_data['paragraph'];
+		//return $object_exists && '' !== $paragraph_data['paragraph'];
+		// TODO: For now, return if exists.
+		return $object_exists;
+	}
+
+	/**
+	 * Checks if the Smart Link has a valid placement. Does a few checks to make sure the link is valid.
+	 *
+	 * 1. Checks if the Smart Link is inside a paragraph tag.
+	 * 2. Checks if the Smart Link is not inside an anchor tag.
+	 * 3. Checks if the Smart Link is not inside a heading tag.
+	 * 4. Checks if the Smart Link is not inside or not a child of a disallowed tag.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @return bool True if the Smart Link has a valid placement, false otherwise.
+	 */
+	public function has_valid_placement(): bool {
+		$allowed_tags = array( 'p' );
+		$disallowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'div', 'a' );
+
+		if ( null === $this->source_post ) {
+			$this->source_post = get_post( $this->source_post_id );
+		}
+
+		$post = $this->source_post;
+
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		$paragraph = $this->get_paragraph( $this->source_post->post_content );
+
+		// TODO: Do the actual validations.
+
+		return true;
 	}
 
 	/**
@@ -184,11 +219,13 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$offset_count = 0;
 
+		/** @var \DOMElement $p The paragraph element. */
 		foreach ( $paragraphs as $p ) {
 			// If the smart link is applied, we need to find the paragraph that contains the smart link.
 			if ( $this->applied ) {
 				// Check each anchor tag within the paragraph.
 				$anchors = $p->getElementsByTagName( 'a' );
+				/** @var \DOMElement $anchor The anchor element. */
 				foreach ( $anchors as $anchor ) {
 					// Check if the data-smartlink attribute contains the UID.
 					if ( $anchor->hasAttribute( 'data-smartlink' ) && stripos( $anchor->getAttribute( 'data-smartlink' ), $this->uid ) !== false ) {
@@ -239,6 +276,40 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
+	 * Sets the source post from a URL.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $url The URL.
+	 */
+	public function set_source_from_url( string $url ): bool {
+		// First try to find a post by URL.
+		if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
+			$source_post_id = wpcom_vip_url_to_postid( $url );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+			$source_post_id = url_to_postid( $url );
+		}
+
+		// Found a post by URL, set the source post.
+		if ( 0 !== $source_post_id ) {
+			$this->set_source_post( get_post( $source_post_id ) );
+			return true;
+		}
+
+		// Since we couldn't find a post by URL, try to find a post with the same slug.
+		$post_slug      = basename( $url );
+		$source_post = get_page_by_path( $post_slug, OBJECT, array( 'post', 'page' ) );
+
+		if ( $source_post ) {
+			$this->set_source_post( $source_post );
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Creates a new instance of an Inbound Smart Link from a Smart Link object.
 	 *
 	 * This is used to convert a Smart Link object to an Inbound Smart Link object.
@@ -261,5 +332,118 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		return $inbound_smart_link;
+	}
+
+	/**
+	 * Gets the existing inbound smart links for a post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $post_id The post ID.
+	 * @return array<Inbound_Smart_Link> The existing inbound smart links.
+	 */
+	public static function get_existing_suggestions( int $post_id ): array {
+		// Get all inbound smart links for the post.
+		$smart_links = Inbound_Smart_Link::get_inbound_smart_links( $post_id, false );
+		
+		// Filter out the ones that are already applied.
+		$smart_links = array_values( array_filter(
+			$smart_links,
+			function ( Inbound_Smart_Link $smart_link ) {
+				return ! $smart_link->applied;
+			}
+		) );
+
+		return $smart_links;
+	}
+
+	/**
+	 * Deletes all pending (not applied) inbound smart links suggestions for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $post_id The post ID.
+	 * @return array<string,int> The results of the deletion.
+	 */
+	public static function delete_pending_suggestions( int $post_id ): array {
+		// Get all posts of type parsely_smart_link that have the destination taxonomy set to the post_id
+		// and the _smart_link_applied meta set to false.
+		$args = array(
+			'post_type'      => 'parsely_smart_link',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'tax_query'      => array(
+				array(
+					'taxonomy' => 'smart_link_destination',
+					'field'    => 'name',
+					'include_children' => false,
+					'terms'    => (string) $post_id,
+				),
+			),
+			'meta_query'     => array(
+				array(
+					'key'   => '_smart_link_applied',
+					'value' => 'false',
+					'compare' => '=',
+				),
+			),
+		);
+
+		$query = new \WP_Query( $args );
+
+		$results = array(
+			'success' => 0,
+			'failed'  => 0,
+		);
+
+		foreach ( $query->posts as $post_id ) {
+			$smart_link = Smart_Link::get_smart_link_by_id( $post_id );
+			if ( $smart_link->delete() ) {
+				$results['success']++;
+			} else {
+				$results['failed']++;
+			}	
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Gets the inbound smart links for a post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $post_id The post ID.
+	 * @param bool $include_applied Whether to include applied inbound smart links.
+	 * @return array<Inbound_Smart_Link> The inbound smart links.
+	 */
+	public static function get_inbound_smart_links( int $post_id, bool $include_applied = false ): array {
+		$inbound_smart_links = Smart_Link::get_inbound_smart_links( $post_id, $include_applied );
+
+		return array_map(
+			function ( Smart_Link $smart_link ) {
+				return self::from_smart_link( $smart_link );
+			},
+			$inbound_smart_links
+		);
+	}
+
+	/**
+	 * Gets an inbound smart link by ID.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $smart_link_id The ID of the smart link.
+	 * @return Inbound_Smart_Link|false The inbound smart link object, or false if it does not exist.
+	 */
+	public static function get_by_id( int $smart_link_id ) {
+		$smart_link = Smart_Link::get_by_id( $smart_link_id );
+
+		if ( ! $smart_link instanceof Smart_Link ) {
+			return false;
+		}
+
+		return self::from_smart_link( $smart_link );
 	}
 }
