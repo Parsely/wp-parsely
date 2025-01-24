@@ -53,8 +53,9 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
 			<div className="post-details">
 				<div className="post-title">
 					{ post.title.rendered !== ''
-						? post.title.rendered
-						: __( '(no title)', 'wp-parsely' ) }
+						? <div dangerouslySetInnerHTML={ { __html: post.title.rendered } } />
+						: __( '(no title)', 'wp-parsely' )
+					}
 				</div>
 				<div className="post-meta">
 					<span className="post-date">{ prettyDate }</span>

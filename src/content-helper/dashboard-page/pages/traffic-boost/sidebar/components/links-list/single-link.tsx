@@ -73,9 +73,10 @@ export const SingleLink = ( {
 				/>
 			</div>
 			<div className="single-link-details">
-				<div className="single-link-title">
-					{ suggestedPost.title.rendered }
-				</div>
+				<div
+					className="single-link-title"
+					dangerouslySetInnerHTML={ { __html: suggestedPost.title.rendered } }
+				/>
 			</div>
 		</div>
 	);

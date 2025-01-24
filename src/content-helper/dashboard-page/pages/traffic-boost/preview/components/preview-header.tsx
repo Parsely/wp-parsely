@@ -145,7 +145,7 @@ export const PreviewHeader = ( {
 		<div className="traffic-boost-preview-header">
 			<div className="traffic-boost-preview-info">
 				<div className="traffic-boost-preview-info-title">
-					{ activeLink?.targetPost?.title.rendered }
+					<div dangerouslySetInnerHTML={ { __html: activeLink?.targetPost?.title.rendered } } />
 				</div>
 				<LinkCounter
 					postLinks={ activeLink.postLinks }

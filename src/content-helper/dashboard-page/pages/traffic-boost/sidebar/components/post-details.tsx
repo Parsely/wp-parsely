@@ -39,12 +39,10 @@ export const PostDetailsSidebar = ( { post, isLoading }: PostDetailsSidebarProps
 					size={ 52 }
 					className="traffic-boost-thumbnail"
 				/>
-				<div className="post-title">
-					{ isLoading && <Spinner /> }
-					{ ! isLoading && (
-						post?.title.rendered ?? __( '(no title)', 'wp-parsely' )
-					) }
-				</div>
+				{ isLoading && <Spinner /> }
+				{ ! isLoading && (
+					<div className="post-title" dangerouslySetInnerHTML={ { __html: post?.title.rendered ?? __( '(no title)', 'wp-parsely' ) } } />
+				) }
 			</div>
 			<div className="traffic-boost-post-details-divider"></div>
 			<div className="traffic-boost-post-details-description">
@@ -54,3 +52,4 @@ export const PostDetailsSidebar = ( { post, isLoading }: PostDetailsSidebarProps
 		</div>
 	);
 };
+
