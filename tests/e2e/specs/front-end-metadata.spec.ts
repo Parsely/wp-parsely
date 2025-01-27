@@ -53,7 +53,7 @@ test.describe( 'Front end metadata insertion', () => {
 
 		const content = await page.content();
 
-		expect( content ).toContain( '<script type="application/ld+json">{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"wp-parsely","url":"http:\\/\\/localhost:8889"}</script>' );
+		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"wp-parsely","url":"http:\\/\\/localhost:8889"}</script>' );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
@@ -67,7 +67,7 @@ test.describe( 'Front end metadata insertion', () => {
 
 		const content = await page.content();
 
-		expect( content ).toContain( '<script type="application/ld+json">' );
+		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
 		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"http:\\/\\/localhost:8889\\/?p=1","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?p=1"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
@@ -82,7 +82,7 @@ test.describe( 'Front end metadata insertion', () => {
 
 		const content = await page.content();
 
-		expect( content ).toContain( '<script type="application/ld+json">' );
+		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
 		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"http:\\/\\/localhost:8889\\/?page_id=2","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?page_id=2"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
@@ -107,7 +107,7 @@ test.describe( 'Front end metadata insertion', () => {
 		expect( content ).not.toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).not.toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).not.toContain( '<meta name="parsely-author" content="admin">' );
-		expect( content ).not.toContain( '<script type="application/ld+json">' );
+		expect( content ).not.toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
 	} );
 
 	/**
@@ -126,7 +126,7 @@ test.describe( 'Front end metadata insertion', () => {
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
-		expect( content ).not.toContain( '<script type="application/ld+json">' );
+		expect( content ).not.toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
 	} );
 
 	/**
@@ -145,7 +145,7 @@ test.describe( 'Front end metadata insertion', () => {
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
-		expect( content ).not.toContain( '<script type="application/ld+json">' );
+		expect( content ).not.toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
 	} );
 } );
 

@@ -220,7 +220,6 @@ class BaseAPIControllerTest extends TestCase {
 					->method( 'get_endpoint_slug' )
 					->willReturn( 'test2' );
 
-
 		$this->test_controller->testable_register_endpoints( array( $endpoint1, $endpoint2 ) ); // @phpstan-ignore-line
 
 		$endpoints = $this->test_controller->get_endpoints();
