@@ -23,7 +23,6 @@ import {
  * @since 3.17.0 Migrated to Playwright.
  */
 test.describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
-	const noRelatedPostsMessage = 'No related posts found.';
 	const emptyCredentialsMessage = 'Contact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
 
 	/**
@@ -76,8 +75,8 @@ test.describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', (
 
 		expect( await utils.testContentHelperIcon(
 			VALID_SITE_ID, VALID_API_SECRET,
-			'.related-posts-empty'
-		) ).toMatch( noRelatedPostsMessage );
+			'.wp-parsely-related-posts'
+		) ).toMatch( 'Find top-performing related posts.' );
 	} );
 
 	/**

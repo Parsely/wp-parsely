@@ -34,9 +34,7 @@ test.describe( 'PCH Editor Sidebar Related Posts panel', () => {
 	test( 'Should display an error when an invalid Site ID is provided', async ( { admin } ) => {
 		await setSiteKeys( admin.page, INVALID_SITE_ID, VALID_API_SECRET );
 
-		expect( await getRelatedPostsMessage(
-			admin, '', '', 'author', '.content-helper-error-message'
-		) ).toMatch( 'Error: Forbidden' );
+		expect( await getRelatedPostsMessage( admin ) ).toMatch( 'Error: Forbidden' );
 	} );
 
 	/**
@@ -85,7 +83,7 @@ test.describe( 'PCH Editor Sidebar Related Posts panel', () => {
 		await setSiteKeys( admin.page, VALID_SITE_ID, VALID_API_SECRET );
 
 		expect( await getRelatedPostsMessage(
-			admin, '', '', 'author', '.related-posts-descr' )
-		).not.toMatch( contactMessage );
+			admin, '.wp-parsely-related-posts' )
+		).toMatch( 'Find top-performing related posts.' );
 	} );
 } );

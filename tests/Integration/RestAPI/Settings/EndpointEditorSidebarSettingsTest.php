@@ -74,11 +74,9 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 				'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 			),
 			'RelatedPosts'       => array(
-				'FilterBy'    => 'unavailable',
-				'FilterValue' => '',
-				'Metric'      => 'views',
-				'Open'        => false,
-				'Period'      => '7d',
+				'Metric' => 'views',
+				'Open'   => false,
+				'Period' => '7d',
 			),
 			'SmartLinking'       => array(
 				'MaxLinks'     => 10,
