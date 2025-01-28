@@ -79,6 +79,7 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
  * @since 3.18.0
  *
  * @param {Object}   props                The component props.
+ * @param {boolean}  props.isLoading      Whether the posts are loading.
  * @param {number}   props.currentPage    The current page.
  * @param {Function} props.setCurrentPage The function to set the current page.
  * @param {number}   props.totalPages     The total number of pages.
@@ -86,12 +87,14 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
  * @param {Function} props.onNext         The function to handle the next button click.
  */
 const TablePagination = ( {
+	isLoading,
 	currentPage,
 	setCurrentPage,
 	totalPages,
 	onPrevious,
 	onNext,
 }: {
+	isLoading: boolean;
 	currentPage: number;
 	setCurrentPage: ( value: number ) => void;
 	totalPages: number;
@@ -100,9 +103,11 @@ const TablePagination = ( {
 } ): React.JSX.Element => {
 	return (
 		<div className="posts-table-pagination-controls">
+			{ isLoading && <Spinner /> }
 			<div className="page-selector">
 				<span>{ __( 'Page', 'wp-parsely' ) }</span>
 				<NumberControl
+					disabled={ isLoading }
 					value={ currentPage }
 					onChange={ ( value ) => {
 						let selectedPage = parseInt( value ?? '1', 10 );
@@ -121,8 +126,8 @@ const TablePagination = ( {
 				<span>{ __( 'of', 'wp-parsely' ) } { totalPages }</span>
 			</div>
 			<div className="page-navigation">
-				<Button icon={ chevronLeft } onClick={ onPrevious } disabled={ currentPage === 1 } />
-				<Button icon={ chevronRight } onClick={ onNext } disabled={ currentPage >= totalPages } />
+				<Button icon={ chevronLeft } onClick={ onPrevious } disabled={ currentPage === 1 || isLoading } />
+				<Button icon={ chevronRight } onClick={ onNext } disabled={ currentPage >= totalPages || isLoading } />
 			</div>
 		</div>
 	);
@@ -328,6 +333,7 @@ export const PostsTable = ( {
 			</table>
 			{ ! hidePagination && (
 				<TablePagination
+					isLoading={ isLoading }
 					currentPage={ currentPage }
 					setCurrentPage={ setCurrentPage }
 					totalPages={ totalPages }

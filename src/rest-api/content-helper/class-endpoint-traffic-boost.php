@@ -89,12 +89,12 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'generate_link_suggestions' ),
 			array(
-				'max_items' => array(
+				'max_items'        => array(
 					'type'        => 'integer',
 					'description' => __( 'The maximum number of suggestions to return.', 'wp-parsely' ),
 					'default'     => 10,
 				),
-				'save' => array(
+				'save'             => array(
 					'type'        => 'boolean',
 					'description' => __( 'Whether to save the suggestions.', 'wp-parsely' ),
 					'default'     => false,
@@ -114,7 +114,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$this->register_rest_route_with_post_id(
 			'/get-suggestions',
 			array( 'GET' ),
-			array( $this, 'get_existing_suggestions' ),
+			array( $this, 'get_existing_suggestions' )
 		);
 
 		/**
@@ -124,11 +124,11 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$this->register_rest_route_with_post_id(
 			'/get-inbound',
 			array( 'GET' ),
-			array( $this, 'get_inbound_smart_links' ),
+			array( $this, 'get_inbound_smart_links' )
 		);
 
 		/**
-		 * POST /traffic-boost/{post_id}/accept-suggestion/{suggestion_id}	
+		 * POST /traffic-boost/{post_id}/accept-suggestion/{smart_link_id}  
 		 * Accepts a specific suggestion for a post.
 		 */
 		$this->register_rest_route_with_post_id(
@@ -156,7 +156,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		);
 
 		/**
-		 * DELETE /traffic-boost/{post_id}/discard-suggestion/{suggestion_id}.
+		 * DELETE /traffic-boost/{post_id}/discard-suggestion/{smart_link_id}.
 		 * Discards a specific suggestion for a post.
 		 */
 		$this->register_rest_route_with_post_id(
@@ -173,9 +173,8 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			)
 		);
 
-
 		/**
-		 * DELETE /traffic-boost/{post_id}/delete-inbound/{inbound_id}.
+		 * DELETE /traffic-boost/{post_id}/delete-inbound/{smart_link_id}.
 		 * Deletes an inbound smart link for a post.
 		 */
 		$this->register_rest_route_with_post_id(
@@ -191,7 +190,6 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				),
 			)
 		);
-
 	}
 
 	/**
@@ -246,11 +244,11 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return $inbound_suggestions;
 		}
 
+		$discard_result = null;
 
 		// If the discard_previous flag is set, discard the previous suggestions.
 		if ( $discard_previous ) {
 			$discard_result = Inbound_Smart_Link::delete_pending_suggestions( $post->ID );
-			$response['discarded'] = $discard_result;
 		}
 
 		$suggestions = array_map(
@@ -285,7 +283,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response|WP_Error The response object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function get_existing_suggestions( WP_REST_Request $request ) {
 		$post_id = $request->get_param( 'post_id' );
@@ -309,6 +307,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * Gets the inbound smart links for a post.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function get_inbound_smart_links( WP_REST_Request $request ) {
 		$post_id = $request->get_param( 'post_id' );
@@ -335,7 +336,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response|WP_Error The response object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function discard_suggestions( WP_REST_Request $request ) {
 		$post_id = $request->get_param( 'post_id' );
@@ -346,27 +347,16 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	}
 
 	/**
-	 * API Endpoint: DELETE /traffic-boost/{post_id}/discard-suggestion/{suggestion_id}.
+	 * API Endpoint: DELETE /traffic-boost/{post_id}/discard-suggestion/{smart_link_id}.
 	 *
 	 * Discards a specific suggestion for a post.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function discard_suggestion( WP_REST_Request $request ) {
-		/**
-		 * The post ID.
-		 *
-		 * @var int $post_id
-		 */
-		$post_id = intval( $request->get_param( 'post_id' ) );
-
-		/**
-		 * The suggestion ID.
-		 *
-		 * @var int $suggestion_id
-		 */
-		$smart_link_id = intval( $request->get_param( 'smart_link_id' ) );
-
 		/**
 		 * The inbound smart link.
 		 *
@@ -374,34 +364,22 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$inbound_link = $request->get_param( 'inbound_link' );
 
-
 		$deleted = $inbound_link->delete();
 
 		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted ) ), 200 );
 	}
 
-	/**	
+	/** 
 	 * API Endpoint: DELETE /traffic-boost/{post_id}/delete-inbound/{smart_link_id}.
 	 *
 	 * Deletes an inbound smart link for a post.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function delete_inbound( WP_REST_Request $request ) {
-		/**
-		 * The post ID.
-		 *
-		 * @var int $post_id
-		 */
-		$post_id = intval( $request->get_param( 'post_id' ) );
-
-		/**
-		 * The smart link ID.
-		 *
-		 * @var int $smart_link_id
-		 */
-		$smart_link_id = intval( $request->get_param( 'smart_link_id' ) );
-
 		/**
 		 * The inbound smart link.
 		 *
@@ -417,27 +395,16 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	}
 
 	/**
-	 * API Endpoint: POST /traffic-boost/{post_id}/accept-suggestion/{suggestion_id}.
+	 * API Endpoint: POST /traffic-boost/{post_id}/accept-suggestion/{smart_link_id}.
 	 *
 	 * Accepts a specific suggestion for a post.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function accept_suggestion( WP_REST_Request $request ) {
-		/**
-		 * The post ID.
-		 *
-		 * @var int $post_id
-		 */
-		$post_id = intval( $request->get_param( 'post_id' ) );
-
-		/**
-		 * The suggestion ID.
-		 *
-		 * @var int $suggestion_id
-		 */
-		$suggestion_id = intval( $request->get_param( 'suggestion_id' ) );
-
 		/**
 		 * The inbound smart link.
 		 *
@@ -458,26 +425,19 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param int $smart_link_id The smart link ID.
+	 * @param int             $smart_link_id The smart link ID.
 	 * @param WP_REST_Request $request The request object.
-	 * @return bool|WP_REST_Response True if the smart link ID is valid, false otherwise.
+	 * @return bool|WP_Error True if the smart link ID is valid, WP_Error on failure.
 	 */
 	public function validate_smart_link_id( int $smart_link_id, WP_REST_Request $request ) {
-		if ( ! is_numeric( $smart_link_id ) ) {
-			return false;
-		}
+		/** @var Inbound_Smart_Link|false $inbound_link */
+		$inbound_link = Inbound_Smart_Link::get_smart_link_by_id( $smart_link_id );
 
-		$smart_link_id = filter_var( $smart_link_id, FILTER_VALIDATE_INT );
-
-		if ( false === $smart_link_id ) {
-			return false;
-		}
-
-		// Validate if the smart link ID exists.
-		$inbound_link = Inbound_Smart_Link::get_by_id( $smart_link_id );
-
-		if ( ! $inbound_link ) {
-			return false;
+		if ( false === $inbound_link ) {
+			return new WP_Error(
+				'parsely_smart_link_not_found',
+				__( 'Smart link not found', 'wp-parsely' )
+			);
 		}
 
 		// Set the inbound link in the request.
@@ -487,7 +447,10 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$post_id = intval( $request->get_param( 'post_id' ) );
 
 		if ( $inbound_link->destination_post_id !== $post_id ) {
-			return false;
+			return new WP_Error(
+				'parsely_invalid_smart_link',
+				__( 'Smart link is not associated with this post', 'wp-parsely' )
+			);
 		}
 
 		return true;

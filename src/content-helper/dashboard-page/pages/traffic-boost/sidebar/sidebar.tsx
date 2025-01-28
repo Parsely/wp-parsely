@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 /**
  * WordPress dependencies
  */
-import { Spinner, TabPanel } from '@wordpress/components';
+import { TabPanel } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';

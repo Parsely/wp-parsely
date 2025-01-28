@@ -80,7 +80,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			setCurrentPost( null );
 			setSelectedLink( null );
 		};
-	}, [] );
+	}, [ setIsGeneratingSuggestions, setLoading, setError, setInboundLinks, setSuggestions, setCurrentPost, setSelectedLink ] );
 
 	/**
 	 * Fetches the current post data from the dashboard provider.
@@ -153,6 +153,20 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	const handleLinkClick = ( link: TrafficBoostLink ) => {
 		setSelectedLink( link );
 	};
+
+	/**
+	 * Handles the error states and clears the error after the error is handled.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( error ) {
+			// TODO: better error handling.
+			console.error( error ); // eslint-disable-line no-console
+		}
+
+		setError( null );
+	}, [ error, setError ] );
 
 	/**
 	 * Handles the accept event on a suggestion.
@@ -267,16 +281,19 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 						},
 					);
 					setSuggestions( generatedSuggestions );
+
+					// If there are suggestions, set the first one as the selected link.
+					if ( generatedSuggestions.length > 0 ) {
+						setSelectedLink( generatedSuggestions[ 0 ] );
+					}
 				} else {
 					// Otherwise, set the fetched suggestions.
 					setSuggestions( fetchedSuggestions );
-				}
 
-				// If there are suggestions, set the first one as the selected link.
-				if ( fetchedSuggestions.length > 0 ) {
-					setSelectedLink( fetchedSuggestions[ 0 ] );
-				} else {
-					setSelectedLink( null );
+					// If there are suggestions, set the first one as the selected link.
+					if ( fetchedSuggestions.length > 0 ) {
+						setSelectedLink( fetchedSuggestions[ 0 ] );
+					}
 				}
 			} catch ( err ) {
 				if ( err instanceof ContentHelperError ) {

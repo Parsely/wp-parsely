@@ -59,8 +59,9 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 		\WP_Post $post,
 		$options = array()
 	) {
+		/** @var string|false $post_url */
 		$post_url = get_permalink( $post );
-		if ( false === $post_url ) {
+		if ( ! is_string( $post_url ) ) {
 			return new \WP_Error(
 				'parsely_invalid_post_url',
 				__( 'Could not get post URL.', 'wp-parsely' ),
@@ -95,7 +96,6 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 				$link['offset']
 			);
 
-
 			// Set the destination to be the current post.
 			$link_obj->set_destination_post( $post );
 
@@ -105,7 +105,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 			// If no source post was found or the source post is the same as the destination post, skip it.
 			if ( ! $did_set_source || $link_obj->source_post_id === $post->ID ) {
 				continue;
-			}
+			} 
 
 			// Update the UID of the smart link.
 			$link_obj->update_uid();
@@ -130,12 +130,12 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	 * @return WP_Error|array<mixed> The response from the API.
 	 */
 	public function call( array $args = array() ) {
-		/** @var \WP_Post $post */
+		/** @var \WP_Post|null $post */
 		$post = $args['post'] ?? null;
 		/** @var Endpoint_Suggest_Inbound_Links_Options $options */
 		$options = $args['options'] ?? array();
 
-		if ( ! $post instanceof \WP_Post ) {
+		if ( ! ( $post instanceof \WP_Post ) ) {
 			return new \WP_Error(
 				'parsely_invalid_post',
 				__( 'Invalid post.', 'wp-parsely' ),

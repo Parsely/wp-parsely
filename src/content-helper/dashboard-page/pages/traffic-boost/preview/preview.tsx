@@ -13,7 +13,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
-import { TrafficBoostLink, TrafficBoostProvider } from '../provider';
+import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -145,10 +145,12 @@ export const TrafficBoostPreview = ( {
 				action: 'parsely_post_preview',
 				post_id: activePost.id,
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
+				smart_link_id: activeLink.smartLink?.smart_link_id,
 			} )
 			: addQueryArgs( activePost.link, {
 				parsely_preview: 'true',
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
+				smart_link_id: activeLink.smartLink?.smart_link_id,
 			} );
 
 		// Only set loading state if URL actually changes.
@@ -156,7 +158,7 @@ export const TrafficBoostPreview = ( {
 			setIsLoading( true );
 			setPreviewUrl( newUrl );
 		}
-	}, [ activePost, isFrontendPreview, previewUrl ] );
+	}, [ activePost, isFrontendPreview, previewUrl ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Opens the post in a new tab.

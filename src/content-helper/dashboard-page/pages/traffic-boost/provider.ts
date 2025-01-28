@@ -1,7 +1,6 @@
 /**
  * Internal dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { BaseWordPressProvider, HydratedPost } from '../../../common/base-wordpress-provider';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
@@ -272,14 +271,10 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 * @return {Promise<TrafficBoostLink[]>} The list of existing suggestions.
 	 */
 	public async getExistingSuggestions( postId: number ): Promise<TrafficBoostLink[]> {
-		console.log( 'calling getExistingSuggestions' );
-
 		const response = await this.fetch<InboundSmartLinkDataResponse>( {
 			method: 'GET',
 			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/get-suggestions`,
 		} );
-
-		console.log( 'response', response );
 
 		const postIds = response.data.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
 

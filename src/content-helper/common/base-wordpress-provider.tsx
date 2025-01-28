@@ -159,7 +159,6 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 				);
 			}
 
-			console.error( wpError );
 			return Promise.reject( new ContentHelperError( wpError.message ?? '', wpError.code ) );
 		} finally {
 			// Clean up the AbortController after the request completes.

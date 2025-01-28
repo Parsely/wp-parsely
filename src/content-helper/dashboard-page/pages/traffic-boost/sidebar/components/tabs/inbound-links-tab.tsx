@@ -10,7 +10,6 @@ import { TrafficBoostLink } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { LinksList } from '../links-list/links-list';
 import { __ } from '@wordpress/i18n';
-import { useEffect } from '@wordpress/element';
 
 /**
  * Defines the props structure for InboundLinksTab.
@@ -49,10 +48,6 @@ const InboundLinksTab = ( {
 		setInboundLinksItemsPerPage,
 		setInboundLinksPage,
 	} = useDispatch( TrafficBoostStore );
-
-	useEffect( () => {
-		console.log( 'isLoadingInboundLinks', isLoadingInboundLinks );
-	}, [ isLoadingInboundLinks ] );
 
 	return (
 		<LinksList

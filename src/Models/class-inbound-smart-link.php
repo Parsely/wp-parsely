@@ -77,7 +77,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		$paragraph_data = $this->get_post_data();
 
 		// If the paragraph is empty, we assume that the Smart Link is not linked to a post.
-		//return $object_exists && '' !== $paragraph_data['paragraph'];
+		// return $object_exists && '' !== $paragraph_data['paragraph'];
 		// TODO: For now, return if exists.
 		return $object_exists;
 	}
@@ -95,7 +95,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return bool True if the Smart Link has a valid placement, false otherwise.
 	 */
 	public function has_valid_placement(): bool {
-		$allowed_tags = array( 'p' );
+		$allowed_tags    = array( 'p' );
 		$disallowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'div', 'a' );
 
 		if ( null === $this->source_post ) {
@@ -108,13 +108,12 @@ class Inbound_Smart_Link extends Smart_Link {
 			return false;
 		}
 
-		$paragraph = $this->get_paragraph( $this->source_post->post_content );
+		$paragraph = $this->get_paragraph( $post->post_content );
 
 		// TODO: Do the actual validations.
 
 		return true;
 	}
-
 	/**
 	 * Gets the post data for the smart link.
 	 *
@@ -132,9 +131,12 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		$post = $this->source_post;
-
 		if ( ! $post instanceof WP_Post ) {
-			return array();
+			return array(
+				'paragraph'          => '',
+				'is_first_paragraph' => false,
+				'is_last_paragraph'  => false,
+			);
 		}
 
 		// Get the post content.
@@ -148,11 +150,12 @@ class Inbound_Smart_Link extends Smart_Link {
 			$author_name = get_the_author_meta( 'user_login', intval( $post->post_author ) );
 		}
 
-		$post_type       = get_post_type_object( $post->post_type );
-		$post_type_label = '';
-		if ( null !== $post_type ) {
-			$post_type_label = $post_type->labels->singular_name;
+		$post_type = get_post_type_object( $post->post_type );
+		if ( null === $post_type ) {
+			return array();
 		}
+
+		$post_type_label = $post_type->labels->singular_name;
 
 		$this->post_data = array(
 			'id'                 => $post->ID,
@@ -216,6 +219,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$is_first_paragraph = true;
 		$is_last_paragraph  = false;
+		$paragraph          = null;
 
 		$offset_count = 0;
 
@@ -249,7 +253,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			}
 		}
 
-		if ( false === $paragraph ) {
+		if ( null === $paragraph ) {
 			$paragraph = '<p>' . __( 'Unable to fetch paragraph.', 'wp-parsely' ) . '</p>';
 		}
 
@@ -260,19 +264,6 @@ class Inbound_Smart_Link extends Smart_Link {
 		);
 
 		return $this->paragraph_data;
-	}
-
-	/**
-	 * Sets the destination post.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param \WP_Post $post The destination post.
-	 */
-	public function set_destination_post( \WP_Post $post ) {
-		$this->destination_post_id   = $post->ID;
-		$this->href                  = get_permalink( $post );
-		$this->destination_post_type = get_post_type_object( $post->post_type )->labels->singular_name;
 	}
 
 	/**
@@ -293,15 +284,15 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// Found a post by URL, set the source post.
 		if ( 0 !== $source_post_id ) {
-			$this->set_source_post( get_post( $source_post_id ) );
+			$this->set_source_post_id( $source_post_id );
 			return true;
 		}
 
 		// Since we couldn't find a post by URL, try to find a post with the same slug.
-		$post_slug      = basename( $url );
+		$post_slug   = basename( $url );
 		$source_post = get_page_by_path( $post_slug, OBJECT, array( 'post', 'page' ) );
 
-		if ( $source_post ) {
+		if ( null !== $source_post ) {
 			$this->set_source_post( $source_post );
 			return true;
 		}
@@ -344,15 +335,17 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public static function get_existing_suggestions( int $post_id ): array {
 		// Get all inbound smart links for the post.
-		$smart_links = Inbound_Smart_Link::get_inbound_smart_links( $post_id, false );
+		$smart_links = self::get_inbound_smart_links( $post_id, false );
 		
 		// Filter out the ones that are already applied.
-		$smart_links = array_values( array_filter(
-			$smart_links,
-			function ( Inbound_Smart_Link $smart_link ) {
-				return ! $smart_link->applied;
-			}
-		) );
+		$smart_links = array_values(
+			array_filter(
+				$smart_links,
+				function ( Inbound_Smart_Link $smart_link ) {
+					return ! $smart_link->applied;
+				}
+			) 
+		);
 
 		return $smart_links;
 	}
@@ -375,16 +368,17 @@ class Inbound_Smart_Link extends Smart_Link {
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			'tax_query'      => array(
 				array(
-					'taxonomy' => 'smart_link_destination',
-					'field'    => 'name',
+					'taxonomy'         => 'smart_link_destination',
+					'field'            => 'name',
 					'include_children' => false,
-					'terms'    => (string) $post_id,
+					'terms'            => (string) $post_id,
 				),
 			),
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			'meta_query'     => array(
 				array(
-					'key'   => '_smart_link_applied',
-					'value' => 'false',
+					'key'     => '_smart_link_applied',
+					'value'   => 'false',
 					'compare' => '=',
 				),
 			),
@@ -397,13 +391,24 @@ class Inbound_Smart_Link extends Smart_Link {
 			'failed'  => 0,
 		);
 
-		foreach ( $query->posts as $post_id ) {
-			$smart_link = Smart_Link::get_smart_link_by_id( $post_id );
+		foreach ( $query->posts as $post ) {
+			if ( ! is_int( $post ) ) {
+				++$results['failed'];
+				continue;
+			}
+
+			$smart_link = self::get_smart_link_by_id( $post );
+
+			if ( false === $smart_link ) {
+				++$results['failed'];
+				continue;
+			}
+
 			if ( $smart_link->delete() ) {
-				$results['success']++;
+				++$results['success'];
 			} else {
-				$results['failed']++;
-			}	
+				++$results['failed'];
+			}   
 		}
 
 		return $results;
@@ -414,12 +419,12 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param int $post_id The post ID.
-	 * @param bool $include_applied Whether to include applied inbound smart links.
-	 * @return array<Inbound_Smart_Link> The inbound smart links.
+	 * @param int  $post_id         The ID of the post.
+	 * @param bool $include_applied Whether to include applied smart links.
+	 * @return array<self> The inbound smart links.
 	 */
 	public static function get_inbound_smart_links( int $post_id, bool $include_applied = false ): array {
-		$inbound_smart_links = Smart_Link::get_inbound_smart_links( $post_id, $include_applied );
+		$inbound_smart_links = parent::get_inbound_smart_links( $post_id, $include_applied );
 
 		return array_map(
 			function ( Smart_Link $smart_link ) {
@@ -430,17 +435,16 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
-	 * Gets an inbound smart link by ID.
+	 * Gets an inbound smart link by its ID.
 	 *
 	 * @since 3.18.0
 	 *
 	 * @param int $smart_link_id The ID of the smart link.
-	 * @return Inbound_Smart_Link|false The inbound smart link object, or false if it does not exist.
+	 * @return self|false The inbound smart link, or false if not found.
 	 */
-	public static function get_by_id( int $smart_link_id ) {
-		$smart_link = Smart_Link::get_by_id( $smart_link_id );
-
-		if ( ! $smart_link instanceof Smart_Link ) {
+	public static function get_smart_link_by_id( int $smart_link_id ) {
+		$smart_link = parent::get_smart_link_by_id( $smart_link_id );
+		if ( false === $smart_link ) {
 			return false;
 		}
 

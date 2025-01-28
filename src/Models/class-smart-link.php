@@ -46,12 +46,20 @@ class Smart_Link extends Base_Model {
 	public $destination_post_id = 0;
 
 	/**
-	 * The post type of the suggested link.
+	 * The post type of the destination post.
 	 *
 	 * @since 3.16.0
-	 * @var string The post type of the suggested link.
+	 * @var string The post type of the destination post.
 	 */
 	public $destination_post_type = 'external';
+
+	/**
+	 * The post type of the source post.
+	 *
+	 * @since 3.18.0
+	 * @var string The post type of the source post.
+	 */
+	public $source_post_type = 'unknown';
 
 	/**
 	 * The URL of the suggested link.
@@ -213,15 +221,15 @@ class Smart_Link extends Base_Model {
 			return false;
 		}
 
-		$this->exists  = true;
+		$this->exists = true;
 
 		$this->uid = $smart_link->post_title;
 
 		// Load the Smart Link properties from the post meta.
-		$this->title  = $this->get_string_meta( '_smart_link_title' );
-		$this->href   = $this->get_string_meta( '_smart_link_href' );
-		$this->text   = $this->get_string_meta( '_smart_link_text' );
-		$this->offset = $this->get_int_meta( '_smart_link_offset' );
+		$this->title   = $this->get_string_meta( '_smart_link_title' );
+		$this->href    = $this->get_string_meta( '_smart_link_href' );
+		$this->text    = $this->get_string_meta( '_smart_link_text' );
+		$this->offset  = $this->get_int_meta( '_smart_link_offset' );
 		$this->applied = $this->get_bool_meta( '_smart_link_applied', true );
 
 		// Load the source post ID.
@@ -279,7 +287,7 @@ class Smart_Link extends Base_Model {
 					'ID'         => $this->smart_link_id,
 					'post_title' => $this->uid,
 				),
-				true, // Return WP_Error if the post is not updated.
+				true // Return WP_Error if the post is not updated.
 			);
 
 			if ( is_wp_error( $updated ) ) {
@@ -307,16 +315,16 @@ class Smart_Link extends Base_Model {
 			}
 
 			$this->smart_link_id = $post_id;
-			$this->exists  = true;
+			$this->exists        = true;
 			wp_cache_set( $this->uid . $this->source_post_id, $post_id, 'wp_parsely_smart_link_id' );
 		} 
 
 		// Update the smart link meta.
 		$meta = array(
-			'_smart_link_title'  => $this->title,
-			'_smart_link_href'   => $this->href,
-			'_smart_link_text'   => $this->text,
-			'_smart_link_offset' => $this->offset,
+			'_smart_link_title'   => $this->title,
+			'_smart_link_href'    => $this->href,
+			'_smart_link_text'    => $this->text,
+			'_smart_link_offset'  => $this->offset,
 			'_smart_link_applied' => $this->applied ? 'true' : 'false',
 		);
 
@@ -333,7 +341,6 @@ class Smart_Link extends Base_Model {
 		} else {
 			wp_set_post_terms( $this->smart_link_id, 'external', 'smart_link_destination' );
 		}
-
 
 		return true;
 	}
@@ -368,9 +375,7 @@ class Smart_Link extends Base_Model {
 			$this->flush_cache();
 			return true;
 		}
-
-		// Delete
-
+		
 		return false;
 	}
 
@@ -476,13 +481,16 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
-	 * Sets the source post.
+	 * Sets the source post from a post object.
+	 * 
+	 * This method is an alias for Smart_Link::set_source_post_id().
 	 *
 	 * @since 3.18.0
 	 *
+	 * @see Smart_Link::set_source_post_id()
 	 * @param \WP_Post $post The source post.
 	 */
-	public function set_source_post( \WP_Post $post ) {
+	public function set_source_post( \WP_Post $post ): void {
 		$this->set_source_post_id( $post->ID );
 	}
 
@@ -495,6 +503,57 @@ class Smart_Link extends Base_Model {
 	 */
 	public function set_source_post_id( int $source_post_id ): void {
 		$this->source_post_id = $source_post_id;
+
+		// Get the post type of the source post.
+		$post_type = get_post_type( $this->source_post_id );
+		if ( false !== $post_type ) {
+			$post_type_object = get_post_type_object( $post_type );
+			if ( null !== $post_type_object ) {
+				$this->source_post_type = $post_type_object->labels->singular_name;
+			}
+		} else {
+			$this->source_post_type = 'unknown';
+		}
+	}
+
+	/**
+	 * Sets the destination post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \WP_Post $post The destination post.
+	 */
+	public function set_destination_post( \WP_Post $post ): void {
+		$this->destination_post_id = $post->ID;
+		$this->href                = get_permalink( $post );
+
+		// Get the post type of the destination post.
+		$post_type = get_post_type( $this->destination_post_id );
+		if ( false !== $post_type ) {
+			$post_type_object = get_post_type_object( $post_type );
+			if ( null !== $post_type_object ) {
+				$this->destination_post_type = $post_type_object->labels->singular_name;
+			}
+		} else {
+			$this->destination_post_type = 'external';
+		}
+	}
+
+	/**
+	 * Sets the destination post ID.
+	 * 
+	 * @since 3.18.0
+	 *
+	 * @see Smart_Link::set_destination_post()
+	 * @param int $destination_post_id The destination post ID.
+	 */
+	public function set_destination_post_id( int $destination_post_id ): void {
+		$post = get_post( $destination_post_id );
+		if ( null === $post ) {
+			return;
+		}
+
+		$this->set_destination_post( $post );
 	}
 
 	/**
@@ -556,7 +615,7 @@ class Smart_Link extends Base_Model {
 			'offset'        => $this->offset,
 			'applied'       => $this->applied,
 			'source'        => array(
-				'post_type' => get_post_type( $this->source_post_id ),
+				'post_type' => $this->source_post_type,
 				'post_id'   => $this->source_post_id,
 			),
 			'destination'   => array(
@@ -626,13 +685,16 @@ class Smart_Link extends Base_Model {
 	 * @since 3.16.0
 	 *
 	 * @param int $smart_link_id The ID of the smart link.
-	 * @return Smart_Link The smart link object.
+	 * @return Smart_Link|false The smart link object, or false if it does not exist.
 	 */
-	protected static function get_smart_link_by_id( int $smart_link_id ): Smart_Link {
+	protected static function get_smart_link_by_id( int $smart_link_id ) {
 		$smart_link                = new Smart_Link( '', '', '', 0 );
 		$smart_link->smart_link_id = $smart_link_id;
-		$smart_link->load();
-		return $smart_link;
+		if ( $smart_link->load() ) {
+			return $smart_link;
+		}
+
+		return false;
 	}
 
 	/**
@@ -642,37 +704,39 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param int $post_id The post ID to get the smart links for.
+	 * @param int  $post_id The post ID to get the smart links for.
+	 * @param bool $only_applied Whether to only get the applied smart links.
 	 * @return array<Smart_Link> The smart links in the post.
 	 */
 	public static function get_outbound_smart_links( int $post_id, bool $only_applied = true ): array {
 		$query_args = array(
 			'post_type'      => 'parsely_smart_link',
-				'posts_per_page' => -1,
-				'fields'         => 'ids', // Only get the post IDs to improve performance.
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-				'tax_query'      => array(
-					array(
-						'taxonomy'         => 'smart_link_source',
-						'include_children' => false, // Performance optimization.
-						'field'            => 'name',
+			'posts_per_page' => -1,
+			'fields'         => 'ids', // Only get the post IDs to improve performance.
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'tax_query'      => array(
+				array(
+					'taxonomy'         => 'smart_link_source',
+					'include_children' => false, // Performance optimization.
+					'field'            => 'name',
 					'terms'            => (string) $post_id,
 				),
 			),
 		);
 
 		if ( $only_applied ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = array(
 				'relation' => 'OR',
 				array(
 					'key'     => '_smart_link_applied', 
 					'value'   => 'false',
-					'compare' => '!='
+					'compare' => '!=',
 				),
 				array(
 					'key'     => '_smart_link_applied',
-					'compare' => 'NOT EXISTS'
-				)
+					'compare' => 'NOT EXISTS',
+				),
 			);
 		}
 
@@ -684,7 +748,12 @@ class Smart_Link extends Base_Model {
 				continue;
 			}
 			$smart_link = self::get_smart_link_by_id( $smart_link_id );
-			$links[]    = $smart_link;
+
+			if ( false === $smart_link ) {
+				continue;
+			}
+
+			$links[] = $smart_link;
 		}
 
 		return $links;
@@ -697,38 +766,40 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param int $post_id The post ID to get the smart links for.
+	 * @param int  $post_id The post ID to get the smart links for.
+	 * @param bool $only_applied Whether to only get the applied smart links.
 	 * @return array<Inbound_Smart_Link> The smart links in the post.
 	 */
 	public static function get_inbound_smart_links( int $post_id, bool $only_applied = true ): array {
 		$query_args = array(
 			'post_type'      => 'parsely_smart_link',
-				'posts_per_page' => -1,
-				'fields'         => 'ids', // Only get the post IDs to improve performance.
-				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-				'tax_query'      => array(
-					array(
-						'taxonomy'         => 'smart_link_destination',
-						'include_children' => false, // Performance optimization.
-						'field'            => 'name',
-						'terms'            => (string) $post_id,
-					),
+			'posts_per_page' => -1,
+			'fields'         => 'ids', // Only get the post IDs to improve performance.
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'tax_query'      => array(
+				array(
+					'taxonomy'         => 'smart_link_destination',
+					'include_children' => false, // Performance optimization.
+					'field'            => 'name',
+					'terms'            => (string) $post_id,
 				),
+			),
 		);
 
 		if ( $only_applied ) {
 			// For retrocompatibility, we consider that not having the meta field is the same as applied.
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = array(
 				'relation' => 'OR',
 				array(
 					'key'     => '_smart_link_applied', 
 					'value'   => 'false',
-					'compare' => '!='
+					'compare' => '!=',
 				),
 				array(
 					'key'     => '_smart_link_applied',
-					'compare' => 'NOT EXISTS'
-				)
+					'compare' => 'NOT EXISTS',
+				),
 			);
 		}
 
@@ -736,10 +807,13 @@ class Smart_Link extends Base_Model {
 
 		$links = array();
 		foreach ( $smart_links->posts as $smart_link_id ) {
-			if ( ! is_int( $smart_link_id ) ) {
+			/** @var int $smart_link_id */
+			$smart_link = self::get_smart_link_by_id( $smart_link_id );
+
+			if ( false === $smart_link ) {
 				continue;
 			}
-			$smart_link = self::get_smart_link_by_id( $smart_link_id );
+
 			$smart_link = Inbound_Smart_Link::from_smart_link( $smart_link );
 
 			// Check if this inbound smart link is still linked to a post.
@@ -753,26 +827,6 @@ class Smart_Link extends Base_Model {
 		}
 
 		return $links;
-	}
-
-	/**
-	 * Gets a smart link by ID.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param int $smart_link_id The ID of the smart link.
-	 * @return Smart_Link|false The smart link object, or false if it does not exist.
-	 */
-	public static function get_by_id( int $smart_link_id ) {
-		$smart_link = new Smart_Link( '', '', '', 0 );
-		$smart_link->smart_link_id = $smart_link_id;
-		$smart_link->load();
-
-		if ( ! $smart_link->exists() ) {
-			return false;
-		}
-
-		return $smart_link;
 	}
 
 	/**
