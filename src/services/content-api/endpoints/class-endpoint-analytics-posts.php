@@ -118,9 +118,9 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		$endpoint_url = parent::get_endpoint_url( $query_args );
 
 		// Append the author, tag, and section parameters to the endpoint URL.
-		$endpoint_url = $this->append_multiple_params_to_url( $endpoint_url, $authors, 'author' );
-		$endpoint_url = $this->append_multiple_params_to_url( $endpoint_url, $tags, 'tag' );
-		$endpoint_url = $this->append_multiple_params_to_url( $endpoint_url, $sections, 'section' );
+		$endpoint_url = $this->append_same_key_params_to_url( $endpoint_url, $authors, 'author' );
+		$endpoint_url = $this->append_same_key_params_to_url( $endpoint_url, $tags, 'tag' );
+		$endpoint_url = $this->append_same_key_params_to_url( $endpoint_url, $sections, 'section' );
 
 		return $endpoint_url;
 	}
@@ -154,25 +154,35 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	}
 
 	/**
-	 * Appends multiple parameters to the URL.
-	 *
-	 * This is required because the Parsely API requires the multiple values for the author, tag,
-	 * and section parameters to share the same key.
+	 * Appends multiple parameters with the same key to the passed URL.
 	 *
 	 * @since 3.17.0
 	 *
 	 * @param string        $url The URL to append the parameters to.
-	 * @param array<string> $params The parameters to append.
-	 * @param string        $param_name The name of the parameter.
+	 * @param array<string> $values The parameter values to append.
+	 * @param string        $key The common key to be used for the parameters.
 	 * @return string The URL with the appended parameters.
 	 */
-	protected function append_multiple_params_to_url( string $url, array $params, string $param_name ): string {
-		foreach ( $params as $param ) {
-			$param = rawurlencode( $param );
-			if ( strpos( $url, $param_name . '=' ) === false ) {
-				$url = add_query_arg( $param_name, $param, $url );
+	protected function append_same_key_params_to_url(
+		string $url,
+		array $values,
+		string $key
+	): string {
+		if ( '' === $key ) {
+			return $url;
+		}
+
+		foreach ( $values as $value ) {
+			if ( '' === $value ) {
+				continue;
+			}
+
+			$value = rawurlencode( $value );
+
+			if ( false === strpos( $url, '?' ) ) {
+				$url .= '?' . $key . '=' . $value;
 			} else {
-				$url .= '&' . $param_name . '=' . $param;
+				$url .= '&' . $key . '=' . $value;
 			}
 		}
 

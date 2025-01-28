@@ -6,10 +6,9 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-// eslint-disable-next-line import/named
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -21,8 +20,8 @@ import { SidebarSettings, useSettings } from '../../common/settings';
 import {
 	Metric,
 	Period,
-	PostFilter,
 	PostFilterType,
+	PostFilters,
 	getMetricDescription,
 	getPeriodDescription,
 	isInEnum,
@@ -123,14 +122,12 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ message, setMessage ] = useState<string>();
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
-	const [ filter, setFilter ] = useState<PostFilter>(
-		{
-			type: settings.RelatedPosts.FilterBy as PostFilterType,
-			value: settings.RelatedPosts.FilterValue,
-		}
-	);
+	const [ filters, setFilters ] = useState<PostFilters>( {
+		author: '',
+		section: '',
+		tags: [],
+	} );
 
 	const [ postContent, setPostContent ] = useState<string|undefined>( undefined );
 	const debouncedSetPostContent = useDebounce( setPostContent, 1000 );
@@ -144,26 +141,6 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 			debouncedSetPostContent( 'Jest test is running' );
 		}
 	}, [ debouncedSetPostContent ] );
-
-	/**
-	 * Updates all filter settings.
-	 *
-	 * @since 3.13.0
-	 * @since 3.14.0 Renamed from `handleRelatedPostsFilterChange` and
-	 * moved from the editor sidebar to the related posts component.
-	 *
-	 * @param {PostFilterType} filterBy The new filter type.
-	 * @param {string}         value    The new filter value.
-	 */
-	const onFilterChange = ( filterBy: PostFilterType, value: string ): void => {
-		setSettings( {
-			RelatedPosts: {
-				...settings.RelatedPosts,
-				FilterBy: filterBy,
-				FilterValue: value,
-			},
-		} );
-	};
 
 	/**
 	 * Updates the metric setting.
@@ -203,83 +180,11 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 		}
 	};
 
-	/**
-	 * Updates the filter type and sets its default value.
-	 *
-	 * @since 3.11.0
-	 *
-	 * @param {string} newFilterType The new filter type.
-	 */
-	const updateFilterType = ( newFilterType: string ): void => {
-		if ( isInEnum( newFilterType, PostFilterType ) ) {
-			let value = '';
-			const type = newFilterType as PostFilterType;
-
-			if ( PostFilterType.Tag === type ) {
-				value = postData.tags[ 0 ];
-			}
-			if ( PostFilterType.Section === type ) {
-				value = postData.categories[ 0 ];
-			}
-			if ( PostFilterType.Author === type ) {
-				value = postData.authors[ 0 ];
-			}
-
-			if ( '' !== value ) {
-				onFilterChange( type, value );
-				setFilter( { type, value } );
-				Telemetry.trackEvent( 'related_posts_filter_type_changed', { filter_type: type } );
-			}
-		}
-	};
-
 	useEffect( () => {
-		/**
-		 * Returns whether the post data passed into this component is empty.
-		 *
-		 * @since 3.14.0
-		 *
-		 * @return {boolean} Whether the post data is empty.
-		 */
-		const isPostDataEmpty = (): boolean => {
-			return Object.values( postData ).every(
-				( value ) => 0 === value.length
-			);
-		};
-
-		/**
-		 * Returns the initial filter settings.
-		 *
-		 * The selection is based on whether the Post has tags or categories
-		 * assigned to it. Otherwise, the filter is set to the first author.
-		 *
-		 * @since 3.11.0
-		 *
-		 * @return {PostFilter} The initial filter settings.
-		 */
-		const getInitialFilterSettings = (): PostFilter => {
-			let value = '';
-			let type = PostFilterType.Unavailable;
-
-			if ( postData.tags.length >= 1 ) {
-				type = PostFilterType.Tag;
-				value = postData.tags[ 0 ];
-			} else if ( postData.categories.length >= 1 ) {
-				type = PostFilterType.Section;
-				value = postData.categories[ 0 ];
-			} else if ( postData.authors.length >= 1 ) {
-				type = PostFilterType.Author;
-				value = postData.authors[ 0 ];
-			}
-
-			return { type, value };
-		};
-
 		const fetchPosts = async ( retries: number ) => {
-			RelatedPostsProvider.getInstance().getRelatedPosts( period, metric, filter )
+			RelatedPostsProvider.getInstance().getRelatedPosts( period, metric, filters )
 				.then( ( result ): void => {
-					setPosts( result.posts );
-					setMessage( result.message );
+					setPosts( result );
 					setLoading( false );
 				} )
 				.catch( async ( err ) => {
@@ -293,94 +198,43 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 				} );
 		};
 
-		const filterTypeIsAuthor = PostFilterType.Author === filter.type;
-		const filterTypeIsTag = PostFilterType.Tag === filter.type;
-		const filterTypeIsSection = PostFilterType.Section === filter.type;
-		const filterTypeIsUnavailable = PostFilterType.Unavailable === filter.type;
-		const noAuthorsExist = 0 === postData.authors.length;
-		const noTagsExist = 0 === postData.tags.length;
-		const noCategoriesExist = 0 === postData.categories.length;
-		const authorIsUnavailable = filterTypeIsAuthor && ! postData.authors.includes( filter.value );
-		const tagIsUnavailable = filterTypeIsTag && ! postData.tags.includes( filter.value );
-		const sectionIsUnavailable = filterTypeIsSection && ! postData.categories.includes( filter.value );
-
 		setLoading( true );
-		if ( filterTypeIsUnavailable || ( filterTypeIsTag && noTagsExist ) ||
-			( filterTypeIsSection && noCategoriesExist ) || ( filterTypeIsAuthor && noAuthorsExist )
-		) {
-			if ( ! isPostDataEmpty() ) {
-				setFilter( getInitialFilterSettings() );
-			}
-		} else if ( tagIsUnavailable ) {
-			setFilter( { type: PostFilterType.Tag, value: postData.tags[ 0 ] } );
-		} else if ( sectionIsUnavailable ) {
-			setFilter( { type: PostFilterType.Section, value: postData.categories[ 0 ] } );
-		} else if ( authorIsUnavailable ) {
-			setFilter( { type: PostFilterType.Author, value: postData.authors[ 0 ] } );
-		}	else {
-			fetchPosts( FETCH_RETRIES );
-		}
+		fetchPosts( FETCH_RETRIES );
 
 		return (): void => {
 			setLoading( false );
 			setPosts( [] );
-			setMessage( '' );
 			setError( undefined );
 		};
-	}, [ period, metric, filter, postData ] );
+	}, [ period, metric, filters, postData ] );
 
 	/**
-	 * Updates the filter value.
-	 *
-	 * @param {string} newFilterValue The new filter value.
+	 * Updates the filters value.
 	 *
 	 * @since 3.11.0
+	 *
+	 * @param {PostFilters}    newValue   The new filters value.
+	 * @param {PostFilterType} filterType The type of filter being changed.
 	 */
-	const updateFilterValue = (
-		newFilterValue: string | null | undefined
+	const updateFilters = (
+		newValue: string | null | undefined,
+		filterType: PostFilterType
 	): void => {
-		if ( typeof newFilterValue === 'string' ) {
-			onFilterChange( filter.type, newFilterValue );
-			setFilter( { ...filter, value: newFilterValue } );
-		}
-	};
-
-	/**
-	 * Returns the top related posts message.
-	 *
-	 * If the filter is by Author: "Top related posts by [post_author] in the [period]."
-	 * If the filter is by Section: "Top related posts in the “[section_name]” section in the [period]."
-	 * If the filter is by Tag: "Top related posts with the “[wp_term name]” tag in the [period]."
-	 *
-	 * @since 3.14.0
-	 */
-	const getTopRelatedPostsMessage = (): string => {
-		if ( PostFilterType.Tag === filter.type ) {
-			return sprintf(
-				/* translators: 1: tag name, 2: period */
-				__( 'Top related posts with the “%1$s” tag in the %2$s.', 'wp-parsely' ),
-				filter.value, getPeriodDescription( period, true )
-			);
+		if ( newValue === null || newValue === undefined ) {
+			newValue = '';
 		}
 
-		if ( PostFilterType.Section === filter.type ) {
-			return sprintf(
-				/* translators: 1: section name, 2: period */
-				__( 'Top related posts in the “%1$s” section in the %2$s.', 'wp-parsely' ),
-				filter.value, getPeriodDescription( period, true )
-			);
-		}
+		if ( PostFilterType.Tag === filterType ) {
+			let values: string[] = [];
 
-		if ( PostFilterType.Author === filter.type ) {
-			return sprintf(
-				/* translators: 1: author name, 2: period */
-				__( 'Top related posts by %1$s in the %2$s.', 'wp-parsely' ),
-				filter.value, getPeriodDescription( period, true )
-			);
-		}
+			if ( '' !== newValue ) {
+				values = newValue.split( ',' ).map( ( tag ) => tag.trim() );
+			}
 
-		// Fallback to the default message.
-		return message ?? '';
+			setFilters( { ...filters, tags: values } );
+		} else {
+			setFilters( { ...filters, [ filterType ]: newValue } );
+		}
 	};
 
 	// No filter data could be retrieved. Prevent the component from rendering.
@@ -402,7 +256,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 	return (
 		<div className="wp-parsely-related-posts">
 			<div className="related-posts-description">
-				{ __( 'Find top-performing related posts based on a key metric.', 'wp-parsely' ) }
+				{ __( 'Find top-performing related posts.', 'wp-parsely' ) }
 			</div>
 			<div className="related-posts-body">
 				<div className="related-posts-settings">
@@ -438,19 +292,13 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 				{
 					<RelatedPostsFilterSettings
 						label={ __( 'Filter by', 'wp-parsely' ) }
-						filter={ filter }
-						onFilterTypeChange={ updateFilterType }
-						onFilterValueChange={ updateFilterValue }
+						filters={ filters }
+						onFiltersChange={ updateFilters }
 						postData={ postData }
 					/>
 				}
 
 				<div className="related-posts-wrapper">
-					<div>
-						<p className="related-posts-descr" data-testid="parsely-related-posts-descr">
-							{ getTopRelatedPostsMessage() }
-						</p>
-					</div>
 					{ error && (
 						error.Message()
 					) }
@@ -463,7 +311,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 						</div>
 					) }
 					{ ! loading && ! error && posts.length === 0 && (
-						<div className="related-posts-empty" data-testid="parsely-related-posts-empty">
+						<div className="related-posts-empty">
 							{ __( 'No related posts found.', 'wp-parsely' ) }
 						</div>
 					) }
