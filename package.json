@@ -68,7 +68,7 @@
 		"@wordpress/eslint-plugin": "^22.3.0",
 		"@wordpress/hooks": "^4.17.0",
 		"@wordpress/i18n": "^5.17.0",
-		"@wordpress/icons": "^10.16.0",
+		"@wordpress/icons": "^10.17.0",
 		"@wordpress/plugins": "^7.16.0",
 		"@wordpress/scripts": "^27.9.0",
 		"@wordpress/url": "^4.16.0",
