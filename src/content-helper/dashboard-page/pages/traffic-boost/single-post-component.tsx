@@ -310,7 +310,15 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	}, [ postId, setError, setIsGeneratingSuggestions, setLoading, setSelectedLink, setSuggestions ] );
 
 	return (
-		<PageContainer name="traffic-boost-single-post" backgroundColor={ backgroundColor }>
+		<PageContainer
+			name="traffic-boost-single-post"
+			backgroundColor={ backgroundColor }
+			className="traffic-boost-single-post"
+			style={ {
+				position: 'fixed',
+				width: 'calc(100% - calc(160px + var(--grid-unit-20)))',
+			} }
+		>
 			<style>
 				{ `
 					#wpfooter {

@@ -8,6 +8,7 @@ type PageContainerProps = {
 	name: string
 	children: React.ReactNode;
 	backgroundColor?: string;
+	style?: React.CSSProperties;
 }
 
 /**
@@ -25,13 +26,18 @@ export const PageContainer = ( {
 	name,
 	children,
 	backgroundColor,
+	style,
 }: Readonly<PageContainerProps> ): React.JSX.Element => {
 	return (
 		<div
 			className={
 				'parsely-menu-page parsely-menu-page-' + name +
-				( className ? ' ' + className : '' ) }
-			style={ backgroundColor ? { backgroundColor } : undefined }
+				( className ? ' ' + className : '' )
+			}
+			style={ {
+				...( backgroundColor ? { backgroundColor } : {} ),
+				...style,
+			} }
 		>
 			{ children }
 		</div>
