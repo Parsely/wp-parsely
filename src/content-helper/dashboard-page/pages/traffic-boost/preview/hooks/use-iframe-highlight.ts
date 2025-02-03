@@ -319,33 +319,39 @@ export const useIframeHighlight = ( {
 			 * @param {ParentNode} parent    The parent node of the highlight.
 			 */
 			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
-				// Move all child nodes before the highlight span.
+				// Create a document fragment to temporarily hold the children.
+				const fragment = iframeDocument.createDocumentFragment();
+
+				// Move all child nodes to the fragment.
 				while ( highlight.firstChild ) {
-					parent.insertBefore( highlight.firstChild, highlight );
+					fragment.appendChild( highlight.firstChild );
 				}
+
+				// Insert the fragment before the highlight span.
+				parent.insertBefore( fragment, highlight );
 				parent.removeChild( highlight );
 				parent.normalize();
 
 				// Remove any anchors without text in the parent node.
-				const anchors = parent.querySelectorAll( 'a' );
+				const anchors = Array.from( parent.querySelectorAll( 'a' ) );
 				anchors.forEach( ( anchor ) => {
-					if ( ! anchor.textContent ) {
+					if ( ! anchor.textContent?.trim() ) {
 						parent.removeChild( anchor );
 						return;
 					}
 
 					// Check if the adjacent anchor has the same href or smartlink attribute.
 					const nextAnchor = anchor.nextElementSibling as HTMLAnchorElement;
-					if ( nextAnchor && (
+					if ( nextAnchor && nextAnchor.tagName === 'A' && (
 						anchor.href === nextAnchor.href ||
 						( anchor.getAttribute( 'data-smartlink' ) === nextAnchor.getAttribute( 'data-smartlink' ) &&
 						anchor.getAttribute( 'data-smartlink' ) !== null )
 					) ) {
-						// Merge the anchors.
-						while ( nextAnchor.firstChild ) {
-							anchor.appendChild( nextAnchor.firstChild );
+						// Instead of merging, keep them separate.
+						// Just ensure there's a space between them if needed.
+						if ( ! anchor.nextSibling || anchor.nextSibling.nodeType !== Node.TEXT_NODE ) {
+							anchor.parentNode?.insertBefore( iframeDocument.createTextNode( ' ' ), nextAnchor );
 						}
-						parent.removeChild( nextAnchor );
 					}
 				} );
 			};
