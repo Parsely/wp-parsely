@@ -30,8 +30,11 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	// Location state is used to pass the post to the page when navigating from the posts table.
 	const { state } = useLocation();
 	const navigate = useNavigate();
+
 	const [ backgroundColor, setBackgroundColor ] = useState<string | undefined>();
+	const [ sidebarWidth, setSidebarWidth ] = useState<number>( 160 ); // Default sidebar width.
 	const [ hasFetchedPost, setHasFetchedPost ] = useState<boolean>( false );
+
 	const {
 		isLoadingPost,
 		error,
@@ -52,10 +55,14 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		setInboundLinks,
 		setSuggestions,
 		setIsGeneratingSuggestions,
+		setSelectedTab,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
 	 * Sets the background color of the page container to the background color of the admin menu.
+	 * It also sets the background color of #wpwrap to the background color of the admin menu and
+	 * updates the sidebar width to be calculated with the sidebar width into account.
+	 *
 	 * When the component unmounts, it cancels all the provider requests and cleans up the store state.
 	 *
 	 * @since 3.18.0
@@ -63,14 +70,48 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	useEffect( () => {
 		// Set the background color of the page container to the background color of the admin menu.
 		const adminMenuBack = document.getElementById( 'adminmenuback' );
-		if ( adminMenuBack ) {
-			const computedStyle = window.getComputedStyle( adminMenuBack );
-			setBackgroundColor( computedStyle.backgroundColor );
+		if ( ! adminMenuBack ) {
+			return;
 		}
+
+		const computedStyle = window.getComputedStyle( adminMenuBack );
+		setBackgroundColor( computedStyle.backgroundColor );
+
+		// Set the background color of #wpwrap to the background color of the admin menu.
+		const wpWrap = document.querySelector( '#wpwrap' );
+		if ( wpWrap ) {
+			( wpWrap as HTMLElement ).style.backgroundColor = computedStyle.backgroundColor;
+		}
+
+		// Grabs the sidebar width so it can be used to calculate the container width.
+		/**
+		 * Updates the sidebar width.
+		 *
+		 * @since 3.18.0
+		 */
+		const updateSidebarWidth = () => {
+			const width = adminMenuBack.getBoundingClientRect().width;
+			setSidebarWidth( width );
+		};
+
+		// Initial measurement.
+		updateSidebarWidth();
+
+		// Use a ResizeObserver to watch for width changes.
+		const resizeObserver = new ResizeObserver( () => {
+			updateSidebarWidth();
+		} );
+
+		resizeObserver.observe( adminMenuBack );
 
 		return () => {
 			// When the component unmounts, make sure to cancel all the provider requests.
 			TrafficBoostProvider.getInstance().cancelAll();
+			// Disconnect the resize observer.
+			resizeObserver.disconnect();
+			// Remove the background color of #wpwrap.
+			( wpWrap as HTMLElement ).style.backgroundColor = '';
+
 			// Clean up the store state.
 			setIsGeneratingSuggestions( false );
 			setLoading( false );
@@ -79,8 +120,9 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			setSuggestions( [] );
 			setCurrentPost( null );
 			setSelectedLink( null );
+			setSelectedTab( TrafficBoostSidebarTabs.SUGGESTIONS );
 		};
-	}, [ setIsGeneratingSuggestions, setLoading, setError, setInboundLinks, setSuggestions, setCurrentPost, setSelectedLink ] );
+	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Fetches the current post data from the dashboard provider.
@@ -316,7 +358,9 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			className="traffic-boost-single-post"
 			style={ {
 				position: 'fixed',
-				width: 'calc(100% - calc(160px + var(--grid-unit-20)))',
+				left: sidebarWidth,
+				width: `calc(100% - calc(${ sidebarWidth }px + var(--grid-unit-20)))`,
+				transition: 'left 0.3s ease, width 0.3s ease',
 			} }
 		>
 			<style>
