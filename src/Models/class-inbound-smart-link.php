@@ -502,6 +502,44 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
+	 * Finds the smart link anchor element in the paragraph that has the data-smartlink attribute set 
+	 * to the smart link UID.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \DOMDocumentFragment|\DOMElement $node The node to search in.
+	 * @return \DOMElement|false The smart link anchor element if found, false otherwise.
+	 */
+	private function find_smart_link_anchor( $node ) {
+		$smart_link_anchor = false;
+
+		// Loop through the node's children.
+		foreach ( $node->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			// If the child is an anchor element and has the data-smartlink attribute set to the smart link UID.
+			if ( $child instanceof \DOMElement && 
+				'a' === $child->nodeName && // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$child->hasAttribute( 'data-smartlink' ) && 
+				$child->getAttribute( 'data-smartlink' ) === $this->uid 
+			) {
+				$smart_link_anchor = $child;
+				break;
+			}
+
+			// If the child has child nodes and is a DOMElement or DOMDocumentFragment, 
+			// recursively search for the smart link anchor.
+			if ( $child->hasChildNodes() && 
+			( $child instanceof \DOMElement || $child instanceof \DOMDocumentFragment ) ) {
+				$smart_link_anchor = $this->find_smart_link_anchor( $child );
+				if ( false !== $smart_link_anchor ) {
+					break;
+				}
+			}
+		}
+
+		return $smart_link_anchor;
+	}
+
+	/**
 	 * Applies the inbound smart link to the post.
 	 *
 	 * @since 3.18.0
@@ -690,6 +728,135 @@ class Inbound_Smart_Link extends Smart_Link {
 		$this->save();
 
 		return true;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+	}
+
+	/**
+	 * Removes an inbound smart link from the post, and deletes the smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param bool $restore_original_link Whether to restore the original link, if it was replaced.
+	 * @return bool|\WP_Error True if the inbound smart link was deleted, WP_Error on failure.
+	 */
+	public function remove( $restore_original_link = false ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+		// If the smart link is not applied, we can just delete it.
+		if ( ! $this->applied ) {
+			return $this->delete();
+		}
+
+		if ( ! class_exists( 'DOMDocument' ) ) {
+			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
+		}
+
+		$source_post = $this->source_post;
+		if ( null === $source_post ) {
+			$source_post = get_post( $this->source_post_id );
+		}
+
+		if ( null === $source_post ) {
+			return new \WP_Error( 'traffic_boost_source_post_not_found', 'Source post not found' );
+		}
+
+		$source_post_content = $source_post->post_content;
+
+		// Find the paragraph that contains the link text.
+		$paragraph_data = $this->get_paragraph( $source_post );
+
+		if ( is_wp_error( $paragraph_data ) ) {
+			return $paragraph_data;
+		}
+
+		$paragraph = $paragraph_data['paragraph'];
+
+		// Initialize the HTML parser.
+		$temp_doc    = new \DOMDocument();
+		$html_parser = new HTML5(
+			array(
+				'target_document' => $temp_doc,
+				'disable_html_ns' => true,
+			)
+		);
+
+		libxml_use_internal_errors( true );
+
+		// Load the paragraph HTML into a DOMDocument.
+		$paragraph_fragment = $html_parser->loadHTMLFragment( $paragraph );
+
+		$errors = libxml_get_errors();
+
+		// If there are errors parsing the paragraph HTML, return an error.
+		if ( count( $errors ) > 0 ) {
+			libxml_clear_errors();
+			return new \WP_Error( 'traffic_boost_error_parsing_html', 'Error parsing the paragraph HTML', $errors );
+		}
+		
+		// Remove the anchor element with the smart link UID.
+		$smart_link_anchor = $this->find_smart_link_anchor( $paragraph_fragment );
+
+		if ( false === $smart_link_anchor ) {
+			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', 'Smart link anchor not found' );
+		}
+
+		// Get the parent node of the smart link anchor.
+		$parent_node = $smart_link_anchor->parentNode;
+		if ( null === $parent_node ) {
+			return new \WP_Error( 'traffic_boost_parent_node_not_found', 'Parent node not found' );
+		}
+
+		// Get the original link attributes, if they exist.
+		$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
+	
+		// If the smart link replaced an existing link, restore the original link.
+		if ( $restore_original_link && is_array( $previous_link_attributes ) ) {
+			$original_link              = $temp_doc->createElement( 'a' );
+			$original_link->textContent = $smart_link_anchor->textContent;
+
+			foreach ( $previous_link_attributes as $attribute => $value ) {
+				if ( '' !== $value ) {
+					$original_link->setAttribute( $attribute, $value );
+				}
+			}
+
+			// Replace the smart link anchor with the original link.
+			$parent_node->replaceChild( $original_link, $smart_link_anchor );
+		} else {
+			// If the smart link did not replace an existing link, we need to remove the smart link anchor.
+			// Create a text node with the original text.
+			$text_node = $temp_doc->createTextNode( $smart_link_anchor->textContent );
+
+			// Replace the smart link anchor with the text node.
+			$parent_node->replaceChild( $text_node, $smart_link_anchor );
+		}
+
+		// Get the modified HTML.
+		$paragraph_html = $html_parser->saveHTML( $paragraph_fragment );
+		
+		// Replace the paragraph with the new HTML.
+		$source_post_content = str_replace( $paragraph, $paragraph_html, $source_post_content );
+
+		// Update the post content.
+		$updated_post = wp_update_post(
+			array(
+				'ID'           => $this->source_post_id,
+				'post_content' => $source_post_content,
+			),
+			true
+		);
+
+		if ( is_wp_error( $updated_post ) ) {
+			return $updated_post;
+		}
+
+		// Flush the cache for the post.
+		self::flush_cache_by_post_id( $this->source_post_id );
+
+		// Set the applied flag to false.
+		$this->applied = false;
+		
+		// Delete the smart link.
+		return $this->delete();
 		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 

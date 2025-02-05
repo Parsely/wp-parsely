@@ -193,11 +193,16 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array( 'DELETE' ),
 			array( $this, 'delete_inbound' ),
 			array(
-				'smart_link_id' => array(
+				'smart_link_id'    => array(
 					'type'              => 'integer',
 					'description'       => __( 'The ID of the smart link to delete.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
+				),
+				'restore_original' => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether to restore the original link.', 'wp-parsely' ),
+					'default'     => false,
 				),
 			)
 		);
@@ -404,7 +409,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|\WP_Error The response object.
 	 */
 	public function delete_inbound( WP_REST_Request $request ) {
 		/**
@@ -414,9 +419,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$inbound_link = $request->get_param( 'inbound_link' );
 
-		$deleted = $inbound_link->delete();
+		/**
+		 * Whether to restore the original link.
+		 *
+		 * @var bool $restore_original_link
+		 */
+		$restore_original_link = $request->get_param( 'restore_original' );
 
-		// TODO: Remove the actual inbound link from the post.
+		$deleted = $inbound_link->remove( $restore_original_link );
+
+		if ( is_wp_error( $deleted ) ) {
+			return $deleted;
+		}
 
 		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted ) ), 200 );
 	}

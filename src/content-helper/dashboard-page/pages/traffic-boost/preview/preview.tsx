@@ -345,11 +345,25 @@ export const TrafficBoostPreview = ( {
 	 */
 	const handleRemove = async ( link: TrafficBoostLink ) => {
 		setIsRemoving( link, true );
-		const removed = await onRemoveInboundLink( link );
 
-		if ( ! removed ) {
+		try {
+			const removed = await onRemoveInboundLink( link );
+
+			if ( ! removed ) {
+				throw new ContentHelperError(
+					__( 'Failed to remove link.', 'wp-parsely' ),
+					ContentHelperErrorCode.UnknownError,
+					'' // No prefix for this error.
+				);
+			}
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to remove link.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
 			createErrorNotice(
-				__( 'Failed to remove link.', 'wp-parsely' ),
+				errorMessage,
 				{
 					type: 'snackbar',
 					icon: <Icon icon={ error } />,
