@@ -88,12 +88,18 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 		// Convert the links to Inbound_Smart_Link objects.
 		$links = array();
 		foreach ( $response as $link ) {
-			$link     = apply_filters( 'wp_parsely_suggest_inbound_links_link', $link );
+			$link = apply_filters( 'wp_parsely_suggest_inbound_links_link', $link );
+
+			$anchor_text_suggestions = $link['anchor_texts'];
+			
+			// For now, let's focus on the first anchor text suggestion.
+			$anchor_text_suggestion = $anchor_text_suggestions[0];
+
 			$link_obj = new Inbound_Smart_Link(
 				esc_url( $link['source_url'] ),
 				esc_attr( $link['title'] ),
-				wp_kses_post( $link['text'] ),
-				$link['offset']
+				wp_kses_post( $anchor_text_suggestion['text'] ),
+				$anchor_text_suggestion['offset']
 			);
 
 			// Set the destination to be the current post.
@@ -109,11 +115,6 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 
 			// Update the UID of the smart link.
 			$link_obj->update_uid();
-
-			// Validate the inbound link.
-			if ( ! $link_obj->has_valid_placement() ) {
-				continue;
-			}
 
 			$links[] = $link_obj;
 		}

@@ -38,6 +38,15 @@ class Smart_Link extends Base_Model {
 	public $source_post_id = 0;
 
 	/**
+	 * The source post object.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @var \WP_Post|null The source post.
+	 */
+	protected $source_post;
+
+	/**
 	 * The post ID of the link destination.
 	 *
 	 * @since 3.16.0
@@ -118,6 +127,14 @@ class Smart_Link extends Base_Model {
 	private $exists = false;
 
 	/**
+	 * The post meta of the smart link object.
+	 *
+	 * @since 3.18.0
+	 * @var array<string,array<int,mixed>> The post meta of the smart link.
+	 */
+	private $smart_link_post_meta = array();
+
+	/**
 	 * Smart Link constructor.
 	 *
 	 * @since 3.16.0
@@ -146,9 +163,9 @@ class Smart_Link extends Base_Model {
 			$this->title = $title;
 		}
 
-		$this->text           = $text;
-		$this->offset         = $offset;
-		$this->source_post_id = $post_id;
+		$this->text   = $text;
+		$this->offset = $offset;
+		$this->set_source_post_id( $post_id );
 
 		parent::__construct();
 	}
@@ -162,7 +179,8 @@ class Smart_Link extends Base_Model {
 	 * @return int The ID of the smart link post object.
 	 */
 	private function get_smart_link_object_by_uid( string $uid ): int {
-		$cached = wp_cache_get( $uid . $this->source_post_id, 'wp_parsely_smart_link_id' );
+		$cache_key = 'smart-link-uid-map-' . $uid . '-' . $this->source_post_id;
+		$cached    = wp_cache_get( $cache_key, $this->get_cache_group() );
 		if ( is_int( $cached ) && 0 !== $cached ) {
 			return $cached;
 		}
@@ -187,9 +205,9 @@ class Smart_Link extends Base_Model {
 
 		if ( $smart_links->have_posts() && is_int( $smart_links->posts[0] ) ) {
 			wp_cache_set(
-				$uid . $this->source_post_id,
+				$cache_key,
 				$smart_links->posts[0],
-				'wp_parsely_smart_link_id'
+				$this->get_cache_group()
 			);
 			return $smart_links->posts[0];
 		}
@@ -226,6 +244,8 @@ class Smart_Link extends Base_Model {
 		$this->uid = $smart_link->post_title;
 
 		// Load the Smart Link properties from the post meta.
+		$this->load_post_meta();
+
 		$this->title   = $this->get_string_meta( '_smart_link_title' );
 		$this->href    = $this->get_string_meta( '_smart_link_href' );
 		$this->text    = $this->get_string_meta( '_smart_link_text' );
@@ -316,7 +336,11 @@ class Smart_Link extends Base_Model {
 
 			$this->smart_link_id = $post_id;
 			$this->exists        = true;
-			wp_cache_set( $this->uid . $this->source_post_id, $post_id, 'wp_parsely_smart_link_id' );
+			wp_cache_set( 
+				'smart-link-' . $this->uid . '-' . $this->source_post_id, 
+				$post_id, 
+				$this->get_cache_group() 
+			);
 		} 
 
 		// Update the smart link meta.
@@ -341,6 +365,9 @@ class Smart_Link extends Base_Model {
 		} else {
 			wp_set_post_terms( $this->smart_link_id, 'external', 'smart_link_destination' );
 		}
+
+		// Flush all the associated cache on the source and destination posts.
+		$this->flush_all_cache();
 
 		return true;
 	}
@@ -372,7 +399,7 @@ class Smart_Link extends Base_Model {
 		if ( false !== $deleted && null !== $deleted && is_a( $deleted, 'WP_Post' ) ) {
 			$this->smart_link_id = 0;
 			$this->exists        = false;
-			$this->flush_cache();
+			$this->flush_all_cache();
 			return true;
 		}
 		
@@ -406,6 +433,17 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
+	 * Loads the post meta of the smart link object.
+	 *
+	 * @since 3.18.0
+	 */
+	private function load_post_meta(): void {
+		$post_meta = get_post_meta( $this->smart_link_id );
+		/** @var array<string,array<int,mixed>> $post_meta */
+		$this->smart_link_post_meta = $post_meta;
+	}
+
+	/**
 	 * Gets a string meta value from the smart link post.
 	 *
 	 * @since 3.16.0
@@ -415,7 +453,11 @@ class Smart_Link extends Base_Model {
 	 * @return string The meta value.
 	 */
 	private function get_string_meta( string $meta_key, string $default_value = '' ): string {
-		$meta_value = get_post_meta( $this->smart_link_id, $meta_key, true );
+		if ( ! isset( $this->smart_link_post_meta[ $meta_key ] ) ) {
+			return $default_value;
+		}
+
+		$meta_value = $this->smart_link_post_meta[ $meta_key ][0];
 		return is_string( $meta_value ) ? $meta_value : $default_value;
 	}
 
@@ -429,8 +471,16 @@ class Smart_Link extends Base_Model {
 	 * @return int The meta value.
 	 */
 	private function get_int_meta( string $meta_key, int $default_value = 0 ): int {
-		$meta_value = get_post_meta( $this->smart_link_id, $meta_key, true );
-		return is_int( $meta_value ) ? $meta_value : $default_value;
+		if ( ! isset( $this->smart_link_post_meta[ $meta_key ] ) ) {
+			return $default_value;
+		}
+
+		$value = $this->smart_link_post_meta[ $meta_key ][0];
+		if ( ! is_numeric( $value ) ) {
+			return $default_value;
+		}
+
+		return (int) $value;
 	}
 
 	/**
@@ -443,7 +493,11 @@ class Smart_Link extends Base_Model {
 	 * @return bool The meta value.
 	 */
 	private function get_bool_meta( string $meta_key, bool $default_value = false ): bool {
-		$meta_value = get_post_meta( $this->smart_link_id, $meta_key, true );
+		if ( ! isset( $this->smart_link_post_meta[ $meta_key ] ) ) {
+			return $default_value;
+		}
+
+		$meta_value = $this->smart_link_post_meta[ $meta_key ][0];
 		if ( 'true' === $meta_value || '1' === $meta_value ) {
 			return true;
 		}
@@ -491,6 +545,7 @@ class Smart_Link extends Base_Model {
 	 * @param \WP_Post $post The source post.
 	 */
 	public function set_source_post( \WP_Post $post ): void {
+		$this->source_post = $post;
 		$this->set_source_post_id( $post->ID );
 	}
 
@@ -502,7 +557,14 @@ class Smart_Link extends Base_Model {
 	 * @param int $source_post_id The source post ID.
 	 */
 	public function set_source_post_id( int $source_post_id ): void {
+		if ( 0 === $source_post_id ) {
+			return;
+		}
+
 		$this->source_post_id = $source_post_id;
+		if ( null === $this->source_post ) {
+			$this->source_post = get_post( $source_post_id );
+		}
 
 		// Get the post type of the source post.
 		$post_type = get_post_type( $this->source_post_id );
@@ -704,11 +766,20 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param int  $post_id The post ID to get the smart links for.
-	 * @param bool $only_applied Whether to only get the applied smart links.
+	 * @param int    $post_id The post ID to get the smart links for.
+	 * @param string $status The status of the smart links to get.
 	 * @return array<Smart_Link> The smart links in the post.
 	 */
-	public static function get_outbound_smart_links( int $post_id, bool $only_applied = true ): array {
+	public static function get_outbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
+		$cache_key   = 'outbound-' . $post_id . '-' . $status;
+		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
+		
+		// If the smart links are cached, return them.
+		if ( false !== $smart_links ) {
+			/** @var array<Smart_Link> $smart_links */
+			return $smart_links;
+		}
+
 		$query_args = array(
 			'post_type'      => 'parsely_smart_link',
 			'posts_per_page' => -1,
@@ -722,9 +793,12 @@ class Smart_Link extends Base_Model {
 					'terms'            => (string) $post_id,
 				),
 			),
+			'orderby'        => 'modified',
+			'order'          => 'DESC',
 		);
 
-		if ( $only_applied ) {
+		if ( Smart_Link_Status::APPLIED === $status ) {
+			// For retrocompatibility, we consider that not having the meta field is the same as applied.
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = array(
 				'relation' => 'OR',
@@ -736,6 +810,15 @@ class Smart_Link extends Base_Model {
 				array(
 					'key'     => '_smart_link_applied',
 					'compare' => 'NOT EXISTS',
+				),
+			);
+		} elseif ( Smart_Link_Status::PENDING === $status ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			$query_args['meta_query'] = array(
+				array(
+					'key'     => '_smart_link_applied', 
+					'value'   => 'false',
+					'compare' => '=',
 				),
 			);
 		}
@@ -756,6 +839,9 @@ class Smart_Link extends Base_Model {
 			$links[] = $smart_link;
 		}
 
+		// Cache the smart links.
+		wp_cache_set( $cache_key, $links, self::get_cache_group_for_post( $post_id ) );
+
 		return $links;
 	}
 
@@ -766,11 +852,25 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param int  $post_id The post ID to get the smart links for.
-	 * @param bool $only_applied Whether to only get the applied smart links.
+	 * @param int    $post_id The post ID to get the smart links for.
+	 * @param string $status The status of the smart links to get.
 	 * @return array<Inbound_Smart_Link> The smart links in the post.
 	 */
-	public static function get_inbound_smart_links( int $post_id, bool $only_applied = true ): array {
+	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
+		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
+			$status = 'all';
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+		}
+
+		$cache_key   = 'inbound-' . $post_id . '-' . $status;
+		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
+
+		// If the smart links are cached, return them.
+		if ( false !== $smart_links ) {
+			/** @var array<Inbound_Smart_Link> $smart_links */
+			return $smart_links;
+		}
+
 		$query_args = array(
 			'post_type'      => 'parsely_smart_link',
 			'posts_per_page' => -1,
@@ -784,9 +884,11 @@ class Smart_Link extends Base_Model {
 					'terms'            => (string) $post_id,
 				),
 			),
+			'orderby'        => 'date modified',
+			'order'          => 'ASC',
 		);
 
-		if ( $only_applied ) {
+		if ( Smart_Link_Status::APPLIED === $status ) {
 			// For retrocompatibility, we consider that not having the meta field is the same as applied.
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = array(
@@ -799,6 +901,15 @@ class Smart_Link extends Base_Model {
 				array(
 					'key'     => '_smart_link_applied',
 					'compare' => 'NOT EXISTS',
+				),
+			);
+		} elseif ( Smart_Link_Status::PENDING === $status ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+			$query_args['meta_query'] = array(
+				array(
+					'key'     => '_smart_link_applied', 
+					'value'   => 'false',
+					'compare' => '=',
 				),
 			);
 		}
@@ -826,15 +937,82 @@ class Smart_Link extends Base_Model {
 			$links[] = $smart_link;
 		}
 
+		// Cache the smart links.
+		wp_cache_set( $cache_key, $links, self::get_cache_group_for_post( $post_id ) );
+
 		return $links;
 	}
 
 	/**
-	 * Flushes the cache for the smart link.
+	 * Gets the cache group for a single smart link.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @return string The cache group.
+	 */
+	protected function get_cache_group(): string {
+		return 'wp_parsely_smart_link_' . $this->smart_link_id;
+	}
+
+	/**
+	 * Flushes the cache for a single smart link.
 	 *
 	 * @since 3.16.0
 	 */
-	private function flush_cache(): void {
-		wp_cache_delete( $this->uid . $this->source_post_id, 'wp_parsely_smart_link_id' );
+	protected function flush_cache(): void {
+		// Delete the cache for the smart link uid to post id association.
+		wp_cache_delete( 'smart-link-uid-map-' . $this->uid . '-' . $this->source_post_id, self::get_cache_group() );
+	}
+
+	/**
+	 * Flushes the cache for all smart links in a post.
+	 *
+	 * @since 3.16.0
+	 */
+	protected function flush_all_cache(): void {
+		$this->flush_cache();
+		if ( $this->source_post_id > 0 ) {  
+			self::flush_cache_by_post_id( $this->source_post_id );
+		}
+		if ( $this->destination_post_id > 0 ) {
+			self::flush_cache_by_post_id( $this->destination_post_id );
+		}
+	}
+
+	/**
+	 * Gets the cache group for all smart links in a post.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param int $post_id The post ID to get the cache group for.
+	 * @return string The cache group.
+	 */
+	protected static function get_cache_group_for_post( int $post_id ): string {
+		return 'wp_parsely_smart_links_' . $post_id;
+	}
+
+	/**
+	 * Flushes the cache for all smart links in a post.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param int $post_id The post ID to flush the cache for.
+	 */
+	protected static function flush_cache_by_post_id( int $post_id ): void {
+		if ( function_exists( 'wp_cache_flush_group' ) && wp_cache_supports( 'flush_group' ) ) {
+			wp_cache_flush_group( self::get_cache_group_for_post( $post_id ) );
+		} else {
+			$statuses = Smart_Link_Status::get_all_statuses();
+
+			$cache_keys = array();
+			foreach ( $statuses as $status ) {
+				$cache_keys[] = 'outbound-' . $post_id . '-' . $status;
+				$cache_keys[] = 'inbound-' . $post_id . '-' . $status;
+			}
+			
+			foreach ( $cache_keys as $cache_key ) {
+				wp_cache_delete( $cache_key, self::get_cache_group_for_post( $post_id ) );
+			}
+		}
 	}
 }

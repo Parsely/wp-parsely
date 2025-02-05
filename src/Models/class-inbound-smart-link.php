@@ -10,7 +10,6 @@ declare( strict_types = 1 );
 
 namespace Parsely\Models;
 
-use DOMDocument;
 use ReflectionClass;
 use WP_Post;
 use Masterminds\HTML5;
@@ -19,25 +18,30 @@ use Masterminds\HTML5;
  * Model for Inbound Smart Link.
  *
  * @since 3.16.0
+ *
+ * @phpstan-type ParagraphData array{
+ *     paragraph: string,
+ *     is_first_paragraph: bool,
+ *     is_last_paragraph: bool,
+ *     paragraph_offset: int
+ * }
  */
 class Inbound_Smart_Link extends Smart_Link {
-
 	/**
-	 * The source post object.
+	 * Allowed HTML tags that can contain a smart link.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
-	 * @var WP_Post|null The source post.
+	 * @var array<string> The allowed tags.
 	 */
-	private $source_post;
+	private const ALLOWED_TAGS = array( 'p', 'ul' );
 
 	/**
 	 * The paragraph data.
 	 *
 	 * @since 3.16.0
 	 *
-	 * @var array<string,mixed>|null The paragraph data.
-	 * @phpstan-var array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}|null
+	 * @var ParagraphData|null The paragraph data.
 	 */
 	private $paragraph_data;
 
@@ -62,6 +66,19 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$data['post_data'] = $this->get_post_data();
 
+		$has_valid_placement = $this->has_valid_placement( true );
+
+		if ( is_wp_error( $has_valid_placement ) ) { 
+			$data['validation'] = array(
+				'valid'  => false,
+				'reason' => $has_valid_placement->get_error_message(),
+			);
+		} else {
+			$data['validation'] = array(
+				'valid' => true,
+			);
+		}
+
 		return $data;
 	}
 
@@ -73,31 +90,34 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return bool True if the Smart Link is linked to a post, false otherwise.
 	 */
 	public function is_linked(): bool {
-		$object_exists  = parent::exists();
-		$paragraph_data = $this->get_post_data();
+		$object_exists = parent::exists();
+		if ( ! $object_exists ) {
+			return false;
+		}
 
-		// If the paragraph is empty, we assume that the Smart Link is not linked to a post.
-		// return $object_exists && '' !== $paragraph_data['paragraph'];
-		// TODO: For now, return if exists.
-		return $object_exists;
+		if ( ! $this->source_post instanceof WP_Post ) {
+			return false;
+		}
+
+		$post_content = $this->source_post->post_content;
+
+		// If the post content does not contain the Smart Link uid, it is not linked to a post.
+		if ( strpos( $post_content, $this->uid ) === false ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
-	 * Checks if the Smart Link has a valid placement. Does a few checks to make sure the link is valid.
-	 *
-	 * 1. Checks if the Smart Link is inside a paragraph tag.
-	 * 2. Checks if the Smart Link is not inside an anchor tag.
-	 * 3. Checks if the Smart Link is not inside a heading tag.
-	 * 4. Checks if the Smart Link is not inside or not a child of a disallowed tag.
+	 * Checks if the Smart Link has a valid placement. 
 	 *
 	 * @since 3.18.0
 	 *
-	 * @return bool True if the Smart Link has a valid placement, false otherwise.
+	 * @param bool $wp_error Whether to return a WP_Error object if the Smart Link has an invalid placement.
+	 * @return bool|\WP_Error True if the Smart Link has a valid placement, WP_Error on failure if $wp_error is true, false otherwise.
 	 */
-	public function has_valid_placement(): bool {
-		$allowed_tags    = array( 'p' );
-		$disallowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'div', 'a' );
-
+	public function has_valid_placement( bool $wp_error = false ) {
 		if ( null === $this->source_post ) {
 			$this->source_post = get_post( $this->source_post_id );
 		}
@@ -105,15 +125,26 @@ class Inbound_Smart_Link extends Smart_Link {
 		$post = $this->source_post;
 
 		if ( ! $post instanceof WP_Post ) {
+			if ( $wp_error ) {
+				return new \WP_Error( 'traffic_boost_invalid_post', 'Invalid post' );
+			}
+
 			return false;
 		}
 
-		$paragraph = $this->get_paragraph( $post->post_content );
+		$paragraph = $this->get_paragraph( $post );
 
-		// TODO: Do the actual validations.
+		if ( is_wp_error( $paragraph ) ) {
+			if ( $wp_error ) {
+				return $paragraph;
+			}
+
+			return false;
+		}
 
 		return true;
 	}
+
 	/**
 	 * Gets the post data for the smart link.
 	 *
@@ -136,13 +167,23 @@ class Inbound_Smart_Link extends Smart_Link {
 				'paragraph'          => '',
 				'is_first_paragraph' => false,
 				'is_last_paragraph'  => false,
+				'paragraph_offset'   => 0,
 			);
 		}
-
-		// Get the post content.
-		$content = $post->post_content;
+		
 		// Get the paragraph that has the smart link UID.
-		$paragraph = $this->get_paragraph( $content );
+		$paragraph = $this->get_paragraph( $post );
+
+		if ( is_wp_error( $paragraph ) ) {
+			/** @var ParagraphData */
+			$error_paragraph = array(
+				'paragraph'          => '<p>' . $paragraph->get_error_message() . '</p>',
+				'is_first_paragraph' => false,
+				'is_last_paragraph'  => false,
+				'paragraph_offset'   => 0,
+			);
+			$paragraph       = $error_paragraph;
+		}
 
 		$author_name = get_the_author();
 		if ( '' === $author_name ) {
@@ -179,48 +220,89 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param string $content The post content.
-	 * @return array The paragraph that has the smart link uid, and if it is the first or last paragraph.
-	 * @phpstan-return array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}
+	 * @param \WP_Post $post The post.
+	 * @return ParagraphData|\WP_Error The paragraph that has the smart link uid, and if it is the first or last paragraph.
 	 */
-	private function get_paragraph( string $content ): array {
+	private function get_paragraph( \WP_Post $post ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		if ( null !== $this->paragraph_data ) {
 			return $this->paragraph_data;
 		}
 
-		$paragraph = '';
 		if ( ! class_exists( 'DOMDocument' ) ) {
-			return array(
-				'paragraph'          =>
-					'<p>' . __( 'Unable to fetch paragraph. DOMDocument is not available.', 'wp-parsely' ) . '</p>',
-				'is_first_paragraph' => true,
-				'is_last_paragraph'  => true,
-			);
+			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
 		}
 
+		// Initialize the HTML parser.
 		libxml_use_internal_errors( true );
+		$temp_doc    = new \DOMDocument();
+		$html_parser = new HTML5(
+			array(
+				'target_document' => $temp_doc,
+				'disable_html_ns' => true,
+			)
+		);
 
-		$html_parser = new HTML5();
-		$dom         = $html_parser->loadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ) );
+		$source_post_has_blocks = has_blocks( $post );
+		$content                = $post->post_content;
 
-		$errors = libxml_get_errors();
-		if ( count( $errors ) > 0 ) {
-			libxml_clear_errors();
-			return array(
-				'paragraph'          =>
-					'<p>' . __( 'Unable to fetch paragraph. Error loading HTML.', 'wp-parsely' ) . '</p>',
-				'is_first_paragraph' => true,
-				'is_last_paragraph'  => true,
-			);
+		// Post that are not using the block editor do not have paragraphs, 
+		// and use new lines to separate paragraphs.
+		if ( ! $source_post_has_blocks ) {
+			// Generate the array of paragraphs from the post content.
+			$paragraphs = explode( "\n\n", $content );
+
+			// Convert the array of paragraphs to a DOMDocument.
+			$dom = new \DOMDocument();
+			foreach ( $paragraphs as $paragraph ) {
+				$fragment = $dom->createDocumentFragment();
+
+				// Wrap the paragraph in a div tag and parse it as HTML.
+				// We need to use div instead of p, because it is semantically incorrect to have
+				// block elements inside paragraph tags.
+				$wrapped_content = '<div>' . $paragraph . '</div>';
+				$fragment->appendXML( $wrapped_content );
+				
+				// Append the fragment to the document.
+				$dom->appendChild( $fragment );
+
+				// Ignore errors parsing the HTML.
+				libxml_clear_errors();
+			}
+
+			// Fetch all div tags (paragraphs).         
+			$paragraphs = $dom->getElementsByTagName( 'div' );
+		} else {
+			// Otherwise, just parse the content as HTML.
+			$dom      = $html_parser->loadHTML( $content );
+			$fragment = $dom->createDocumentFragment();
+
+			// When loading the HTML, it is wrapped in a html tag.
+			// So we need to get the child nodes of the html tag.
+			$html_element = $dom->getElementsByTagName( 'html' )->item( 0 );
+			if ( null === $html_element ) {
+				return new \WP_Error( 'traffic_boost_html_not_found', 'HTML element not found in parsed content' );
+			}
+			$elements = $html_element->childNodes;
+
+			// Append the child nodes to the fragment.
+			foreach ( iterator_to_array( $elements ) as $element ) {
+				// Only append the child nodes that are allowed.
+				if ( $element instanceof \DOMElement &&
+					in_array( $element->nodeName, self::ALLOWED_TAGS, true ) 
+				) {
+					$fragment->appendChild( $element );
+				}
+			}
+			$paragraphs = $fragment->childNodes;
 		}
-
-		// Fetch all paragraph tags.
-		$paragraphs = $dom->getElementsByTagName( 'p' );
-
+		
 		$is_first_paragraph = true;
 		$is_last_paragraph  = false;
 		$paragraph          = null;
+		$paragraph_offset   = 0;
 
+		// Counts the global offset of the link text in the post content.
 		$offset_count = 0;
 
 		/** @var \DOMElement $p The paragraph element. */
@@ -240,30 +322,70 @@ class Inbound_Smart_Link extends Smart_Link {
 						break 2;
 					}
 				}
-			} elseif ( strpos( $p->textContent, $this->text ) !== false ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			} elseif ( strpos( $p->textContent, $this->text ) !== false ) {
 				// If the smart link is not applied, we need to find the paragraph that contains the
 				// smart link text, and with the correct offset.
-				if ( $offset_count === $this->offset ) {
-					$is_first_paragraph = $p === $paragraphs->item( 0 );
-					$is_last_paragraph  = $p === $paragraphs->item( $paragraphs->length - 1 );
-					$paragraph          = $html_parser->saveHTML( $p );
-					break;
+				/**
+				 * Counts the local offset of the link text in the paragraph content.
+				 *
+				 * @var int
+				 */
+				$paragraph_offset = 0;
+			
+				// Loop each occurrence of the link text in the paragraph content.
+				$text_pos = 0;
+				// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
+				while ( ( $text_pos = strpos( $p->textContent, $this->text, $text_pos ) ) !== false ) { 
+					// If the global offset is the same as the offset of the link text in the paragraph, we found the paragraph.
+					if ( $offset_count === $this->offset ) {
+						$is_first_paragraph = $p === $paragraphs->item( 0 );
+						$is_last_paragraph  = $p === $paragraphs->item( $paragraphs->length - 1 );
+						$paragraph          = $html_parser->saveHTML( $p );
+
+						// Find the text node containing our target text.
+						$text_node = $this->find_text_node( $p, $this->text, $paragraph_offset );
+						if ( null === $text_node ) {
+							return new \WP_Error( 'traffic_boost_text_node_not_found', 'Text node not found' );
+						}
+						
+						// Validate the link placement.
+						$validation_result = $this->validate_link_placement( $text_node, $this->text );
+						if ( is_wp_error( $validation_result ) ) {
+							libxml_clear_errors();
+							return $validation_result;
+						}
+
+						break 2;
+					}
+					++$text_pos;
+					++$offset_count;
+					++$paragraph_offset;
 				}
-				++$offset_count;
 			}
 		}
 
 		if ( null === $paragraph ) {
-			$paragraph = '<p>' . __( 'Unable to fetch paragraph.', 'wp-parsely' ) . '</p>';
+			return new \WP_Error( 'traffic_boost_paragraph_not_found', __( 'Paragraph not found.', 'wp-parsely' ) );
 		}
 
+		// If the post is not using the block editor, unwrap the paragraph from the paragraph tags.
+		if ( ! $source_post_has_blocks ) {
+			// Remove the paragraph tags from the paragraph.
+			$paragraph = preg_replace( '/^<div>|<\/div>$/', '', $paragraph );
+		}
+
+		/** @var string $paragraph The paragraph that has the smart link uid. */
+		/** @var int $paragraph_offset The offset of the smart link in the paragraph. */
 		$this->paragraph_data = array(
 			'paragraph'          => $paragraph,
 			'is_first_paragraph' => $is_first_paragraph,
 			'is_last_paragraph'  => $is_last_paragraph,
+			'paragraph_offset'   => $paragraph_offset,
 		);
 
+		libxml_clear_errors();
 		return $this->paragraph_data;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
 
 	/**
@@ -301,6 +423,277 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
+	 * Recursively searches for text nodes containing the specified text.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \DOMNode $node        The node to search in.
+	 * @param string   $search_text The text to search for.
+	 * @param int      $offset      The offset of the occurrence to find.
+	 * @return \DOMNode|null The text node if found, null otherwise.
+	 */
+	private function find_text_node( \DOMNode $node, string $search_text, int $offset ): ?\DOMNode {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+		// If the node is a text node, check if it contains the search text.
+		if ( XML_TEXT_NODE === $node->nodeType ) {
+			if ( strpos( $node->textContent, $search_text ) !== false ) {
+				if ( 0 === $offset ) {
+					return $node;
+				}
+				--$offset;
+			}
+		}
+
+		// If the node has child nodes, recursively search for the text node.
+		if ( $node->hasChildNodes() ) {
+			foreach ( $node->childNodes as $child ) {
+				$result = $this->find_text_node( $child, $search_text, $offset );
+				if ( null !== $result ) {
+					return $result;
+				}
+			}
+		}
+
+		// If the text node is not found, return null.
+		return null;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+	}
+
+	/**
+	 * Validates if a text node can have a link placed around it.
+	 * 
+	 * Checks if the node is inside a link and if so, only allows the operation
+	 * if we're replacing the entire link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \DOMNode $node        The node to validate.
+	 * @param string   $search_text The text that will be linked.
+	 * @return array{valid: bool, replace_node?: \DOMElement|null}|\WP_Error Validation result.
+	 */
+	private function validate_link_placement( \DOMNode $node, string $search_text ) {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+		$current = $node;
+		while ( $current ) {
+			// Found an anchor tag.
+			if ( 'a' === $current->nodeName ) {
+				// If the current node is the parent of the node to validate, 
+				// and the text content is the same, we can replace the link.
+				if ( $current === $node->parentNode && 
+					trim( $current->textContent ) === trim( $search_text ) 
+				) {
+					return array(
+						'valid'        => true,
+						'replace_node' => $current instanceof \DOMElement ? $current : null,
+					);
+				}
+				
+				return new \WP_Error(
+					'traffic_boost_invalid_link_placement',
+					'Cannot create nested links. The text is already part of another link.'
+				);
+			}
+			$current = $current->parentNode;
+		}
+
+		// If we didn't find an anchor tag, the link placement is valid.
+		return array( 'valid' => true );
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+	}
+
+	/**
+	 * Applies the inbound smart link to the post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @return bool|\WP_Error True if the inbound smart link was applied, WP_Error on failure.
+	 */
+	public function apply() {
+		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+		if ( $this->applied ) {
+			return new \WP_Error( 'traffic_boost_already_applied', 'Smart link already applied' );
+		}
+
+		if ( ! class_exists( 'DOMDocument' ) ) {
+			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
+		}
+		
+		// Get the source post.
+		$source_post = $this->source_post;
+		if ( null === $source_post ) {
+			$source_post = get_post( $this->source_post_id );
+		}
+		
+		if ( null === $source_post ) {
+			return new \WP_Error( 'traffic_boost_source_post_not_found', 'Source post not found' );
+		}
+
+		$source_post_content = $source_post->post_content;
+
+		// Find the paragraph that contains the link text.
+		$paragraph_data = $this->get_paragraph( $source_post );
+
+		if ( is_wp_error( $paragraph_data ) ) {
+			return $paragraph_data;
+		}
+
+		$paragraph        = $paragraph_data['paragraph'];
+		$paragraph_offset = $paragraph_data['paragraph_offset'];
+
+		// Check if the original paragraph can be found in the source post content.
+		if ( strpos( $source_post_content, $paragraph ) === false ) {
+			return new \WP_Error( 'traffic_boost_paragraph_not_found', 'Original paragraph not found in source post content' );
+		}
+		
+		// Initialize the HTML parser.
+		$temp_doc    = new \DOMDocument();
+		$html_parser = new HTML5(
+			array(
+				'target_document' => $temp_doc,
+				'disable_html_ns' => true,
+			)
+		);
+		libxml_use_internal_errors( true );
+
+		// Load the paragraph HTML into a DOMDocument.
+		$paragraph_fragment = $html_parser->loadHTMLFragment( $paragraph );
+
+		$errors = libxml_get_errors();
+
+		// If there are errors parsing the paragraph HTML, return an error.
+		if ( count( $errors ) > 0 ) {
+			libxml_clear_errors();
+			return new \WP_Error( 'traffic_boost_error_parsing_html', 'Error parsing the paragraph HTML', $errors );
+		}
+
+		// Find the text node containing our target text at the specified offset.
+		$text_node = $this->find_text_node( $paragraph_fragment, $this->text, $paragraph_offset );
+
+		if ( null === $text_node ) {
+			libxml_clear_errors();
+			return new \WP_Error( 'traffic_boost_text_not_found', 'No text found in paragraph' );
+		}
+
+		// Validate the link placement, to ensure we're not creating nested links and to
+		// determine if we're replacing an existing link or creating a new one.
+		$validation_result = $this->validate_link_placement( $text_node, $this->text );
+
+		// Validation failed, return an error.
+		if ( is_wp_error( $validation_result ) ) {
+			libxml_clear_errors();
+			return $validation_result;
+		}
+
+		// If we're replacing an existing link, handle differently.
+		if ( isset( $validation_result['replace_node'] ) ) {
+			// Store the original link attributes, so we can restore them if the link gets deleted.
+			$original_link_attributes = array(
+				'href'           => $validation_result['replace_node']->getAttribute( 'href' ),
+				'data-smartlink' => $validation_result['replace_node']->getAttribute( 'data-smartlink' ),
+				'title'          => $validation_result['replace_node']->getAttribute( 'title' ),
+			);
+			update_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', $original_link_attributes );
+			
+			$existing_link = $validation_result['replace_node'];
+
+			// If there is an existing smart link UID, we need to delete it.
+			$existing_smart_link_uid = $existing_link->getAttribute( 'data-smartlink' );
+			if ( '' !== $existing_smart_link_uid ) {
+				$smart_link = self::get_smart_link( $existing_smart_link_uid, $this->source_post_id );
+				if ( $smart_link->exists() ) {
+					$smart_link->delete();
+				}
+			}
+			
+			// Update the existing link.
+			$existing_link->setAttribute( 'href', $this->href );
+			$existing_link->setAttribute( 'data-smartlink', $this->uid );
+			$existing_link->setAttribute( 'title', $this->title );
+		} else { // If we're not replacing an existing link, we need to create a new link.
+			// Get the position of the text within this specific text node.
+			$text_content = $text_node->textContent;
+			$target_pos   = strpos( $text_content, $this->text );
+
+			if ( false === $target_pos ) {
+				libxml_clear_errors();
+				return new \WP_Error( 'traffic_boost_text_not_found', 'Link text not found at specified offset' );
+			}
+
+			// Create the smart link anchor element.
+			$smart_link_anchor = $temp_doc->createElement( 'a' );
+			$smart_link_anchor->setAttribute( 'href', $this->href );
+			$smart_link_anchor->setAttribute( 'data-smartlink', $this->uid );
+			$smart_link_anchor->setAttribute( 'title', $this->title );
+			$smart_link_anchor->textContent = $this->text;
+
+			// Split the text node into before and after parts.
+			$before_text = substr( $text_content, 0, $target_pos );
+			$after_text  = substr( $text_content, $target_pos + strlen( $this->text ) );
+
+			// Create text nodes for before and after parts.
+			$before_node = $temp_doc->createTextNode( $before_text );
+			$after_node  = $temp_doc->createTextNode( $after_text );
+
+			if ( null === $text_node->parentNode ) {
+				libxml_clear_errors();
+				return new \WP_Error( 'traffic_boost_text_node_parent_not_found', 'Text node parent not found' );
+			}
+
+			// Replace the original text node with our three new nodes.
+			$text_node->parentNode->insertBefore( $before_node, $text_node );
+			$text_node->parentNode->insertBefore( $smart_link_anchor, $text_node );
+			$text_node->parentNode->insertBefore( $after_node, $text_node );
+			$text_node->parentNode->removeChild( $text_node );
+		}
+
+		// Get the modified HTML.
+		$paragraph_html = $html_parser->saveHTML( $paragraph_fragment );
+
+		// Replace the paragraph with the new HTML.
+		$source_post_content = str_replace( $paragraph, $paragraph_html, $source_post_content );
+
+		// Backup the original post content and paragraph in a post meta, for rollback purposes.
+		$revisions = wp_get_post_revisions( $source_post->ID, array( 'posts_per_page' => 1 ) );
+		if ( count( $revisions ) > 0 ) {
+			// Get the latest revision ID.
+			/** @var \WP_Post $latest_revision */
+			$latest_revision = array_shift( $revisions );
+			update_post_meta( $this->smart_link_id, '_traffic_boost_source_post_revision', $latest_revision->ID );
+		} else {
+			// If revisions are disabled, store the original content.
+			update_post_meta( $this->smart_link_id, '_traffic_boost_source_original_post_content', $source_post->post_content );
+		}
+		
+		// Always backup the original paragraph, before the link was applied.
+		update_post_meta( $this->smart_link_id, '_traffic_boost_source_original_paragraph', $paragraph );
+
+		// Update the post content.
+		$updated_post = wp_update_post(
+			array(
+				'ID'           => $this->source_post_id,
+				'post_content' => $source_post_content,
+			),
+			true
+		);
+
+		if ( is_wp_error( $updated_post ) ) {
+			return $updated_post;
+		}
+
+		// Flush the cache for the post.
+		self::flush_cache_by_post_id( $this->source_post_id );
+
+		// Set the applied flag to true.
+		$this->applied = true;
+
+		// Save the smart link.
+		$this->save();
+
+		return true;
+		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+	}
+
+	/**
 	 * Creates a new instance of an Inbound Smart Link from a Smart Link object.
 	 *
 	 * This is used to convert a Smart Link object to an Inbound Smart Link object.
@@ -322,6 +715,9 @@ class Inbound_Smart_Link extends Smart_Link {
 			$property->setValue( $inbound_smart_link, $value );
 		}
 
+		// Make sure the source post ID is set.
+		$inbound_smart_link->set_source_post_id( $smart_link->source_post_id );
+		
 		return $inbound_smart_link;
 	}
 
@@ -335,8 +731,8 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public static function get_existing_suggestions( int $post_id ): array {
 		// Get all inbound smart links for the post.
-		$smart_links = self::get_inbound_smart_links( $post_id, false );
-		
+		$smart_links = self::get_inbound_smart_links( $post_id, Smart_Link_Status::PENDING );
+
 		// Filter out the ones that are already applied.
 		$smart_links = array_values(
 			array_filter(
@@ -411,6 +807,9 @@ class Inbound_Smart_Link extends Smart_Link {
 			}   
 		}
 
+		// Flush the cache for the post.
+		self::flush_cache_by_post_id( $post_id );
+
 		return $results;
 	}
 
@@ -419,12 +818,12 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param int  $post_id         The ID of the post.
-	 * @param bool $include_applied Whether to include applied smart links.
+	 * @param int    $post_id         The ID of the post.
+	 * @param string $status The status of the smart links to get.
 	 * @return array<self> The inbound smart links.
 	 */
-	public static function get_inbound_smart_links( int $post_id, bool $include_applied = false ): array {
-		$inbound_smart_links = parent::get_inbound_smart_links( $post_id, $include_applied );
+	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
+		$inbound_smart_links = parent::get_inbound_smart_links( $post_id, $status );
 
 		return array_map(
 			function ( Smart_Link $smart_link ) {

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Content_Helper;
 
 use Parsely\Models\Inbound_Smart_Link;
+use Parsely\Models\Smart_Link_Status;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
@@ -141,6 +142,16 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'description'       => __( 'The ID of the smart link to accept.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
+				),
+				'text'          => array(
+					'type'        => 'string',
+					'description' => __( 'The text of the smart link.', 'wp-parsely' ),
+					'required'    => false,
+				),
+				'offset'        => array(
+					'type'        => 'integer',
+					'description' => __( 'The offset of the smart link.', 'wp-parsely' ),
+					'required'    => false,
 				),
 			)
 		);
@@ -293,9 +304,25 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		// Convert the inbound smart links to an array.
 		$suggestions = array_map(
 			function ( Inbound_Smart_Link $link ) {
+				if ( ! (bool) $link->has_valid_placement() ) {
+					// Delete the link if it doesn't have a valid placement.
+					$link->delete();
+					return null;
+				}
+
 				return $link->to_array();
 			},
 			$suggestions
+		);
+
+		// Filter out null values.
+		$suggestions = array_values(
+			array_filter(
+				$suggestions,
+				function ( $suggestion ) {
+					return null !== $suggestion;
+				} 
+			) 
 		);
 
 		return new WP_REST_Response( array( 'data' => $suggestions ), 200 );
@@ -315,7 +342,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$post_id = $request->get_param( 'post_id' );
 
 		// Get the inbound smart links for the post.
-		$inbound_links = Inbound_Smart_Link::get_inbound_smart_links( $post_id, true );
+		$inbound_links = Inbound_Smart_Link::get_inbound_smart_links( $post_id, Smart_Link_Status::APPLIED );
 
 		// Convert the inbound smart links to an array.
 		$inbound_links = array_map(
@@ -402,7 +429,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|\WP_Error The response object.
 	 */
 	public function accept_suggestion( WP_REST_Request $request ) {
 		/**
@@ -412,12 +439,45 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$inbound_link = $request->get_param( 'inbound_link' );
 
-		$inbound_link->applied = true;
-		$inbound_link->save();
+		/**
+		 * The text of the smart link.
+		 *
+		 * @var string|null $text
+		 */
+		$text = $request->get_param( 'text' );
 
-		// TODO: Add the inbound link to the post at the correct position.
+		/**
+		 * The offset of the smart link.
+		 *
+		 * @var int|null $offset
+		 */
+		$offset = $request->get_param( 'offset' );
 
-		return new WP_REST_Response( array( 'data' => array( 'success' => true ) ), 200 );
+		// If the text is set and the offset is not, or the other way around, return an error.
+		if ( ( null !== $text && null === $offset ) || ( null !== $offset && null === $text ) ) {
+			return new WP_Error(
+				'parsely_invalid_smart_link_override',
+				__( 'If you provide a text, you must also provide an offset.', 'wp-parsely' )
+			);
+		} elseif ( null !== $text && null !== $offset ) {
+			$inbound_link->text   = $text;
+			$inbound_link->offset = $offset;
+		}
+
+		if ( $inbound_link->applied ) {
+			return new WP_Error(
+				'parsely_smart_link_already_applied',
+				__( 'Smart link already applied.', 'wp-parsely' )
+			);
+		}
+
+		$applied = $inbound_link->apply();
+
+		if ( is_wp_error( $applied ) ) {
+			return $applied;
+		}
+
+		return new WP_REST_Response( array( 'data' => array( 'success' => $applied ) ), 200 );
 	}
 
 	/**

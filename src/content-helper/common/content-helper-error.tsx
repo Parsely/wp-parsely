@@ -54,7 +54,7 @@ export enum ContentHelperErrorCode {
  * @see https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
  */
 export class ContentHelperError extends Error {
-	protected code: ContentHelperErrorCode;
+	public code: ContentHelperErrorCode;
 	protected hint: string | null = null;
 	public retryFetch: boolean;
 

@@ -14,10 +14,10 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { PageContainer } from '../../components';
-import { TrafficBoostPreview } from './preview/preview';
+import { TextSelection, TrafficBoostPreview } from './preview/preview';
 import { TrafficBoostLink, TrafficBoostProvider } from './provider';
 import { TrafficBoostSidebar } from './sidebar/sidebar';
-import { TrafficBoostStore } from './store';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from './store';
 import './traffic-boost.scss';
 
 /**
@@ -215,16 +215,24 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} link The link that was accepted.
+	 * @param {TrafficBoostLink} link         The link that was accepted.
+	 * @param {TextSelection}    selectedText The selected text.
 	 *
 	 * @return {Promise<boolean>} Whether the suggestion was accepted.
 	 */
-	const handleAccept = async ( link: TrafficBoostLink ): Promise<boolean> => {
+	const handleAccept = async ( link: TrafficBoostLink, selectedText: TextSelection | null ): Promise<boolean> => {
 		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
 			return false;
 		}
 
-		return await TrafficBoostProvider.getInstance().acceptSuggestion( post.id, link.smartLink.smart_link_id );
+		return await TrafficBoostProvider.getInstance().acceptSuggestion(
+			post.id,
+			link.smartLink.smart_link_id,
+			{
+				text: selectedText?.text,
+				offset: selectedText?.offset,
+			},
+		);
 	};
 
 	/**

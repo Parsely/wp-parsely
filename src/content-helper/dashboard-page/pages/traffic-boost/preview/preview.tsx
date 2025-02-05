@@ -13,6 +13,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
 import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
@@ -37,7 +38,7 @@ export interface TextSelection {
  */
 interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
-	onAccept: ( link: TrafficBoostLink ) => Promise<boolean>;
+	onAccept: ( link: TrafficBoostLink, selectedText: TextSelection | null ) => Promise<boolean>;
 	onDiscard: ( link: TrafficBoostLink ) => Promise<void>;
 	onRemoveInboundLink: ( link: TrafficBoostLink ) => Promise<boolean>;
 }
@@ -249,12 +250,25 @@ export const TrafficBoostPreview = ( {
 	const handleAccept = async ( link: TrafficBoostLink ) => {
 		setIsAccepting( link, true );
 
-		// Accept the suggestion.
-		const accepted = await onAccept( link );
+		try {
+			// Accept the suggestion.
+			const accepted = await onAccept( link, selectedText );
 
-		if ( ! accepted ) {
+			if ( ! accepted ) {
+				throw new ContentHelperError(
+					__( 'Failed to accept suggestion.', 'wp-parsely' ),
+					ContentHelperErrorCode.UnknownError,
+					'' // No prefix for this error.
+				);
+			}
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to accept suggestion.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
 			createErrorNotice(
-				__( 'Failed to accept suggestion.', 'wp-parsely' ),
+				errorMessage,
 				{
 					type: 'snackbar',
 					icon: <Icon icon={ error } />,
@@ -266,6 +280,9 @@ export const TrafficBoostPreview = ( {
 
 		// Remove suggestion from the list.
 		removeSuggestion( link );
+
+		// Flag isSuggestion to false.
+		link.isSuggestion = false;
 
 		// Add the link to the inbound links list.
 		addInboundLink( link );

@@ -72,10 +72,9 @@ interface SuccessResponse {
  * @since 3.18.0
  */
 interface ErrorResponse {
-	data: {
-		error: string;
-		message: string;
-	};
+	error: string;
+	message: string;
+	data: object;
 }
 
 /**
@@ -475,22 +474,40 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number} postId       The ID of the post to accept the suggestion for.
-	 * @param {number} suggestionId The ID of the suggestion to accept.
+	 * @param {number} postId         The ID of the post to accept the suggestion for.
+	 * @param {number} suggestionId   The ID of the suggestion to accept.
+	 * @param {Object} options        The options to pass to the API.
+	 * @param {string} options.text   The new text of the smart link.
+	 * @param {number} options.offset The new offset of the smart link.
 	 *
 	 * @return {Promise<boolean>} Whether the suggestion was accepted.
 	 */
-	public async acceptSuggestion( postId: number, suggestionId: number ): Promise<boolean> {
+	public async acceptSuggestion(
+		postId: number,
+		suggestionId: number,
+		options?: {
+			text?: string;
+			offset?: number;
+		},
+	): Promise<boolean> {
 		const response = await this.fetch<AcceptSuggestionResponse>( {
 			method: 'POST',
 			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/accept-suggestion/${ suggestionId }`,
+			data: {
+				text: options?.text,
+				offset: options?.offset,
+			},
 		} );
 
 		if ( response.data.success ) {
 			return true;
 		}
 
-		throw new ContentHelperError( response.data.message, response.data.error as ContentHelperErrorCode );
+		throw new ContentHelperError(
+			response.message ?? 'Unknown error.',
+			response.error as ContentHelperErrorCode ?? ContentHelperErrorCode.UnknownError,
+			'' // No prefix for this error.
+		);
 	}
 
 	/**
