@@ -216,48 +216,10 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				post_id: sourcePost.id,
 				post_type: sourcePost.type,
 			},
+			validation: {
+				valid: true,
+			},
 		};
-	}
-
-	/**
-	 * Generates boost link suggestions for a given post.
-	 *
-	 * Note: This method will be removed once we have implemented fetching from the
-	 * Parse.ly API.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {number} postId              The ID of the post to generate boost links for.
-	 * @param {number} numberOfSuggestions The number of suggestions to generate.
-	 * @return {Promise<TrafficBoostLink[]>} The list of boost link suggestions.
-	 */
-	public async generateBoostLinks( postId: number, numberOfSuggestions: number = 10 ): Promise<TrafficBoostLink[]> {
-		// As a mockup, this method right now will fetch the WordPress API and return a random number of posts.
-		const fetchedPosts = await this.getPosts( {
-			page: 1,
-			per_page: 30,
-			exclude: [ postId ],
-			order: 'asc',
-			orderby: 'date',
-		} );
-
-		// Filter posts without a title
-		const postsWithTitle = fetchedPosts.data.filter( ( post ) => post.title.raw !== '' );
-
-		// Filter to get numberOfSuggestions random posts.
-		const randomPosts = postsWithTitle.sort( () => Math.random() - 0.5 ).slice( 0, numberOfSuggestions );
-
-		const suggestions = randomPosts.map( ( post ) => {
-			return {
-				uid: `suggestion-${ post.id }-${ Date.now() }`,
-				smartLink: this.createMockedSmartLink( post, postId ),
-				postLinks: this.populatePostLinks( post ),
-				targetPost: post,
-				isSuggestion: true,
-			};
-		} );
-
-		return suggestions;
 	}
 
 	/**
@@ -284,6 +246,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		const fetchedPosts = await this.getPosts( {
 			include: postIds,
 			posts_per_page: 100,
+			status: 'any',
 		} );
 
 		return response.data.map( ( inboundSmartLink ) => {
@@ -335,10 +298,18 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		const fetchedPosts = await this.getPosts( {
 			include: postIds,
 			posts_per_page: 100,
+			status: 'any',
 		} );
 
 		// Create the traffic boost links.
 		const trafficBoostLinks = response.data.map( ( inboundSmartLink ) => {
+			// Filter out any smart links that are not valid.
+			if ( ! inboundSmartLink.validation?.valid ) {
+				// eslint-disable-next-line no-console
+				console.warn( 'Parse.ly: Skipping smart link due to invalid placement.', inboundSmartLink );
+				return false;
+			}
+
 			const sourcePost = fetchedPosts.data.find( ( p ) => p.id === inboundSmartLink.source?.post_id );
 
 			if ( ! sourcePost ) {
@@ -451,6 +422,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		const fetchedPosts = await this.getPosts( {
 			include: inboundSmartLinks.map( ( link ) => link.source?.post_id ),
 			posts_per_page: 100,
+			status: 'any',
 		} );
 
 		if ( fetchedPosts.total_items > 100 ) {

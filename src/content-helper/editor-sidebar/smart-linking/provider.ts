@@ -51,6 +51,10 @@ export type InboundSmartLink = SmartLink & {
 		date: string,
 		image: string|false,
 	};
+	validation?: {
+		valid: boolean;
+		reason?: string;
+	};
 }
 
 /**
