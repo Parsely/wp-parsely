@@ -220,7 +220,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 		newValue: string | null | undefined,
 		filterType: PostFilterType
 	): void => {
-		if ( newValue === null || newValue === undefined ) {
+		if ( null === newValue || undefined === newValue ) {
 			newValue = '';
 		}
 
