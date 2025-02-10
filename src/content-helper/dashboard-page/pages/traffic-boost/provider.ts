@@ -291,8 +291,11 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			},
 		} );
 
+		// Filter out any smart links that are not valid.
+		const validSmartLinks = response.data.filter( ( inboundSmartLink ) => inboundSmartLink.validation?.valid );
+
 		// Get the post IDs from the inbound smart links.
-		const postIds = response.data.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
+		const postIds = validSmartLinks.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
 
 		// Fetch the posts for the inbound smart links.
 		const fetchedPosts = await this.getPosts( {
@@ -302,14 +305,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		} );
 
 		// Create the traffic boost links.
-		const trafficBoostLinks = response.data.map( ( inboundSmartLink ) => {
-			// Filter out any smart links that are not valid.
-			if ( ! inboundSmartLink.validation?.valid ) {
-				// eslint-disable-next-line no-console
-				console.warn( 'Parse.ly: Skipping smart link due to invalid placement.', inboundSmartLink );
-				return false;
-			}
-
+		const trafficBoostLinks = validSmartLinks.map( ( inboundSmartLink ) => {
 			const sourcePost = fetchedPosts.data.find( ( p ) => p.id === inboundSmartLink.source?.post_id );
 
 			if ( ! sourcePost ) {

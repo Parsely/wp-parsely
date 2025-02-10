@@ -432,7 +432,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @param int      $offset      The offset of the occurrence to find.
 	 * @return \DOMNode|null The text node if found, null otherwise.
 	 */
-	private function find_text_node( \DOMNode $node, string $search_text, int $offset ): ?\DOMNode {
+	private function find_text_node( \DOMNode $node, string $search_text, int $offset ) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// If the node is a text node, check if it contains the search text.
 		if ( XML_TEXT_NODE === $node->nodeType ) {
@@ -539,6 +539,8 @@ class Inbound_Smart_Link extends Smart_Link {
 		return $smart_link_anchor;
 	}
 
+	
+
 	/**
 	 * Applies the inbound smart link to the post.
 	 *
@@ -577,11 +579,6 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$paragraph        = $paragraph_data['paragraph'];
 		$paragraph_offset = $paragraph_data['paragraph_offset'];
-
-		// Check if the original paragraph can be found in the source post content.
-		if ( strpos( $source_post_content, $paragraph ) === false ) {
-			return new \WP_Error( 'traffic_boost_paragraph_not_found', 'Original paragraph not found in source post content' );
-		}
 		
 		// Initialize the HTML parser.
 		$temp_doc    = new \DOMDocument();
@@ -622,6 +619,9 @@ class Inbound_Smart_Link extends Smart_Link {
 			return $validation_result;
 		}
 
+		// Store the smart link node, so we can use it later to find the line that contains the smart link.
+		$smart_link_node = null;
+
 		// If we're replacing an existing link, handle differently.
 		if ( isset( $validation_result['replace_node'] ) ) {
 			// Store the original link attributes, so we can restore them if the link gets deleted.
@@ -647,6 +647,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			$existing_link->setAttribute( 'href', $this->href );
 			$existing_link->setAttribute( 'data-smartlink', $this->uid );
 			$existing_link->setAttribute( 'title', $this->title );
+			$smart_link_node = $existing_link;
 		} else { // If we're not replacing an existing link, we need to create a new link.
 			// Get the position of the text within this specific text node.
 			$text_content = $text_node->textContent;
@@ -663,7 +664,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			$smart_link_anchor->setAttribute( 'data-smartlink', $this->uid );
 			$smart_link_anchor->setAttribute( 'title', $this->title );
 			$smart_link_anchor->textContent = $this->text;
-
+			$smart_link_node                = $smart_link_anchor;
 			// Split the text node into before and after parts.
 			$before_text = substr( $text_content, 0, $target_pos );
 			$after_text  = substr( $text_content, $target_pos + strlen( $this->text ) );
@@ -684,11 +685,22 @@ class Inbound_Smart_Link extends Smart_Link {
 			$text_node->parentNode->removeChild( $text_node );
 		}
 
-		// Get the modified HTML.
-		$paragraph_html = $html_parser->saveHTML( $paragraph_fragment );
+		// To avoid unwanted replacements, we'll be focusing only on the single line where the link is being inserted.
+		// Get the line that contains the smart link.
+		$line_with_smart_link = $this->find_line_with_text( 
+			$html_parser->saveHTML( $paragraph_fragment ), // The full paragraph HTML with the smart link.
+			$html_parser->saveHTML( $smart_link_node ) // The smart link anchor HTML.
+		);
 
-		// Replace the paragraph with the new HTML.
-		$source_post_content = str_replace( $paragraph, $paragraph_html, $source_post_content );
+		// Get the original line where the smart link will be inserted.
+		$original_line = $this->find_original_line( $source_post_content, $line_with_smart_link );
+
+		if ( '' === $original_line ) {
+			return new \WP_Error( 'traffic_boost_original_line_not_found', 'Could not find the original line containing the link text' );
+		}
+
+		// Replace the original line with the new HTML.
+		$source_post_content = str_replace( $original_line, $line_with_smart_link, $source_post_content );
 
 		// Backup the original post content and paragraph in a post meta, for rollback purposes.
 		$revisions = wp_get_post_revisions( $source_post->ID, array( 'posts_per_page' => 1 ) );
@@ -1015,5 +1027,84 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		return self::from_smart_link( $smart_link );
+	}
+
+	/**
+	 * Finds the line containing the specified text in the HTML.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $html HTML to search through.
+	 * @param string $text Text to search for.
+	 * @return string The line containing the text.
+	 */
+	private function find_line_with_text( string $html, string $text ): string {
+		$lines = explode( "\n", $html );
+		foreach ( $lines as $line ) {
+			if ( strpos( $line, $text ) !== false ) {
+				return $line;
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Finds the original line for the search line in the original text.
+	 * 
+	 * This is used to find which line in the original text should be replaced with the new
+	 * line, that includes the smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $original_text The original text.
+	 * @param string $search_line The line to search through.
+	 * @return string The original line.
+	 */
+	private function find_original_line( string $original_text, string $search_line ): string {
+		$lines = explode( "\n", $original_text );
+		foreach ( $lines as $original_line ) {
+			if ( $original_line === $search_line ) {
+				return $original_line;
+			}
+
+			// If the lines are the same, without HTML tags, return the original line.
+			if ( $this->is_the_same_line( $original_line, $search_line ) ) {
+				return $original_line;
+			}
+		}
+		return '';
+	}
+
+	/**
+	 * Compares two strings to check if they are equal when ignoring HTML and formatting.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $line1 First line to compare.
+	 * @param string $line2 Second line to compare.
+	 * @return bool True if lines are the same, false otherwise.
+	 */
+	private function is_the_same_line( string $line1, string $line2 ): bool {
+		// Strip HTML tags.
+		$text1 = wp_strip_all_tags( $line1 );
+		$text2 = wp_strip_all_tags( $line2 );
+
+		// Normalize whitespace.
+		$text1 = preg_replace( '/\s+/', ' ', trim( $text1 ) );
+		$text2 = preg_replace( '/\s+/', ' ', trim( $text2 ) );
+
+		if ( null === $text1 || null === $text2 ) {
+			return false;
+		}
+
+		// Convert to lowercase.
+		$text1 = strtolower( $text1 );
+		$text2 = strtolower( $text2 );
+
+		// Decode HTML entities.
+		$text1 = html_entity_decode( $text1 );
+		$text2 = html_entity_decode( $text2 );
+
+		return $text1 === $text2;
 	}
 }
