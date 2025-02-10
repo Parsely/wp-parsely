@@ -41,53 +41,22 @@ export const setSiteKeys = async (
  *
  * @since 3.17.0 Migrated to Playwright.
  *
- * @param {Admin}  admin      The Admin object of the calling function.
- * @param {string} category   Name of the category to select in the Post Editor.
- * @param {string} tag        Name of the tag to select in the Post Editor.
- * @param {string} filterType The filter type to select in the dropdown.
- * @param {string} selector   The selector from which to extract the message.
+ * @param {Admin}  admin    The Admin object of the calling function.
+ * @param {string} selector The selector from which to extract the message.
  *
  * @return {Promise<string>} The message returned.
  */
 export const getRelatedPostsMessage = async (
-	admin: Admin, category: string = '', tag: string = '',
-	filterType: string = '', selector: string = '.content-helper-error-message'
+	admin: Admin, selector: string = '.content-helper-error-message'
 ): Promise<string> => {
 	const page = admin.page;
 	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
 
-	// Run basic operations.
 	await admin.createNewPost();
-	await admin.editor.openDocumentSettingsSidebar();
 
-	// Select/add category in the Post Editor.
-	if ( category !== '' ) {
-		const categoryToggleButton = page.getByRole( 'button', { name: 'Categories' } );
-		await categoryToggleButton.click();
-		await page.getByRole( 'button', { name: 'Add New Category' } ).first().click();
-		await page.getByLabel( 'New Category Name' ).fill( category );
-		await page.getByRole( 'button', { name: 'Add New Category' } ).last().click();
-		await categoryToggleButton.click();
-	}
-
-	// Select/add tag in the Post Editor.
-	if ( tag !== '' ) {
-		const tagToggleButton = page.getByRole( 'button', { name: 'Tags' } );
-		await tagToggleButton.click();
-		await page.getByLabel( 'Add New Tag' ).fill( tag );
-		await page.keyboard.press( 'Enter' );
-		await tagToggleButton.click();
-	}
-
-	// Show the Content Helper Sidebar.
+	// Show the Content Helper Sidebar and expand the Related Posts panel.
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
 	await setSidebarPanelExpanded( page, 'Related Posts', true );
-
-	// Set the filter type.
-	if ( '' !== filterType ) {
-		await page.keyboard.press( 'Tab' );
-		await page.keyboard.type( filterType.charAt( 0 ) );
-	}
 
 	return await page.locator( contentHelperMessageSelector ).textContent() ?? '';
 };

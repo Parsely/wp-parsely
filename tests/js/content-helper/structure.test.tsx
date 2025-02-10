@@ -18,11 +18,11 @@ import {
 import {
 	DASHBOARD_BASE_URL,
 } from '../../../src/content-helper/common/utils/constants';
+import { PostData } from '../../../src/content-helper/common/utils/post';
 import {
 	RelatedPostsPanel,
 } from '../../../src/content-helper/editor-sidebar/related-posts/component';
 import {
-	GetRelatedPostsResult,
 	RELATED_POSTS_DEFAULT_LIMIT,
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
@@ -125,10 +125,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 	} );
 
 	test( 'should display spinner when starting', async () => {
-		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
-			message: 'Testing that the spinner appears and disappears.',
-			posts: [],
-		} ) );
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( [] ) );
 
 		await waitFor( async () => {
 			render( relatedPostsPanel );
@@ -182,36 +179,10 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		);
 	} );
 
-	test( 'should show no results message when there is no tag or category in the post', async () => {
-		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
-			message: 'The Parse.ly API did not return any results for posts by "author".',
-			posts: [],
-		} ) );
-
-		setMockPostData( [ 'admin' ], [], [] );
-
-		await waitFor( async () => {
-			render( relatedPostsPanel );
-			expect( getLoadingMessage() ).toBeInTheDocument();
-		} );
-
-		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getLoadingMessage() ).toBeNull();
-
-		const relatedPostDescr = getRelatedPostDescr();
-		expect( relatedPostDescr ).toBeInTheDocument();
-		expect( relatedPostDescr ).toBeVisible();
-
-		// When there is no tag or category in the post, it should fallback to the author.
-		expect( relatedPostDescr?.textContent ).toEqual( 'Top related posts by admin in the last 7 days.' );
-		expect( getRelatedPostsEmptyMessage() ).toBeInTheDocument();
-	} );
-
 	test( 'should show a single post with description and proper attributes', async () => {
-		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
-			message: `Posts in category "Developers" in last 7 days.`,
-			posts: getRelatedPostsMockData( 1 ),
-		} ) );
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve(
+			getRelatedPostsMockData( 1 ),
+		) );
 
 		setMockPostData( [], [ 'Developers' ], [] );
 
@@ -222,11 +193,6 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getLoadingMessage() ).toBeNull();
-
-		const relatedPostDescr = getRelatedPostDescr();
-		expect( relatedPostDescr ).toBeInTheDocument();
-		expect( relatedPostDescr ).toBeVisible();
-		expect( relatedPostDescr?.textContent ).toEqual( `Top related posts in the “Developers” section in the last 7 days.` );
 
 		const relatedPosts = getRelatedPosts();
 		expect( relatedPosts.length ).toEqual( 1 );
@@ -250,10 +216,9 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 	} );
 
 	test( 'should show 5 posts by default', async () => {
-		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
-			message: `Top related posts with the “Developers” tag in the last 7 days.`,
-			posts: getRelatedPostsMockData(),
-		} ) );
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve(
+			getRelatedPostsMockData()
+		) );
 
 		setMockPostData( [ 'admin' ], [ 'Developers' ], [ 'Developers' ] );
 
@@ -264,7 +229,6 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getLoadingMessage() ).toBeNull();
-		expect( getRelatedPostDescr()?.textContent ).toEqual( `Top related posts with the “Developers” tag in the last 7 days.` );
 		expect( getRelatedPosts().length ).toEqual( 5 );
 	} );
 
@@ -287,23 +251,15 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		return screen.queryByTestId( 'parsely-related-posts-loading-message' );
 	}
 
-	function getRelatedPostDescr() {
-		return screen.queryByTestId( 'parsely-related-posts-descr' );
-	}
-
 	function getRelatedPosts() {
 		return screen.queryAllByTestId( 'related-post-single' );
-	}
-
-	function getRelatedPostsEmptyMessage() {
-		return screen.queryByTestId( 'parsely-related-posts-empty' );
 	}
 
 	function getCredentialsNotSetMessage() {
 		return screen.queryByTestId( 'empty-credentials-message' );
 	}
 
-	function getRelatedPostsMockFn( mockFn: () => Promise<GetRelatedPostsResult> ) {
+	function getRelatedPostsMockFn( mockFn: () => Promise<PostData[]> ) {
 		return jest
 			.spyOn( RelatedPostsProvider.getInstance(), 'getRelatedPosts' )
 			.mockImplementation( mockFn );
@@ -331,7 +287,9 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		return posts;
 	}
 
-	async function verifyCredentialsNotSetMessage( getRelatedPostsFn: jest.SpyInstance<Promise<GetRelatedPostsResult>> ) {
+	async function verifyCredentialsNotSetMessage(
+		getRelatedPostsFn: jest.SpyInstance<Promise<PostData[]>>
+	) {
 		render( relatedPostsPanel );
 		expect( getLoadingMessage() ).toBeInTheDocument();
 
@@ -347,7 +305,9 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		return true;
 	}
 
-	async function verifyApiErrorMessage( getRelatedPostsFn: jest.SpyInstance<Promise<GetRelatedPostsResult>> ) {
+	async function verifyApiErrorMessage(
+		getRelatedPostsFn: jest.SpyInstance<Promise<PostData[]>>
+	) {
 		render( relatedPostsPanel );
 		expect( getLoadingMessage() ).toBeInTheDocument();
 
