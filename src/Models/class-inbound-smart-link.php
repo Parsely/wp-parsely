@@ -79,6 +79,11 @@ class Inbound_Smart_Link extends Smart_Link {
 			);
 		}
 
+		$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
+		if ( $previous_link_attributes ) {
+			$data['is_link_replacement'] = true;
+		}
+
 		return $data;
 	}
 
@@ -132,6 +137,15 @@ class Inbound_Smart_Link extends Smart_Link {
 			return false;
 		}
 
+		// If the post content contains the smart link href, it is not valid.
+		if ( strpos( $post->post_content, $this->href ) !== false ) {
+			if ( $wp_error ) {
+				return new \WP_Error( 'traffic_boost_invalid_post', __( 'The link is already linked to this post.', 'wp-parsely' ) );
+			}
+
+			return false;
+		}
+
 		$paragraph = $this->get_paragraph( $post );
 
 		if ( is_wp_error( $paragraph ) ) {
@@ -143,6 +157,21 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks if the smart link is a link replacement.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @return bool True if the smart link is a link replacement, false otherwise.
+	 */
+	public function did_replace_link(): bool {
+		if ( ! $this->applied ) { 
+			return false;
+		}
+
+		return metadata_exists( 'post', $this->smart_link_id, '_traffic_boost_original_link_attributes' );
 	}
 
 	/**
@@ -287,10 +316,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 			// Append the child nodes to the fragment.
 			foreach ( iterator_to_array( $elements ) as $element ) {
-				// Only append the child nodes that are allowed.
-				if ( $element instanceof \DOMElement &&
-					in_array( $element->nodeName, self::ALLOWED_TAGS, true ) 
-				) {
+				if ( $element instanceof \DOMElement ) {
 					$fragment->appendChild( $element );
 				}
 			}
@@ -340,7 +366,13 @@ class Inbound_Smart_Link extends Smart_Link {
 					if ( $offset_count === $this->offset ) {
 						$is_first_paragraph = $p === $paragraphs->item( 0 );
 						$is_last_paragraph  = $p === $paragraphs->item( $paragraphs->length - 1 );
-						$paragraph          = $html_parser->saveHTML( $p );
+
+						// Check if the paragraph node is one of the allowed tags.
+						if ( ! in_array( $p->nodeName, self::ALLOWED_TAGS, true ) ) {
+							return new \WP_Error( 'traffic_boost_invalid_offset', 'The selection is not within a valid paragraph.' );
+						}
+						
+						$paragraph = $html_parser->saveHTML( $p );
 
 						// Find the text node containing our target text.
 						$text_node = $this->find_text_node( $p, $this->text, $paragraph_offset );
@@ -463,7 +495,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * Validates if a text node can have a link placed around it.
 	 * 
 	 * Checks if the node is inside a link and if so, only allows the operation
-	 * if we're replacing the entire link.
+	 * if it's replacing the entire link.
 	 *
 	 * @since 3.18.0
 	 *
@@ -475,28 +507,44 @@ class Inbound_Smart_Link extends Smart_Link {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		$current = $node;
 		while ( $current ) {
-			// Found an anchor tag.
+			// If the current node is an anchor tag.
 			if ( 'a' === $current->nodeName ) {
-				// If the current node is the parent of the node to validate, 
-				// and the text content is the same, we can replace the link.
-				if ( $current === $node->parentNode && 
-					trim( $current->textContent ) === trim( $search_text ) 
-				) {
-					return array(
-						'valid'        => true,
-						'replace_node' => $current instanceof \DOMElement ? $current : null,
+				// If the current node is not the direct parent of our text node, it means
+				// it's trying to create a nested link, so we need to return an error.
+				if ( $current !== $node->parentNode ) {
+					return new \WP_Error(
+						'traffic_boost_invalid_link_placement',
+						'Cannot create nested links. The text is already part of another link.'
 					);
 				}
-				
-				return new \WP_Error(
-					'traffic_boost_invalid_link_placement',
-					'Cannot create nested links. The text is already part of another link.'
+
+				// Check if the entire link text matches the search text. If not, throw
+				// an error, because it's trying to create a nested link.
+				if ( trim( $current->textContent ) !== trim( $search_text ) ) {
+					return new \WP_Error(
+						'traffic_boost_invalid_link_placement',
+						'Cannot create nested links. The text is already part of another link.'
+					);
+				}
+
+				// Check if the link is already linked to this smart link.
+				if ( $current instanceof \DOMElement && $current->getAttribute( 'href' ) === $this->href ) {
+					return new \WP_Error(
+						'traffic_boost_invalid_link_placement',
+						'The current link is already linked to this smart link.'
+					);
+				}
+
+				// Since the link is valid, return the current node to be replaced.
+				return array(
+					'valid'        => true,
+					'replace_node' => $current instanceof \DOMElement ? $current : null,
 				);
 			}
 			$current = $current->parentNode;
 		}
 
-		// If we didn't find an anchor tag, the link placement is valid.
+		// If no anchor tag was found, the link placement is valid.
 		return array( 'valid' => true );
 		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 	}
@@ -507,39 +555,25 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param \DOMDocumentFragment|\DOMElement $node The node to search in.
+	 * @param \DOMDocument $node The node to search in.
 	 * @return \DOMElement|false The smart link anchor element if found, false otherwise.
 	 */
 	private function find_smart_link_anchor( $node ) {
-		$smart_link_anchor = false;
-
-		// Loop through the node's children.
-		foreach ( $node->childNodes as $child ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-			// If the child is an anchor element and has the data-smartlink attribute set to the smart link UID.
-			if ( $child instanceof \DOMElement && 
-				'a' === $child->nodeName && // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$child->hasAttribute( 'data-smartlink' ) && 
-				$child->getAttribute( 'data-smartlink' ) === $this->uid 
-			) {
-				$smart_link_anchor = $child;
-				break;
-			}
-
-			// If the child has child nodes and is a DOMElement or DOMDocumentFragment, 
-			// recursively search for the smart link anchor.
-			if ( $child->hasChildNodes() && 
-			( $child instanceof \DOMElement || $child instanceof \DOMDocumentFragment ) ) {
-				$smart_link_anchor = $this->find_smart_link_anchor( $child );
-				if ( false !== $smart_link_anchor ) {
-					break;
-				}
-			}
-		}
-
-		return $smart_link_anchor;
-	}
-
 	
+		$xpath = new \DOMXPath( $node );
+		
+		// Query for any 'a' element that has a data-smartlink attribute matching our UID
+		$query = sprintf( '//a[@data-smartlink="%s"]', $this->uid );
+		$smart_link_nodes = $xpath->query( $query, $node );
+		
+		// Return false if no matching nodes were found
+		if ( 0 === $smart_link_nodes->length ) {
+			return false;
+		}
+		
+		// Return the first matching node
+		return $smart_link_nodes->item( 0 );
+	}
 
 	/**
 	 * Applies the inbound smart link to the post.
@@ -625,11 +659,11 @@ class Inbound_Smart_Link extends Smart_Link {
 		// If we're replacing an existing link, handle differently.
 		if ( isset( $validation_result['replace_node'] ) ) {
 			// Store the original link attributes, so we can restore them if the link gets deleted.
-			$original_link_attributes = array(
-				'href'           => $validation_result['replace_node']->getAttribute( 'href' ),
-				'data-smartlink' => $validation_result['replace_node']->getAttribute( 'data-smartlink' ),
-				'title'          => $validation_result['replace_node']->getAttribute( 'title' ),
-			);
+			$attributes = $validation_result['replace_node']->attributes;
+			$original_link_attributes = array();
+			foreach ( $attributes as $attribute ) {
+				$original_link_attributes[ $attribute->name ] = $attribute->value;
+			}
 			update_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', $original_link_attributes );
 			
 			$existing_link = $validation_result['replace_node'];
@@ -648,7 +682,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			$existing_link->setAttribute( 'data-smartlink', $this->uid );
 			$existing_link->setAttribute( 'title', $this->title );
 			$smart_link_node = $existing_link;
-		} else { // If we're not replacing an existing link, we need to create a new link.
+		} else { // If not replacing an existing link, create a new link.
 			// Get the position of the text within this specific text node.
 			$text_content = $text_node->textContent;
 			$target_pos   = strpos( $text_content, $this->text );
@@ -744,18 +778,23 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
-	 * Removes an inbound smart link from the post, and deletes the smart link.
+	 * Removes an inbound smart link from the post, and deletes the smart link by default.
 	 *
 	 * @since 3.18.0
 	 *
 	 * @param bool $restore_original_link Whether to restore the original link, if it was replaced.
+	 * @param bool $delete_smart_link Whether to delete the smart link after removing it from the post.
 	 * @return bool|\WP_Error True if the inbound smart link was deleted, WP_Error on failure.
 	 */
-	public function remove( $restore_original_link = false ) {
+	public function remove( $restore_original_link = false, $delete_smart_link = true ) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// If the smart link is not applied, we can just delete it.
 		if ( ! $this->applied ) {
-			return $this->delete();
+			if ( $delete_smart_link ) {
+				return $this->delete();
+			}
+
+			return true;
 		}
 
 		if ( ! class_exists( 'DOMDocument' ) ) {
@@ -773,20 +812,9 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$source_post_content = $source_post->post_content;
 
-		// Find the paragraph that contains the link text.
-		$paragraph_data = $this->get_paragraph( $source_post );
-
-		if ( is_wp_error( $paragraph_data ) ) {
-			return $paragraph_data;
-		}
-
-		$paragraph = $paragraph_data['paragraph'];
-
 		// Initialize the HTML parser.
-		$temp_doc    = new \DOMDocument();
 		$html_parser = new HTML5(
 			array(
-				'target_document' => $temp_doc,
 				'disable_html_ns' => true,
 			)
 		);
@@ -794,7 +822,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		libxml_use_internal_errors( true );
 
 		// Load the paragraph HTML into a DOMDocument.
-		$paragraph_fragment = $html_parser->loadHTMLFragment( $paragraph );
+		$content_dom = $html_parser->loadHTML( $source_post_content );
 
 		$errors = libxml_get_errors();
 
@@ -805,7 +833,8 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 		
 		// Remove the anchor element with the smart link UID.
-		$smart_link_anchor = $this->find_smart_link_anchor( $paragraph_fragment );
+		$smart_link_anchor = $this->find_smart_link_anchor( $content_dom );
+		$original_paragraph_html = $html_parser->saveHTML( $smart_link_anchor->parentNode );
 
 		if ( false === $smart_link_anchor ) {
 			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', 'Smart link anchor not found' );
@@ -822,7 +851,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	
 		// If the smart link replaced an existing link, restore the original link.
 		if ( $restore_original_link && is_array( $previous_link_attributes ) ) {
-			$original_link              = $temp_doc->createElement( 'a' );
+			$original_link              = $content_dom->createElement( 'a' );
 			$original_link->textContent = $smart_link_anchor->textContent;
 
 			foreach ( $previous_link_attributes as $attribute => $value ) {
@@ -831,22 +860,25 @@ class Inbound_Smart_Link extends Smart_Link {
 				}
 			}
 
+			// Remove the previous link attributes meta.
+			delete_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes' );
+
 			// Replace the smart link anchor with the original link.
 			$parent_node->replaceChild( $original_link, $smart_link_anchor );
 		} else {
 			// If the smart link did not replace an existing link, we need to remove the smart link anchor.
 			// Create a text node with the original text.
-			$text_node = $temp_doc->createTextNode( $smart_link_anchor->textContent );
+			$text_node = $content_dom->createTextNode( $smart_link_anchor->textContent );
 
 			// Replace the smart link anchor with the text node.
 			$parent_node->replaceChild( $text_node, $smart_link_anchor );
 		}
 
 		// Get the modified HTML.
-		$paragraph_html = $html_parser->saveHTML( $paragraph_fragment );
-		
+		$paragraph_html = $html_parser->saveHTML( $parent_node );
+
 		// Replace the paragraph with the new HTML.
-		$source_post_content = str_replace( $paragraph, $paragraph_html, $source_post_content );
+		$source_post_content = str_replace( $original_paragraph_html, $paragraph_html, $source_post_content );
 
 		// Update the post content.
 		$updated_post = wp_update_post(
@@ -868,8 +900,58 @@ class Inbound_Smart_Link extends Smart_Link {
 		$this->applied = false;
 		
 		// Delete the smart link.
-		return $this->delete();
+		if ( $delete_smart_link ) {
+			return $this->delete();
+		}
+
+		return true;
 		/* phpcs:enable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
+	}
+
+	/**
+	 * Updates the text of the smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $new_text The new text of the smart link.
+	 * @param int $offset The offset of the text to update.
+	 * @param bool $restore_original_link Whether to restore the original link, if it was replaced.
+	 * @return bool|\WP_Error True if the smart link was updated, WP_Error on failure.
+	 */
+	public function update_link_text( string $new_text, int $offset, bool $restore_original_link = false ) {
+		global $wpdb;
+
+		// To make sure the smart link is updated in a single atomic operation, start a transaction.
+  		$wpdb->query('START TRANSACTION');
+
+		// Remove the existing smart link from the post.
+		$deleted = $this->remove( $restore_original_link, false );
+
+		if ( is_wp_error( $deleted ) ) {
+			$wpdb->query('ROLLBACK');
+			return $deleted;
+		}
+
+		// Update the text of the smart link.
+		$this->text = $new_text;
+		$this->offset = $offset;
+
+		// Clean-up local caches.
+		$this->paragraph_data = null;
+		$this->post_data      = null;
+		$this->source_post    = null; 
+
+		// Apply the new smart link to the post.
+		$applied = $this->apply();
+
+		if ( is_wp_error( $applied ) ) {
+			$wpdb->query('ROLLBACK');
+			return $applied;
+		}
+
+		// Commit the transaction.
+		$wpdb->query('COMMIT');
+		return $applied;
 	}
 
 	/**

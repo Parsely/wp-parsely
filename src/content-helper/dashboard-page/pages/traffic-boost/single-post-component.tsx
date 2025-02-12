@@ -56,6 +56,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		setSuggestions,
 		setIsGeneratingSuggestions,
 		setSelectedTab,
+		updateInboundLink,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
@@ -225,7 +226,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			return false;
 		}
 
-		return await TrafficBoostProvider.getInstance().acceptSuggestion(
+		const { success, didReplaceLink } = await TrafficBoostProvider.getInstance().acceptSuggestion(
 			post.id,
 			link.smartLink.smart_link_id,
 			{
@@ -233,6 +234,13 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				offset: selectedText?.offset,
 			},
 		);
+
+		// Flag the smart link as a link replacement if the suggestion was accepted.
+		if ( didReplaceLink ) {
+			link.smartLink.is_link_replacement = true;
+		}
+
+		return success;
 	};
 
 	/**
@@ -257,16 +265,48 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} link The link that was removed.
+	 * @param {TrafficBoostLink} link            The link that was removed.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
 	 *
 	 * @return {Promise<boolean>} Whether the inbound link was removed.
 	 */
-	const handleRemoveInboundLink = async ( link: TrafficBoostLink ): Promise<boolean> => {
+	const handleRemoveInboundLink = async ( link: TrafficBoostLink, restoreOriginal: boolean ): Promise<boolean> => {
 		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
 			return false;
 		}
 
-		return await TrafficBoostProvider.getInstance().removeInboundLink( post.id, link.smartLink.smart_link_id );
+		return await TrafficBoostProvider.getInstance().removeInboundLink( post.id, link.smartLink.smart_link_id, restoreOriginal );
+	};
+
+	/**
+	 * Handles the update event on an inbound link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link            The link that was updated.
+	 * @param {string}           text            The text of the link.
+	 * @param {number}           offset          The offset of the link.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
+	 *
+	 * @return {Promise<boolean>} Whether the inbound link was updated.
+	 */
+	const handleUpdateInboundLink = async ( link: TrafficBoostLink, text: string, offset: number, restoreOriginal: boolean ): Promise<boolean> => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return false;
+		}
+
+		const updatedLink = await TrafficBoostProvider.getInstance().updateInboundLink( post.id, link.smartLink.smart_link_id, {
+			text,
+			offset,
+			restore_original: restoreOriginal,
+		} );
+
+		if ( updatedLink ) {
+			link.smartLink = updatedLink.data.smart_link;
+			updateInboundLink( link, link.smartLink.uid );
+		}
+
+		return true;
 	};
 
 	/**
@@ -390,6 +430,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 					onAccept={ handleAccept }
 					onDiscard={ handleDiscard }
 					onRemoveInboundLink={ handleRemoveInboundLink }
+					onUpdateInboundLink={ handleUpdateInboundLink }
 				/>
 			) }
 		</PageContainer>

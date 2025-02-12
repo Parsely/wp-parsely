@@ -206,6 +206,39 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				),
 			)
 		);
+
+		/**
+		 * POST /traffic-boost/{post_id}/update-inbound/{smart_link_id}.
+		 * Updates an inbound smart link.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/update-inbound/(?P<smart_link_id>[0-9]+)',
+			array( 'POST' ),
+			array( $this, 'update_inbound' ),
+			array(
+				'smart_link_id' => array(
+					'type'              => 'integer',
+					'description'       => __( 'The ID of the smart link to update.', 'wp-parsely' ),
+					'required'          => true,
+					'validate_callback' => array( $this, 'validate_smart_link_id' ),
+				),
+				'text'          => array(
+					'type'        => 'string',
+					'description' => __( 'The text of the smart link.', 'wp-parsely' ),
+					'required'    => false,
+				),
+				'offset'        => array(
+					'type'        => 'integer',
+					'description' => __( 'The offset of the smart link.', 'wp-parsely' ),
+					'required'    => false,
+				),
+				'restore_original' => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether to restore the original link.', 'wp-parsely' ),
+					'default'     => false,
+				),
+			)
+		);
 	}
 
 	/**
@@ -269,9 +302,10 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		$suggestions = array_map(
 			function ( Inbound_Smart_Link $link ) use ( $save ) {
-				// If the save flag is set, save the smart link.
-				if ( $save ) {
-					$link->applied = false;
+				$link->applied = false;
+
+				// If the save flag is set, and if the link is valid, save the smart link.
+				if ( $save && $link->has_valid_placement() ) {
 					$link->save();
 				}
 
@@ -432,8 +466,63 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return $deleted;
 		}
 
-		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted ) ), 200 );
+		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted, 'restore_original' => $restore_original_link ) ), 200 );
 	}
+
+	/**	
+	 * API Endpoint: POST /traffic-boost/{post_id}/update-inbound/{smart_link_id}.
+	 *
+	 * Updates an inbound smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response|\WP_Error The response object.
+	 */
+	public function update_inbound( WP_REST_Request $request ) {
+		/**
+		 * The inbound smart link.
+		 *
+		 * @var Inbound_Smart_Link $inbound_link
+		 */
+		$inbound_link = $request->get_param( 'inbound_link' );
+
+		/**
+		 * The text of the smart link.
+		 *
+		 * @var string|null $text
+		 */
+		$text = $request->get_param( 'text' );
+
+		/**
+		 * The offset of the smart link.
+		 *
+		 * @var int|null $offset
+		 */
+		$offset = $request->get_param( 'offset' );
+
+		/**
+		 * Whether to restore the original link.
+		 *
+		 * @var bool $restore_original_link
+		 */
+		$restore_original_link = $request->get_param( 'restore_original' );
+
+		$updated = $inbound_link->update_link_text( $text, $offset, $restore_original_link );
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		return new WP_REST_Response( array(
+			'data' => array(
+				'success' => $updated,
+				'smart_link' => $inbound_link->to_array(),
+				'restore_original' => $restore_original_link,
+				'did_replace_link' => $inbound_link->did_replace_link(),
+			)
+		), 200 );
+	}	
 
 	/**
 	 * API Endpoint: POST /traffic-boost/{post_id}/accept-suggestion/{smart_link_id}.
@@ -491,7 +580,12 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return $applied;
 		}
 
-		return new WP_REST_Response( array( 'data' => array( 'success' => $applied ) ), 200 );
+		return new WP_REST_Response( array( 
+			'data' => array( 
+				'success' => $applied,
+				'did_replace_link' => $inbound_link->did_replace_link(),
+			) 
+		), 200 );
 	}
 
 	/**

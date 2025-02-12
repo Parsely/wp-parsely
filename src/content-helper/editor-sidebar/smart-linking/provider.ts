@@ -55,6 +55,7 @@ export type InboundSmartLink = SmartLink & {
 		valid: boolean;
 		reason?: string;
 	};
+	is_link_replacement?: boolean;
 }
 
 /**

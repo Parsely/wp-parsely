@@ -304,6 +304,17 @@ interface SetIsGeneratingAction {
 }
 
 /**
+ * Interface for the UpdateInboundLinkAction.
+ *
+ * @since 3.18.0
+ */
+interface UpdateInboundLinkAction {
+	type: 'UPDATE_INBOUND_LINK';
+	link: TrafficBoostLink;
+	uid?: string;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -327,6 +338,7 @@ type ActionTypes =
 	| AddInboundLinkAction
 	| RemoveInboundLinkAction
 	| UpdateSuggestionAction
+	| UpdateInboundLinkAction
 	| SetIsAcceptingAction
 	| SetIsRemovingAction
 	| SetIsGeneratingSuggestionsAction
@@ -537,6 +549,25 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						: state.selectedLink,
 				};
 			}
+			case 'UPDATE_INBOUND_LINK': {
+				const uidToMatch = action.uid ?? action.link.uid;
+
+				const updatedLinks = state.inboundLinksTab.links.map( ( existingLink ) =>
+					existingLink.uid === uidToMatch ? action.link : existingLink
+				);
+
+				const shouldUpdateSelectedLink = state.selectedLink?.uid === uidToMatch;
+				const newSelectedLink = shouldUpdateSelectedLink ? action.link : state.selectedLink;
+
+				return {
+					...state,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
+						links: updatedLinks,
+					},
+					selectedLink: newSelectedLink,
+				};
+			}
 			case 'SET_IS_ACCEPTING':
 				return {
 					...state,
@@ -679,6 +710,13 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 			return {
 				type: 'UPDATE_SUGGESTION',
 				suggestion,
+			};
+		},
+		updateInboundLink( link: TrafficBoostLink, uid?: string ): UpdateInboundLinkAction {
+			return {
+				type: 'UPDATE_INBOUND_LINK',
+				link,
+				uid,
 			};
 		},
 		setIsAccepting( link: TrafficBoostLink, value: boolean ): SetIsAcceptingAction {

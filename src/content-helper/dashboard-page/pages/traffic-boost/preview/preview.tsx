@@ -40,7 +40,8 @@ interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
 	onAccept: ( link: TrafficBoostLink, selectedText: TextSelection | null ) => Promise<boolean>;
 	onDiscard: ( link: TrafficBoostLink ) => Promise<void>;
-	onRemoveInboundLink: ( link: TrafficBoostLink ) => Promise<boolean>;
+	onRemoveInboundLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => Promise<boolean>;
+	onUpdateInboundLink: ( link: TrafficBoostLink, text: string, offset: number, restoreOriginal: boolean ) => Promise<boolean>;
 }
 
 /**
@@ -55,6 +56,7 @@ export const TrafficBoostPreview = ( {
 	onAccept,
 	onDiscard,
 	onRemoveInboundLink,
+	onUpdateInboundLink,
 }: TrafficBoostPreviewProps ): React.JSX.Element => {
 	const [ isFrontendPreview, setIsFrontendPreview ] = useState<boolean>( false );
 	const [ isInboundLink, setIsInboundLink ] = useState<boolean>( false );
@@ -341,13 +343,14 @@ export const TrafficBoostPreview = ( {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} link The link to remove.
+	 * @param {TrafficBoostLink} link            The link to remove.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
 	 */
-	const handleRemove = async ( link: TrafficBoostLink ) => {
+	const handleRemove = async ( link: TrafficBoostLink, restoreOriginal: boolean ) => {
 		setIsRemoving( link, true );
 
 		try {
-			const removed = await onRemoveInboundLink( link );
+			const removed = await onRemoveInboundLink( link, restoreOriginal );
 
 			if ( ! removed ) {
 				throw new ContentHelperError(
@@ -401,9 +404,60 @@ export const TrafficBoostPreview = ( {
 	 * Handles the update link event.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link            The link to update.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
 	 */
-	const handleUpdateLink = () => {
-		//TODO: Implement this.
+	const handleUpdateLink = async ( link: TrafficBoostLink, restoreOriginal: boolean ) => {
+		if ( ! selectedText ) {
+			return;
+		}
+
+		setIsAccepting( link, true );
+
+		try {
+			const updated = await onUpdateInboundLink( link, selectedText.text, selectedText.offset, restoreOriginal );
+
+			if ( ! updated ) {
+				throw new ContentHelperError(
+					__( 'Failed to update link.', 'wp-parsely' ),
+					ContentHelperErrorCode.UnknownError,
+					'' // No prefix for this error.
+				);
+			}
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to update link.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			createErrorNotice(
+				errorMessage,
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+			setIsAccepting( link, false );
+			return;
+		}
+
+		setIsAccepting( link, false );
+
+		// Show a snackbar success message.
+		createSuccessNotice(
+			__( 'Link updated on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			{
+				type: 'snackbar',
+				icon: <Icon icon={ linkIcon } />,
+			}
+		);
+
+		// Refresh the iframe.
+		setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
+
+		// Clear the selected text.
+		setSelectedText( null );
 	};
 
 	if ( ! activePost || ! post ) {

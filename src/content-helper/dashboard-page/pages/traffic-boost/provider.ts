@@ -82,7 +82,34 @@ interface ErrorResponse {
  *
  * @since 3.18.0
  */
-type AcceptSuggestionResponse = SuccessResponse & ErrorResponse;
+type AcceptSuggestionResponse = {
+	data: {
+		did_replace_link?: boolean;
+	};
+} & ( SuccessResponse & ErrorResponse );
+
+/**
+ * Represents the response from the Update Inbound Link endpoint.
+ *
+ * @since 3.18.0
+ */
+type UpdateInboundLinkResponse = {
+	data: {
+		smart_link: InboundSmartLink;
+		restore_original: boolean;
+		did_replace_link: boolean;
+	};
+} & ( SuccessResponse & ErrorResponse );
+
+/**
+ * Represents the return value from the acceptSuggestion method.
+ *
+ * @since 3.18.0
+ */
+type AcceptSuggestionReturn = {
+	success: boolean;
+	didReplaceLink: boolean;
+};
 
 /**
  * Represents the response from the Discard Suggestion endpoint.
@@ -362,20 +389,57 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number} postId      The ID of the post to remove the inbound link from.
-	 * @param {number} smartLinkId The ID of the inbound smart link to remove.
+	 * @param {number}  postId          The ID of the post to remove the inbound link from.
+	 * @param {number}  smartLinkId     The ID of the inbound smart link to remove.
+	 * @param {boolean} restoreOriginal Whether to restore the original link.
 	 *
 	 * @return {Promise<boolean>} Whether the inbound link was removed.
 	 */
-	public async removeInboundLink( postId: number, smartLinkId: number ): Promise<boolean> {
+	public async removeInboundLink( postId: number, smartLinkId: number, restoreOriginal: boolean ): Promise<boolean> {
 		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/delete-inbound/${ smartLinkId }`;
 
 		const response = await this.fetch<SuccessResponse>( {
 			method: 'DELETE',
 			path: requestPath,
+			data: {
+				restore_original: restoreOriginal,
+			},
 		} );
 
 		return response.data.success;
+	}
+
+	/**
+	 * Updates an inbound smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number}  postId                   The ID of the post to update the inbound smart link for.
+	 * @param {number}  smartLinkId              The ID of the inbound smart link to update.
+	 * @param {Object}  options                  The options to pass to the API.
+	 * @param {string}  options.text             The new text of the smart link.
+	 * @param {boolean} options.restore_original Whether to restore the original link.
+	 * @param {number}  options.offset           The new offset of the smart link.
+	 *
+	 * @return {Promise<boolean>} Whether the inbound smart link was updated.
+	 */
+	public async updateInboundLink(
+		postId: number,
+		smartLinkId: number,
+		options: {
+			text?: string;
+			offset?: number;
+			restore_original?: boolean;
+		} ): Promise<UpdateInboundLinkResponse> {
+		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/update-inbound/${ smartLinkId }`;
+
+		const response = await this.fetch<UpdateInboundLinkResponse>( {
+			method: 'POST',
+			path: requestPath,
+			data: options,
+		} );
+
+		return response;
 	}
 
 	/**
@@ -457,7 +521,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			text?: string;
 			offset?: number;
 		},
-	): Promise<boolean> {
+	): Promise<AcceptSuggestionReturn> {
 		const response = await this.fetch<AcceptSuggestionResponse>( {
 			method: 'POST',
 			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/accept-suggestion/${ suggestionId }`,
@@ -468,7 +532,10 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		} );
 
 		if ( response.data.success ) {
-			return true;
+			return {
+				success: true,
+				didReplaceLink: response.data.did_replace_link ?? false,
+			};
 		}
 
 		throw new ContentHelperError(
