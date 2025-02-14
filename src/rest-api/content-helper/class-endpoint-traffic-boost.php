@@ -109,6 +109,23 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		);
 
 		/**
+		 * POST /traffic-boost/{post_id}/generate-placement/{source_post_id}.
+		 * Suggests inbound link positions for a post.
+		 */
+		$this->register_rest_route_with_post_id(
+			'/generate-placement/(?P<source_post_id>[0-9]+)',
+			array( 'POST' ),
+			array( $this, 'generate_placement_suggestions' ),
+			array(
+				'source_post_id' => array(
+					'type' => 'integer',
+					'required' => true,
+					'description' => __( 'The ID of the source post.', 'wp-parsely' ),
+				)
+			)
+		);
+
+		/**
 		 * GET /traffic-boost/{post_id}/get-suggestions.
 		 * Gets the existing inbound smart links for a post.
 		 */
@@ -325,6 +342,73 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		return new WP_REST_Response( $response, 200 );
 	}
 
+	/**
+	 * API Endpoint: POST /traffic-boost/{post_id}/generate-placement.
+	 *
+	 * Generates placement suggestions for a specific post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
+	 */
+	public function generate_placement_suggestions( WP_REST_Request $request ) {
+		/**
+		 * The destination post, that the inbound link links to.
+		 *
+		 * @var WP_Post $destination_post
+		 */
+		$destination_post = $request->get_param( 'post' );
+
+		/**
+		 * The source post ID, where the inbound link will be placed.
+		 *
+		 * @var int $source_post_id
+		 */
+		$source_post_id = $request->get_param( 'source_post_id' );
+
+		/**
+		 * The source post.
+		 *
+		 * @var WP_Post $source_post
+		 */
+		$source_post = get_post( $source_post_id );
+
+		if ( ! $source_post ) {
+			return new WP_Error(
+				'parsely_invalid_source_post',
+				__( 'Invalid source post.', 'wp-parsely' )
+			);
+		}
+
+		$suggestions = $this->suggestions_api->get_inbound_link_positions( $source_post, $destination_post );
+
+		if ( is_wp_error( $suggestions ) ) {
+			return $suggestions;
+		}
+
+		$valid_suggestion = null;
+		// Try to find the first suggestion that has a valid placement.
+		foreach ( $suggestions as $suggestion ) {
+			if ( $suggestion->has_valid_placement() ) {
+				$valid_suggestion = $suggestion;
+				break;
+			}
+		}
+
+		if ( null === $valid_suggestion ) {
+			return new WP_Error(
+				'parsely_no_valid_placement',
+				__( 'No valid placement found.', 'wp-parsely' ),
+				array( 'suggestions' => $suggestions )
+			);
+		}
+
+		// Save the suggestion to the database.
+		$valid_suggestion->save();
+
+		return new WP_REST_Response( array( 'data' => $suggestion->to_array() ), 200 );
+	}
 	/**
 	 * API Endpoint: GET /traffic-boost/{post_id}/get-suggestions.
 	 *

@@ -258,6 +258,7 @@ interface RemoveInboundLinkAction {
 interface UpdateSuggestionAction {
 	type: 'UPDATE_SUGGESTION';
 	suggestion: TrafficBoostLink;
+	uid?: string;
 }
 
 /**
@@ -531,12 +532,14 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				};
 			}
 			case 'UPDATE_SUGGESTION': {
-				const isMatchingSuggestion = ( suggestion: TrafficBoostLink ) =>
-					suggestion.uid === action.suggestion.uid;
+				const uidToMatch = action.uid ?? action.suggestion.uid;
 
 				const updatedSuggestions = state.suggestionsTab.suggestions.map( ( suggestion ) =>
-					isMatchingSuggestion( suggestion ) ? action.suggestion : suggestion
+					suggestion.uid === uidToMatch ? action.suggestion : suggestion
 				);
+
+				const shouldUpdateSelectedLink = state.selectedLink?.uid === uidToMatch;
+				const newSelectedLink = shouldUpdateSelectedLink ? action.suggestion : state.selectedLink;
 
 				return {
 					...state,
@@ -544,9 +547,7 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						...state.suggestionsTab,
 						suggestions: updatedSuggestions,
 					},
-					selectedLink: state.selectedLink?.uid === action.suggestion.uid
-						? action.suggestion
-						: state.selectedLink,
+					selectedLink: newSelectedLink,
 				};
 			}
 			case 'UPDATE_INBOUND_LINK': {
@@ -706,10 +707,11 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				updateSelectedLink,
 			};
 		},
-		updateSuggestion( suggestion: TrafficBoostLink ): UpdateSuggestionAction {
+		updateSuggestion( suggestion: TrafficBoostLink, uid?: string ): UpdateSuggestionAction {
 			return {
 				type: 'UPDATE_SUGGESTION',
 				suggestion,
+				uid,
 			};
 		},
 		updateInboundLink( link: TrafficBoostLink, uid?: string ): UpdateInboundLinkAction {

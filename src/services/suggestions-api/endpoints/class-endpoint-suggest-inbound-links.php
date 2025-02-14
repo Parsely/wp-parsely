@@ -20,11 +20,6 @@ use WP_Error;
  *
  * @link https://content-suggestions-api.parsely.net/prod/docs#/default/suggest_inbound_links_suggest_inbound_links_post
  *
- * @phpstan-type Traffic_Source = array{
- *     source: string,
- *     weight: float
- * }
- *
  * @phpstan-type Endpoint_Suggest_Inbound_Links_Options = array{
  *     max_items?: int,
  *     max_link_words?: int,
