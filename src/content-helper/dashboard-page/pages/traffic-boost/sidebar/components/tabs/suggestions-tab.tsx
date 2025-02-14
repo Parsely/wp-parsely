@@ -4,7 +4,7 @@
 import { Button, Icon, PanelBody, PanelRow, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
-import { linkOff, update } from '@wordpress/icons';
+import { error, linkOff, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -14,6 +14,7 @@ import { TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { AddNewLinkButton } from '../add-new-link-button';
 import { LinksList } from '../links-list/links-list';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../../../common/content-helper-error';
 
 /**
  * Component that renders the suggestions settings.
@@ -134,9 +135,10 @@ const SuggestionsTab = ( {
 		updateSuggestion,
 		setIsGeneratingSuggestions,
 		setIsGenerating,
+		removeSuggestion,
 	} = useDispatch( TrafficBoostStore );
 
-	const { createSuccessNotice } = useDispatch( 'core/notices' );
+	const { createSuccessNotice, createErrorNotice } = useDispatch( 'core/notices' );
 
 	/**
 	 * Adds a Traffic Boost link suggestion to the current post.
@@ -146,16 +148,41 @@ const SuggestionsTab = ( {
 	 * @param {HydratedPost} post The post that will be added to the suggestion list.
 	 */
 	const addTrafficBoostLink = async ( post: HydratedPost ) => {
+		if ( ! currentPost ) {
+			return;
+		}
+
+		const previousSelectedLink = selectedLink;
+
 		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
 		await addSuggestion( trafficBoostLink );
 		await setIsGenerating( trafficBoostLink, true );
 
-		// Generate the placement for the suggestion.
-		const updatedLink = await trafficBoostProvider.generateSuggestionForPost( trafficBoostLink );
-		await updateSuggestion( updatedLink );
-		setTimeout( () => {
+		try {
+			const updatedLink = await trafficBoostProvider.generateSuggestionForPost(
+				currentPost,
+				post,
+				trafficBoostLink
+			);
+
+			await updateSuggestion( updatedLink, trafficBoostLink.uid );
 			setIsGenerating( trafficBoostLink, false );
-		}, 1000 );
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to find a link placement.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			// Create an error snackbar.
+			createErrorNotice( errorMessage, {
+				type: 'snackbar',
+				icon: <Icon icon={ error } />,
+			} );
+
+			setIsGenerating( trafficBoostLink, false );
+			removeSuggestion( trafficBoostLink );
+			setSelectedLink( previousSelectedLink );
+		}
 	};
 
 	/**
@@ -194,9 +221,9 @@ const SuggestionsTab = ( {
 			);
 
 			setIsGeneratingSuggestions( false );
-		} catch ( error ) {
+		} catch ( err ) {
 			// eslint-disable-next-line no-console
-			console.error( error );
+			console.error( err );
 			setIsGeneratingSuggestions( false );
 			// TODO: Show an error notice.
 		}

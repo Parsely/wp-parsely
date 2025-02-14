@@ -49,6 +49,7 @@ class Suggestions_API_Service extends Base_API_Service {
 			new Endpoints\Endpoint_Suggest_Headline( $this ),
 			new Endpoints\Endpoint_Suggest_Linked_Reference( $this ),
 			new Endpoints\Endpoint_Suggest_Inbound_Links( $this ),
+			new Endpoints\Endpoint_Suggest_Inbound_Link_Positions( $this ),
 		);
 
 		foreach ( $endpoints as $endpoint ) {
@@ -130,5 +131,22 @@ class Suggestions_API_Service extends Base_API_Service {
 		$endpoint = $this->get_endpoint( '/suggest-inbound-links' );
 
 		return $endpoint->get_inbound_links( $post, $options );
+	}
+
+	/**
+	 * Gets suggested inbound link positions for the given source and destination posts.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \WP_Post $source_post    The source post to get inbound link positions for.
+	 * @param \WP_Post $destination_post The destination post to get inbound link positions for.
+	 * @return \Parsely\Models\Inbound_Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
+	 *                                                            object if the response is an error.
+	 */
+	public function get_inbound_link_positions( \WP_Post $source_post, \WP_Post $destination_post ) {
+		/** @var Endpoints\Endpoint_Suggest_Inbound_Link_Positions $endpoint */
+		$endpoint = $this->get_endpoint( '/suggest-inbound-link-positions' );
+
+		return $endpoint->get_inbound_link_positions( $source_post, $destination_post );
 	}
 }

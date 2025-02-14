@@ -1,6 +1,7 @@
 /**
  * Internal dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { BaseWordPressProvider, HydratedPost } from '../../../common/base-wordpress-provider';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
@@ -43,6 +44,15 @@ export interface TrafficBoostLink {
  */
 interface InboundSmartLinkDataResponse {
 	data: InboundSmartLink[];
+}
+
+/**
+ * Represents the response from the Generate Placement endpoint.
+ *
+ * @since 3.18.0
+ */
+interface InboundSmartLinkPlacementResponse {
+	data: InboundSmartLink;
 }
 
 /**
@@ -368,20 +378,31 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} suggestion The suggestion to generate.
+	 * @param {HydratedPost}     sourcePost       The source post.
+	 * @param {HydratedPost}     destinationPost  The destination post.
+	 * @param {TrafficBoostLink} trafficBoostLink The traffic boost link to generate a placement for.
 	 *
 	 * @return {Promise<TrafficBoostLink>} The generated suggestion.
 	 */
-	public async generateSuggestionForPost( suggestion: TrafficBoostLink ): Promise<TrafficBoostLink> {
-		// TODO: Trigger the generation of the placement to Parse.ly AI.
-		// As a mockup, after 5 seconds, we'll mark the link as not generating placement.
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				suggestion.smartLink = this.createMockedSmartLink( suggestion.targetPost, suggestion.targetPost.id );
+	public async generateSuggestionForPost( sourcePost: HydratedPost, destinationPost: HydratedPost, trafficBoostLink: TrafficBoostLink ): Promise<TrafficBoostLink> {
+		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ sourcePost.id }/generate-placement/${ destinationPost.id }`;
 
-				resolve( suggestion );
-			}, 5000 );
+		const response = await this.fetch<InboundSmartLinkPlacementResponse>( {
+			method: 'POST',
+			path: requestPath,
 		} );
+
+		if ( ! response.data ) {
+			throw new ContentHelperError(
+				__( 'Couldn\'t find a good link placement.', 'wp-parsely' ),
+				ContentHelperErrorCode.UnknownError,
+				''
+			);
+		}
+
+		trafficBoostLink.smartLink = response.data;
+
+		return trafficBoostLink;
 	}
 
 	/**
