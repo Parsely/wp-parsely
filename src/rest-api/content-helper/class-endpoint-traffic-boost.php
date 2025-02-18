@@ -121,7 +121,12 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'type' => 'integer',
 					'required' => true,
 					'description' => __( 'The ID of the source post.', 'wp-parsely' ),
-				)
+				),
+				'ignore_keywords' => array(
+					'type' => 'array',
+					'description' => __( 'The keywords to ignore.', 'wp-parsely' ),
+					'required' => false,
+				),
 			)
 		);
 
@@ -321,8 +326,8 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			function ( Inbound_Smart_Link $link ) use ( $save ) {
 				$link->applied = false;
 
-				// If the save flag is set, and if the link is valid, save the smart link.
-				if ( $save && $link->has_valid_placement() ) {
+				// If the save flag is set, save the smart link.
+				if ( $save ) {
 					$link->save();
 				}
 
@@ -374,6 +379,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$source_post = get_post( $source_post_id );
 
+		/**
+		 * The keywords to ignore.
+		 *
+		 * @var array|null $ignore_keywords
+		 */
+		$ignore_keywords = $request->get_param( 'ignore_keywords' );
+
 		if ( ! $source_post ) {
 			return new WP_Error(
 				'parsely_invalid_source_post',
@@ -390,6 +402,11 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$valid_suggestion = null;
 		// Try to find the first suggestion that has a valid placement.
 		foreach ( $suggestions as $suggestion ) {
+			// If the ignore keywords are set and the suggestion text is in the ignore keywords, skip it.
+			if ( $ignore_keywords && in_array( $suggestion->text, $ignore_keywords ) ) {
+				continue;
+			}
+
 			if ( $suggestion->has_valid_placement() ) {
 				$valid_suggestion = $suggestion;
 				break;
@@ -404,10 +421,21 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			);
 		}
 
+		// Check if there's already a smart link with the same source and destination posts.
+		$existing_smart_link = Inbound_Smart_Link::get_smart_link_by_source_and_destination( $source_post_id, $destination_post->ID );
+
+		// If so, update the smart link with the new text and offset.
+		if ( false !== $existing_smart_link ) {
+			$existing_smart_link->text = $valid_suggestion->text;
+			$existing_smart_link->offset = $valid_suggestion->offset;
+
+			$valid_suggestion = $existing_smart_link;
+		}
+
 		// Save the suggestion to the database.
 		$valid_suggestion->save();
 
-		return new WP_REST_Response( array( 'data' => $suggestion->to_array() ), 200 );
+		return new WP_REST_Response( array( 'data' => $valid_suggestion->to_array() ), 200 );
 	}
 	/**
 	 * API Endpoint: GET /traffic-boost/{post_id}/get-suggestions.

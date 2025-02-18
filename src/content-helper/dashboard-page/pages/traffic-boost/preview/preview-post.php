@@ -26,6 +26,9 @@ declare(strict_types=1);
 			min-height: none;
 			height: 0;
 		}
+		.wp-parsely-preview-content {
+			padding-bottom: 30px;
+		}
 		.editor-styles-wrapper {
 			max-width: 840px;
 			margin: 0 auto;

@@ -72,7 +72,7 @@ export const PreviewIframe = ( {
 		__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
 		__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
 		__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
-	], [] );
+	].sort( () => Math.random() - 0.5 ), [] );
 
 	/**
 	 * Sets the message index to a random index based on the messages array length.
@@ -154,8 +154,9 @@ export const PreviewIframe = ( {
 				event.preventDefault();
 				event.stopPropagation();
 
-				// If the parent is not a paragraph, skip.
-				if ( target.parentElement?.tagName !== 'P' ) {
+				// If the parent is not a paragraph or an anchor, skip.
+				const allowedParentTagNamesToBeClicked = [ 'P', 'A' ];
+				if ( ! allowedParentTagNamesToBeClicked.includes( target.parentElement?.tagName ?? '' ) ) {
 					return;
 				}
 

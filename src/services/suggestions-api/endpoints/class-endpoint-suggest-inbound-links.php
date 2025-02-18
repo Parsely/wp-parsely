@@ -86,32 +86,39 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 			$link = apply_filters( 'wp_parsely_suggest_inbound_links_link', $link );
 
 			$anchor_text_suggestions = $link['anchor_texts'];
-			
-			// For now, let's focus on the first anchor text suggestion.
-			$anchor_text_suggestion = $anchor_text_suggestions[0];
 
-			$link_obj = new Inbound_Smart_Link(
-				esc_url( $link['source_url'] ),
-				esc_attr( $link['title'] ),
-				wp_kses_post( $anchor_text_suggestion['text'] ),
-				$anchor_text_suggestion['offset']
-			);
+			foreach ( $anchor_text_suggestions as $anchor_text_suggestion ) {
+				$link_obj = new Inbound_Smart_Link(
+					esc_url( $link['source_url'] ),
+					esc_attr( $link['title'] ),
+					wp_kses_post( $anchor_text_suggestion['text'] ),
+					$anchor_text_suggestion['offset']
+				);
+	
+				// Set the destination to be the current post.
+				$link_obj->set_destination_post( $post );
+	
+				// Set the source post from the URL.
+				$did_set_source = $link_obj->set_source_from_url( $link['source_url'] );
+	
+				// If no source post was found or the source post is the same as the destination post, skip it.
+				if ( ! $did_set_source || $link_obj->source_post_id === $post->ID ) {
+					continue;
+				}
 
-			// Set the destination to be the current post.
-			$link_obj->set_destination_post( $post );
+				// If the link doesn't not have a valid placement, skip it.
+				if ( ! $link_obj->has_valid_placement() ) {
+					continue;
+				}
 
-			// Set the source post from the URL.
-			$did_set_source = $link_obj->set_source_from_url( $link['source_url'] );
+				// Update the UID of the smart link.
+				$link_obj->update_uid();
+	
+				$links[] = $link_obj;
 
-			// If no source post was found or the source post is the same as the destination post, skip it.
-			if ( ! $did_set_source || $link_obj->source_post_id === $post->ID ) {
-				continue;
-			} 
-
-			// Update the UID of the smart link.
-			$link_obj->update_uid();
-
-			$links[] = $link_obj;
+				// Break after the first valid link.
+				break;
+			}
 		}
 
 		return $links;

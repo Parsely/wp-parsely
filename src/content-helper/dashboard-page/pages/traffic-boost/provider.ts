@@ -198,68 +198,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
-	 * Creates a mocked smart link for a given post.
-	 *
-	 * This method will be removed once we have implemented fetching from the
-	 * Parse.ly API.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {HydratedPost} sourcePost    The source post to create the smart link from.
-	 * @param {number}       destinationId The ID of the destination post.
-	 *
-	 * @return {InboundSmartLink} The mocked smart link.
-	 */
-	private createMockedSmartLink(
-		sourcePost: HydratedPost,
-		destinationId: number,
-	): InboundSmartLink {
-		const splitIntoBlocks = ( text: string, size: number ) => {
-			const words = text.split( ' ' );
-
-			return words.reduce( ( blocks, word ) => {
-				const last = blocks[ blocks.length - 1 ];
-
-				if ( ( last + ' ' + word ).trim().length <= size ) {
-					blocks[ blocks.length - 1 ] = ( last + ' ' + word ).trim();
-				} else {
-					blocks.push( word );
-				}
-
-				return blocks;
-			}, [ '' ] );
-		};
-
-		const tempDiv = document.createElement( 'div' );
-		tempDiv.innerHTML = sourcePost.content.rendered;
-		const plainContent = tempDiv.textContent ?? tempDiv.innerText ?? '';
-		const blocks = splitIntoBlocks( plainContent, 50 );
-		const text = blocks[ Math.floor( Math.random() * blocks.length ) ];
-		const trimmedText = text.trim();
-
-		return {
-			uid: sourcePost.id.toString(),
-			smart_link_id: 0,
-			href: sourcePost.link,
-			text: trimmedText,
-			title: sourcePost.title.raw,
-			offset: 0,
-			applied: false,
-			destination: {
-				post_id: destinationId,
-				post_type: 'Post',
-			},
-			source: {
-				post_id: sourcePost.id,
-				post_type: sourcePost.type,
-			},
-			validation: {
-				valid: true,
-			},
-		};
-	}
-
-	/**
 	 * Gets the existing suggestions for a given post.
 	 *
 	 * @since 3.18.0
@@ -381,15 +319,24 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 * @param {HydratedPost}     sourcePost       The source post.
 	 * @param {HydratedPost}     destinationPost  The destination post.
 	 * @param {TrafficBoostLink} trafficBoostLink The traffic boost link to generate a placement for.
+	 * @param {string[]}         ignoreKeywords   The keywords to ignore.
 	 *
 	 * @return {Promise<TrafficBoostLink>} The generated suggestion.
 	 */
-	public async generateSuggestionForPost( sourcePost: HydratedPost, destinationPost: HydratedPost, trafficBoostLink: TrafficBoostLink ): Promise<TrafficBoostLink> {
+	public async generateSuggestionForPost(
+		sourcePost: HydratedPost,
+		destinationPost: HydratedPost,
+		trafficBoostLink: TrafficBoostLink,
+		ignoreKeywords?: string[],
+	): Promise<TrafficBoostLink> {
 		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ sourcePost.id }/generate-placement/${ destinationPost.id }`;
 
 		const response = await this.fetch<InboundSmartLinkPlacementResponse>( {
 			method: 'POST',
 			path: requestPath,
+			data: {
+				ignore_keywords: ignoreKeywords,
+			},
 		} );
 
 		if ( ! response.data ) {

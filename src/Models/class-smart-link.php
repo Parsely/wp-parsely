@@ -793,7 +793,7 @@ class Smart_Link extends Base_Model {
 					'terms'            => (string) $post_id,
 				),
 			),
-			'orderby'        => 'modified',
+			'orderby'        => 'date',
 			'order'          => 'DESC',
 		);
 

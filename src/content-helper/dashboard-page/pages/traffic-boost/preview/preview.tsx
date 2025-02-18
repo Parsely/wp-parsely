@@ -14,7 +14,7 @@ import { addQueryArgs } from '@wordpress/url';
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
-import { TrafficBoostLink } from '../provider';
+import { TrafficBoostLink, TrafficBoostProvider } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -95,6 +95,8 @@ export const TrafficBoostPreview = ( {
 		setSelectedTab,
 		setIsAccepting,
 		setIsRemoving,
+		setIsGenerating,
+		updateSuggestion,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
@@ -460,6 +462,59 @@ export const TrafficBoostPreview = ( {
 		setSelectedText( null );
 	};
 
+	/**
+	 * Handles the regenerate pressed event.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleRegenerate = async () => {
+		if ( ! post ) {
+			return;
+		}
+
+		setIsGenerating( activeLink, true );
+		// Remove the smart link from the active link.
+		const oldSmartLink = activeLink.smartLink;
+		activeLink.smartLink = undefined;
+		// Update the active link.
+		updateSuggestion( activeLink );
+		setIsLoading( true );
+
+		try {
+			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
+				post,
+				activeLink.targetPost,
+				activeLink,
+				[ oldSmartLink?.text ?? '' ],
+			);
+
+			updateSuggestion( updatedLink );
+			setIsGenerating( activeLink, false );
+			setIsLoading( false );
+		} catch ( err ) {
+			// eslint-disable-next-line no-console
+			console.error( err );
+
+			// Restore the old smart link.
+			activeLink.smartLink = oldSmartLink;
+			updateSuggestion( activeLink );
+			setIsGenerating( activeLink, false );
+			setIsLoading( false );
+
+			// Show a snackbar error message.
+			createErrorNotice(
+				__( 'Failed to regenerate suggested link.', 'wp-parsely' ),
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+		} finally {
+			// Refresh the iframe.
+			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
+		}
+	};
+
 	if ( ! activePost || ! post ) {
 		return <></>;
 	}
@@ -467,12 +522,14 @@ export const TrafficBoostPreview = ( {
 	return (
 		<div className="traffic-boost-preview">
 			<PreviewHeader
+				isLoading={ isLoading }
 				activeLink={ activeLink }
 				onOpenPostInNewTab={ openPostInNewTab }
 				onOpenPostEditor={ openPostEditor }
 				onOpenParselyDashboard={ openParselyDashboard }
 				isFrontendPreview={ isFrontendPreview }
 				setIsFrontendPreview={ setIsFrontendPreview }
+				onRegeneratePressed={ handleRegenerate }
 			/>
 			<PreviewIframe
 				activeLink={ activeLink }

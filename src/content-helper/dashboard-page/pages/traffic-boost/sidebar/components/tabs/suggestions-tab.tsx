@@ -4,7 +4,7 @@
 import { Button, Icon, PanelBody, PanelRow, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
-import { error, linkOff, update } from '@wordpress/icons';
+import { error, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -19,8 +19,11 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../../../../../co
 /**
  * Component that renders the suggestions settings.
  *
+ * Note: Not in use yet.
+ *
  * @since 3.18.0
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SuggestionsSettings = (): React.JSX.Element => {
 	return (
 		<div className="traffic-boost-suggestions-settings">
@@ -216,7 +219,7 @@ const SuggestionsTab = ( {
 					__( 'Generated %d suggestions', 'wp-parsely' ), generatedSuggestions.length ),
 				{
 					type: 'snackbar',
-					icon: <Icon icon={ linkOff } />,
+					icon: <Icon icon={ update } />,
 				}
 			);
 
@@ -240,9 +243,6 @@ const SuggestionsTab = ( {
 
 	return (
 		<>
-			{ ! isLoadingSuggestions && (
-				<SuggestionsSettings />
-			) }
 			<LinksList
 				isLoading={ isLoadingSuggestions }
 				links={ suggestions }

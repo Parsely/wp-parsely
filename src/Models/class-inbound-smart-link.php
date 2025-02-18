@@ -1111,6 +1111,44 @@ class Inbound_Smart_Link extends Smart_Link {
 		return self::from_smart_link( $smart_link );
 	}
 
+	/**	
+	 * Gets an inbound smart link by its source and destination posts.
+	 *
+	 * @since 3.18.0
+	 * 
+	 * @param int $source_post_id The ID of the source post.
+	 * @param int $destination_post_id The ID of the destination post.
+	 * @return self|false The inbound smart link, or false if not found.
+	 */
+	public static function get_smart_link_by_source_and_destination( int $source_post_id, int $destination_post_id ) {
+		$args = array(
+			'post_type'      => 'parsely_smart_link',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'tax_query'      => array(
+				array(
+					'taxonomy'         => 'smart_link_destination',
+					'field'            => 'name',
+					'include_children' => false,
+					'terms'            => (string) $destination_post_id,
+				),
+				array(
+					'taxonomy'         => 'smart_link_source',
+					'field'            => 'name',
+					'include_children' => false,
+					'terms'            => (string) $source_post_id,
+				),
+			),
+		);
+
+		$query = new \WP_Query( $args );
+
+		if ( 0 === $query->post_count ) {
+			return false;
+		}
+
+		return self::get_smart_link_by_id( $query->posts[0] );
+	}
 	/**
 	 * Finds the line containing the specified text in the HTML.
 	 *
