@@ -152,7 +152,7 @@ export const PreviewHeader = ( {
 					<div dangerouslySetInnerHTML={ { __html: activeLink?.targetPost?.title.rendered } } />
 				</div>
 				<LinkCounter
-					postLinks={ activeLink.postLinks }
+					post={ activeLink.targetPost }
 					selectedLinkType={ null }
 				/>
 			</div>

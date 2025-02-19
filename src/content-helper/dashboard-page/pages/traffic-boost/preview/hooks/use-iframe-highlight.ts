@@ -7,8 +7,9 @@ import { useCallback } from '@wordpress/element';
  * Internal imports
  */
 import { escapeRegExp } from '../../../../../common/utils/functions';
-import { LinkType, TrafficBoostLink } from '../../provider';
+import { TrafficBoostLink } from '../../provider';
 import { TextSelection } from '../preview';
+import { LinkType } from '../components/link-counter';
 
 /**
  * Props for the useIframeHighlight hook.
@@ -571,8 +572,9 @@ export const useIframeHighlight = ( {
 	 * @param {string}            selectedLinkType The selected link type to highlight.
 	 */
 	const highlightLinkType = useCallback( ( iframe: HTMLIFrameElement, selectedLinkType: LinkType | null ) => {
+		const contentArea = contentAreaRef.current;
 		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-		if ( ! iframeDocument ) {
+		if ( ! contentArea || ! iframeDocument ) {
 			return;
 		}
 
@@ -583,33 +585,34 @@ export const useIframeHighlight = ( {
 			return;
 		}
 
-		// Get all the links of the selected link type.
-		const links = activeLink?.postLinks[ selectedLinkType ];
+		const siteUrl = new URL( activeLink.targetPost.link ).hostname;
+		let links: HTMLAnchorElement[] = Array.from( contentArea.querySelectorAll<HTMLAnchorElement>( 'a' ) );
+
+		// Filter out links that don't have text.
+		links = links.filter( ( link ) => link.textContent?.trim() !== '' );
+
+		switch ( selectedLinkType ) {
+			case 'external':
+				links = links.filter( ( link ) => ! link.href.includes( siteUrl ) );
+				break;
+			case 'internal':
+				links = links.filter( ( link ) => link.href.includes( siteUrl ) );
+				break;
+			case 'smart':
+				links = links.filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
+				break;
+		}
+
 		if ( ! links?.length ) {
 			return;
 		}
 
-		// Find and highlight matching links in the iframe.
-		const allIframeLinks = iframeDocument.querySelectorAll( 'a' );
-		allIframeLinks.forEach( ( iframeLink ) => {
-			// Match links based on href and text content.
-			const matchingLink = links.find( ( link ) => {
-				if ( link.hasAttribute( 'data-smartlink' ) ) {
-					return link.getAttribute( 'data-smartlink' ) === iframeLink.getAttribute( 'data-smartlink' );
-				}
-
-				const hrefMatches = link.href === iframeLink.href;
-				const textMatches = link.textContent === iframeLink.textContent;
-				return hrefMatches && textMatches;
-			} );
-
-			if ( matchingLink ) {
-				const selectionRange = iframeDocument.createRange();
-				selectionRange.selectNode( iframeLink );
-				highlightRange( selectionRange, 'link-type-highlight' );
-			}
+		links.forEach( ( link ) => {
+			const selectionRange = iframeDocument.createRange();
+			selectionRange.selectNode( link );
+			highlightRange( selectionRange, 'link-type-highlight' );
 		} );
-	}, [ activeLink, highlightRange, removeHighlights ] );
+	}, [ activeLink, contentAreaRef, highlightRange, removeHighlights ] );
 
 	return {
 		injectHighlightStyles,

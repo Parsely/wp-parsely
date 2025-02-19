@@ -226,7 +226,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			return false;
 		}
 
-		const { success, didReplaceLink } = await TrafficBoostProvider.getInstance().acceptSuggestion(
+		const { success, didReplaceLink, postContent } = await TrafficBoostProvider.getInstance().acceptSuggestion(
 			post.id,
 			link.smartLink.smart_link_id,
 			{
@@ -239,6 +239,8 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		if ( didReplaceLink ) {
 			link.smartLink.is_link_replacement = true;
 		}
+
+		link.targetPost.content.raw = postContent;
 
 		return success;
 	};
@@ -303,6 +305,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 
 		if ( updatedLink ) {
 			link.smartLink = updatedLink.data.smart_link;
+			link.targetPost.content.raw = updatedLink.data.post_content;
 			updateInboundLink( link, link.smartLink.uid );
 		}
 

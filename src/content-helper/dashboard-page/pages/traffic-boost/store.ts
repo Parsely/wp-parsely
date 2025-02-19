@@ -8,7 +8,8 @@ import { createReduxStore, register } from '@wordpress/data';
  */
 import { HydratedPost } from '../../../common/base-wordpress-provider';
 import { ContentHelperError } from '../../../common/content-helper-error';
-import { TrafficBoostLink, LinkType } from './provider';
+import { TrafficBoostLink } from './provider';
+import { LinkType } from './preview/components/link-counter';
 
 /**
  * Available tab names in the Traffic Boost sidebar.

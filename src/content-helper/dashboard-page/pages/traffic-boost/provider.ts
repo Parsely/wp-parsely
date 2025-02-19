@@ -7,22 +7,6 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../../common/cont
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 
 /**
- * Represents the type of link.
- *
- * @since 3.18.0
- */
-export type LinkType = 'external' | 'internal' | 'smart';
-
-/**
- * Represents the links for a post.
- *
- * @since 3.18.0
- */
-export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
-	total: number;
-}
-
-/**
  * Represents a Traffic Boost link.
  *
  * Stores the target post and the smart link associated with it.
@@ -32,7 +16,6 @@ export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
 export interface TrafficBoostLink {
 	uid: string;
 	targetPost: HydratedPost;
-	postLinks: PostLinks;
 	smartLink?: InboundSmartLink;
 	isSuggestion: boolean;
 }
@@ -95,6 +78,7 @@ interface ErrorResponse {
 type AcceptSuggestionResponse = {
 	data: {
 		did_replace_link?: boolean;
+		post_content: string;
 	};
 } & ( SuccessResponse & ErrorResponse );
 
@@ -108,6 +92,7 @@ type UpdateInboundLinkResponse = {
 		smart_link: InboundSmartLink;
 		restore_original: boolean;
 		did_replace_link: boolean;
+		post_content: string;
 	};
 } & ( SuccessResponse & ErrorResponse );
 
@@ -119,6 +104,7 @@ type UpdateInboundLinkResponse = {
 type AcceptSuggestionReturn = {
 	success: boolean;
 	didReplaceLink: boolean;
+	postContent: string;
 };
 
 /**
@@ -156,45 +142,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			TrafficBoostProvider.instance = new TrafficBoostProvider();
 		}
 		return TrafficBoostProvider.instance;
-	}
-
-	/**
-	 * Populates the post links for a given post.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {HydratedPost} post The post to populate the links for.
-	 *
-	 * @return {PostLinks} The post links.
-	 */
-	private populatePostLinks( post: HydratedPost ): PostLinks {
-		const postContent = post.content.raw;
-		const siteUrl = new URL( post.link ).hostname;
-
-		// Create a new DOMParser instance.
-		const parser = new DOMParser();
-		const doc = parser.parseFromString( postContent, 'text/html' );
-		const links = doc.querySelectorAll( 'a' );
-
-		// Filter out links that have no text.
-		const linksWithText = Array.from( links ).filter( ( link ) => link.textContent?.trim() !== '' );
-
-		// Classify the links into external, internal, and smart.
-		// Smart links contain the data-smartlink attribute.
-		const smartLinks = linksWithText.filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
-
-		// Internal links contain the site URL in the href attribute.
-		const internalLinks = linksWithText.filter( ( link ) => link.href.includes( siteUrl ) );
-
-		// External links are links that do not contain the site URL in the href attribute.
-		const externalLinks = linksWithText.filter( ( link ) => ! link.href.includes( siteUrl ) );
-
-		return {
-			external: externalLinks,
-			internal: internalLinks,
-			smart: smartLinks,
-			total: linksWithText.length,
-		};
 	}
 
 	/**
@@ -306,7 +253,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return {
 			uid: `suggestion-${ post.id }-${ Date.now() }`,
 			targetPost: post,
-			postLinks: this.populatePostLinks( post ),
 			isSuggestion: true,
 		};
 	}
@@ -462,7 +408,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			.map( ( post ) => ( {
 				uid: `inbound-${ post.id }-${ Date.now() }`,
 				targetPost: post,
-				postLinks: this.populatePostLinks( post ),
 				smartLink: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
 				isSuggestion: false,
 			} ) )
@@ -503,6 +448,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			return {
 				success: true,
 				didReplaceLink: response.data.did_replace_link ?? false,
+				postContent: response.data.post_content,
 			};
 		}
 
@@ -564,7 +510,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return {
 			uid: inboundSmartLink.uid + '-' + Date.now(),
 			targetPost,
-			postLinks: this.populatePostLinks( targetPost ),
 			smartLink: inboundSmartLink,
 			isSuggestion: ! inboundSmartLink.applied, // Suggestions are not applied.
 		};

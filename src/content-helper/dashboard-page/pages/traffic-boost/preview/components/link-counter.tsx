@@ -9,8 +9,24 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { LinkType, PostLinks } from '../../provider';
 import { TrafficBoostStore } from '../../store';
+import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+
+/**
+ * Represents the type of link.
+ *
+ * @since 3.18.0
+ */
+export type LinkType = 'external' | 'internal' | 'smart';
+
+/**
+ * Represents the links for a post.
+ *
+ * @since 3.18.0
+ */
+export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
+	total: number;
+}
 
 /**
  * The shape of the link counter object.
@@ -27,7 +43,7 @@ type LinkCount = {
  * @since 3.18.0
  */
 interface LinkCounterProps {
-	postLinks: PostLinks;
+	post: HydratedPost;
 	onLinkTypeClick?: ( type: LinkType | null ) => void;
 	selectedLinkType: LinkType | null;
 }
@@ -40,7 +56,7 @@ interface LinkCounterProps {
  * @param {LinkCounterProps} props The component's props.
  */
 export const LinkCounter = ( {
-	postLinks,
+	post,
 	onLinkTypeClick,
 	selectedLinkType: initialSelectedLinkType,
 }: LinkCounterProps ): React.JSX.Element => {
@@ -53,6 +69,35 @@ export const LinkCounter = ( {
 
 	const { setPreviewLinkType } = useDispatch( TrafficBoostStore );
 
+	useEffect( () => {
+		const postContent = post.content.raw;
+		const siteUrl = new URL( post.link ).hostname;
+
+		// Create a new DOMParser instance.
+		const parser = new DOMParser();
+		const doc = parser.parseFromString( postContent, 'text/html' );
+		const allLinks = doc.querySelectorAll( 'a' );
+
+		// Filter out links that have no text.
+		const linksWithText = Array.from( allLinks ).filter( ( link ) => link.textContent?.trim() !== '' );
+
+		// Classify the links into external, internal, and smart.
+		// Smart links contain the data-smartlink attribute.
+		const smartLinks = linksWithText.filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
+
+		// Internal links contain the site URL in the href attribute.
+		const internalLinks = linksWithText.filter( ( link ) => link.href.includes( siteUrl ) );
+
+		// External links are links that do not contain the site URL in the href attribute.
+		const externalLinks = linksWithText.filter( ( link ) => ! link.href.includes( siteUrl ) );
+
+		setLinks( {
+			external: externalLinks.length,
+			internal: internalLinks.length,
+			smart: smartLinks.length,
+		} );
+	}, [ post ] );
+
 	/**
 	 * Sets the selected link type and preview link type when the initial selected link type changes.
 	 *
@@ -62,21 +107,6 @@ export const LinkCounter = ( {
 		setSelectedLinkType( initialSelectedLinkType );
 		setPreviewLinkType( initialSelectedLinkType );
 	}, [ initialSelectedLinkType, setPreviewLinkType ] );
-
-	/**
-	 * Updates the link counts when postLinks changes.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		const newLinks = {
-			external: postLinks.external.length,
-			internal: postLinks.internal.length,
-			smart: postLinks.smart.length,
-		};
-
-		setLinks( newLinks );
-	}, [ postLinks ] );
 
 	/**
 	 * Handles click events on link type buttons.
@@ -110,15 +140,17 @@ export const LinkCounter = ( {
 	 */
 	const isSelected = ( type: LinkType ) => selectedLinkType === type;
 
+	const totalLinks = links.external + links.internal + links.smart;
+
 	return (
 		<div className="traffic-boost-preview-info-links">
 			<div className="traffic-boost-preview-info-links-summary">
-				{ postLinks.total > 0 ? (
+				{ totalLinks > 0 ? (
 					<>
 						{ sprintf(
 							/* translators: %d: number of outbound links */
 							__( 'Contains %d outbound links:', 'wp-parsely' ),
-							postLinks.total
+							totalLinks
 						) }
 					</>
 				) : (

@@ -306,6 +306,8 @@ export const TrafficBoostPreview = ( {
 		if ( itemIndex === totalItems && totalItems === 1 ) {
 			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
 			setSelectedLink( link );
+			// Refresh the iframe.
+			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
 		} else if ( itemIndex === totalItems ) {
 			// Navigate to previous suggestion when accepting the last one.
 			handlePrevious();

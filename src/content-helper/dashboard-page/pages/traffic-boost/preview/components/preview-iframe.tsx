@@ -52,9 +52,9 @@ export const PreviewIframe = ( {
 	onLoadingChange,
 	onRestoreOriginal,
 }: PreviewIframeProps ): React.JSX.Element => {
+	const contentAreaRef = useRef<Element | null>( null );
 	const [ messageIndex, setMessageIndex ] = useState<number>( 0 );
 
-	const contentAreaRef = useRef<Element | null>( null ) as React.MutableRefObject<Element | null>;
 	const iframeRef = useRef<HTMLIFrameElement>( null );
 	const isInboundLink = ! activeLink?.isSuggestion;
 
@@ -81,7 +81,7 @@ export const PreviewIframe = ( {
 	 */
 	useEffect( () => {
 		setMessageIndex( Math.floor( Math.random() * messages.length ) );
-	}, [ activeLink, messages ] );
+	}, [ isGenerating, isLoading, activeLink, messages ] );
 
 	/**
 	 * Highlights the smart link in the iframe.
@@ -203,7 +203,7 @@ export const PreviewIframe = ( {
 			event.preventDefault();
 			event.stopPropagation();
 		}, true );
-	}, [] );
+	}, [ contentAreaRef ] );
 
 	/**
 	 * Jumps to the smart link text in the iframe.
@@ -285,7 +285,15 @@ export const PreviewIframe = ( {
 
 		onLoadingChange( false );
 		jumpToSmartLink( iframe );
-	}, [ disableNavigation, hideAdminBar, highlightLinkType, injectHighlightStyles, jumpToSmartLink, onLoadingChange, selectedLinkType ] );
+	}, [ contentAreaRef,
+		disableNavigation,
+		hideAdminBar,
+		highlightLinkType,
+		injectHighlightStyles,
+		jumpToSmartLink,
+		onLoadingChange,
+		selectedLinkType,
+	] );
 
 	/**
 	 * Handles iframe initialization and cleanup.
@@ -331,7 +339,7 @@ export const PreviewIframe = ( {
 	 */
 	useEffect( () => {
 		contentAreaRef.current = null;
-	}, [ activeLink ] );
+	}, [ activeLink, contentAreaRef ] );
 
 	/**
 	 * Re-highlights smart link when selection changes.
@@ -346,7 +354,7 @@ export const PreviewIframe = ( {
 
 		removeSmartLinkHighlights( iframe );
 		highlightSmartLink( iframe );
-	}, [ highlightSmartLink, isLoading, removeSmartLinkHighlights, selectedText ] );
+	}, [ contentAreaRef, highlightSmartLink, isLoading, removeSmartLinkHighlights, selectedText ] );
 
 	/**
 	 * Highlights the link type in the iframe.
@@ -360,7 +368,7 @@ export const PreviewIframe = ( {
 		}
 
 		highlightLinkType( iframe, selectedLinkType );
-	}, [ highlightLinkType, iframeRef, isLoading, selectedLinkType ] );
+	}, [ contentAreaRef, highlightLinkType, iframeRef, isLoading, selectedLinkType ] );
 
 	/**
 	 * Picks a random message with interval based on message length when

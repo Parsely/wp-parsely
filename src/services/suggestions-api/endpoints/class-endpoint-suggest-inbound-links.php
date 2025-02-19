@@ -74,6 +74,8 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 			'text'          => wp_strip_all_tags( $post->post_content ),
 		);
 
+		$request_body = apply_filters( 'parsely_suggest_inbound_links_request_body', $request_body, $post, $options );
+		
 		$response = $this->request( 'POST', array(), $request_body );
 
 		if ( is_wp_error( $response ) ) {

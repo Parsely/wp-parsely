@@ -622,6 +622,8 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		$updated = $inbound_link->update_link_text( $text, $offset, $restore_original_link );
 
+		$post_content = get_post( $inbound_link->source_post_id )->post_content;
+
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
 		}
@@ -632,6 +634,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				'smart_link' => $inbound_link->to_array(),
 				'restore_original' => $restore_original_link,
 				'did_replace_link' => $inbound_link->did_replace_link(),
+				'post_content' => $post_content,
 			)
 		), 200 );
 	}	
@@ -692,10 +695,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return $applied;
 		}
 
+		$post_content = get_post( $inbound_link->source_post_id )->post_content;
+
 		return new WP_REST_Response( array( 
 			'data' => array( 
 				'success' => $applied,
 				'did_replace_link' => $inbound_link->did_replace_link(),
+				'post_content' => $post_content,
 			) 
 		), 200 );
 	}
