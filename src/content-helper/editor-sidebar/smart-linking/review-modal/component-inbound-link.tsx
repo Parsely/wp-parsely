@@ -85,7 +85,7 @@ const LinkingPostDetails = ( { link }: LinkingPostDetailsProps ): React.JSX.Elem
 					{ link.post_data?.date } by { link.post_data?.author }
 				</div>
 			</div>
-			<div className="linking-post-type">{ link.post_data?.type }</div>
+			<div className="linking-post-type">{ link.post_data?.type.label }</div>
 		</div>
 	);
 };

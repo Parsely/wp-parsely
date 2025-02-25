@@ -19,6 +19,7 @@ import { TrafficBoostLink, TrafficBoostProvider } from './provider';
 import { TrafficBoostSidebar } from './sidebar/sidebar';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from './store';
 import './traffic-boost.scss';
+import { SnackbarNotices } from '../../../common/components/snackbar-notices';
 
 /**
  * Traffic Boost Post page component.
@@ -436,6 +437,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 					onUpdateInboundLink={ handleUpdateInboundLink }
 				/>
 			) }
+			<SnackbarNotices className={ selectedLink ? 'traffic-boost-snackbar-notices' : '' } />
 		</PageContainer>
 	);
 };

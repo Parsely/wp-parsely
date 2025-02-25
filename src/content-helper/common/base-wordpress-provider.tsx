@@ -255,8 +255,10 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		queryParams: QueryParams = {},
 		id?: string,
 	): Promise<FetchResponse<HydratedPost[]>> {
+		const restEndpoint = queryParams.rest_endpoint ?? '/wp/v2/posts';
+
 		const posts = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( '/wp/v2/posts', { ...queryParams, _embed: true, context: 'edit' } ),
+			path: addQueryArgs( restEndpoint, { ...queryParams, _embed: true, context: 'edit' } ),
 			method: 'GET',
 		}, id );
 

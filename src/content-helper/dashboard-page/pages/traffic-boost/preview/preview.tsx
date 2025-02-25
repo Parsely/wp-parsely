@@ -12,7 +12,6 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
-import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
 import { TrafficBoostLink, TrafficBoostProvider } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
@@ -547,7 +546,6 @@ export const TrafficBoostPreview = ( {
 				isFrontendPreview={ isFrontendPreview }
 				onLoadingChange={ setIsLoading }
 			/>
-			<SnackbarNotices className="traffic-boost-preview-snackbar-notices" />
 			<PreviewFooter
 				activeLink={ activeLink }
 				totalItems={ totalItems }

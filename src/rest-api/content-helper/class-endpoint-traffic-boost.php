@@ -302,14 +302,20 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$discard_previous = $request->get_param( 'discard_previous' );
 		
-
 		$inbound_suggestions = $this->suggestions_api->get_inbound_links(
 			$post,
 			array(
 				'max_items'      => $max_items,
-				'max_link_words' => 4,
 			)
 		);
+
+		$time = $inbound_suggestions['request_duration'];
+		$raw_response = $inbound_suggestions['raw_response'];
+		$skipped = $inbound_suggestions['skipped'];
+
+		unset( $inbound_suggestions['request_duration'] );
+		unset( $inbound_suggestions['raw_response'] );
+		unset( $inbound_suggestions['skipped'] );
 
 		if ( is_wp_error( $inbound_suggestions ) ) {
 			return $inbound_suggestions;
@@ -338,6 +344,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		$response = array(
 			'data' => $suggestions,
+			'request_duration' => $time,
+			'raw_response' => $raw_response,
+			'skipped' => $skipped,
 		);
 
 		if ( null !== $discard_result ) {

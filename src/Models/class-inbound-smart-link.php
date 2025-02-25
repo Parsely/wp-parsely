@@ -230,7 +230,11 @@ class Inbound_Smart_Link extends Smart_Link {
 		$this->post_data = array(
 			'id'                 => $post->ID,
 			'title'              => $post->post_title,
-			'type'               => $post_type_label,
+			'type'               => array(
+				'name' => $post->post_type,
+				'label' => $post_type_label ,
+				'rest' => $post_type->rest_namespace . "/" . ( $post_type->rest_base ? $post_type->rest_base : $post->post_type ),
+			),
 			'paragraph'          => $paragraph['paragraph'],
 			'permalink'          => get_permalink( $post ),
 			'edit_link'          => get_edit_post_link( $post, 'html' ),
@@ -444,7 +448,9 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// Since we couldn't find a post by URL, try to find a post with the same slug.
 		$post_slug   = basename( $url );
-		$source_post = get_page_by_path( $post_slug, OBJECT, array( 'post', 'page' ) );
+
+		$public_post_types = get_post_types( array( 'public' => true, 'show_in_rest' => true ) );
+		$source_post = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
 
 		if ( null !== $source_post ) {
 			$this->set_source_post( $source_post );

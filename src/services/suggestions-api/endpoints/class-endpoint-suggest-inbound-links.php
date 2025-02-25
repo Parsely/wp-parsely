@@ -22,7 +22,6 @@ use WP_Error;
  *
  * @phpstan-type Endpoint_Suggest_Inbound_Links_Options = array{
  *     max_items?: int,
- *     max_link_words?: int,
  *     title?: string,
  *     text?: string
  * }
@@ -67,16 +66,18 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 		$request_body = array(
 			'canonical_url' => $post_url,
 			'output_config' => array(
+				'blending_weight' => 0.9,
 				'max_items'      => $options['max_items'] ?? 10,
-				'max_link_words' => $options['max_link_words'] ?? 4,
 			),
 			'title'         => $post->post_title,
 			'text'          => wp_strip_all_tags( $post->post_content ),
 		);
 
-		$request_body = apply_filters( 'parsely_suggest_inbound_links_request_body', $request_body, $post, $options );
+		$request_body = apply_filters( 'wp_parsely_suggest_inbound_links_request_body', $request_body, $post, $options );
 		
+		$time = microtime( true );
 		$response = $this->request( 'POST', array(), $request_body );
+		$time = microtime( true ) - $time;
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -84,6 +85,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 
 		// Convert the links to Inbound_Smart_Link objects.
 		$links = array();
+		$skipped = array();
 		foreach ( $response as $link ) {
 			$link = apply_filters( 'wp_parsely_suggest_inbound_links_link', $link );
 
@@ -103,13 +105,16 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 				// Set the source post from the URL.
 				$did_set_source = $link_obj->set_source_from_url( $link['source_url'] );
 	
-				// If no source post was found or the source post is the same as the destination post, skip it.
+				// If no source post was found or the source post is the same as the destination post, skip to 
+				// the next link suggestion.
 				if ( ! $did_set_source || $link_obj->source_post_id === $post->ID ) {
-					continue;
+					$skipped[] = $link_obj->to_array();
+					break;
 				}
 
-				// If the link doesn't not have a valid placement, skip it.
+				// If the link doesn't not have a valid placement, skip to the next anchor text suggestion.
 				if ( ! $link_obj->has_valid_placement() ) {
+					$skipped[] = $link_obj->to_array();
 					continue;
 				}
 
@@ -122,6 +127,10 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 				break;
 			}
 		}
+
+		$links['request_duration'] = $time;
+		$links['raw_response'] = $response;
+		$links['skipped'] = $skipped;
 
 		return $links;
 	}

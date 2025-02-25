@@ -165,22 +165,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			return [];
 		}
 
-		const fetchedPosts = await this.getPosts( {
-			include: postIds,
-			posts_per_page: 100,
-			status: 'any',
-		} );
-
-		return response.data.map( ( inboundSmartLink ) => {
-			// Find the target post for the inbound smart link.
-			const sourcePost = fetchedPosts.data.find( ( post ) => post.id === inboundSmartLink.source?.post_id );
-
-			if ( ! sourcePost ) {
-				return false;
-			}
-
-			return this.createTrafficBoostLink( inboundSmartLink, sourcePost );
-		} ).filter( ( link ) => link !== false );
+		return this.createTrafficBoostLinks( response.data );
 	}
 
 	/**
@@ -216,45 +201,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		// Filter out any smart links that are not valid.
 		const validSmartLinks = response.data.filter( ( inboundSmartLink ) => inboundSmartLink.validation?.valid );
 
-		// Get the post IDs from the inbound smart links.
-		const postIds = validSmartLinks.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
-
-		// Fetch the posts for the inbound smart links.
-		const fetchedPosts = await this.getPosts( {
-			include: postIds,
-			posts_per_page: 100,
-			status: 'any',
-		} );
-
-		// Create the traffic boost links.
-		const trafficBoostLinks = validSmartLinks.map( ( inboundSmartLink ) => {
-			const sourcePost = fetchedPosts.data.find( ( p ) => p.id === inboundSmartLink.source?.post_id );
-
-			if ( ! sourcePost ) {
-				return false;
-			}
-
-			return this.createTrafficBoostLink( inboundSmartLink, sourcePost );
-		} ).filter( ( link ) => link !== false );
-
-		return trafficBoostLinks;
-	}
-
-	/**
-	 * Creates a suggestion for a given post, without generating the placement.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {HydratedPost} post The post to create a suggestion for.
-	 *
-	 * @return {Promise<TrafficBoostLink>} The suggestion.
-	 */
-	public createSuggestion( post: HydratedPost ): TrafficBoostLink {
-		return {
-			uid: `suggestion-${ post.id }-${ Date.now() }`,
-			targetPost: post,
-			isSuggestion: true,
-		};
+		return this.createTrafficBoostLinks( validSmartLinks );
 	}
 
 	/**
@@ -392,26 +339,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			return [];
 		}
 
-		// Now we need to fetch the posts for the inbound smart links.
-		const fetchedPosts = await this.getPosts( {
-			include: inboundSmartLinks.map( ( link ) => link.source?.post_id ),
-			posts_per_page: 100,
-			status: 'any',
-		} );
-
-		if ( fetchedPosts.total_items > 100 ) {
-			// eslint-disable-next-line no-console
-			console.warn( 'Parse.ly: More than 100 inbound smart links. This is not supported yet.' );
-		}
-
-		return fetchedPosts.data
-			.map( ( post ) => ( {
-				uid: `inbound-${ post.id }-${ Date.now() }`,
-				targetPost: post,
-				smartLink: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
-				isSuggestion: false,
-			} ) )
-			.filter( ( link ) => link.smartLink !== undefined );
+		return this.createTrafficBoostLinks( inboundSmartLinks );
 	}
 
 	/**
@@ -497,6 +425,82 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
+	 * Creates a suggestion for a given post, without generating the placement.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to create a suggestion for.
+	 *
+	 * @return {Promise<TrafficBoostLink>} The suggestion.
+	 */
+	public createSuggestion( post: HydratedPost ): TrafficBoostLink {
+		return {
+			uid: `suggestion-${ post.id }-${ Date.now() }`,
+			targetPost: post,
+			isSuggestion: true,
+		};
+	}
+
+	/**
+	 * Creates traffic boost links from inbound smart links.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {InboundSmartLink[]} inboundSmartLinks The inbound smart links to create traffic boost links from.
+	 *
+	 * @return {Promise<TrafficBoostLink[]>} The traffic boost links.
+	 */
+	private async createTrafficBoostLinks( inboundSmartLinks: InboundSmartLink[] ): Promise<TrafficBoostLink[]> {
+		// Split the inbound smart links into buckets of source post types.
+		const smartLinksByPostType = inboundSmartLinks.reduce( ( acc, inboundSmartLink ) => {
+			// Get the post REST endpoint for the inbound smart link source post type.
+			const postRestEndpoint = inboundSmartLink.post_data?.type.rest;
+
+			if ( ! postRestEndpoint ) {
+				return acc;
+			}
+
+			if ( ! acc[ postRestEndpoint ] ) {
+				acc[ postRestEndpoint ] = [];
+			}
+
+			acc[ postRestEndpoint ].push( inboundSmartLink );
+			return acc;
+		}, {} as Record<string, InboundSmartLink[]> );
+
+		// Get the posts for the inbound smart links in parallel.
+		const getPostsPromises = Object.entries( smartLinksByPostType ).map( async ( [ postRestEndpoint, smartLinks ] ) => {
+			// Get the post IDs from the inbound smart links.
+			const postIds = smartLinks.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
+
+			// Fetch the posts for the inbound smart links.
+			const fetchedPosts = await this.getPosts( {
+				include: postIds,
+				posts_per_page: 100,
+				status: 'any',
+				rest_endpoint: postRestEndpoint,
+			} );
+
+			return fetchedPosts.data;
+		} );
+
+		const fetchedPosts = await Promise.all( getPostsPromises );
+
+		// Create the traffic boost links.
+		const trafficBoostLinks = inboundSmartLinks.map( ( inboundSmartLink ) => {
+			const sourcePost = fetchedPosts.flat().find( ( p ) => p.id === inboundSmartLink.source?.post_id );
+
+			if ( ! sourcePost ) {
+				return false;
+			}
+
+			return this.createTrafficBoostLink( inboundSmartLink, sourcePost );
+		} ).filter( ( link ) => link !== false );
+
+		return trafficBoostLinks;
+	}
+
+	/**
 	 * Creates a traffic boost link from an inbound smart link.
 	 *
 	 * @since 3.18.0
@@ -506,7 +510,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @return {TrafficBoostLink} The traffic boost link.
 	 */
-	protected createTrafficBoostLink( inboundSmartLink: InboundSmartLink, targetPost: HydratedPost ): TrafficBoostLink {
+	private createTrafficBoostLink( inboundSmartLink: InboundSmartLink, targetPost: HydratedPost ): TrafficBoostLink {
 		return {
 			uid: inboundSmartLink.uid + '-' + Date.now(),
 			targetPost,
