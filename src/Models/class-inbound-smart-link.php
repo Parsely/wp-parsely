@@ -80,7 +80,8 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
-		if ( $previous_link_attributes ) {
+
+		if ( '' !== $previous_link_attributes ) {
 			$data['is_link_replacement'] = true;
 		}
 
@@ -227,13 +228,16 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$post_type_label = $post_type->labels->singular_name;
 
+		$rest_endpoint  = $post_type->rest_namespace . '/';
+		$rest_endpoint .= false === $post_type->rest_base ? $post->post_type : $post_type->rest_base;
+
 		$this->post_data = array(
 			'id'                 => $post->ID,
 			'title'              => $post->post_title,
 			'type'               => array(
-				'name' => $post->post_type,
-				'label' => $post_type_label ,
-				'rest' => $post_type->rest_namespace . "/" . ( $post_type->rest_base ? $post_type->rest_base : $post->post_type ),
+				'name'  => $post->post_type,
+				'label' => $post_type_label,
+				'rest'  => $rest_endpoint,
 			),
 			'paragraph'          => $paragraph['paragraph'],
 			'permalink'          => get_permalink( $post ),
@@ -447,10 +451,15 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		// Since we couldn't find a post by URL, try to find a post with the same slug.
-		$post_slug   = basename( $url );
+		$post_slug = basename( $url );
 
-		$public_post_types = get_post_types( array( 'public' => true, 'show_in_rest' => true ) );
-		$source_post = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
+		$public_post_types = get_post_types(
+			array(
+				'public'       => true,
+				'show_in_rest' => true,
+			) 
+		);
+		$source_post       = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
 
 		if ( null !== $source_post ) {
 			$this->set_source_post( $source_post );
@@ -565,20 +574,22 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return \DOMElement|false The smart link anchor element if found, false otherwise.
 	 */
 	private function find_smart_link_anchor( $node ) {
-	
 		$xpath = new \DOMXPath( $node );
 		
-		// Query for any 'a' element that has a data-smartlink attribute matching our UID
-		$query = sprintf( '//a[@data-smartlink="%s"]', $this->uid );
+		// Query for any 'a' element that has a data-smartlink attribute matching our UID.
+		$query            = sprintf( '//a[@data-smartlink="%s"]', $this->uid );
 		$smart_link_nodes = $xpath->query( $query, $node );
 		
-		// Return false if no matching nodes were found
-		if ( 0 === $smart_link_nodes->length ) {
+		// Return false if no matching nodes were found.
+		if ( false === $smart_link_nodes || 0 === $smart_link_nodes->length ) {
 			return false;
 		}
 		
-		// Return the first matching node
-		return $smart_link_nodes->item( 0 );
+		// Return the first matching node.
+		/** @var \DOMElement $first_node */
+		$first_node = $smart_link_nodes->item( 0 );
+
+		return $first_node;
 	}
 
 	/**
@@ -665,7 +676,8 @@ class Inbound_Smart_Link extends Smart_Link {
 		// If we're replacing an existing link, handle differently.
 		if ( isset( $validation_result['replace_node'] ) ) {
 			// Store the original link attributes, so we can restore them if the link gets deleted.
-			$attributes = $validation_result['replace_node']->attributes;
+			/** @var \DOMAttr[] $attributes */
+			$attributes               = $validation_result['replace_node']->attributes;
 			$original_link_attributes = array();
 			foreach ( $attributes as $attribute ) {
 				$original_link_attributes[ $attribute->name ] = $attribute->value;
@@ -840,11 +852,12 @@ class Inbound_Smart_Link extends Smart_Link {
 		
 		// Remove the anchor element with the smart link UID.
 		$smart_link_anchor = $this->find_smart_link_anchor( $content_dom );
-		$original_paragraph_html = $html_parser->saveHTML( $smart_link_anchor->parentNode );
 
 		if ( false === $smart_link_anchor ) {
 			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', 'Smart link anchor not found' );
 		}
+
+		$original_paragraph_html = $html_parser->saveHTML( $smart_link_anchor->parentNode );
 
 		// Get the parent node of the smart link anchor.
 		$parent_node = $smart_link_anchor->parentNode;
@@ -920,26 +933,28 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @since 3.18.0
 	 *
 	 * @param string $new_text The new text of the smart link.
-	 * @param int $offset The offset of the text to update.
-	 * @param bool $restore_original_link Whether to restore the original link, if it was replaced.
+	 * @param int    $offset The offset of the text to update.
+	 * @param bool   $restore_original_link Whether to restore the original link, if it was replaced.
 	 * @return bool|\WP_Error True if the smart link was updated, WP_Error on failure.
 	 */
 	public function update_link_text( string $new_text, int $offset, bool $restore_original_link = false ) {
 		global $wpdb;
 
 		// To make sure the smart link is updated in a single atomic operation, start a transaction.
-  		$wpdb->query('START TRANSACTION');
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( 'START TRANSACTION' );
 
 		// Remove the existing smart link from the post.
 		$deleted = $this->remove( $restore_original_link, false );
 
 		if ( is_wp_error( $deleted ) ) {
-			$wpdb->query('ROLLBACK');
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->query( 'ROLLBACK' );
 			return $deleted;
 		}
 
 		// Update the text of the smart link.
-		$this->text = $new_text;
+		$this->text   = $new_text;
 		$this->offset = $offset;
 
 		// Clean-up local caches.
@@ -951,12 +966,14 @@ class Inbound_Smart_Link extends Smart_Link {
 		$applied = $this->apply();
 
 		if ( is_wp_error( $applied ) ) {
-			$wpdb->query('ROLLBACK');
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$wpdb->query( 'ROLLBACK' );
 			return $applied;
 		}
 
 		// Commit the transaction.
-		$wpdb->query('COMMIT');
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( 'COMMIT' );
 		return $applied;
 	}
 
@@ -1117,7 +1134,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		return self::from_smart_link( $smart_link );
 	}
 
-	/**	
+	/** 
 	 * Gets an inbound smart link by its source and destination posts.
 	 *
 	 * @since 3.18.0
@@ -1131,6 +1148,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			'post_type'      => 'parsely_smart_link',
 			'posts_per_page' => 1,
 			'fields'         => 'ids',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			'tax_query'      => array(
 				array(
 					'taxonomy'         => 'smart_link_destination',
@@ -1153,7 +1171,10 @@ class Inbound_Smart_Link extends Smart_Link {
 			return false;
 		}
 
-		return self::get_smart_link_by_id( $query->posts[0] );
+		/** @var int $post_id */
+		$post_id = $query->posts[0];
+
+		return self::get_smart_link_by_id( $post_id );
 	}
 	/**
 	 * Finds the line containing the specified text in the HTML.

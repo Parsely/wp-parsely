@@ -117,15 +117,15 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'generate_placement_suggestions' ),
 			array(
-				'source_post_id' => array(
-					'type' => 'integer',
-					'required' => true,
+				'source_post_id'  => array(
+					'type'        => 'integer',
+					'required'    => true,
 					'description' => __( 'The ID of the source post.', 'wp-parsely' ),
 				),
 				'ignore_keywords' => array(
-					'type' => 'array',
+					'type'        => 'array',
 					'description' => __( 'The keywords to ignore.', 'wp-parsely' ),
-					'required' => false,
+					'required'    => false,
 				),
 			)
 		);
@@ -238,18 +238,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'update_inbound' ),
 			array(
-				'smart_link_id' => array(
+				'smart_link_id'    => array(
 					'type'              => 'integer',
 					'description'       => __( 'The ID of the smart link to update.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
 				),
-				'text'          => array(
+				'text'             => array(
 					'type'        => 'string',
 					'description' => __( 'The text of the smart link.', 'wp-parsely' ),
 					'required'    => false,
 				),
-				'offset'        => array(
+				'offset'           => array(
 					'type'        => 'integer',
 					'description' => __( 'The offset of the smart link.', 'wp-parsely' ),
 					'required'    => false,
@@ -286,36 +286,28 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 *
 		 * @var int $max_items
 		 */
-		$max_items = $request->get_param( 'max_items' );
+		$max_items = (int) $request->get_param( 'max_items' );
 
 		/**
 		 * Whether to save the suggestions.
 		 *
 		 * @var bool $save
 		 */
-		$save = $request->get_param( 'save' );
+		$save = (bool) $request->get_param( 'save' );
 
 		/**
 		 * Whether to discard the previous suggestions.
 		 *
 		 * @var bool $discard_previous
 		 */
-		$discard_previous = $request->get_param( 'discard_previous' );
+		$discard_previous = (bool) $request->get_param( 'discard_previous' );
 		
 		$inbound_suggestions = $this->suggestions_api->get_inbound_links(
 			$post,
 			array(
-				'max_items'      => $max_items,
+				'max_items' => $max_items,
 			)
 		);
-
-		$time = $inbound_suggestions['request_duration'];
-		$raw_response = $inbound_suggestions['raw_response'];
-		$skipped = $inbound_suggestions['skipped'];
-
-		unset( $inbound_suggestions['request_duration'] );
-		unset( $inbound_suggestions['raw_response'] );
-		unset( $inbound_suggestions['skipped'] );
 
 		if ( is_wp_error( $inbound_suggestions ) ) {
 			return $inbound_suggestions;
@@ -344,9 +336,6 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		$response = array(
 			'data' => $suggestions,
-			'request_duration' => $time,
-			'raw_response' => $raw_response,
-			'skipped' => $skipped,
 		);
 
 		if ( null !== $discard_result ) {
@@ -364,7 +353,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function generate_placement_suggestions( WP_REST_Request $request ) {
 		/**
@@ -384,18 +373,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		/**
 		 * The source post.
 		 *
-		 * @var WP_Post $source_post
+		 * @var WP_Post|null $source_post
 		 */
 		$source_post = get_post( $source_post_id );
 
 		/**
 		 * The keywords to ignore.
 		 *
-		 * @var array|null $ignore_keywords
+		 * @var array<string>|null $ignore_keywords
 		 */
 		$ignore_keywords = $request->get_param( 'ignore_keywords' );
 
-		if ( ! $source_post ) {
+		if ( null === $source_post ) {
 			return new WP_Error(
 				'parsely_invalid_source_post',
 				__( 'Invalid source post.', 'wp-parsely' )
@@ -411,12 +400,14 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$valid_suggestion = null;
 		// Try to find the first suggestion that has a valid placement.
 		foreach ( $suggestions as $suggestion ) {
-			// If the ignore keywords are set and the suggestion text is in the ignore keywords, skip it.
-			if ( $ignore_keywords && in_array( $suggestion->text, $ignore_keywords ) ) {
+			// If the ignore keywords are set and the suggested text is in the ignore keywords, skip it.
+			if ( is_array( $ignore_keywords ) && in_array( $suggestion->text, $ignore_keywords, true ) ) {
 				continue;
 			}
 
-			if ( $suggestion->has_valid_placement() ) {
+			/** @var bool $valid_placement Whether the suggestion has a valid placement. */
+			$valid_placement = $suggestion->has_valid_placement();
+			if ( $valid_placement ) {
 				$valid_suggestion = $suggestion;
 				break;
 			}
@@ -435,7 +426,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		// If so, update the smart link with the new text and offset.
 		if ( false !== $existing_smart_link ) {
-			$existing_smart_link->text = $valid_suggestion->text;
+			$existing_smart_link->text   = $valid_suggestion->text;
 			$existing_smart_link->offset = $valid_suggestion->offset;
 
 			$valid_suggestion = $existing_smart_link;
@@ -564,7 +555,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response|\WP_Error The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function delete_inbound( WP_REST_Request $request ) {
 		/**
@@ -587,10 +578,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return $deleted;
 		}
 
-		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted, 'restore_original' => $restore_original_link ) ), 200 );
+		return new WP_REST_Response(
+			array(
+				'data' => array(
+					'success'          => $deleted,
+					'restore_original' => $restore_original_link,
+				),
+			),
+			200 
+		);
 	}
 
-	/**	
+	/**
 	 * API Endpoint: POST /traffic-boost/{post_id}/update-inbound/{smart_link_id}.
 	 *
 	 * Updates an inbound smart link.
@@ -598,7 +597,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response|\WP_Error The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function update_inbound( WP_REST_Request $request ) {
 		/**
@@ -611,42 +610,51 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		/**
 		 * The text of the smart link.
 		 *
-		 * @var string|null $text
+		 * @var string $text
 		 */
 		$text = $request->get_param( 'text' );
 
 		/**
 		 * The offset of the smart link.
 		 *
-		 * @var int|null $offset
+		 * @var int $offset
 		 */
 		$offset = $request->get_param( 'offset' );
-
+		
 		/**
 		 * Whether to restore the original link.
 		 *
 		 * @var bool $restore_original_link
 		 */
-		$restore_original_link = $request->get_param( 'restore_original' );
+		$restore_original_link = (bool) $request->get_param( 'restore_original' );
 
 		$updated = $inbound_link->update_link_text( $text, $offset, $restore_original_link );
 
-		$post_content = get_post( $inbound_link->source_post_id )->post_content;
+		$post = get_post( $inbound_link->source_post_id );
+		if ( null === $post ) {
+			return new WP_Error(
+				'parsely_post_not_found',
+				__( 'Source post not found.', 'wp-parsely' )
+			);
+		}
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
 		}
 
-		return new WP_REST_Response( array(
-			'data' => array(
-				'success' => $updated,
-				'smart_link' => $inbound_link->to_array(),
-				'restore_original' => $restore_original_link,
-				'did_replace_link' => $inbound_link->did_replace_link(),
-				'post_content' => $post_content,
-			)
-		), 200 );
-	}	
+		return new WP_REST_Response(
+			array(
+				'data' => array(
+					'success'          => $updated,
+					'smart_link'       => $inbound_link->to_array(),
+					'restore_original' => $restore_original_link,
+					'did_replace_link' => $inbound_link->did_replace_link(),
+					'post_content'     => $post->post_content,
+				),
+			),
+			200 
+		);
+	}
 
 	/**
 	 * API Endpoint: POST /traffic-boost/{post_id}/accept-suggestion/{smart_link_id}.
@@ -656,7 +664,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response|\WP_Error The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function accept_suggestion( WP_REST_Request $request ) {
 		/**
@@ -704,15 +712,24 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return $applied;
 		}
 
-		$post_content = get_post( $inbound_link->source_post_id )->post_content;
+		$post = get_post( $inbound_link->source_post_id );
+		if ( null === $post ) {
+			return new WP_Error(
+				'parsely_post_not_found',
+				__( 'Source post not found.', 'wp-parsely' )
+			);
+		}
 
-		return new WP_REST_Response( array( 
-			'data' => array( 
-				'success' => $applied,
-				'did_replace_link' => $inbound_link->did_replace_link(),
-				'post_content' => $post_content,
-			) 
-		), 200 );
+		return new WP_REST_Response(
+			array( 
+				'data' => array( 
+					'success'          => $applied,
+					'did_replace_link' => $inbound_link->did_replace_link(),
+					'post_content'     => $post->post_content,
+				), 
+			),
+			200 
+		);
 	}
 
 	/**

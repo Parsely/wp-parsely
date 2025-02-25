@@ -19,6 +19,12 @@ use WP_Error;
  * @since 3.18.0
  *
  * @link https://content-suggestions-api.parsely.net/prod/docs#/prototype/suggest_inbound_link_positions_suggest_inbound_link_positions_post
+ * 
+ * @phpstan-type LinkPositionResponse = array{
+ *     anchor_texts: array<array{text: string, offset: int}>,
+ *     title: string,
+ *     source_url: string
+ * }
  */
 class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpoint {
 	/**
@@ -38,8 +44,8 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param \WP_Post                               $source_post    The post where the inbound link will be placed.
-	 * @param \WP_Post                               $destination_post The post where the inbound link will point to.
+	 * @param \WP_Post $source_post    The post where the inbound link will be placed.
+	 * @param \WP_Post $destination_post The post where the inbound link will point to.
 	 * @return Inbound_Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                            object if the response is an error.
 	 */
@@ -85,6 +91,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 		}
 
 		$suggestions = array();
+		/** @var LinkPositionResponse $link */
 		$link = $response[0];
 		
 		foreach ( $link['anchor_texts'] as $anchor_text_suggestion ) {
