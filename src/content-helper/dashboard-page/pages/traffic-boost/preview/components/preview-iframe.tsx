@@ -75,6 +75,23 @@ export const PreviewIframe = ( {
 	].sort( () => Math.random() - 0.5 ), [] );
 
 	/**
+	 * Adds a random UUID to the iframe src. This triggers the WordPress Customizer to load
+	 * and prevents potential undesired scripts from being loaded.
+	 *
+	 * @since 3.18.0
+	 */
+	const iFrameSrc = useMemo( () => {
+		if ( ! previewUrl ) {
+			return previewUrl;
+		}
+
+		const url = new URL( previewUrl );
+		url.searchParams.set( 'customize_changeset_uuid', crypto.randomUUID() );
+
+		return url.toString();
+	}, [ previewUrl ] );
+
+	/**
 	 * Sets the message index to a random index based on the messages array length.
 	 *
 	 * @since 3.18.0
@@ -321,7 +338,7 @@ export const PreviewIframe = ( {
 		};
 
 		// Only set loading state if the URL has changed.
-		if ( iframe.src !== previewUrl ) {
+		if ( iframe.src !== iFrameSrc ) {
 			onLoadingChange( true );
 		}
 
@@ -330,7 +347,7 @@ export const PreviewIframe = ( {
 		return () => {
 			iframe.removeEventListener( 'load', handleLoadCallback );
 		};
-	}, [ isGenerating, previewUrl, handleIframeLoad, onLoadingChange, iframeRef ] );
+	}, [ isGenerating, iFrameSrc, handleIframeLoad, onLoadingChange ] );
 
 	/**
 	 * Resets content area ref when active link changes.
@@ -368,7 +385,7 @@ export const PreviewIframe = ( {
 		}
 
 		highlightLinkType( iframe, selectedLinkType );
-	}, [ contentAreaRef, highlightLinkType, iframeRef, isLoading, selectedLinkType ] );
+	}, [ contentAreaRef, highlightLinkType, isLoading, selectedLinkType ] );
 
 	/**
 	 * Picks a random message with interval based on message length when
@@ -388,10 +405,6 @@ export const PreviewIframe = ( {
 
 		return () => clearInterval( intervalId );
 	}, [ isGenerating, messageIndex, messages, isLoading ] );
-
-	// Add a random UUID to the iframe src. This triggers the WordPress Customizer to load
-	// and prevents potential undesired scripts from being loaded.
-	const iFrameSrc = useMemo( () => previewUrl + '&customize_changeset_uuid=' + crypto.randomUUID(), [ previewUrl ] );
 
 	return (
 		<div className="wp-parsely-preview">
