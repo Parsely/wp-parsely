@@ -389,6 +389,10 @@ export const PreviewIframe = ( {
 		return () => clearInterval( intervalId );
 	}, [ isGenerating, messageIndex, messages, isLoading ] );
 
+	// Add a random UUID to the iframe src. This triggers the WordPress Customizer to load
+	// and prevents potential undesired scripts from being loaded.
+	const iFrameSrc = useMemo( () => previewUrl + '&customize_changeset_uuid=' + crypto.randomUUID(), [ previewUrl ] );
+
 	return (
 		<div className="wp-parsely-preview">
 			<div className="preview-iframe-wrapper">
@@ -417,7 +421,7 @@ export const PreviewIframe = ( {
 					<>
 						<iframe
 							ref={ iframeRef }
-							src={ previewUrl }
+							src={ iFrameSrc }
 							title={ __( 'Post Preview', 'wp-parsely' ) }
 							className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
 							sandbox="allow-same-origin allow-scripts"
