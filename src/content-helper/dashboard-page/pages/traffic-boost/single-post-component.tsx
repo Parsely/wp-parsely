@@ -1,0 +1,443 @@
+/**
+ * External dependencies
+ */
+import { useLocation, useNavigate, useParams } from 'react-router';
+
+/**
+ * WordPress dependencies
+ */
+import { useDispatch, useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
+import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
+import { PageContainer } from '../../components';
+import { TextSelection, TrafficBoostPreview } from './preview/preview';
+import { TrafficBoostLink, TrafficBoostProvider } from './provider';
+import { TrafficBoostSidebar } from './sidebar/sidebar';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from './store';
+import './traffic-boost.scss';
+import { SnackbarNotices } from '../../../common/components/snackbar-notices';
+
+/**
+ * Traffic Boost Post page component.
+ *
+ * @since 3.18.0
+ */
+export const TrafficBoostPostPage = (): React.JSX.Element => {
+	const { postId } = useParams();
+	// Location state is used to pass the post to the page when navigating from the posts table.
+	const { state } = useLocation();
+	const navigate = useNavigate();
+
+	const [ backgroundColor, setBackgroundColor ] = useState<string | undefined>();
+	const [ sidebarWidth, setSidebarWidth ] = useState<number>( 160 ); // Default sidebar width.
+	const [ hasFetchedPost, setHasFetchedPost ] = useState<boolean>( false );
+
+	const {
+		isLoadingPost,
+		error,
+		currentPost: post,
+		selectedLink,
+	} = useSelect( ( select ) => ( {
+		isLoadingPost: select( TrafficBoostStore ).isLoadingPost(),
+		error: select( TrafficBoostStore ).getError(),
+		currentPost: state?.post ?? select( TrafficBoostStore ).getCurrentPost(),
+		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
+	} ), [ state?.post ] );
+
+	const {
+		setError,
+		setLoading,
+		setCurrentPost,
+		setSelectedLink,
+		setInboundLinks,
+		setSuggestions,
+		setIsGeneratingSuggestions,
+		setSelectedTab,
+		updateInboundLink,
+	} = useDispatch( TrafficBoostStore );
+
+	/**
+	 * Sets the background color of the page container to the background color of the admin menu.
+	 * It also sets the background color of #wpwrap to the background color of the admin menu and
+	 * updates the sidebar width to be calculated with the sidebar width into account.
+	 *
+	 * When the component unmounts, it cancels all the provider requests and cleans up the store state.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		// Set the background color of the page container to the background color of the admin menu.
+		const adminMenuBack = document.getElementById( 'adminmenuback' );
+		if ( ! adminMenuBack ) {
+			return;
+		}
+
+		const computedStyle = window.getComputedStyle( adminMenuBack );
+		setBackgroundColor( computedStyle.backgroundColor );
+
+		// Set the background color of #wpwrap to the background color of the admin menu.
+		const wpWrap = document.querySelector( '#wpwrap' );
+		if ( wpWrap ) {
+			( wpWrap as HTMLElement ).style.backgroundColor = computedStyle.backgroundColor;
+		}
+
+		// Grabs the sidebar width so it can be used to calculate the container width.
+		/**
+		 * Updates the sidebar width.
+		 *
+		 * @since 3.18.0
+		 */
+		const updateSidebarWidth = () => {
+			const width = adminMenuBack.getBoundingClientRect().width;
+			setSidebarWidth( width );
+		};
+
+		// Initial measurement.
+		updateSidebarWidth();
+
+		// Use a ResizeObserver to watch for width changes.
+		const resizeObserver = new ResizeObserver( () => {
+			updateSidebarWidth();
+		} );
+
+		resizeObserver.observe( adminMenuBack );
+
+		return () => {
+			// When the component unmounts, make sure to cancel all the provider requests.
+			TrafficBoostProvider.getInstance().cancelAll();
+			// Disconnect the resize observer.
+			resizeObserver.disconnect();
+			// Remove the background color of #wpwrap.
+			( wpWrap as HTMLElement ).style.backgroundColor = '';
+
+			// Clean up the store state.
+			setIsGeneratingSuggestions( false );
+			setLoading( false );
+			setError( null );
+			setInboundLinks( [] );
+			setSuggestions( [] );
+			setCurrentPost( null );
+			setSelectedLink( null );
+			setSelectedTab( TrafficBoostSidebarTabs.SUGGESTIONS );
+		};
+	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	/**
+	 * Fetches the current post data from the dashboard provider.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		// If the post is passed in the navigation state, use it.
+		if ( state?.post ) {
+			setCurrentPost( state.post );
+			return;
+		}
+
+		const fetchPost = async () => {
+			if ( ! postId ) {
+				return;
+			}
+
+			try {
+				const fetchedPost = await TrafficBoostProvider.getInstance().getPost( parseInt( postId ) );
+
+				if ( fetchedPost ) {
+					setCurrentPost( fetchedPost );
+				} else {
+					setCurrentPost( null );
+				}
+			} catch ( err ) {
+				setError( err as ContentHelperError );
+				console.error( err ); // eslint-disable-line no-console
+			} finally {
+				setLoading( false, 'post' );
+				setHasFetchedPost( true );
+			}
+		};
+
+		setLoading( true, 'post' );
+		fetchPost();
+	}, [ postId, setLoading, setCurrentPost, setError, state ] );
+
+	/**
+	 * Clears the post and selected link when the component unmounts.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		return () => {
+			setCurrentPost( null );
+			setSelectedLink( null );
+		};
+	}, [ setCurrentPost, setSelectedLink ] );
+
+	/**
+	 * Redirects to the Traffic Boost page if no post is found after fetching.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( hasFetchedPost && ! isLoadingPost && ! post ) {
+			navigate( '/traffic-boost' );
+		}
+	}, [ hasFetchedPost, isLoadingPost, post, navigate ] );
+
+	/**
+	 * Handles the click event on a suggestion.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link that was clicked.
+	 */
+	const handleLinkClick = ( link: TrafficBoostLink ) => {
+		setSelectedLink( link );
+	};
+
+	/**
+	 * Handles the error states and clears the error after the error is handled.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( error ) {
+			// TODO: better error handling.
+			console.error( error ); // eslint-disable-line no-console
+		}
+
+		setError( null );
+	}, [ error, setError ] );
+
+	/**
+	 * Handles the accept event on a suggestion.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link         The link that was accepted.
+	 * @param {TextSelection}    selectedText The selected text.
+	 *
+	 * @return {Promise<boolean>} Whether the suggestion was accepted.
+	 */
+	const handleAccept = async ( link: TrafficBoostLink, selectedText: TextSelection | null ): Promise<boolean> => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return false;
+		}
+
+		const { success, didReplaceLink, postContent } = await TrafficBoostProvider.getInstance().acceptSuggestion(
+			post.id,
+			link.smartLink.smart_link_id,
+			{
+				text: selectedText?.text,
+				offset: selectedText?.offset,
+			},
+		);
+
+		// Flag the smart link as a link replacement if the suggestion was accepted.
+		if ( didReplaceLink ) {
+			link.smartLink.is_link_replacement = true;
+		}
+
+		link.targetPost.content.raw = postContent;
+
+		return success;
+	};
+
+	/**
+	 * Handles the discard event on a suggestion.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link that was discarded.
+	 */
+	const handleDiscard = async ( link: TrafficBoostLink ) => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return;
+		}
+
+		// Discard the suggestion in the backend, if it has been saved.
+		// Not using await here because we don't need to wait for the response.
+		TrafficBoostProvider.getInstance().discardSuggestion( post.id, link.smartLink.smart_link_id );
+	};
+
+	/**
+	 * Handles the remove event on an inbound link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link            The link that was removed.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
+	 *
+	 * @return {Promise<boolean>} Whether the inbound link was removed.
+	 */
+	const handleRemoveInboundLink = async ( link: TrafficBoostLink, restoreOriginal: boolean ): Promise<boolean> => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return false;
+		}
+
+		return await TrafficBoostProvider.getInstance().removeInboundLink( post.id, link.smartLink.smart_link_id, restoreOriginal );
+	};
+
+	/**
+	 * Handles the update event on an inbound link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link            The link that was updated.
+	 * @param {string}           text            The text of the link.
+	 * @param {number}           offset          The offset of the link.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
+	 *
+	 * @return {Promise<boolean>} Whether the inbound link was updated.
+	 */
+	const handleUpdateInboundLink = async ( link: TrafficBoostLink, text: string, offset: number, restoreOriginal: boolean ): Promise<boolean> => {
+		if ( ! link.smartLink || ! post || 0 === link.smartLink.smart_link_id ) {
+			return false;
+		}
+
+		const updatedLink = await TrafficBoostProvider.getInstance().updateInboundLink( post.id, link.smartLink.smart_link_id, {
+			text,
+			offset,
+			restore_original: restoreOriginal,
+		} );
+
+		if ( updatedLink ) {
+			link.smartLink = updatedLink.data.smart_link;
+			link.targetPost.content.raw = updatedLink.data.post_content;
+			updateInboundLink( link, link.smartLink.uid );
+		}
+
+		return true;
+	};
+
+	/**
+	 * Fetches the inbound links for the post.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		const fetchInboundLinks = async () => {
+			if ( ! postId ) {
+				return;
+			}
+
+			try {
+				setLoading( true, 'inbound-links' );
+				let inboundLinks = await TrafficBoostProvider.getInstance().getInboundLinks( parseInt( postId ) );
+
+				// Filter out the current post from the inbound links.
+				inboundLinks = inboundLinks.filter( ( link ) => link.targetPost?.id !== parseInt( postId ) );
+
+				setInboundLinks( inboundLinks );
+			} catch ( err ) {
+				if ( err instanceof ContentHelperError ) {
+					setError( err );
+				} else {
+					setError( new ContentHelperError( 'Failed to fetch inbound links', ContentHelperErrorCode.FetchError ) );
+				}
+				console.error( err ); // eslint-disable-line no-console
+			} finally {
+				setLoading( false, 'inbound-links' );
+			}
+		};
+
+		fetchInboundLinks();
+	}, [ postId, setInboundLinks, setError, setLoading ] );
+
+	/**
+	 * Fetches suggestions for Boost Links to the current post.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( ! postId ) {
+			return;
+		}
+
+		const fetchSuggestions = async () => {
+			try {
+				setError( null );
+				setLoading( true, 'suggestions' );
+				const trafficBoostProvider = TrafficBoostProvider.getInstance();
+				const fetchedSuggestions = await trafficBoostProvider.getExistingSuggestions( parseInt( postId ) );
+
+				// If there are no suggestions, trigger the generation of suggestions.
+				if ( fetchedSuggestions.length === 0 ) {
+					setIsGeneratingSuggestions( true );
+					const generatedSuggestions = await trafficBoostProvider.generateSuggestions(
+						parseInt( postId ),
+						{
+							max_items: 10, // TODO: use the settings.
+							save: true,
+						},
+					);
+					setSuggestions( generatedSuggestions );
+
+					// If there are suggestions, set the first one as the selected link.
+					if ( generatedSuggestions.length > 0 ) {
+						setSelectedLink( generatedSuggestions[ 0 ] );
+					}
+				} else {
+					// Otherwise, set the fetched suggestions.
+					setSuggestions( fetchedSuggestions );
+
+					// If there are suggestions, set the first one as the selected link.
+					if ( fetchedSuggestions.length > 0 ) {
+						setSelectedLink( fetchedSuggestions[ 0 ] );
+					}
+				}
+			} catch ( err ) {
+				if ( err instanceof ContentHelperError ) {
+					setError( err );
+				}
+				console.error( err ); // eslint-disable-line no-console
+			} finally {
+				setIsGeneratingSuggestions( false );
+				setLoading( false, 'suggestions' );
+			}
+		};
+
+		fetchSuggestions();
+	}, [ postId, setError, setIsGeneratingSuggestions, setLoading, setSelectedLink, setSuggestions ] );
+
+	return (
+		<PageContainer
+			name="traffic-boost-single-post"
+			backgroundColor={ backgroundColor }
+			className="traffic-boost-single-post"
+			style={ {
+				position: 'fixed',
+				left: sidebarWidth,
+				width: `calc(100% - calc(${ sidebarWidth }px + var(--grid-unit-20)))`,
+				transition: 'left 0.3s ease, width 0.3s ease',
+			} }
+		>
+			<style>
+				{ `
+					#wpfooter {
+						display: none;
+					}
+					#wpbody-content {
+						padding-bottom: 0 !important;
+					}
+				` }
+			</style>
+			<TrafficBoostSidebar
+				onLinkClick={ handleLinkClick }
+			/>
+			{ selectedLink && (
+				<TrafficBoostPreview
+					activeLink={ selectedLink }
+					onAccept={ handleAccept }
+					onDiscard={ handleDiscard }
+					onRemoveInboundLink={ handleRemoveInboundLink }
+					onUpdateInboundLink={ handleUpdateInboundLink }
+				/>
+			) }
+			<SnackbarNotices className={ selectedLink ? 'traffic-boost-snackbar-notices' : '' } />
+		</PageContainer>
+	);
+};
