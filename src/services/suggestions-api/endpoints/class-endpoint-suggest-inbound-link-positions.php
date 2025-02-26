@@ -51,7 +51,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	 */
 	public function get_inbound_link_positions(
 		\WP_Post $source_post,
-		\WP_Post $destination_post,
+		\WP_Post $destination_post
 	) {
 		/** @var string|false $source_post_url */
 		$source_post_url = get_permalink( $source_post );
