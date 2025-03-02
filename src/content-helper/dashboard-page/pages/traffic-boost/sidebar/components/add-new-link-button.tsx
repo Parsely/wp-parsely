@@ -3,6 +3,7 @@
  */
 import { Button, Dropdown, SearchControl } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
+import { useSelect } from '@wordpress/data';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
@@ -14,7 +15,6 @@ import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { PostsTable } from '../../../../components/posts-table/component';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
-import { useSelect } from '@wordpress/data';
 
 /**
  * Props for the AddNewLinkButton component.

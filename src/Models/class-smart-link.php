@@ -311,7 +311,7 @@ class Smart_Link extends Base_Model {
 			);
 
 			if ( is_wp_error( $updated ) ) {
-				// If the post is not updated, there is an invalid post id cached.
+				// If the post is not updated, there is an invalid post ID cached.
 				// Flush the cache to avoid future errors.
 				$this->flush_cache();
 			} else {
@@ -336,12 +336,12 @@ class Smart_Link extends Base_Model {
 
 			$this->smart_link_id = $post_id;
 			$this->exists        = true;
-			wp_cache_set( 
-				'smart-link-' . $this->uid . '-' . $this->source_post_id, 
-				$post_id, 
-				$this->get_cache_group() 
+			wp_cache_set(
+				'smart-link-' . $this->uid . '-' . $this->source_post_id,
+				$post_id,
+				$this->get_cache_group()
 			);
-		} 
+		}
 
 		// Update the smart link meta.
 		$meta = array(
@@ -402,7 +402,7 @@ class Smart_Link extends Base_Model {
 			$this->flush_all_cache();
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -536,7 +536,7 @@ class Smart_Link extends Base_Model {
 
 	/**
 	 * Sets the source post from a post object.
-	 * 
+	 *
 	 * This method is an alias for Smart_Link::set_source_post_id().
 	 *
 	 * @since 3.18.0
@@ -603,7 +603,7 @@ class Smart_Link extends Base_Model {
 
 	/**
 	 * Sets the destination post ID.
-	 * 
+	 *
 	 * @since 3.18.0
 	 *
 	 * @see Smart_Link::set_destination_post()
@@ -773,7 +773,7 @@ class Smart_Link extends Base_Model {
 	public static function get_outbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		$cache_key   = 'outbound-' . $post_id . '-' . $status;
 		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
-		
+
 		// If the smart links are cached, return them.
 		if ( false !== $smart_links ) {
 			/** @var array<Smart_Link> $smart_links */
@@ -803,7 +803,7 @@ class Smart_Link extends Base_Model {
 			$query_args['meta_query'] = array(
 				'relation' => 'OR',
 				array(
-					'key'     => '_smart_link_applied', 
+					'key'     => '_smart_link_applied',
 					'value'   => 'false',
 					'compare' => '!=',
 				),
@@ -816,7 +816,7 @@ class Smart_Link extends Base_Model {
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = array(
 				array(
-					'key'     => '_smart_link_applied', 
+					'key'     => '_smart_link_applied',
 					'value'   => 'false',
 					'compare' => '=',
 				),
@@ -894,7 +894,7 @@ class Smart_Link extends Base_Model {
 			$query_args['meta_query'] = array(
 				'relation' => 'OR',
 				array(
-					'key'     => '_smart_link_applied', 
+					'key'     => '_smart_link_applied',
 					'value'   => 'false',
 					'compare' => '!=',
 				),
@@ -907,7 +907,7 @@ class Smart_Link extends Base_Model {
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query_args['meta_query'] = array(
 				array(
-					'key'     => '_smart_link_applied', 
+					'key'     => '_smart_link_applied',
 					'value'   => 'false',
 					'compare' => '=',
 				),
@@ -960,7 +960,7 @@ class Smart_Link extends Base_Model {
 	 * @since 3.16.0
 	 */
 	protected function flush_cache(): void {
-		// Delete the cache for the smart link uid to post id association.
+		// Delete the cache for the smart link UID to post ID association.
 		wp_cache_delete( 'smart-link-uid-map-' . $this->uid . '-' . $this->source_post_id, self::get_cache_group() );
 	}
 
@@ -971,7 +971,7 @@ class Smart_Link extends Base_Model {
 	 */
 	protected function flush_all_cache(): void {
 		$this->flush_cache();
-		if ( $this->source_post_id > 0 ) {  
+		if ( $this->source_post_id > 0 ) {
 			self::flush_cache_by_post_id( $this->source_post_id );
 		}
 		if ( $this->destination_post_id > 0 ) {
@@ -1009,7 +1009,7 @@ class Smart_Link extends Base_Model {
 				$cache_keys[] = 'outbound-' . $post_id . '-' . $status;
 				$cache_keys[] = 'inbound-' . $post_id . '-' . $status;
 			}
-			
+
 			foreach ( $cache_keys as $cache_key ) {
 				wp_cache_delete( $cache_key, self::get_cache_group_for_post( $post_id ) );
 			}

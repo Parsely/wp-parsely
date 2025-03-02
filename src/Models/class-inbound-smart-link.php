@@ -68,7 +68,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$has_valid_placement = $this->has_valid_placement( true );
 
-		if ( is_wp_error( $has_valid_placement ) ) { 
+		if ( is_wp_error( $has_valid_placement ) ) {
 			$data['validation'] = array(
 				'valid'  => false,
 				'reason' => $has_valid_placement->get_error_message(),
@@ -107,7 +107,8 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$post_content = $this->source_post->post_content;
 
-		// If the post content does not contain the Smart Link uid, it is not linked to a post.
+		// If the post content does not contain the Smart Link UID, it is not
+		// linked to a post.
 		if ( strpos( $post_content, $this->uid ) === false ) {
 			return false;
 		}
@@ -116,12 +117,13 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
-	 * Checks if the Smart Link has a valid placement. 
+	 * Checks if the Smart Link has a valid placement.
 	 *
 	 * @since 3.18.0
 	 *
 	 * @param bool $wp_error Whether to return a WP_Error object if the Smart Link has an invalid placement.
-	 * @return bool|\WP_Error True if the Smart Link has a valid placement, WP_Error on failure if $wp_error is true, false otherwise.
+	 * @return bool|\WP_Error True if the Smart Link has a valid placement, WP_Error on failure if
+	 *                        $wp_error is true, false otherwise.
 	 */
 	public function has_valid_placement( bool $wp_error = false ) {
 		if ( null === $this->source_post ) {
@@ -168,7 +170,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return bool True if the smart link is a link replacement, false otherwise.
 	 */
 	public function did_replace_link(): bool {
-		if ( ! $this->applied ) { 
+		if ( ! $this->applied ) {
 			return false;
 		}
 
@@ -200,7 +202,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				'paragraph_offset'   => 0,
 			);
 		}
-		
+
 		// Get the paragraph that has the smart link UID.
 		$paragraph = $this->get_paragraph( $post );
 
@@ -258,7 +260,8 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @since 3.16.0
 	 *
 	 * @param \WP_Post $post The post.
-	 * @return ParagraphData|\WP_Error The paragraph that has the smart link uid, and if it is the first or last paragraph.
+	 * @return ParagraphData|\WP_Error The paragraph that has the smart link UID,
+	 *                                 and if it is the first or last paragraph.
 	 */
 	private function get_paragraph( \WP_Post $post ) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
@@ -283,7 +286,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		$source_post_has_blocks = has_blocks( $post );
 		$content                = $post->post_content;
 
-		// Post that are not using the block editor do not have paragraphs, 
+		// Post that are not using the block editor do not have paragraphs,
 		// and use new lines to separate paragraphs.
 		if ( ! $source_post_has_blocks ) {
 			// Generate the array of paragraphs from the post content.
@@ -299,7 +302,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				// block elements inside paragraph tags.
 				$wrapped_content = '<div>' . $paragraph . '</div>';
 				$fragment->appendXML( $wrapped_content );
-				
+
 				// Append the fragment to the document.
 				$dom->appendChild( $fragment );
 
@@ -307,7 +310,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				libxml_clear_errors();
 			}
 
-			// Fetch all div tags (paragraphs).         
+			// Fetch all div tags (paragraphs).
 			$paragraphs = $dom->getElementsByTagName( 'div' );
 		} else {
 			// Otherwise, just parse the content as HTML.
@@ -330,7 +333,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			}
 			$paragraphs = $fragment->childNodes;
 		}
-		
+
 		$is_first_paragraph = true;
 		$is_last_paragraph  = false;
 		$paragraph          = null;
@@ -359,17 +362,18 @@ class Inbound_Smart_Link extends Smart_Link {
 			} elseif ( strpos( $p->textContent, $this->text ) !== false ) {
 				// If the smart link is not applied, we need to find the paragraph that contains the
 				// smart link text, and with the correct offset.
+
 				/**
 				 * Counts the local offset of the link text in the paragraph content.
 				 *
 				 * @var int
 				 */
 				$paragraph_offset = 0;
-			
+
 				// Loop each occurrence of the link text in the paragraph content.
 				$text_pos = 0;
 				// phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-				while ( ( $text_pos = strpos( $p->textContent, $this->text, $text_pos ) ) !== false ) { 
+				while ( ( $text_pos = strpos( $p->textContent, $this->text, $text_pos ) ) !== false ) {
 					// If the global offset is the same as the offset of the link text in the paragraph, we found the paragraph.
 					if ( $offset_count === $this->offset ) {
 						$is_first_paragraph = $p === $paragraphs->item( 0 );
@@ -379,7 +383,7 @@ class Inbound_Smart_Link extends Smart_Link {
 						if ( ! in_array( $p->nodeName, self::ALLOWED_TAGS, true ) ) {
 							return new \WP_Error( 'traffic_boost_invalid_offset', 'The selection is not within a valid paragraph.' );
 						}
-						
+
 						$paragraph = $html_parser->saveHTML( $p );
 
 						// Find the text node containing our target text.
@@ -387,7 +391,7 @@ class Inbound_Smart_Link extends Smart_Link {
 						if ( null === $text_node ) {
 							return new \WP_Error( 'traffic_boost_text_node_not_found', 'Text node not found' );
 						}
-						
+
 						// Validate the link placement.
 						$validation_result = $this->validate_link_placement( $text_node, $this->text );
 						if ( is_wp_error( $validation_result ) ) {
@@ -414,7 +418,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			$paragraph = preg_replace( '/^<div>|<\/div>$/', '', $paragraph );
 		}
 
-		/** @var string $paragraph The paragraph that has the smart link uid. */
+		/** @var string $paragraph The paragraph that has the smart link UID. */
 		/** @var int $paragraph_offset The offset of the smart link in the paragraph. */
 		$this->paragraph_data = array(
 			'paragraph'          => $paragraph,
@@ -457,7 +461,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			array(
 				'public'       => true,
 				'show_in_rest' => true,
-			) 
+			)
 		);
 		$source_post       = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
 
@@ -508,7 +512,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 	/**
 	 * Validates if a text node can have a link placed around it.
-	 * 
+	 *
 	 * Checks if the node is inside a link and if so, only allows the operation
 	 * if it's replacing the entire link.
 	 *
@@ -565,7 +569,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
-	 * Finds the smart link anchor element in the paragraph that has the data-smartlink attribute set 
+	 * Finds the smart link anchor element in the paragraph that has the data-smartlink attribute set
 	 * to the smart link UID.
 	 *
 	 * @since 3.18.0
@@ -575,16 +579,16 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	private function find_smart_link_anchor( $node ) {
 		$xpath = new \DOMXPath( $node );
-		
+
 		// Query for any 'a' element that has a data-smartlink attribute matching our UID.
 		$query            = sprintf( '//a[@data-smartlink="%s"]', $this->uid );
 		$smart_link_nodes = $xpath->query( $query, $node );
-		
+
 		// Return false if no matching nodes were found.
 		if ( false === $smart_link_nodes || 0 === $smart_link_nodes->length ) {
 			return false;
 		}
-		
+
 		// Return the first matching node.
 		/** @var \DOMElement $first_node */
 		$first_node = $smart_link_nodes->item( 0 );
@@ -608,13 +612,13 @@ class Inbound_Smart_Link extends Smart_Link {
 		if ( ! class_exists( 'DOMDocument' ) ) {
 			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
 		}
-		
+
 		// Get the source post.
 		$source_post = $this->source_post;
 		if ( null === $source_post ) {
 			$source_post = get_post( $this->source_post_id );
 		}
-		
+
 		if ( null === $source_post ) {
 			return new \WP_Error( 'traffic_boost_source_post_not_found', 'Source post not found' );
 		}
@@ -630,7 +634,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$paragraph        = $paragraph_data['paragraph'];
 		$paragraph_offset = $paragraph_data['paragraph_offset'];
-		
+
 		// Initialize the HTML parser.
 		$temp_doc    = new \DOMDocument();
 		$html_parser = new HTML5(
@@ -683,7 +687,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				$original_link_attributes[ $attribute->name ] = $attribute->value;
 			}
 			update_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', $original_link_attributes );
-			
+
 			$existing_link = $validation_result['replace_node'];
 
 			// If there is an existing smart link UID, we need to delete it.
@@ -694,7 +698,7 @@ class Inbound_Smart_Link extends Smart_Link {
 					$smart_link->delete();
 				}
 			}
-			
+
 			// Update the existing link.
 			$existing_link->setAttribute( 'href', $this->href );
 			$existing_link->setAttribute( 'data-smartlink', $this->uid );
@@ -739,7 +743,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// To avoid unwanted replacements, we'll be focusing only on the single line where the link is being inserted.
 		// Get the line that contains the smart link.
-		$line_with_smart_link = $this->find_line_with_text( 
+		$line_with_smart_link = $this->find_line_with_text(
 			$html_parser->saveHTML( $paragraph_fragment ), // The full paragraph HTML with the smart link.
 			$html_parser->saveHTML( $smart_link_node ) // The smart link anchor HTML.
 		);
@@ -765,7 +769,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			// If revisions are disabled, store the original content.
 			update_post_meta( $this->smart_link_id, '_traffic_boost_source_original_post_content', $source_post->post_content );
 		}
-		
+
 		// Always backup the original paragraph, before the link was applied.
 		update_post_meta( $this->smart_link_id, '_traffic_boost_source_original_paragraph', $paragraph );
 
@@ -849,7 +853,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			libxml_clear_errors();
 			return new \WP_Error( 'traffic_boost_error_parsing_html', 'Error parsing the paragraph HTML', $errors );
 		}
-		
+
 		// Remove the anchor element with the smart link UID.
 		$smart_link_anchor = $this->find_smart_link_anchor( $content_dom );
 
@@ -867,7 +871,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// Get the original link attributes, if they exist.
 		$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
-	
+
 		// If the smart link replaced an existing link, restore the original link.
 		if ( $restore_original_link && is_array( $previous_link_attributes ) ) {
 			$original_link              = $content_dom->createElement( 'a' );
@@ -917,7 +921,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// Set the applied flag to false.
 		$this->applied = false;
-		
+
 		// Delete the smart link.
 		if ( $delete_smart_link ) {
 			return $this->delete();
@@ -960,7 +964,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		// Clean-up local caches.
 		$this->paragraph_data = null;
 		$this->post_data      = null;
-		$this->source_post    = null; 
+		$this->source_post    = null;
 
 		// Apply the new smart link to the post.
 		$applied = $this->apply();
@@ -1001,7 +1005,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// Make sure the source post ID is set.
 		$inbound_smart_link->set_source_post_id( $smart_link->source_post_id );
-		
+
 		return $inbound_smart_link;
 	}
 
@@ -1024,7 +1028,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				function ( Inbound_Smart_Link $smart_link ) {
 					return ! $smart_link->applied;
 				}
-			) 
+			)
 		);
 
 		return $smart_links;
@@ -1088,7 +1092,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				++$results['success'];
 			} else {
 				++$results['failed'];
-			}   
+			}
 		}
 
 		// Flush the cache for the post.
@@ -1102,7 +1106,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param int    $post_id         The ID of the post.
+	 * @param int    $post_id The ID of the post.
 	 * @param string $status The status of the smart links to get.
 	 * @return array<self> The inbound smart links.
 	 */
@@ -1134,11 +1138,11 @@ class Inbound_Smart_Link extends Smart_Link {
 		return self::from_smart_link( $smart_link );
 	}
 
-	/** 
+	/**
 	 * Gets an inbound smart link by its source and destination posts.
 	 *
 	 * @since 3.18.0
-	 * 
+	 *
 	 * @param int $source_post_id The ID of the source post.
 	 * @param int $destination_post_id The ID of the destination post.
 	 * @return self|false The inbound smart link, or false if not found.
@@ -1176,6 +1180,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		return self::get_smart_link_by_id( $post_id );
 	}
+
 	/**
 	 * Finds the line containing the specified text in the HTML.
 	 *
@@ -1192,12 +1197,13 @@ class Inbound_Smart_Link extends Smart_Link {
 				return $line;
 			}
 		}
+
 		return '';
 	}
 
 	/**
 	 * Finds the original line for the search line in the original text.
-	 * 
+	 *
 	 * This is used to find which line in the original text should be replaced with the new
 	 * line, that includes the smart link.
 	 *
@@ -1219,6 +1225,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				return $original_line;
 			}
 		}
+
 		return '';
 	}
 

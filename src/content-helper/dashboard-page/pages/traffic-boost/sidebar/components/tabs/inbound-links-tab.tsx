@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -9,7 +10,6 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { TrafficBoostLink } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { LinksList } from '../links-list/links-list';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Defines the props structure for InboundLinksTab.

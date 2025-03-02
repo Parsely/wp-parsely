@@ -94,20 +94,21 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 					wp_kses_post( $anchor_text_suggestion['text'] ),
 					$anchor_text_suggestion['offset']
 				);
-	
+
 				// Set the destination to be the current post.
 				$link_obj->set_destination_post( $post );
-	
+
 				// Set the source post from the URL.
 				$did_set_source = $link_obj->set_source_from_url( $link['source_url'] );
-	
-				// If no source post was found or the source post is the same as the destination post, skip to 
-				// the next link suggestion.
+
+				// If no source post was found or the source post is the same as
+				// the destination post, skip to the next link suggestion.
 				if ( ! $did_set_source || $link_obj->source_post_id === $post->ID ) {
 					break;
 				}
 
-				// If the link doesn't not have a valid placement, skip to the next anchor text suggestion.
+				// If the link doesn't have a valid placement, skip to the next
+				// anchor text suggestion.
 				$valid_placement = $link_obj->has_valid_placement();
 				if ( is_wp_error( $valid_placement ) || false === $valid_placement ) {
 					continue;
@@ -115,7 +116,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 
 				// Update the UID of the smart link.
 				$link_obj->update_uid();
-	
+
 				$links[] = $link_obj;
 
 				// Break after the first valid link.
@@ -125,7 +126,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 
 		return $links;
 	}
-	
+
 	/**
 	 * Executes the API request.
 	 *

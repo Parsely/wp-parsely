@@ -1,7 +1,7 @@
 <?php
 /**
  * Class for the smart link status enum.
- * 
+ *
  * @package Parsely
  * @since 3.18.0
  */
@@ -10,8 +10,9 @@ namespace Parsely\Models;
 
 /**
  * Smart Link Status enum.
- * 
- * Since enum classes are only available since PHP 8, we need to use a class to simulate an enum.
+ *
+ * Since enum classes are only available since PHP 8, we need to use a class to
+ * simulate an enum.
  *
  * @since 3.18.0
  */
@@ -22,7 +23,7 @@ class Smart_Link_Status {
 
 	/**
 	 * Checks if a status is valid.
-	 * 
+	 *
 	 * @since 3.18.0
 	 *
 	 * @param string $status The status to check.
@@ -34,7 +35,7 @@ class Smart_Link_Status {
 
 	/**
 	 * Gets all the statuses.
-	 * 
+	 *
 	 * @since 3.18.0
 	 *
 	 * @return array<string> The statuses.

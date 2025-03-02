@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -8,7 +9,6 @@ import { __ } from '@wordpress/i18n';
  */
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { Thumbnail } from '../../../../../common/components/thumbnail';
-import { Spinner } from '@wordpress/components';
 
 /**
  * Defines the props structure for PostDetailsSidebar.

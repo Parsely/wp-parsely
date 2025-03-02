@@ -46,7 +46,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param Content_Helper_Controller $controller The content helper controller.
+	 * @param Content_Helper_Controller $controller The Content Helper controller.
 	 */
 	public function __construct( Content_Helper_Controller $controller ) {
 		parent::__construct( $controller );
@@ -151,7 +151,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		);
 
 		/**
-		 * POST /traffic-boost/{post_id}/accept-suggestion/{smart_link_id}  
+		 * POST /traffic-boost/{post_id}/accept-suggestion/{smart_link_id}
 		 * Accepts a specific suggestion for a post.
 		 */
 		$this->register_rest_route_with_post_id(
@@ -301,7 +301,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 * @var bool $discard_previous
 		 */
 		$discard_previous = (bool) $request->get_param( 'discard_previous' );
-		
+
 		$inbound_suggestions = $this->suggestions_api->get_inbound_links(
 			$post,
 			array(
@@ -437,6 +437,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		return new WP_REST_Response( array( 'data' => $valid_suggestion->to_array() ), 200 );
 	}
+
 	/**
 	 * API Endpoint: GET /traffic-boost/{post_id}/get-suggestions.
 	 *
@@ -472,8 +473,8 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				$suggestions,
 				function ( $suggestion ) {
 					return null !== $suggestion;
-				} 
-			) 
+				}
+			)
 		);
 
 		return new WP_REST_Response( array( 'data' => $suggestions ), 200 );
@@ -547,7 +548,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		return new WP_REST_Response( array( 'data' => array( 'success' => $deleted ) ), 200 );
 	}
 
-	/** 
+	/**
 	 * API Endpoint: DELETE /traffic-boost/{post_id}/delete-inbound/{smart_link_id}.
 	 *
 	 * Deletes an inbound smart link for a post.
@@ -585,7 +586,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'restore_original' => $restore_original_link,
 				),
 			),
-			200 
+			200
 		);
 	}
 
@@ -620,7 +621,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 * @var int $offset
 		 */
 		$offset = $request->get_param( 'offset' );
-		
+
 		/**
 		 * Whether to restore the original link.
 		 *
@@ -652,7 +653,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'post_content'     => $post->post_content,
 				),
 			),
-			200 
+			200
 		);
 	}
 
@@ -721,14 +722,14 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		}
 
 		return new WP_REST_Response(
-			array( 
-				'data' => array( 
+			array(
+				'data' => array(
 					'success'          => $applied,
 					'did_replace_link' => $inbound_link->did_replace_link(),
 					'post_content'     => $post->post_content,
-				), 
+				),
 			),
-			200 
+			200
 		);
 	}
 
