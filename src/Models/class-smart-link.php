@@ -994,7 +994,7 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
-	 * Flushes the cache for all smart links in a post.
+	 * Flushes the cache for all smart links associated with a given post.
 	 *
 	 * @since 3.18.0
 	 *
