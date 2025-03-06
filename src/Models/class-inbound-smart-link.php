@@ -415,7 +415,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		// If the post is not using the block editor, unwrap the paragraph from the paragraph tags.
 		if ( ! $source_post_has_blocks ) {
 			// Remove the paragraph tags from the paragraph.
-			$paragraph = preg_replace( '/^(<div>)|(<\/div>)$/', '', $paragraph );
+			$paragraph = preg_replace( '/(^<div>)|(<\/div>$)/', '', $paragraph );
 		}
 
 		/** @var string $paragraph The paragraph that has the smart link UID. */
