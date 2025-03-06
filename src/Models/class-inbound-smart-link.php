@@ -581,7 +581,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		$xpath = new \DOMXPath( $node );
 
 		// Query for any 'a' element that has a data-smartlink attribute matching our UID.
-		$query            = sprintf( '//a[@data-smartlink="%s"]', $this->uid );
+		$query            = sprintf( '//a[@data-smartlink="%s"]', esc_attr( $this->uid ) );
 		$smart_link_nodes = $xpath->query( $query, $node );
 
 		// Return false if no matching nodes were found.

@@ -282,7 +282,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 * @param {boolean} options.restore_original Whether to restore the original link.
 	 * @param {number}  options.offset           The new offset of the smart link.
 	 *
-	 * @return {Promise<boolean>} Whether the inbound smart link was updated.
+	 * @return {Promise<UpdateInboundLinkResponse>} The update response from the API.
 	 */
 	public async updateInboundLink(
 		postId: number,
@@ -353,7 +353,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 * @param {string} options.text   The new text of the smart link.
 	 * @param {number} options.offset The new offset of the smart link.
 	 *
-	 * @return {Promise<boolean>} Whether the suggestion was accepted.
+	 * @return {Promise<AcceptSuggestionReturn>} Returns the success status and the post content.
 	 */
 	public async acceptSuggestion(
 		postId: number,
@@ -394,7 +394,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @param {number} postId The ID of the post to discard suggestions for.
 	 *
-	 * @return {Promise<void>} The promise that resolves when the suggestions are discarded.
+	 * @return {Promise<DiscardSuggestionsResponse>} The response details after discarding suggestions.
 	 */
 	public async discardSuggestions( postId: number ): Promise<DiscardSuggestionsResponse> {
 		const response = await this.fetch<{ data: DiscardSuggestionsResponse }>( {
@@ -431,7 +431,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @param {HydratedPost} post The post to create a suggestion for.
 	 *
-	 * @return {Promise<TrafficBoostLink>} The suggestion.
+	 * @return {TrafficBoostLink} The suggestion.
 	 */
 	public createSuggestion( post: HydratedPost ): TrafficBoostLink {
 		return {
