@@ -8,6 +8,9 @@ import { useLocation, useNavigate, useParams } from 'react-router';
  */
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
+import { Icon } from '@wordpress/components';
+import { error as errorIcon } from '@wordpress/icons';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -60,6 +63,8 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		updateInboundLink,
 	} = useDispatch( TrafficBoostStore );
 
+	const { createErrorNotice } = useDispatch( 'core/notices' );
+
 	/**
 	 * Sets the background color of the page container to the background color of the admin menu.
 	 * It also sets the background color of #wpwrap to the background color of the admin menu and
@@ -85,7 +90,6 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			( wpWrap as HTMLElement ).style.backgroundColor = computedStyle.backgroundColor;
 		}
 
-		// Grabs the sidebar width so it can be used to calculate the container width.
 		/**
 		 * Updates the sidebar width.
 		 *
@@ -96,7 +100,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			setSidebarWidth( width );
 		};
 
-		// Initial measurement.
+		// Grab the sidebar width so it can be used to calculate the container width.
 		updateSidebarWidth();
 
 		// Use a ResizeObserver to watch for width changes.
@@ -204,13 +208,21 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( error ) {
-			// TODO: better error handling.
-			console.error( error ); // eslint-disable-line no-console
+		if ( ! error ) {
+			return;
 		}
 
+		const message = __( 'There was an issue while fetching the data.', 'wp-parsely' ) + ( error instanceof ContentHelperError
+			? ` ${ error.message }`
+			: '' );
+
+		createErrorNotice( message, {
+			type: 'snackbar',
+			icon: <Icon icon={ errorIcon } />,
+		} );
+
 		setError( null );
-	}, [ error, setError ] );
+	}, [ error, createErrorNotice, setError ] );
 
 	/**
 	 * Handles the accept event on a suggestion.
@@ -336,7 +348,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				if ( err instanceof ContentHelperError ) {
 					setError( err );
 				} else {
-					setError( new ContentHelperError( 'Failed to fetch inbound links', ContentHelperErrorCode.FetchError ) );
+					setError( new ContentHelperError( __( 'Failed to fetch inbound links', 'wp-parsely' ), ContentHelperErrorCode.FetchError ) );
 				}
 				console.error( err ); // eslint-disable-line no-console
 			} finally {
@@ -365,7 +377,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				const fetchedSuggestions = await trafficBoostProvider.getExistingSuggestions( parseInt( postId ) );
 
 				// If there are no suggestions, trigger the generation of suggestions.
-				if ( fetchedSuggestions.length === 0 ) {
+				if ( 0 === fetchedSuggestions.length ) {
 					setIsGeneratingSuggestions( true );
 					const generatedSuggestions = await trafficBoostProvider.generateSuggestions(
 						parseInt( postId ),

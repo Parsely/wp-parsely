@@ -39,7 +39,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	}
 
 	/**
-	 * Gets suggested inbound link position for a given source and destination post using the Parse.ly
+	 * Gets suggested inbound link positions for a given source and destination post using the Parse.ly
 	 * Content Suggestion API.
 	 *
 	 * @since 3.18.0
@@ -114,7 +114,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	/**
 	 * Executes the API request.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API.

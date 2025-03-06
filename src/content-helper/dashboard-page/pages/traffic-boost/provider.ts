@@ -381,7 +381,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		}
 
 		throw new ContentHelperError(
-			response.message ?? 'Unknown error.',
+			response.message ?? __( 'Unknown error.', 'wp-parsely' ),
 			response.error as ContentHelperErrorCode ?? ContentHelperErrorCode.UnknownError,
 			'' // No prefix for this error.
 		);

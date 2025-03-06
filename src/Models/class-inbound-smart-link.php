@@ -134,7 +134,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		if ( ! $post instanceof WP_Post ) {
 			if ( $wp_error ) {
-				return new \WP_Error( 'traffic_boost_invalid_post', 'Invalid post' );
+				return new \WP_Error( 'traffic_boost_invalid_post', __( 'Invalid post', 'wp-parsely' ) );
 			}
 
 			return false;
@@ -270,7 +270,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		if ( ! class_exists( 'DOMDocument' ) ) {
-			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
+			return new \WP_Error( 'traffic_boost_dom_not_available', __( 'DOMDocument is not available', 'wp-parsely' ) );
 		}
 
 		// Initialize the HTML parser.
@@ -321,7 +321,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			// So we need to get the child nodes of the html tag.
 			$html_element = $dom->getElementsByTagName( 'html' )->item( 0 );
 			if ( null === $html_element ) {
-				return new \WP_Error( 'traffic_boost_html_not_found', 'HTML element not found in parsed content' );
+				return new \WP_Error( 'traffic_boost_html_not_found', __( 'HTML element not found in parsed content', 'wp-parsely' ) );
 			}
 			$elements = $html_element->childNodes;
 
@@ -381,7 +381,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 						// Check if the paragraph node is one of the allowed tags.
 						if ( ! in_array( $p->nodeName, self::ALLOWED_TAGS, true ) ) {
-							return new \WP_Error( 'traffic_boost_invalid_offset', 'The selection is not within a valid paragraph.' );
+							return new \WP_Error( 'traffic_boost_invalid_offset', __( 'The selection is not within a valid paragraph.', 'wp-parsely' ) );
 						}
 
 						$paragraph = $html_parser->saveHTML( $p );
@@ -389,7 +389,7 @@ class Inbound_Smart_Link extends Smart_Link {
 						// Find the text node containing our target text.
 						$text_node = $this->find_text_node( $p, $this->text, $paragraph_offset );
 						if ( null === $text_node ) {
-							return new \WP_Error( 'traffic_boost_text_node_not_found', 'Text node not found' );
+							return new \WP_Error( 'traffic_boost_text_node_not_found', __( 'Text node not found', 'wp-parsely' ) );
 						}
 
 						// Validate the link placement.
@@ -533,7 +533,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				if ( $current !== $node->parentNode ) {
 					return new \WP_Error(
 						'traffic_boost_invalid_link_placement',
-						'Cannot create nested links. The text is already part of another link.'
+						__( 'Cannot create nested links. The text is already part of another link.', 'wp-parsely' )
 					);
 				}
 
@@ -542,7 +542,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				if ( trim( $current->textContent ) !== trim( $search_text ) ) {
 					return new \WP_Error(
 						'traffic_boost_invalid_link_placement',
-						'Cannot create nested links. The text is already part of another link.'
+						__( 'Cannot create nested links. The text is already part of another link.', 'wp-parsely' )
 					);
 				}
 
@@ -550,7 +550,7 @@ class Inbound_Smart_Link extends Smart_Link {
 				if ( $current instanceof \DOMElement && $current->getAttribute( 'href' ) === $this->href ) {
 					return new \WP_Error(
 						'traffic_boost_invalid_link_placement',
-						'The current link is already linked to this smart link.'
+						__( 'The current link is already linked to this smart link.', 'wp-parsely' )
 					);
 				}
 
@@ -606,11 +606,11 @@ class Inbound_Smart_Link extends Smart_Link {
 	public function apply() {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		if ( $this->applied ) {
-			return new \WP_Error( 'traffic_boost_already_applied', 'Smart link already applied' );
+			return new \WP_Error( 'traffic_boost_already_applied', __( 'Smart link already applied', 'wp-parsely' ) );
 		}
 
 		if ( ! class_exists( 'DOMDocument' ) ) {
-			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
+			return new \WP_Error( 'traffic_boost_dom_not_available', __( 'DOMDocument is not available', 'wp-parsely' ) );
 		}
 
 		// Get the source post.
@@ -620,7 +620,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		if ( null === $source_post ) {
-			return new \WP_Error( 'traffic_boost_source_post_not_found', 'Source post not found' );
+			return new \WP_Error( 'traffic_boost_source_post_not_found', __( 'Source post not found', 'wp-parsely' ) );
 		}
 
 		$source_post_content = $source_post->post_content;
@@ -653,7 +653,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		// If there are errors parsing the paragraph HTML, return an error.
 		if ( count( $errors ) > 0 ) {
 			libxml_clear_errors();
-			return new \WP_Error( 'traffic_boost_error_parsing_html', 'Error parsing the paragraph HTML', $errors );
+			return new \WP_Error( 'traffic_boost_error_parsing_html', __( 'Error parsing the paragraph HTML', 'wp-parsely' ), $errors );
 		}
 
 		// Find the text node containing our target text at the specified offset.
@@ -661,7 +661,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		if ( null === $text_node ) {
 			libxml_clear_errors();
-			return new \WP_Error( 'traffic_boost_text_not_found', 'No text found in paragraph' );
+			return new \WP_Error( 'traffic_boost_text_not_found', __( 'No text found in paragraph', 'wp-parsely' ) );
 		}
 
 		// Validate the link placement, to ensure we're not creating nested links and to
@@ -711,7 +711,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 			if ( false === $target_pos ) {
 				libxml_clear_errors();
-				return new \WP_Error( 'traffic_boost_text_not_found', 'Link text not found at specified offset' );
+				return new \WP_Error( 'traffic_boost_text_not_found', __( 'Link text not found at specified offset', 'wp-parsely' ) );
 			}
 
 			// Create the smart link anchor element.
@@ -731,7 +731,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 			if ( null === $text_node->parentNode ) {
 				libxml_clear_errors();
-				return new \WP_Error( 'traffic_boost_text_node_parent_not_found', 'Text node parent not found' );
+				return new \WP_Error( 'traffic_boost_text_node_parent_not_found', __( 'Text node parent not found', 'wp-parsely' ) );
 			}
 
 			// Replace the original text node with our three new nodes.
@@ -752,7 +752,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		$original_line = $this->find_original_line( $source_post_content, $line_with_smart_link );
 
 		if ( '' === $original_line ) {
-			return new \WP_Error( 'traffic_boost_original_line_not_found', 'Could not find the original line containing the link text' );
+			return new \WP_Error( 'traffic_boost_original_line_not_found', __( 'Could not find the original line containing the link text', 'wp-parsely' ) );
 		}
 
 		// Replace the original line with the new HTML.
@@ -820,7 +820,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		if ( ! class_exists( 'DOMDocument' ) ) {
-			return new \WP_Error( 'traffic_boost_dom_not_available', 'DOMDocument is not available' );
+			return new \WP_Error( 'traffic_boost_dom_not_available', __( 'DOMDocument is not available', 'wp-parsely' ) );
 		}
 
 		$source_post = $this->source_post;
@@ -829,7 +829,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		if ( null === $source_post ) {
-			return new \WP_Error( 'traffic_boost_source_post_not_found', 'Source post not found' );
+			return new \WP_Error( 'traffic_boost_source_post_not_found', __( 'Source post not found', 'wp-parsely' ) );
 		}
 
 		$source_post_content = $source_post->post_content;
@@ -851,14 +851,14 @@ class Inbound_Smart_Link extends Smart_Link {
 		// If there are errors parsing the paragraph HTML, return an error.
 		if ( count( $errors ) > 0 ) {
 			libxml_clear_errors();
-			return new \WP_Error( 'traffic_boost_error_parsing_html', 'Error parsing the paragraph HTML', $errors );
+			return new \WP_Error( 'traffic_boost_error_parsing_html', __( 'Error parsing the paragraph HTML', 'wp-parsely' ), $errors );
 		}
 
 		// Remove the anchor element with the smart link UID.
 		$smart_link_anchor = $this->find_smart_link_anchor( $content_dom );
 
 		if ( false === $smart_link_anchor ) {
-			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', 'Smart link anchor not found' );
+			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', __( 'Smart link anchor not found', 'wp-parsely' ) );
 		}
 
 		$original_paragraph_html = $html_parser->saveHTML( $smart_link_anchor->parentNode );
@@ -866,7 +866,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		// Get the parent node of the smart link anchor.
 		$parent_node = $smart_link_anchor->parentNode;
 		if ( null === $parent_node ) {
-			return new \WP_Error( 'traffic_boost_parent_node_not_found', 'Parent node not found' );
+			return new \WP_Error( 'traffic_boost_parent_node_not_found', __( 'Parent node not found', 'wp-parsely' ) );
 		}
 
 		// Get the original link attributes, if they exist.

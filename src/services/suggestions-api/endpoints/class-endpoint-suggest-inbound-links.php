@@ -66,8 +66,8 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 		$request_body = array(
 			'canonical_url' => $post_url,
 			'output_config' => array(
-				'blending_weight' => 0.9,
-				'max_items'       => $options['max_items'] ?? 10,
+				'performance_blending_weight' => 0.9,
+				'max_items'                   => $options['max_items'] ?? 10,
 			),
 			'title'         => $post->post_title,
 			'text'          => wp_strip_all_tags( $post->post_content ),
@@ -130,7 +130,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Executes the API request.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API.

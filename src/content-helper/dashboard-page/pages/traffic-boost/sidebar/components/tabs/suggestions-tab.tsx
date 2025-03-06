@@ -225,10 +225,18 @@ const SuggestionsTab = ( {
 
 			setIsGeneratingSuggestions( false );
 		} catch ( err ) {
-			// eslint-disable-next-line no-console
-			console.error( err );
+			let errorMessage = __( 'Failed to generate suggestions.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			// Create an error snackbar.
+			createErrorNotice( errorMessage, {
+				type: 'snackbar',
+				icon: <Icon icon={ error } />,
+			} );
+
 			setIsGeneratingSuggestions( false );
-			// TODO: Show an error notice.
 		}
 	};
 

@@ -40,7 +40,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The source post object.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @var \WP_Post|null The source post.
 	 */
@@ -375,7 +375,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Updates the UID of the smart link.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 */
 	public function update_uid(): void {
 		$this->uid = $this->generate_uid();
@@ -384,7 +384,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Removes the smart link from the database.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @return bool True if the smart link was removed successfully, false otherwise.
 	 */
@@ -486,7 +486,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets a boolean meta value from the smart link post.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @param string $meta_key The meta key to get the value for.
 	 * @param bool   $default_value The default value to return if the meta value is not a boolean.
@@ -621,7 +621,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Sets the UID of the smart link.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @param string $uid The UID of the smart link.
 	 */
@@ -765,6 +765,7 @@ class Smart_Link extends Base_Model {
 	 * Outbound smart links are smart links that link to other posts.
 	 *
 	 * @since 3.16.0
+	 * @since 3.18.0 Added status parameter.
 	 *
 	 * @param int    $post_id The post ID to get the smart links for.
 	 * @param string $status The status of the smart links to get.
@@ -851,6 +852,7 @@ class Smart_Link extends Base_Model {
 	 * Inbound smart links are links on other posts that link to the post.
 	 *
 	 * @since 3.16.0
+	 * @since 3.18.0 Added status parameter.
 	 *
 	 * @param int    $post_id The post ID to get the smart links for.
 	 * @param string $status The status of the smart links to get.
@@ -946,7 +948,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets the cache group for a single smart link.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @return string The cache group.
 	 */
@@ -957,7 +959,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Flushes the cache for a single smart link.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 */
 	protected function flush_cache(): void {
 		// Delete the cache for the smart link UID to post ID association.
@@ -967,7 +969,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Flushes the cache for all smart links in a post.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 */
 	protected function flush_all_cache(): void {
 		$this->flush_cache();
@@ -982,7 +984,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets the cache group for all smart links in a post.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @param int $post_id The post ID to get the cache group for.
 	 * @return string The cache group.
@@ -994,7 +996,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Flushes the cache for all smart links in a post.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
 	 * @param int $post_id The post ID to flush the cache for.
 	 */

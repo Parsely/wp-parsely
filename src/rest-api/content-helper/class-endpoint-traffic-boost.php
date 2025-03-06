@@ -4,7 +4,7 @@
  * Parse.ly Content Helper `/traffic-boost` API endpoint class
  *
  * @package Parsely
- * @since   3.17.0
+ * @since   3.18.0
  */
 
 declare(strict_types=1);
@@ -26,7 +26,7 @@ use WP_REST_Response;
  *
  * Provides an endpoint for getting traffic boost suggestions for a given post.
  *
- * @since 3.17.0
+ * @since 3.18.0
  */
 class Endpoint_Traffic_Boost extends Base_Endpoint {
 	use Content_Helper_Feature;
@@ -35,7 +35,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * The Suggestions API service.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @var Suggestions_API_Service $suggestions_api
 	 */
@@ -44,7 +44,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Initializes the class.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @param Content_Helper_Controller $controller The Content Helper controller.
 	 */
@@ -56,7 +56,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Returns the name of the endpoint.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @return string The endpoint name.
 	 */
@@ -67,7 +67,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Returns the name of the feature associated with the current endpoint.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @return string The feature name.
 	 */
@@ -78,7 +78,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Registers the routes for the endpoint.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 */
 	public function register_routes(): void {
 		/**
@@ -268,7 +268,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Gets traffic boost suggestions for a post.
 	 *
-	 * @since 3.17.0
+	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response|WP_Error The response object.
