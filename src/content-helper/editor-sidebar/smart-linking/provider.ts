@@ -9,6 +9,9 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { BaseProvider } from '../../common/base-provider';
 import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
+import { getApiPeriodParams } from '../../common/utils/api';
+import { Metric, Period } from '../../common/utils/constants';
+import { PerformanceData } from '../performance-stats/model';
 import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
@@ -50,6 +53,35 @@ export type InboundSmartLink = SmartLink & {
 		date: string,
 		image: string|false,
 	};
+}
+
+/**
+ * Structure of an outbound smart link, which is a smart link in the current
+ * post, that links to a different post.
+ *
+ * @since 3.18.0
+ */
+export type OutboundSmartLink = SmartLink & {
+	wp_post_meta: PostMeta;
+	post_stats: {
+		avg_engaged?: string;
+		views?: string;
+		visitors?: string;
+	}
+}
+
+/**
+ * Structure of a post meta object, returned by the
+ * 'content-helper/smart-linking/get-post-meta-for-urls' endpoint.
+ *
+ * @since 3.18.0
+ */
+type PostMeta = {
+	author?: string;
+	date?: string;
+	title?: string;
+	type?: string;
+	url?: string;
 }
 
 /**
@@ -131,14 +163,15 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @param {number}   maxLinksPerPost  The maximum number of links to return.
 	 * @param {string[]} urlExclusionList A list of URLs to exclude from the suggestions.
 	 *
-	 * @return {Promise<SmartLink[]>} The resulting list of links.
+	 * @return {Promise<OutboundSmartLink[]>} The resulting list of links.
 	 */
 	public async generateSmartLinks(
 		content: string,
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 		urlExclusionList: string[] = [],
-	): Promise<SmartLink[]> {
-		const response = await this.fetch<SmartLink[]>( {
+	): Promise<OutboundSmartLink[]> {
+		// Get the smart links.
+		const smartLinks = await this.fetch<SmartLink[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v2/content-helper/smart-linking/generate', {
 				max_links: maxLinksPerPost,
@@ -149,7 +182,58 @@ export class SmartLinkingProvider extends BaseProvider {
 			},
 		} );
 
-		return response ?? [];
+		// Get all the extra data needed to create outbound smart links.
+		const [ postsStats, postsMetas ] = await Promise.all( [
+			// Posts performance data, fetched from the Parse.ly API. Might not
+			// be available for all posts.
+			this.fetch<PerformanceData[]>( {
+				path: addQueryArgs(
+					`/wp-parsely/v2/stats/posts`, {
+						...getApiPeriodParams( Period.Days30 ),
+						limit: smartLinks.length,
+						sort: Metric.AvgEngaged, // Force return of visitors and avg_engaged.
+						urls: smartLinks.map( ( link ) => link.href ),
+					} ),
+			} ),
+			// Posts meta, fetched from WordPress.
+			this.getPostMetaForURLs( smartLinks.map( ( link ) => link.href ) ),
+		] );
+
+		// Create the outbound smart links from all the data.
+		const outboundSmartLinks = smartLinks.map( ( link ) => {
+			const postMeta = postsMetas.find( ( meta ) => meta.url === link.href );
+			const postStats = postsStats.find( ( stat ) => stat.url === link.href );
+
+			// Don't include links for which we didn't find any data, as the URL
+			// probably doesn't exist. Include stats data in the check, so most
+			// results can still be returned under local development environments.
+			if ( undefined === postMeta && undefined === postStats ) {
+				// eslint-disable-next-line no-console
+				console.warn( `PCH Smart Linking: Skipping potentially nonexistent URL: ${ link.href }` );
+				return null;
+			}
+
+			return {
+				...link,
+				wp_post_meta: {
+					// Use WordPress post meta values, as data from the Parse.ly
+					// API could be unavailable or outdated. Use stats values as
+					// fallbacks to display data under local development environments.
+					author: postMeta?.author ?? postStats?.author,
+					date: postMeta?.date ?? postStats?.date,
+					title: postMeta?.title ?? postStats?.title,
+					url: postMeta?.url ?? postStats?.url,
+					type: postMeta?.type,
+				},
+				post_stats: {
+					avg_engaged: postStats?.avgEngaged,
+					views: postStats?.views,
+					visitors: postStats?.visitors,
+				},
+			};
+		} ).filter( ( link ) => link !== null );
+
+		return outboundSmartLinks;
 	}
 
 	/**
@@ -254,20 +338,20 @@ export class SmartLinkingProvider extends BaseProvider {
 	}
 
 	/**
-	 * Get the post type of post by its URL.
+	 * Returns WordPress post meta for the given URLs.
 	 *
-	 * @since 3.16.0
+	 * @since 3.18.0
 	 *
-	 * @param {string} url The URL of the post.
+	 * @param {string[]} urls The URLs of the posts.
 	 *
-	 * @return {Promise<string>} The post type of the post.
+	 * @return {Promise<PostMeta[]>} The WordPress meta for the posts.
 	 */
-	public async getPostTypeByURL( url: string ): Promise<LinkedPost> {
-		return await this.fetch<LinkedPost>( {
+	public async getPostMetaForURLs( urls: string[] ): Promise<PostMeta[]> {
+		return await this.fetch<PostMeta[]>( {
 			method: 'POST',
-			path: '/wp-parsely/v2/content-helper/smart-linking/url-to-post-type',
+			path: '/wp-parsely/v2/content-helper/smart-linking/get-post-meta-for-urls',
 			data: {
-				url,
+				urls,
 			},
 		} );
 	}
