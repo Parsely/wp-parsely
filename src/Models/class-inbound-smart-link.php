@@ -1018,18 +1018,8 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return array<Inbound_Smart_Link> The existing inbound smart links.
 	 */
 	public static function get_existing_suggestions( int $post_id ): array {
-		// Get all inbound smart links for the post.
+		// Get pending (suggestions) inbound smart links for the post.
 		$smart_links = self::get_inbound_smart_links( $post_id, Smart_Link_Status::PENDING );
-
-		// Filter out the ones that are already applied.
-		$smart_links = array_values(
-			array_filter(
-				$smart_links,
-				function ( Inbound_Smart_Link $smart_link ) {
-					return ! $smart_link->applied;
-				}
-			)
-		);
 
 		return $smart_links;
 	}

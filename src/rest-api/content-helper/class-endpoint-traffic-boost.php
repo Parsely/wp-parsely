@@ -94,16 +94,19 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'type'        => 'integer',
 					'description' => __( 'The maximum number of suggestions to return.', 'wp-parsely' ),
 					'default'     => 10,
+					'required'    => false,
 				),
 				'save'             => array(
 					'type'        => 'boolean',
 					'description' => __( 'Whether to save the suggestions.', 'wp-parsely' ),
 					'default'     => false,
+					'required'    => false,
 				),
 				'discard_previous' => array(
 					'type'        => 'boolean',
 					'description' => __( 'Whether to discard the previous suggestions.', 'wp-parsely' ),
 					'default'     => true,
+					'required'    => false,
 				),
 			)
 		);
@@ -119,8 +122,8 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array(
 				'source_post_id'  => array(
 					'type'        => 'integer',
-					'required'    => true,
 					'description' => __( 'The ID of the source post.', 'wp-parsely' ),
+					'required'    => true,
 				),
 				'ignore_keywords' => array(
 					'type'        => 'array',
@@ -225,6 +228,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'type'        => 'boolean',
 					'description' => __( 'Whether to restore the original link.', 'wp-parsely' ),
 					'default'     => false,
+					'required'    => false,
 				),
 			)
 		);
@@ -258,6 +262,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'type'        => 'boolean',
 					'description' => __( 'Whether to restore the original link.', 'wp-parsely' ),
 					'default'     => false,
+					'required'    => false,
 				),
 			)
 		);
