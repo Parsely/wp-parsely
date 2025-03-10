@@ -99,6 +99,7 @@ abstract class Base_Service_Endpoint {
 		$options = array(
 			'headers' => $this->get_headers(),
 			'method'  => $method,
+			'timeout' => 60, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 		);
 
 		return $options;

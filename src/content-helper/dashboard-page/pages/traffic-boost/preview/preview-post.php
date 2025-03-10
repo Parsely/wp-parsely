@@ -12,6 +12,10 @@
 
 declare(strict_types=1);
 
+// Define constants to prevent unwanted scripts and styles from being loaded.
+define( 'IFRAME_REQUEST', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+define( 'WP_ADMIN', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -25,6 +29,9 @@ declare(strict_types=1);
 			padding: 1rem;
 			min-height: none;
 			height: 0;
+		}
+		.wp-parsely-preview-content {
+			padding-bottom: 30px;
 		}
 		.editor-styles-wrapper {
 			max-width: 840px;

@@ -1,10 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { Button, PanelBody, PanelRow } from '@wordpress/components';
+import { Button, Icon, PanelBody, PanelRow, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
-import { update } from '@wordpress/icons';
+import { __, sprintf } from '@wordpress/i18n';
+import { error, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -14,12 +14,16 @@ import { TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { AddNewLinkButton } from '../add-new-link-button';
 import { LinksList } from '../links-list/links-list';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../../../common/content-helper-error';
 
 /**
  * Component that renders the suggestions settings.
  *
+ * Note: Not in use yet.
+ *
  * @since 3.18.0
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SuggestionsSettings = (): React.JSX.Element => {
 	return (
 		<div className="traffic-boost-suggestions-settings">
@@ -114,6 +118,7 @@ const SuggestionsTab = ( {
 		currentPage,
 		itemsPerPage,
 		isGeneratingSuggestions,
+		isLoadingSuggestions,
 	} = useSelect( ( select ) => ( {
 		currentPost: select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
@@ -121,9 +126,11 @@ const SuggestionsTab = ( {
 		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
 		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
 		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
+		isLoadingSuggestions: select( TrafficBoostStore ).isLoadingSuggestions(),
 	} ), [] );
 
 	const {
+		setSelectedLink,
 		setSuggestionsPage,
 		setSuggestionsItemsPerPage,
 		addSuggestion,
@@ -131,7 +138,10 @@ const SuggestionsTab = ( {
 		updateSuggestion,
 		setIsGeneratingSuggestions,
 		setIsGenerating,
+		removeSuggestion,
 	} = useDispatch( TrafficBoostStore );
+
+	const { createSuccessNotice, createErrorNotice } = useDispatch( 'core/notices' );
 
 	/**
 	 * Adds a Traffic Boost link suggestion to the current post.
@@ -141,16 +151,41 @@ const SuggestionsTab = ( {
 	 * @param {HydratedPost} post The post that will be added to the suggestion list.
 	 */
 	const addTrafficBoostLink = async ( post: HydratedPost ) => {
+		if ( ! currentPost ) {
+			return;
+		}
+
+		const previousSelectedLink = selectedLink;
+
 		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
 		await addSuggestion( trafficBoostLink );
 		await setIsGenerating( trafficBoostLink, true );
 
-		// Generate the placement for the suggestion.
-		const updatedLink = await trafficBoostProvider.generateSuggestionForPost( trafficBoostLink );
-		await updateSuggestion( updatedLink );
-		setTimeout( () => {
+		try {
+			const updatedLink = await trafficBoostProvider.generateSuggestionForPost(
+				currentPost,
+				post,
+				trafficBoostLink
+			);
+
+			await updateSuggestion( updatedLink, trafficBoostLink.uid );
 			setIsGenerating( trafficBoostLink, false );
-		}, 1000 );
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to find a link placement.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			// Create an error snackbar.
+			createErrorNotice( errorMessage, {
+				type: 'snackbar',
+				icon: <Icon icon={ error } />,
+			} );
+
+			setIsGenerating( trafficBoostLink, false );
+			removeSuggestion( trafficBoostLink );
+			setSelectedLink( previousSelectedLink );
+		}
 	};
 
 	/**
@@ -163,16 +198,61 @@ const SuggestionsTab = ( {
 			return;
 		}
 
-		setIsGeneratingSuggestions( true );
-		const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id );
-		setSuggestions( generatedSuggestions );
-		setIsGeneratingSuggestions( false );
+		try {
+			setIsGeneratingSuggestions( true );
+			const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id, {
+				save: true,
+				max_items: 10, // TODO: Get this from the settings.
+				discard_previous: true,
+			} );
+
+			// Update the suggestions list.
+			setSuggestions( generatedSuggestions );
+
+			// Change the active link to the first suggestion.
+			setSelectedLink( generatedSuggestions[ 0 ] );
+
+			// Show a snackbar success message.
+			createSuccessNotice(
+				sprintf(
+				/* translators: %d: number of suggestions generated */
+					__( 'Generated %d suggestions', 'wp-parsely' ), generatedSuggestions.length ),
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ update } />,
+				}
+			);
+
+			setIsGeneratingSuggestions( false );
+		} catch ( err ) {
+			let errorMessage = __( 'Failed to generate suggestions.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			// Create an error snackbar.
+			createErrorNotice( errorMessage, {
+				type: 'snackbar',
+				icon: <Icon icon={ error } />,
+			} );
+
+			setIsGeneratingSuggestions( false );
+		}
 	};
+
+	if ( isLoadingSuggestions && isGeneratingSuggestions ) {
+		return (
+			<div className="traffic-boost-suggestions-loading-generating">
+				<Spinner />
+				{ __( 'Hold on tight while we generate some suggestions for you.', 'wp-parsely' ) }
+			</div>
+		);
+	}
 
 	return (
 		<>
-			<SuggestionsSettings />
 			<LinksList
+				isLoading={ isLoadingSuggestions }
 				links={ suggestions }
 				onClick={ onSuggestionClick }
 				activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
@@ -191,16 +271,20 @@ const SuggestionsTab = ( {
 					</div>
 				) }
 			>
-				<GenerateButton
-					variant="secondary"
-					isGeneratingSuggestions={ isGeneratingSuggestions }
-					handleGenerateSuggestions={ handleGenerateSuggestions }
-				/>
-				<AddNewLinkButton
-					disabled={ isGeneratingSuggestions }
-					suggestions={ suggestions }
-					onPostClick={ addTrafficBoostLink }
-				/>
+				{ ! isLoadingSuggestions && (
+					<>
+						<GenerateButton
+							variant="secondary"
+							isGeneratingSuggestions={ isGeneratingSuggestions }
+							handleGenerateSuggestions={ handleGenerateSuggestions }
+						/>
+						<AddNewLinkButton
+							disabled={ isGeneratingSuggestions }
+							suggestions={ suggestions }
+							onPostClick={ addTrafficBoostLink }
+						/>
+					</>
+				) }
 			</LinksList>
 		</>
 	);

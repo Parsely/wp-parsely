@@ -19,6 +19,7 @@ import { SingleLink } from './single-link';
  * @since 3.18.0
  */
 interface LinksListProps {
+	isLoading: boolean;
 	children?: React.ReactNode;
 	links: TrafficBoostLink[];
 	activeLink: TrafficBoostLink | null;
@@ -39,6 +40,7 @@ interface LinksListProps {
  * @param {LinksListProps} props The component's props.
  */
 export const LinksList = ( {
+	isLoading: isLoadingProp,
 	children,
 	links,
 	onClick,
@@ -50,10 +52,10 @@ export const LinksList = ( {
 	onItemsPerPageChange,
 	renderEmptyState,
 }: LinksListProps ): React.JSX.Element => {
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ isLoading, setIsLoading ] = useState( isLoadingProp );
 	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>( [] );
 	const [ totalPages, setTotalPages ] = useState<number>( 1 );
-	const [ activeLinkPostId, setActiveLinkPostId ] = useState<number | null>( activeLink?.targetPost.id ?? null );
+	const [ activeLinkPostId, setActiveLinkPostId ] = useState<string | null>( activeLink?.uid ?? null );
 
 	const containerRef = useRef<HTMLDivElement>( null );
 	const lastContainerHeight = useRef<number>( 0 );
@@ -64,6 +66,10 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const calculateItemsPerPage = useCallback( () => {
+		if ( isLoading ) {
+			return;
+		}
+
 		if ( ! containerRef.current ) {
 			onItemsPerPageChange?.( minItemsPerPage );
 			return;
@@ -84,7 +90,11 @@ export const LinksList = ( {
 
 		onItemsPerPageChange?.( newItemsPerPage );
 		setIsLoading( false );
-	}, [ minItemsPerPage, onItemsPerPageChange ] );
+	}, [ isLoading, minItemsPerPage, onItemsPerPageChange ] );
+
+	useEffect( () => {
+		setIsLoading( isLoadingProp );
+	}, [ isLoadingProp ] );
 
 	/**
 	 * Sets the active link post ID when the active link changes.
@@ -92,7 +102,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		setActiveLinkPostId( activeLink?.targetPost.id ?? null );
+		setActiveLinkPostId( activeLink?.uid ?? null );
 	}, [ activeLink ] );
 
 	/**
@@ -120,8 +130,14 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
+		if ( itemsPerPage === 0 ) {
+			return;
+		}
+
 		const calculatedTotalPages = Math.max( 1, Math.ceil( links.length / itemsPerPage ) );
-		setTotalPages( calculatedTotalPages );
+
+		// calculatedTotalPages can return NaN if links.length is 0. If so, set it to 1.
+		setTotalPages( calculatedTotalPages || 1 );
 
 		const startIndex = ( currentPage - 1 ) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
@@ -142,7 +158,7 @@ export const LinksList = ( {
 		if ( activeLink && links ) {
 			// Find the index of the active link in the full list.
 			const activeIndex = links.findIndex( ( link ) =>
-				link.targetPost.id === activeLink.targetPost.id
+				link.uid === activeLink.uid
 			);
 
 			if ( activeIndex !== -1 ) {
@@ -179,7 +195,7 @@ export const LinksList = ( {
 	 * @param {TrafficBoostLink} suggestion The suggestion to click.
 	 */
 	const onSuggestionClickHandler = ( suggestion: TrafficBoostLink ) => {
-		setActiveLinkPostId( suggestion.targetPost.id );
+		setActiveLinkPostId( suggestion.uid );
 		onClick?.( suggestion );
 	};
 
@@ -190,7 +206,11 @@ export const LinksList = ( {
 	 */
 	const renderLinksList = (): React.JSX.Element | null => {
 		if ( isLoading && visibleLinks.length === 0 ) {
-			return <Spinner />;
+			return (
+				<div className="traffic-boost-links-list-loading">
+					<Spinner />
+				</div>
+			);
 		}
 
 		// If we have links data but nothing is visible yet, don't show the "no posts" message.
@@ -212,9 +232,9 @@ export const LinksList = ( {
 				{ visibleLinks.map( ( link: TrafficBoostLink ) => {
 					return (
 						<SingleLink
-							key={ link.targetPost.id + ( link.smartLink?.uid ?? '' ) }
+							key={ link.targetPost.id + ( link.uid ?? '' ) }
 							suggestion={ link }
-							isActive={ link.targetPost.id === activeLinkPostId }
+							isActive={ link.uid === activeLinkPostId }
 							onClick={ onSuggestionClickHandler }
 						/>
 					);
@@ -252,7 +272,7 @@ export const LinksList = ( {
 				<div className="links-pagination-children">
 					{ children }
 				</div>
-				{ links.length > itemsPerPage && totalPages > 0 && (
+				{ ! isLoading && links.length > itemsPerPage && totalPages > 0 && (
 					<>
 						<div className="page-selector">
 							<span>{ __( 'Page', 'wp-parsely' ) }</span>

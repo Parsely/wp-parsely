@@ -199,6 +199,16 @@
 			}
 		}
 	}
+
+	.traffic-boost-suggestions-loading-generating {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 65%;
+		padding: var(--grid-unit-20);
+		gap: var(--grid-unit-15);
+	}
 }
 
 .wp-parsely-traffic-boost-add-new-link-popover {
@@ -213,10 +223,6 @@
 	}
 
 	.traffic-boost-add-link-table {
-		&.is-loading {
-			display: none;
-		}
-
 		&.no-results {
 			text-align: left;
 		}

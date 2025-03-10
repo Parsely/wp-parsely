@@ -1,7 +1,7 @@
 /**
  * WordPress imports
  */
-import { Button } from '@wordpress/components';
+import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight } from '@wordpress/icons';
@@ -13,6 +13,7 @@ import { VerticalDivider } from '../../../../../common/components/vertical-divid
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { TextSelection } from '../preview';
+import { useState } from '@wordpress/element';
 
 /**
  * Props structure for PreviewFooter.
@@ -22,8 +23,8 @@ import { TextSelection } from '../preview';
 interface PreviewFooterProps {
 	activeLink: TrafficBoostLink | null;
 	onAccept: ( link: TrafficBoostLink ) => void;
-	onRemove: ( link: TrafficBoostLink ) => void;
-	onUpdateLink: ( link: TrafficBoostLink ) => void;
+	onRemove: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
+	onUpdateLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 	onDiscard: ( link: TrafficBoostLink ) => void;
 	onNext: () => void;
 	onPrevious: () => void;
@@ -59,6 +60,7 @@ export const PreviewFooter = ( {
 	const isInboundLink = ! activeLink?.isSuggestion;
 	const hasNext = itemIndex < totalItems;
 	const hasPrevious = itemIndex > 1;
+	const [ restoreOriginal, setRestoreOriginal ] = useState<boolean>( true );
 
 	const {
 		isAccepting,
@@ -120,8 +122,20 @@ export const PreviewFooter = ( {
 								<>
 									<Button
 										variant="primary"
-										onClick={ () => onUpdateLink( activeLink ) }
+										onClick={ () => onUpdateLink( activeLink, restoreOriginal ) }
+										isBusy={ isAccepting }
+										disabled={ isAccepting }
 									>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+									{ activeLink.smartLink?.is_link_replacement && (
+										<CheckboxControl
+											__nextHasNoMarginBottom
+											label={ __( 'Restore original link?', 'wp-parsely' ) }
+											checked={ restoreOriginal }
+											onChange={ ( value ) => {
+												setRestoreOriginal( value );
+											} }
+										/>
+									) }
 									<VerticalDivider size={ 36 } />
 									<Button
 										variant="tertiary"
@@ -131,13 +145,25 @@ export const PreviewFooter = ( {
 									</Button>
 								</>
 							) : (
-								<Button
-									variant="tertiary"
-									onClick={ () => onRemove( activeLink ) }
-									isBusy={ isRemoving }
-									disabled={ isRemoving }
-									isDestructive
-								>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
+								<>
+									<Button
+										variant="tertiary"
+										onClick={ () => onRemove( activeLink, restoreOriginal ) }
+										isBusy={ isRemoving }
+										disabled={ isRemoving }
+										isDestructive
+									>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
+									{ activeLink.smartLink?.is_link_replacement && (
+										<CheckboxControl
+											__nextHasNoMarginBottom
+											label={ __( 'Restore original link?', 'wp-parsely' ) }
+											checked={ restoreOriginal }
+											onChange={ ( value ) => {
+												setRestoreOriginal( value );
+											} }
+										/>
+									) }
+								</>
 							) }
 						</>
 					) }

@@ -3,6 +3,7 @@
  */
 import { Button, Dropdown, SearchControl } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
+import { useSelect } from '@wordpress/data';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
@@ -13,6 +14,7 @@ import { plus } from '@wordpress/icons';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { PostsTable } from '../../../../components/posts-table/component';
 import { TrafficBoostLink } from '../../provider';
+import { TrafficBoostStore } from '../../store';
 
 /**
  * Props for the AddNewLinkButton component.
@@ -42,16 +44,22 @@ export const AddNewLinkButton = ( {
 	const debouncedSetSearchInput = useDebounce( setSearchInput, 300 );
 	const [ suggestionsPostIds, setSuggestionsPostIds ] = useState<number[]>( [] );
 
+	const currentPost = useSelect( ( select ) => select( TrafficBoostStore ).getCurrentPost(), [] );
+
 	/**
 	 * Sets the post IDs of the suggestions so they can be excluded from the search.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
+		let postIds = [ currentPost?.id ?? 0 ];
+
 		if ( suggestions.length > 0 ) {
-			setSuggestionsPostIds( suggestions.map( ( suggestion ) => suggestion.targetPost.id ) );
+			postIds = [ ...postIds, ...suggestions.map( ( suggestion ) => suggestion.targetPost.id ) ];
 		}
-	}, [ suggestions ] );
+
+		setSuggestionsPostIds( postIds );
+	}, [ suggestions, currentPost ] );
 
 	return (
 		<Dropdown
@@ -97,7 +105,6 @@ export const AddNewLinkButton = ( {
 							} }
 							hideHeader={ true }
 							hidePagination={ true }
-							hideLoading={ true }
 							compact={ true }
 							noResultsMessage={ __( 'No posts found.', 'wp-parsely' ) }
 							onPostClick={ ( post ) => {

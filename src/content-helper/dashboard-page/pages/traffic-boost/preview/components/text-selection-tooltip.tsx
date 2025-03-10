@@ -416,8 +416,8 @@ export const TextSelectionTooltip = ( {
 		}
 
 		// Check if selection spans multiple paragraphs.
-		const startParagraph = range.startContainer.parentElement?.closest( 'p' );
-		const endParagraph = range.endContainer.parentElement?.closest( 'p' );
+		const startParagraph = range.startContainer.parentElement?.closest( 'p, li' );
+		const endParagraph = range.endContainer.parentElement?.closest( 'p, li' );
 
 		if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 			return;

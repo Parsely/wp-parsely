@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -34,11 +35,13 @@ const InboundLinksTab = ( {
 		inboundLinks,
 		currentPage,
 		itemsPerPage,
+		isLoadingInboundLinks,
 	} = useSelect( ( select ) => ( {
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		currentPage: select( TrafficBoostStore ).getInboundLinksPage(),
 		itemsPerPage: select( TrafficBoostStore ).getInboundLinksItemsPerPage(),
+		isLoadingInboundLinks: select( TrafficBoostStore ).isLoadingInboundLinks(),
 	} ), [] );
 
 	const {
@@ -48,6 +51,7 @@ const InboundLinksTab = ( {
 
 	return (
 		<LinksList
+			isLoading={ isLoadingInboundLinks }
 			links={ inboundLinks }
 			onClick={ onInboundLinkClick }
 			activeLink={ ! selectedLink?.isSuggestion ? selectedLink : null }
@@ -55,6 +59,11 @@ const InboundLinksTab = ( {
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setInboundLinksPage }
 			onItemsPerPageChange={ setInboundLinksItemsPerPage }
+			renderEmptyState={ () => (
+				<div className="traffic-boost-suggestions-empty-state">
+					<p>{ __( 'This post has no inbound links.', 'wp-parsely' ) }</p>
+				</div>
+			) }
 		/>
 	);
 };

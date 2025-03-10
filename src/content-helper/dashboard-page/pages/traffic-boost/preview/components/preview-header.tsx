@@ -4,7 +4,7 @@
 import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { desktop, edit, external, moreVertical } from '@wordpress/icons';
+import { desktop, edit, external, moreVertical, update } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -90,10 +90,12 @@ const VerticalMoreMenu = ( {
  * @since 3.18.0
  */
 interface PreviewHeaderProps {
+	isLoading: boolean;
 	activeLink: TrafficBoostLink | null;
 	onOpenPostInNewTab: () => void;
 	onOpenPostEditor: () => void;
 	onOpenParselyDashboard: () => void;
+	onRegeneratePressed: () => void;
 	isFrontendPreview: boolean;
 	setIsFrontendPreview: ( value: boolean ) => void;
 }
@@ -107,12 +109,14 @@ interface PreviewHeaderProps {
  * @param {PreviewHeaderProps} props The component's props.
  */
 export const PreviewHeader = ( {
+	isLoading,
 	activeLink,
 	isFrontendPreview,
 	setIsFrontendPreview,
 	onOpenPostEditor,
 	onOpenPostInNewTab,
 	onOpenParselyDashboard,
+	onRegeneratePressed,
 }: PreviewHeaderProps ): React.JSX.Element => {
 	/**
 	 * Toggles the frontend preview state.
@@ -145,18 +149,26 @@ export const PreviewHeader = ( {
 		<div className="traffic-boost-preview-header">
 			<div className="traffic-boost-preview-info">
 				<div className="traffic-boost-preview-info-title">
-					{ activeLink?.targetPost?.title.rendered }
+					<div dangerouslySetInnerHTML={ { __html: activeLink?.targetPost?.title.rendered } } />
 				</div>
 				<LinkCounter
-					postLinks={ activeLink.postLinks }
+					post={ activeLink.targetPost }
 					selectedLinkType={ null }
 				/>
 			</div>
 			<div className="traffic-boost-preview-actions">
+				<Button
+					icon={ update }
+					iconSize={ 24 }
+					onClick={ onRegeneratePressed }
+					disabled={ isLoading }
+					label={ __( 'Regenerate Suggested Link', 'wp-parsely' ) }
+				/>
 				{ ! isExternalURL( activeLink ) && (
 					<Button
 						icon={ desktop }
 						isPressed={ isFrontendPreview }
+						disabled={ isLoading }
 						iconSize={ 24 }
 						onClick={ onToggleFrontendPreview }
 						label={ __( 'Toggle Frontend Preview', 'wp-parsely' ) }

@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { Link } from 'react-router';
+
+/**
  * WordPress dependencies
  */
 import {
@@ -21,7 +26,6 @@ import {
 /**
  * Internal dependencies
  */
-import { Link } from 'react-router-dom';
 import { HydratedPost, QueryParams } from '../../../common/base-wordpress-provider';
 import { Thumbnail } from '../../../common/components/thumbnail';
 import { DashboardProvider } from '../../provider';
@@ -49,8 +53,9 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
 			<div className="post-details">
 				<div className="post-title">
 					{ post.title.rendered !== ''
-						? post.title.rendered
-						: __( '(no title)', 'wp-parsely' ) }
+						? <div dangerouslySetInnerHTML={ { __html: post.title.rendered } } />
+						: __( '(no title)', 'wp-parsely' )
+					}
 				</div>
 				<div className="post-meta">
 					<span className="post-date">{ prettyDate }</span>
@@ -74,6 +79,7 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
  * @since 3.18.0
  *
  * @param {Object}   props                The component props.
+ * @param {boolean}  props.isLoading      Whether the posts are loading.
  * @param {number}   props.currentPage    The current page.
  * @param {Function} props.setCurrentPage The function to set the current page.
  * @param {number}   props.totalPages     The total number of pages.
@@ -81,12 +87,14 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
  * @param {Function} props.onNext         The function to handle the next button click.
  */
 const TablePagination = ( {
+	isLoading,
 	currentPage,
 	setCurrentPage,
 	totalPages,
 	onPrevious,
 	onNext,
 }: {
+	isLoading: boolean;
 	currentPage: number;
 	setCurrentPage: ( value: number ) => void;
 	totalPages: number;
@@ -95,9 +103,11 @@ const TablePagination = ( {
 } ): React.JSX.Element => {
 	return (
 		<div className="posts-table-pagination-controls">
+			{ isLoading && <Spinner /> }
 			<div className="page-selector">
 				<span>{ __( 'Page', 'wp-parsely' ) }</span>
 				<NumberControl
+					disabled={ isLoading }
 					value={ currentPage }
 					onChange={ ( value ) => {
 						let selectedPage = parseInt( value ?? '1', 10 );
@@ -116,8 +126,8 @@ const TablePagination = ( {
 				<span>{ __( 'of', 'wp-parsely' ) } { totalPages }</span>
 			</div>
 			<div className="page-navigation">
-				<Button icon={ chevronLeft } onClick={ onPrevious } disabled={ currentPage === 1 } />
-				<Button icon={ chevronRight } onClick={ onNext } disabled={ currentPage >= totalPages } />
+				<Button icon={ chevronLeft } onClick={ onPrevious } disabled={ currentPage === 1 || isLoading } />
+				<Button icon={ chevronRight } onClick={ onNext } disabled={ currentPage >= totalPages || isLoading } />
 			</div>
 		</div>
 	);
@@ -182,6 +192,7 @@ export const PostsTable = ( {
 	className,
 	onPostClick,
 }: PostsTableType ): React.JSX.Element => {
+	// TODO: Add a global state to store the posts for faster loading.
 	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
 
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
@@ -302,7 +313,16 @@ export const PostsTable = ( {
 								<>
 									<td className="boost-perf">35%</td>
 									<td className="actions">
-										<Link to={ `/traffic-boost/${ post.id }` }>{ __( 'Boost Traffic', 'wp-parsely' ) }</Link>
+										<Link
+											to={ {
+												pathname: `/traffic-boost/${ post.id }`,
+											} }
+											state={ {
+												post,
+											} }
+										>
+											{ __( 'Boost Traffic', 'wp-parsely' ) }
+										</Link>
 										<ActionDropdown />
 									</td>
 								</>
@@ -313,6 +333,7 @@ export const PostsTable = ( {
 			</table>
 			{ ! hidePagination && (
 				<TablePagination
+					isLoading={ isLoading }
 					currentPage={ currentPage }
 					setCurrentPage={ setCurrentPage }
 					totalPages={ totalPages }

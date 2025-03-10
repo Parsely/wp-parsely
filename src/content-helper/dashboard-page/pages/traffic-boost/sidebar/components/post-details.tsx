@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -15,7 +16,8 @@ import { Thumbnail } from '../../../../../common/components/thumbnail';
  * @since 3.18.0
  */
 interface PostDetailsSidebarProps {
-    post: HydratedPost;
+	post?: HydratedPost;
+	isLoading: boolean;
 }
 
 /**
@@ -25,7 +27,7 @@ interface PostDetailsSidebarProps {
  *
  * @param {PostDetailsSidebarProps} props The component's props.
  */
-export const PostDetailsSidebar = ( { post }: PostDetailsSidebarProps ): React.JSX.Element => {
+export const PostDetailsSidebar = ( { post, isLoading }: PostDetailsSidebarProps ): React.JSX.Element => {
 	return (
 		<div className="traffic-boost-post-details">
 			<div className="traffic-boost-post-details-label">
@@ -37,11 +39,10 @@ export const PostDetailsSidebar = ( { post }: PostDetailsSidebarProps ): React.J
 					size={ 52 }
 					className="traffic-boost-thumbnail"
 				/>
-				<div className="post-title">
-					{ post.title.rendered !== ''
-						? post.title.rendered
-						: __( '(no title)', 'wp-parsely' ) }
-				</div>
+				{ isLoading && <Spinner /> }
+				{ ! isLoading && (
+					<div className="post-title" dangerouslySetInnerHTML={ { __html: post?.title.rendered ?? __( '(no title)', 'wp-parsely' ) } } />
+				) }
 			</div>
 			<div className="traffic-boost-post-details-divider"></div>
 			<div className="traffic-boost-post-details-description">
@@ -51,3 +52,4 @@ export const PostDetailsSidebar = ( { post }: PostDetailsSidebarProps ): React.J
 		</div>
 	);
 };
+

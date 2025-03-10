@@ -52,9 +52,9 @@ export const PreviewIframe = ( {
 	onLoadingChange,
 	onRestoreOriginal,
 }: PreviewIframeProps ): React.JSX.Element => {
+	const contentAreaRef = useRef<Element | null>( null );
 	const [ messageIndex, setMessageIndex ] = useState<number>( 0 );
 
-	const contentAreaRef = useRef<Element | null>( null ) as React.MutableRefObject<Element | null>;
 	const iframeRef = useRef<HTMLIFrameElement>( null );
 	const isInboundLink = ! activeLink?.isSuggestion;
 
@@ -72,7 +72,24 @@ export const PreviewIframe = ( {
 		__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
 		__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
 		__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
-	], [] );
+	].sort( () => Math.random() - 0.5 ), [] );
+
+	/**
+	 * Adds a random UUID to the iframe src. This triggers the WordPress Customizer to load
+	 * and prevents potential undesired scripts from being loaded.
+	 *
+	 * @since 3.18.0
+	 */
+	const iFrameSrc = useMemo( () => {
+		if ( ! previewUrl ) {
+			return previewUrl;
+		}
+
+		const url = new URL( previewUrl );
+		url.searchParams.set( 'customize_changeset_uuid', crypto.randomUUID() );
+
+		return url.toString();
+	}, [ previewUrl ] );
 
 	/**
 	 * Sets the message index to a random index based on the messages array length.
@@ -81,7 +98,7 @@ export const PreviewIframe = ( {
 	 */
 	useEffect( () => {
 		setMessageIndex( Math.floor( Math.random() * messages.length ) );
-	}, [ activeLink, messages ] );
+	}, [ isGenerating, isLoading, activeLink, messages ] );
 
 	/**
 	 * Highlights the smart link in the iframe.
@@ -154,8 +171,9 @@ export const PreviewIframe = ( {
 				event.preventDefault();
 				event.stopPropagation();
 
-				// If the parent is not a paragraph, skip.
-				if ( target.parentElement?.tagName !== 'P' ) {
+				// If the parent is not a paragraph or an anchor, skip.
+				const allowedParentTagNamesToBeClicked = [ 'P', 'A' ];
+				if ( ! allowedParentTagNamesToBeClicked.includes( target.parentElement?.tagName ?? '' ) ) {
 					return;
 				}
 
@@ -202,7 +220,7 @@ export const PreviewIframe = ( {
 			event.preventDefault();
 			event.stopPropagation();
 		}, true );
-	}, [] );
+	}, [ contentAreaRef ] );
 
 	/**
 	 * Jumps to the smart link text in the iframe.
@@ -284,7 +302,15 @@ export const PreviewIframe = ( {
 
 		onLoadingChange( false );
 		jumpToSmartLink( iframe );
-	}, [ disableNavigation, hideAdminBar, highlightLinkType, injectHighlightStyles, jumpToSmartLink, onLoadingChange, selectedLinkType ] );
+	}, [ contentAreaRef,
+		disableNavigation,
+		hideAdminBar,
+		highlightLinkType,
+		injectHighlightStyles,
+		jumpToSmartLink,
+		onLoadingChange,
+		selectedLinkType,
+	] );
 
 	/**
 	 * Handles iframe initialization and cleanup.
@@ -312,7 +338,7 @@ export const PreviewIframe = ( {
 		};
 
 		// Only set loading state if the URL has changed.
-		if ( iframe.src !== previewUrl ) {
+		if ( iframe.src !== iFrameSrc ) {
 			onLoadingChange( true );
 		}
 
@@ -321,7 +347,7 @@ export const PreviewIframe = ( {
 		return () => {
 			iframe.removeEventListener( 'load', handleLoadCallback );
 		};
-	}, [ isGenerating, previewUrl, handleIframeLoad, onLoadingChange, iframeRef ] );
+	}, [ isGenerating, iFrameSrc, handleIframeLoad, onLoadingChange ] );
 
 	/**
 	 * Resets content area ref when active link changes.
@@ -330,7 +356,7 @@ export const PreviewIframe = ( {
 	 */
 	useEffect( () => {
 		contentAreaRef.current = null;
-	}, [ activeLink ] );
+	}, [ activeLink, contentAreaRef ] );
 
 	/**
 	 * Re-highlights smart link when selection changes.
@@ -345,7 +371,7 @@ export const PreviewIframe = ( {
 
 		removeSmartLinkHighlights( iframe );
 		highlightSmartLink( iframe );
-	}, [ highlightSmartLink, isLoading, removeSmartLinkHighlights, selectedText ] );
+	}, [ contentAreaRef, highlightSmartLink, isLoading, removeSmartLinkHighlights, selectedText ] );
 
 	/**
 	 * Highlights the link type in the iframe.
@@ -359,7 +385,7 @@ export const PreviewIframe = ( {
 		}
 
 		highlightLinkType( iframe, selectedLinkType );
-	}, [ highlightLinkType, iframeRef, isLoading, selectedLinkType ] );
+	}, [ contentAreaRef, highlightLinkType, isLoading, selectedLinkType ] );
 
 	/**
 	 * Picks a random message with interval based on message length when
@@ -408,7 +434,7 @@ export const PreviewIframe = ( {
 					<>
 						<iframe
 							ref={ iframeRef }
-							src={ previewUrl }
+							src={ iFrameSrc }
 							title={ __( 'Post Preview', 'wp-parsely' ) }
 							className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
 							sandbox="allow-same-origin allow-scripts"

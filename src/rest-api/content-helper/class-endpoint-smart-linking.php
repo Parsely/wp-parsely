@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Content_Helper;
 
 use Parsely\Models\Smart_Link;
+use Parsely\Models\Smart_Link_Status;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
@@ -265,8 +266,8 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 */
 		$post = $request->get_param( 'post' );
 
-		$outbound_links = Smart_Link::get_outbound_smart_links( $post->ID );
-		$inbound_links  = Smart_Link::get_inbound_smart_links( $post->ID );
+		$outbound_links = Smart_Link::get_outbound_smart_links( $post->ID, Smart_Link_Status::APPLIED );
+		$inbound_links  = Smart_Link::get_inbound_smart_links( $post->ID, Smart_Link_Status::APPLIED );
 
 		$response = array(
 			'outbound' => $this->serialize_smart_links( $outbound_links ),
@@ -307,6 +308,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				409 // HTTP Conflict.
 			);
 		}
+
+		// Mark as applied.
+		$smart_link->applied = true;
 
 		// The smart link properties are set in the validate callback.
 		$saved = $smart_link->save();
@@ -360,6 +364,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			}
 
 			$updated_link = $smart_link->exists() && $should_update;
+
+			// Mark as applied.
+			$smart_link->applied = true;
 
 			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
@@ -429,7 +436,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$smart_links = $request->get_param( 'smart_links' );
 
 		// Get the current stored smart links.
-		$existing_links = Smart_Link::get_outbound_smart_links( $post->ID );
+		$existing_links = Smart_Link::get_outbound_smart_links( $post->ID, Smart_Link_Status::APPLIED );
 		$removed_links  = array();
 
 		foreach ( $existing_links as $existing_link ) {
@@ -451,6 +458,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$failed_links = array();
 
 		foreach ( $smart_links as $smart_link ) {
+			// Mark as applied.
+			$smart_link->applied = true;
+
 			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
 

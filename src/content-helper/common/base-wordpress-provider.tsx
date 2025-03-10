@@ -41,6 +41,7 @@ export interface Post extends CorePost {
 			title: { rendered: string },
 			featured_media: number,
 			media_type: string,
+			source_url: string,
 			media_details: {
 				width: number,
 				height: number,
@@ -158,7 +159,8 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 				);
 			}
 
-			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
+			const errorData = await wpError.json();
+			return Promise.reject( new ContentHelperError( errorData.message ?? '', errorData.code, '' ) );
 		} finally {
 			// Clean up the AbortController after the request completes.
 			this.abortControllers.delete( abortId );
@@ -221,6 +223,10 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 			if ( post._embedded && post._embedded[ 'wp:featuredmedia' ] ) {
 				const featuredMedia = post._embedded[ 'wp:featuredmedia' ]?.[ 0 ];
 				thumbnail = featuredMedia?.media_details?.sizes?.thumbnail?.source_url;
+
+				if ( ! thumbnail ) {
+					thumbnail = featuredMedia?.source_url ?? undefined;
+				}
 			}
 
 			return {
@@ -249,8 +255,10 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		queryParams: QueryParams = {},
 		id?: string,
 	): Promise<FetchResponse<HydratedPost[]>> {
+		const restEndpoint = queryParams.rest_endpoint ?? '/wp/v2/posts';
+
 		const posts = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( '/wp/v2/posts', { ...queryParams, _embed: true, context: 'edit' } ),
+			path: addQueryArgs( restEndpoint, { ...queryParams, _embed: true, context: 'edit' } ),
 			method: 'GET',
 		}, id );
 
@@ -298,7 +306,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 *
 	 * @return {Promise<HydratedPost>} The fetched and hydrated post.
 	 */
-	public async getPost( postId: number, id?: string ): Promise<FetchResponse<HydratedPost>> {
+	public async getPost( postId: number, id?: string ): Promise<HydratedPost> {
 		const post = await this.apiFetch<Post>( {
 			path: `/wp/v2/posts/${ postId }?_embed&context=edit`,
 			method: 'GET',
@@ -307,10 +315,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		// Hydrate the fetched post.
 		const hydratedPost = ( await this.hydratePosts( [ post.data ] ) )[ 0 ];
 
-		return {
-			...post,
-			data: hydratedPost,
-		};
+		return hydratedPost;
 	}
 
 	/**

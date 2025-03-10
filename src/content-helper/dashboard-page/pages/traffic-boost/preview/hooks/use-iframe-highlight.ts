@@ -7,8 +7,9 @@ import { useCallback } from '@wordpress/element';
  * Internal imports
  */
 import { escapeRegExp } from '../../../../../common/utils/functions';
-import { LinkType, TrafficBoostLink } from '../../provider';
+import { TrafficBoostLink } from '../../provider';
 import { TextSelection } from '../preview';
+import { LinkType } from '../components/link-counter';
 
 /**
  * Props for the useIframeHighlight hook.
@@ -319,33 +320,39 @@ export const useIframeHighlight = ( {
 			 * @param {ParentNode} parent    The parent node of the highlight.
 			 */
 			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
-				// Move all child nodes before the highlight span.
+				// Create a document fragment to temporarily hold the children.
+				const fragment = iframeDocument.createDocumentFragment();
+
+				// Move all child nodes to the fragment.
 				while ( highlight.firstChild ) {
-					parent.insertBefore( highlight.firstChild, highlight );
+					fragment.appendChild( highlight.firstChild );
 				}
+
+				// Insert the fragment before the highlight span.
+				parent.insertBefore( fragment, highlight );
 				parent.removeChild( highlight );
 				parent.normalize();
 
 				// Remove any anchors without text in the parent node.
-				const anchors = parent.querySelectorAll( 'a' );
+				const anchors = Array.from( parent.querySelectorAll( 'a' ) );
 				anchors.forEach( ( anchor ) => {
-					if ( ! anchor.textContent ) {
+					if ( ! anchor.textContent?.trim() ) {
 						parent.removeChild( anchor );
 						return;
 					}
 
 					// Check if the adjacent anchor has the same href or smartlink attribute.
 					const nextAnchor = anchor.nextElementSibling as HTMLAnchorElement;
-					if ( nextAnchor && (
+					if ( nextAnchor && nextAnchor.tagName === 'A' && (
 						anchor.href === nextAnchor.href ||
 						( anchor.getAttribute( 'data-smartlink' ) === nextAnchor.getAttribute( 'data-smartlink' ) &&
 						anchor.getAttribute( 'data-smartlink' ) !== null )
 					) ) {
-						// Merge the anchors.
-						while ( nextAnchor.firstChild ) {
-							anchor.appendChild( nextAnchor.firstChild );
+						// Instead of merging, keep them separate.
+						// Just ensure there's a space between them if needed.
+						if ( ! anchor.nextSibling || anchor.nextSibling.nodeType !== Node.TEXT_NODE ) {
+							anchor.parentNode?.insertBefore( iframeDocument.createTextNode( ' ' ), nextAnchor );
 						}
-						parent.removeChild( nextAnchor );
 					}
 				} );
 			};
@@ -565,8 +572,9 @@ export const useIframeHighlight = ( {
 	 * @param {string}            selectedLinkType The selected link type to highlight.
 	 */
 	const highlightLinkType = useCallback( ( iframe: HTMLIFrameElement, selectedLinkType: LinkType | null ) => {
+		const contentArea = contentAreaRef.current;
 		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-		if ( ! iframeDocument ) {
+		if ( ! contentArea || ! iframeDocument ) {
 			return;
 		}
 
@@ -577,33 +585,34 @@ export const useIframeHighlight = ( {
 			return;
 		}
 
-		// Get all the links of the selected link type.
-		const links = activeLink?.postLinks[ selectedLinkType ];
+		const siteUrl = new URL( activeLink.targetPost.link ).hostname;
+		let links: HTMLAnchorElement[] = Array.from( contentArea.querySelectorAll<HTMLAnchorElement>( 'a' ) );
+
+		// Filter out links that don't have text.
+		links = links.filter( ( link ) => link.textContent?.trim() !== '' );
+
+		switch ( selectedLinkType ) {
+			case 'external':
+				links = links.filter( ( link ) => ! link.href.includes( siteUrl ) );
+				break;
+			case 'internal':
+				links = links.filter( ( link ) => link.href.includes( siteUrl ) );
+				break;
+			case 'smart':
+				links = links.filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
+				break;
+		}
+
 		if ( ! links?.length ) {
 			return;
 		}
 
-		// Find and highlight matching links in the iframe.
-		const allIframeLinks = iframeDocument.querySelectorAll( 'a' );
-		allIframeLinks.forEach( ( iframeLink ) => {
-			// Match links based on href and text content.
-			const matchingLink = links.find( ( link ) => {
-				if ( link.hasAttribute( 'data-smartlink' ) ) {
-					return link.getAttribute( 'data-smartlink' ) === iframeLink.getAttribute( 'data-smartlink' );
-				}
-
-				const hrefMatches = link.href === iframeLink.href;
-				const textMatches = link.textContent === iframeLink.textContent;
-				return hrefMatches && textMatches;
-			} );
-
-			if ( matchingLink ) {
-				const selectionRange = iframeDocument.createRange();
-				selectionRange.selectNode( iframeLink );
-				highlightRange( selectionRange, 'link-type-highlight' );
-			}
+		links.forEach( ( link ) => {
+			const selectionRange = iframeDocument.createRange();
+			selectionRange.selectNode( link );
+			highlightRange( selectionRange, 'link-type-highlight' );
 		} );
-	}, [ activeLink, highlightRange, removeHighlights ] );
+	}, [ activeLink, contentAreaRef, highlightRange, removeHighlights ] );
 
 	return {
 		injectHighlightStyles,

@@ -20,6 +20,7 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
  */
 export type SmartLink = {
 	uid: string;
+	smart_link_id: number;
 	href: string;
 	text: string;
 	title: string;
@@ -40,7 +41,11 @@ export type InboundSmartLink = SmartLink & {
 	post_data?: {
 		id: number;
 		title: string;
-		type: string;
+		type: {
+			name: string;
+			label: string;
+			rest: string;
+		};
 		paragraph: string;
 		is_first_paragraph: boolean;
 		is_last_paragraph: boolean;
@@ -50,6 +55,11 @@ export type InboundSmartLink = SmartLink & {
 		date: string,
 		image: string|false,
 	};
+	validation?: {
+		valid: boolean;
+		reason?: string;
+	};
+	is_link_replacement?: boolean;
 }
 
 /**

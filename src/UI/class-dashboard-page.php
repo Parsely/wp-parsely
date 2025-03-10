@@ -68,7 +68,7 @@ final class Dashboard_Page {
 
 		// Verify nonce.
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-		if ( 0 === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
+		if ( false === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
 			wp_die( esc_html__( 'Invalid preview request.', 'wp-parsely' ) );
 		}
 
@@ -128,7 +128,7 @@ final class Dashboard_Page {
 
 		// Validate nonce.
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-		if ( 0 === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
+		if ( false === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
 			return $content;
 		}
 

@@ -48,7 +48,7 @@ abstract class Suggestions_API_Base_Endpoint extends Base_Service_Endpoint {
 			'method'      => $method,
 			'headers'     => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			'data_format' => 'body',
-			'timeout'     => 60, //phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
+			'timeout'     => 90, //phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 			'body'        => '{}',
 		);
 

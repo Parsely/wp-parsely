@@ -5,15 +5,15 @@ import { Icon } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { link as linkIcon, linkOff } from '@wordpress/icons';
+import { error, link as linkIcon, linkOff } from '@wordpress/icons';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
-import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
-import { TrafficBoostLink } from '../provider';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
+import { TrafficBoostLink, TrafficBoostProvider } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -37,8 +37,10 @@ export interface TextSelection {
  */
 interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
-	onAccept: ( link: TrafficBoostLink ) => Promise<TrafficBoostLink>;
-	onRemoveInboundLink: ( link: TrafficBoostLink ) => Promise<void>;
+	onAccept: ( link: TrafficBoostLink, selectedText: TextSelection | null ) => Promise<boolean>;
+	onDiscard: ( link: TrafficBoostLink ) => Promise<void>;
+	onRemoveInboundLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => Promise<boolean>;
+	onUpdateInboundLink: ( link: TrafficBoostLink, text: string, offset: number, restoreOriginal: boolean ) => Promise<boolean>;
 }
 
 /**
@@ -51,7 +53,9 @@ interface TrafficBoostPreviewProps {
 export const TrafficBoostPreview = ( {
 	activeLink: providedActiveLink,
 	onAccept,
+	onDiscard,
 	onRemoveInboundLink,
+	onUpdateInboundLink,
 }: TrafficBoostPreviewProps ): React.JSX.Element => {
 	const [ isFrontendPreview, setIsFrontendPreview ] = useState<boolean>( false );
 	const [ isInboundLink, setIsInboundLink ] = useState<boolean>( false );
@@ -67,6 +71,7 @@ export const TrafficBoostPreview = ( {
 
 	const {
 		createSuccessNotice,
+		createErrorNotice,
 	} = useDispatch( 'core/notices' );
 
 	const {
@@ -89,6 +94,8 @@ export const TrafficBoostPreview = ( {
 		setSelectedTab,
 		setIsAccepting,
 		setIsRemoving,
+		setIsGenerating,
+		updateSuggestion,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
@@ -142,10 +149,12 @@ export const TrafficBoostPreview = ( {
 				action: 'parsely_post_preview',
 				post_id: activePost.id,
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
+				smart_link_id: activeLink.smartLink?.smart_link_id,
 			} )
 			: addQueryArgs( activePost.link, {
 				parsely_preview: 'true',
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
+				smart_link_id: activeLink.smartLink?.smart_link_id,
 			} );
 
 		// Only set loading state if URL actually changes.
@@ -153,7 +162,7 @@ export const TrafficBoostPreview = ( {
 			setIsLoading( true );
 			setPreviewUrl( newUrl );
 		}
-	}, [ activePost, isFrontendPreview, previewUrl ] );
+	}, [ activePost, isFrontendPreview, previewUrl ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Opens the post in a new tab.
@@ -244,14 +253,42 @@ export const TrafficBoostPreview = ( {
 	const handleAccept = async ( link: TrafficBoostLink ) => {
 		setIsAccepting( link, true );
 
-		// Accept the suggestion.
-		const acceptedLink = await onAccept( link );
+		try {
+			// Accept the suggestion.
+			const accepted = await onAccept( link, selectedText );
+
+			if ( ! accepted ) {
+				throw new ContentHelperError(
+					__( 'Failed to accept suggestion.', 'wp-parsely' ),
+					ContentHelperErrorCode.UnknownError,
+					'' // No prefix for this error.
+				);
+			}
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to accept suggestion.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			createErrorNotice(
+				errorMessage,
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+			setIsAccepting( link, false );
+			return;
+		}
 
 		// Remove suggestion from the list.
 		removeSuggestion( link );
 
+		// Flag isSuggestion to false.
+		link.isSuggestion = false;
+
 		// Add the link to the inbound links list.
-		addInboundLink( acceptedLink );
+		addInboundLink( link );
 
 		setIsAccepting( link, false );
 
@@ -267,7 +304,9 @@ export const TrafficBoostPreview = ( {
 		// When accepting the only remaining suggestion, switch to inbound links tab.
 		if ( itemIndex === totalItems && totalItems === 1 ) {
 			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
-			setSelectedLink( acceptedLink );
+			setSelectedLink( link );
+			// Refresh the iframe.
+			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
 		} else if ( itemIndex === totalItems ) {
 			// Navigate to previous suggestion when accepting the last one.
 			handlePrevious();
@@ -284,7 +323,10 @@ export const TrafficBoostPreview = ( {
 	 *
 	 * @param {TrafficBoostLink} link The link to discard.
 	 */
-	const handleDiscard = ( link: TrafficBoostLink ) => {
+	const handleDiscard = async ( link: TrafficBoostLink ) => {
+		await onDiscard( link );
+
+		// Remove the suggestion from the list.
 		removeSuggestion( link );
 
 		// When discarding the only remaining suggestion, switch to inbound links tab.
@@ -304,11 +346,39 @@ export const TrafficBoostPreview = ( {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} link The link to remove.
+	 * @param {TrafficBoostLink} link            The link to remove.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
 	 */
-	const handleRemove = async ( link: TrafficBoostLink ) => {
+	const handleRemove = async ( link: TrafficBoostLink, restoreOriginal: boolean ) => {
 		setIsRemoving( link, true );
-		await onRemoveInboundLink( link );
+
+		try {
+			const removed = await onRemoveInboundLink( link, restoreOriginal );
+
+			if ( ! removed ) {
+				throw new ContentHelperError(
+					__( 'Failed to remove link.', 'wp-parsely' ),
+					ContentHelperErrorCode.UnknownError,
+					'' // No prefix for this error.
+				);
+			}
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to remove link.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			createErrorNotice(
+				errorMessage,
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+			setIsRemoving( link, false );
+			return;
+		}
+
 		removeInboundLink( link );
 		setIsRemoving( link, false );
 
@@ -337,9 +407,113 @@ export const TrafficBoostPreview = ( {
 	 * Handles the update link event.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link            The link to update.
+	 * @param {boolean}          restoreOriginal Whether to restore the original link.
 	 */
-	const handleUpdateLink = () => {
-		//TODO: Implement this.
+	const handleUpdateLink = async ( link: TrafficBoostLink, restoreOriginal: boolean ) => {
+		if ( ! selectedText ) {
+			return;
+		}
+
+		setIsAccepting( link, true );
+
+		try {
+			const updated = await onUpdateInboundLink( link, selectedText.text, selectedText.offset, restoreOriginal );
+
+			if ( ! updated ) {
+				throw new ContentHelperError(
+					__( 'Failed to update link.', 'wp-parsely' ),
+					ContentHelperErrorCode.UnknownError,
+					'' // No prefix for this error.
+				);
+			}
+		} catch ( err: unknown ) {
+			let errorMessage = __( 'Failed to update link.', 'wp-parsely' );
+			if ( err instanceof ContentHelperError && err.message && err.code !== ContentHelperErrorCode.UnknownError ) {
+				errorMessage += ` ${ err.message }`;
+			}
+
+			createErrorNotice(
+				errorMessage,
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+			setIsAccepting( link, false );
+			return;
+		}
+
+		setIsAccepting( link, false );
+
+		// Show a snackbar success message.
+		createSuccessNotice(
+			__( 'Link updated on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			{
+				type: 'snackbar',
+				icon: <Icon icon={ linkIcon } />,
+			}
+		);
+
+		// Refresh the iframe.
+		setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
+
+		// Clear the selected text.
+		setSelectedText( null );
+	};
+
+	/**
+	 * Handles the regenerate pressed event.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleRegenerate = async () => {
+		if ( ! post ) {
+			return;
+		}
+
+		setIsGenerating( activeLink, true );
+		// Remove the smart link from the active link.
+		const oldSmartLink = activeLink.smartLink;
+		activeLink.smartLink = undefined;
+		// Update the active link.
+		updateSuggestion( activeLink );
+		setIsLoading( true );
+
+		try {
+			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
+				post,
+				activeLink.targetPost,
+				activeLink,
+				[ oldSmartLink?.text ?? '' ],
+			);
+
+			updateSuggestion( updatedLink );
+			setIsGenerating( activeLink, false );
+			setIsLoading( false );
+		} catch ( err ) {
+			// eslint-disable-next-line no-console
+			console.error( err );
+
+			// Restore the old smart link.
+			activeLink.smartLink = oldSmartLink;
+			updateSuggestion( activeLink );
+			setIsGenerating( activeLink, false );
+			setIsLoading( false );
+
+			// Show a snackbar error message.
+			createErrorNotice(
+				__( 'Failed to regenerate suggested link.', 'wp-parsely' ),
+				{
+					type: 'snackbar',
+					icon: <Icon icon={ error } />,
+				}
+			);
+		} finally {
+			// Refresh the iframe.
+			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
+		}
 	};
 
 	if ( ! activePost || ! post ) {
@@ -349,12 +523,14 @@ export const TrafficBoostPreview = ( {
 	return (
 		<div className="traffic-boost-preview">
 			<PreviewHeader
+				isLoading={ isLoading }
 				activeLink={ activeLink }
 				onOpenPostInNewTab={ openPostInNewTab }
 				onOpenPostEditor={ openPostEditor }
 				onOpenParselyDashboard={ openParselyDashboard }
 				isFrontendPreview={ isFrontendPreview }
 				setIsFrontendPreview={ setIsFrontendPreview }
+				onRegeneratePressed={ handleRegenerate }
 			/>
 			<PreviewIframe
 				activeLink={ activeLink }
@@ -370,7 +546,6 @@ export const TrafficBoostPreview = ( {
 				isFrontendPreview={ isFrontendPreview }
 				onLoadingChange={ setIsLoading }
 			/>
-			<SnackbarNotices className="traffic-boost-preview-snackbar-notices" />
 			<PreviewFooter
 				activeLink={ activeLink }
 				totalItems={ totalItems }

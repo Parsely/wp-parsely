@@ -8,7 +8,8 @@ import { createReduxStore, register } from '@wordpress/data';
  */
 import { HydratedPost } from '../../../common/base-wordpress-provider';
 import { ContentHelperError } from '../../../common/content-helper-error';
-import { TrafficBoostLink, LinkType } from './provider';
+import { TrafficBoostLink } from './provider';
+import { LinkType } from './preview/components/link-counter';
 
 /**
  * Available tab names in the Traffic Boost sidebar.
@@ -258,6 +259,7 @@ interface RemoveInboundLinkAction {
 interface UpdateSuggestionAction {
 	type: 'UPDATE_SUGGESTION';
 	suggestion: TrafficBoostLink;
+	uid?: string;
 }
 
 /**
@@ -304,6 +306,17 @@ interface SetIsGeneratingAction {
 }
 
 /**
+ * Interface for the UpdateInboundLinkAction.
+ *
+ * @since 3.18.0
+ */
+interface UpdateInboundLinkAction {
+	type: 'UPDATE_INBOUND_LINK';
+	link: TrafficBoostLink;
+	uid?: string;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -327,6 +340,7 @@ type ActionTypes =
 	| AddInboundLinkAction
 	| RemoveInboundLinkAction
 	| UpdateSuggestionAction
+	| UpdateInboundLinkAction
 	| SetIsAcceptingAction
 	| SetIsRemovingAction
 	| SetIsGeneratingSuggestionsAction
@@ -519,12 +533,14 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				};
 			}
 			case 'UPDATE_SUGGESTION': {
-				const isMatchingSuggestion = ( suggestion: TrafficBoostLink ) =>
-					suggestion.uid === action.suggestion.uid;
+				const uidToMatch = action.uid ?? action.suggestion.uid;
 
 				const updatedSuggestions = state.suggestionsTab.suggestions.map( ( suggestion ) =>
-					isMatchingSuggestion( suggestion ) ? action.suggestion : suggestion
+					suggestion.uid === uidToMatch ? action.suggestion : suggestion
 				);
+
+				const shouldUpdateSelectedLink = state.selectedLink?.uid === uidToMatch;
+				const newSelectedLink = shouldUpdateSelectedLink ? action.suggestion : state.selectedLink;
 
 				return {
 					...state,
@@ -532,9 +548,26 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						...state.suggestionsTab,
 						suggestions: updatedSuggestions,
 					},
-					selectedLink: state.selectedLink?.uid === action.suggestion.uid
-						? action.suggestion
-						: state.selectedLink,
+					selectedLink: newSelectedLink,
+				};
+			}
+			case 'UPDATE_INBOUND_LINK': {
+				const uidToMatch = action.uid ?? action.link.uid;
+
+				const updatedLinks = state.inboundLinksTab.links.map( ( existingLink ) =>
+					existingLink.uid === uidToMatch ? action.link : existingLink
+				);
+
+				const shouldUpdateSelectedLink = state.selectedLink?.uid === uidToMatch;
+				const newSelectedLink = shouldUpdateSelectedLink ? action.link : state.selectedLink;
+
+				return {
+					...state,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
+						links: updatedLinks,
+					},
+					selectedLink: newSelectedLink,
 				};
 			}
 			case 'SET_IS_ACCEPTING':
@@ -675,10 +708,18 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				updateSelectedLink,
 			};
 		},
-		updateSuggestion( suggestion: TrafficBoostLink ): UpdateSuggestionAction {
+		updateSuggestion( suggestion: TrafficBoostLink, uid?: string ): UpdateSuggestionAction {
 			return {
 				type: 'UPDATE_SUGGESTION',
 				suggestion,
+				uid,
+			};
+		},
+		updateInboundLink( link: TrafficBoostLink, uid?: string ): UpdateInboundLinkAction {
+			return {
+				type: 'UPDATE_INBOUND_LINK',
+				link,
+				uid,
 			};
 		},
 		setIsAccepting( link: TrafficBoostLink, value: boolean ): SetIsAcceptingAction {
@@ -712,6 +753,15 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 	selectors: {
 		isLoading( state: TrafficBoostState ): boolean {
 			return state.loading.length > 0;
+		},
+		isLoadingSuggestions( state: TrafficBoostState ): boolean {
+			return state.loading.includes( 'suggestions' );
+		},
+		isLoadingInboundLinks( state: TrafficBoostState ): boolean {
+			return state.loading.includes( 'inbound-links' );
+		},
+		isLoadingPost( state: TrafficBoostState ): boolean {
+			return state.loading.includes( 'post' );
 		},
 		getError( state: TrafficBoostState ): ContentHelperError | null {
 			return state.error;
