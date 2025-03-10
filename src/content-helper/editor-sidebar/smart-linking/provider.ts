@@ -79,6 +79,7 @@ export type OutboundSmartLink = SmartLink & {
 type PostMeta = {
 	author?: string;
 	date?: string;
+	thumbnail?: string|false;
 	title?: string;
 	type?: string;
 	url?: string;
@@ -221,6 +222,7 @@ export class SmartLinkingProvider extends BaseProvider {
 					// fallbacks to display data under local development environments.
 					author: postMeta?.author ?? postStats?.author,
 					date: postMeta?.date ?? postStats?.date,
+					thumbnail: postMeta?.thumbnail,
 					title: postMeta?.title ?? postStats?.title,
 					url: postMeta?.url ?? postStats?.url,
 					type: postMeta?.type,

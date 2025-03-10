@@ -504,11 +504,12 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 				if ( null !== $post ) {
 					$posts_meta[] = array(
-						'author' => get_the_author_meta( 'display_name', intval( $post->post_author ) ),
-						'date'   => get_the_date( '', $post ),
-						'id'     => $post_id,
-						'type'   => get_post_type( $post ),
-						'url'    => $url,
+						'author'    => get_the_author_meta( 'display_name', intval( $post->post_author ) ),
+						'date'      => get_the_date( '', $post ),
+						'id'        => $post_id,
+						'thumbnail' => get_the_post_thumbnail_url( $post, 'thumbnail' ),
+						'type'      => get_post_type( $post ),
+						'url'       => $url,
 					);
 				}
 			}

@@ -31,6 +31,7 @@ import {
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../../@types/gutenberg/types';
+import { Thumbnail } from '../../../common/components/thumbnail';
 import { getSmartShortDate } from '../../../common/utils/date';
 import { formatToImpreciseNumber } from '../../../common/utils/number';
 import { InboundSmartLink, OutboundSmartLink, SmartLink } from '../provider';
@@ -112,6 +113,7 @@ const LinkDetails = ( { link }: { link: OutboundSmartLink } ): React.JSX.Element
 	const author = link.wp_post_meta.author ?? __( 'N/A', 'wp-parsely' );
 	const avgEngaged = link.post_stats.avg_engaged ?? __( 'N/A', 'wp-parsely' );
 	const date = link.wp_post_meta.date ? getSmartShortDate( new Date( link.wp_post_meta.date ) ) : __( 'N/A', 'wp-parsely' );
+	const thumbnail = link.wp_post_meta.thumbnail ?? false;
 	const title = link.wp_post_meta.title ?? __( 'N/A', 'wp-parsely' );
 	const type = link.wp_post_meta.type ?? __( 'External', 'wp-parsely' );
 	const url = link.wp_post_meta.url; // Used for the link button.
@@ -121,7 +123,11 @@ const LinkDetails = ( { link }: { link: OutboundSmartLink } ): React.JSX.Element
 	return (
 		<div className="wp-parsely-link-suggestion-link-details">
 			<div className="thumbnail-column">
-				<Icon icon={ page } size={ 52 } />
+				{ thumbnail ? (
+					<Thumbnail imageUrl={ thumbnail } size={ 52 } />
+				) : (
+					<Thumbnail icon={ page } size={ 52 } />
+				) }
 			</div>
 			<div className="data-column">
 				<div className="title-row">
