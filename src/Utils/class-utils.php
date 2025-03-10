@@ -407,4 +407,30 @@ class Utils {
 		$site_url = apply_filters( 'site_url', get_option( 'siteurl' ), '', null, null );
 		return 'https' === wp_parse_url( $site_url, PHP_URL_SCHEME );
 	}
+
+	/**
+	 * Returns the post ID for the passed URL.
+	 *
+	 * @since 3.16.0
+	 * @since 3.18.0 Moved from `Models/class-smart-link.php`.
+	 *
+	 * @param string $url The URL to get the post ID for.
+	 * @return int The post ID of the URL, 0 if not found.
+	 */
+	public static function get_post_id_by_url( string $url ): int {
+		$cache = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' );
+		if ( is_integer( $cache ) ) {
+			return $cache;
+		}
+
+		if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
+			$post_id = wpcom_vip_url_to_postid( $url );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+			$post_id = url_to_postid( $url );
+			wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
+		}
+
+		return $post_id;
+	}
 }
