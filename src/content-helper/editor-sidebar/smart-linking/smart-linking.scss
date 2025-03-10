@@ -448,6 +448,10 @@
 					gap: var(--grid-unit-5);
 					align-items: center;
 
+					a.components-button.is-link {
+						box-shadow: none;
+					}
+
 					span {
 						color: var(--Gutenberg-Gray-900, #1e1e1e);
 						max-width: to_rem(353px);
@@ -461,7 +465,7 @@
 					display: flex;
 					gap: var(--grid-unit-15);
 					margin-top: var(--grid-unit-10);
-					max-width: to_rem(380px);
+					max-width: to_rem(376px);
 
 					.data-point {
 						align-items: center;
