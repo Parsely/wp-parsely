@@ -104,16 +104,15 @@ class Suggestions_API_Service extends Base_API_Service {
 	 *
 	 * @param string                                    $content             The content to generate links for.
 	 * @param Endpoint_Suggest_Linked_Reference_Options $options             The options to pass to the API request.
-	 * @param array<string>                             $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 *
 	 * @return array<Smart_Link>|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
-	public function get_smart_links( string $content, $options = array(), array $url_exclusion_list = array() ) {
+	public function get_smart_links( string $content, $options = array() ) {
 		/** @var Endpoints\Endpoint_Suggest_Linked_Reference $endpoint */
 		$endpoint = $this->get_endpoint( '/suggest-linked-reference' );
 
-		return $endpoint->get_links( $content, $options, $url_exclusion_list );
+		return $endpoint->get_links( $content, $options );
 	}
 
 	/**

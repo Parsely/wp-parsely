@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Services\Suggestions_API\Endpoints;
 
+use Parsely\Parsely;
 use Parsely\Models\Inbound_Smart_Link;
 use WP_Error;
 
@@ -23,7 +24,12 @@ use WP_Error;
  * @phpstan-type LinkPositionResponse = array{
  *     anchor_texts: array<array{text: string, offset: int}>,
  *     title: string,
- *     source_url: string
+ *     source_url: string,
+ *     target_url: string,
+ * }
+ * @phpstan-type Endpoint_Suggest_Inbound_Link_Positions_Options = array{
+ *     performance_blending_weight?: float,
+ *     keyword_exclusion_list?: array<string>
  * }
  */
 class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpoint {
@@ -44,35 +50,44 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param \WP_Post $source_post    The post where the inbound link will be placed.
-	 * @param \WP_Post $destination_post The post where the inbound link will point to.
+	 * @param \WP_Post                                        $source_post    The post where the inbound link will be placed.
+	 * @param \WP_Post                                        $destination_post The post where the inbound link will point to.
+	 * @param Endpoint_Suggest_Inbound_Link_Positions_Options $options The options to pass to the API request.
 	 * @return Inbound_Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                            object if the response is an error.
 	 */
 	public function get_inbound_link_positions(
 		\WP_Post $source_post,
-		\WP_Post $destination_post
+		\WP_Post $destination_post,
+		$options = array()
 	) {
-		/** @var string|false $source_post_url */
-		$source_post_url = get_permalink( $source_post );
+		/**
+		 * The Parse.ly canonical URL for the source post.
+		 * 
+		 * @var string $source_post_url
+		 */
+		$source_post_url = Parsely::get_canonical_url_from_post( $source_post );
 
-		/** @var string|false $destination_post_url */
-		$destination_post_url = get_permalink( $destination_post );
-
-		if ( ! is_string( $source_post_url ) || ! is_string( $destination_post_url ) ) {
-			return new \WP_Error(
-				'parsely_invalid_post_url',
-				__( 'Could not get post URL.', 'wp-parsely' ),
-				array( 'status' => 400 )
-			);
-		}
+		/**
+		 * The Parse.ly canonical URL for the destination post.
+		 * 
+		 * @var string $destination_post_url
+		 */
+		$destination_post_url = Parsely::get_canonical_url_from_post( $destination_post );
 
 		$request_body = array(
 			'canonical_url' => $destination_post_url,
 			'source_url'    => array( $source_post_url ),
 			'title'         => $destination_post->post_title,
 			'text'          => wp_strip_all_tags( $destination_post->post_content ),
+			'output_config' => array(
+				'performance_blending_weight' => $options['performance_blending_weight'] ?? 0.5,
+			),
 		);
+
+		if ( isset( $options['keyword_exclusion_list'] ) && count( $options['keyword_exclusion_list'] ) > 0 ) {
+			$request_body['keyword_exclusion_list'] = $options['keyword_exclusion_list'];
+		}
 
 		$request_body = apply_filters( 'wp_parsely_suggest_inbound_link_positions_request_body', $request_body, $source_post, $destination_post );
 
@@ -96,13 +111,15 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 		
 		foreach ( $link['anchor_texts'] as $anchor_text_suggestion ) {
 			$smart_link = new Inbound_Smart_Link(
-				$destination_post_url,
+				$link['target_url'],
 				esc_attr( $link['title'] ),
 				wp_kses_post( $anchor_text_suggestion['text'] ),
 				$anchor_text_suggestion['offset']
 			);
 
-			$smart_link->set_source_post( $source_post );
+			// Set the source post and update the canonical URL.
+			$smart_link->set_source_post( $source_post, $link['source_url'] );
+			// Set the destination post.
 			$smart_link->set_destination_post( $destination_post );
 
 			$suggestions[] = $smart_link;

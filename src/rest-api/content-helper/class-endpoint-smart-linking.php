@@ -103,7 +103,8 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				'url_exclusion_list' => array(
 					'type'              => 'array',
 					'description'       => __( 'The list of URLs to exclude from the smart links.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'validate_url_exclusion_list' ),
+					'validate_callback' => array( Validations\Validate_Url_Exclusion_List::class, 'validate' ),
+					'sanitize_callback' => array( Validations\Validate_Url_Exclusion_List::class, 'sanitize' ),
 					'default'           => array(),
 				),
 			)
@@ -229,9 +230,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$response = $this->suggestions_api->get_smart_links(
 			$post_content,
 			array(
-				'max_items' => $max_links,
-			),
-			$url_exclusion_list
+				'max_items'          => $max_links,
+				'url_exclusion_list' => $url_exclusion_list,
+			)
 		);
 
 		if ( is_wp_error( $response ) ) {
@@ -535,35 +536,6 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		}
 
 		return new WP_REST_Response( $response, 200 );
-	}
-
-	/**
-	 * Validates the URL exclusion list parameter.
-	 *
-	 * The callback sets the URL exclusion list in the request object if the parameter is valid.
-	 *
-	 * @since 3.17.0
-	 * @access private
-	 *
-	 * @param mixed           $param   The parameter value.
-	 * @param WP_REST_Request $request The request object.
-	 * @return true|WP_Error Whether the parameter is valid.
-	 */
-	public function validate_url_exclusion_list( $param, WP_REST_Request $request ) {
-		if ( ! is_array( $param ) ) {
-			return new WP_Error( 'invalid_url_exclusion_list', __( 'The URL exclusion list must be an array.', 'wp-parsely' ) );
-		}
-
-		$valid_urls = array_filter(
-			$param,
-			function ( $url ) {
-				return is_string( $url ) && false !== filter_var( $url, FILTER_VALIDATE_URL );
-			}
-		);
-
-		$request->set_param( 'url_exclusion_list', $valid_urls );
-
-		return true;
 	}
 
 	/**
