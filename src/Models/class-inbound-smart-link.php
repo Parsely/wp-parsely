@@ -10,6 +10,8 @@ declare( strict_types = 1 );
 
 namespace Parsely\Models;
 
+use Parsely\Parsely;
+
 use ReflectionClass;
 use WP_Post;
 use Masterminds\HTML5;
@@ -25,6 +27,26 @@ use Masterminds\HTML5;
  *     is_last_paragraph: bool,
  *     paragraph_offset: int
  * }
+ * 
+ * @phpstan-type SmartLinkPostData array{
+ *     id: int,
+ *     title: string,
+ *     type: array{
+ *         name: string,
+ *         label: string,
+ *         rest: string,
+ *     },
+ *     paragraph: string,
+ *     is_first_paragraph: bool,
+ *     is_last_paragraph: bool,
+ *     paragraph_offset: int,
+ *     permalink: string,
+ *     parsely_canonical_url: string,
+ *     edit_link: string,
+ *     author: string,
+ *     date: string,
+ *     image: string,
+ * }
  */
 class Inbound_Smart_Link extends Smart_Link {
 	/**
@@ -34,7 +56,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @var array<string> The allowed tags.
 	 */
-	private const ALLOWED_TAGS = array( 'p', 'ul' );
+	private const ALLOWED_TAGS = array( 'p', 'ul' ); 
 
 	/**
 	 * The paragraph data.
@@ -50,7 +72,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @var array<string,mixed>|null The post data.
+	 * @var SmartLinkPostData|null The post data.
 	 */
 	private $post_data;
 
@@ -182,7 +204,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @return array<mixed> The post data.
+	 * @return SmartLinkPostData The post data.
 	 */
 	private function get_post_data(): array {
 		if ( null !== $this->post_data ) {
@@ -196,10 +218,23 @@ class Inbound_Smart_Link extends Smart_Link {
 		$post = $this->source_post;
 		if ( ! $post instanceof WP_Post ) {
 			return array(
-				'paragraph'          => '',
-				'is_first_paragraph' => false,
-				'is_last_paragraph'  => false,
-				'paragraph_offset'   => 0,
+				'id'                    => 0,
+				'title'                 => '',
+				'type'                  => array(
+					'name'  => '',
+					'label' => '',
+					'rest'  => '',
+				),
+				'paragraph'             => '',
+				'is_first_paragraph'    => false,
+				'is_last_paragraph'     => false,
+				'paragraph_offset'      => 0,
+				'permalink'             => '',
+				'parsely_canonical_url' => '',
+				'edit_link'             => '',
+				'author'                => '',
+				'date'                  => '',
+				'image'                 => '',
 			);
 		}
 
@@ -225,7 +260,25 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$post_type = get_post_type_object( $post->post_type );
 		if ( null === $post_type ) {
-			return array();
+			return array(
+				'id'                    => 0,
+				'title'                 => '',
+				'type'                  => array(
+					'name'  => '',
+					'label' => '',
+					'rest'  => '',
+				),
+				'paragraph'             => '',
+				'is_first_paragraph'    => false,
+				'is_last_paragraph'     => false,
+				'paragraph_offset'      => 0,
+				'permalink'             => '',
+				'parsely_canonical_url' => '',
+				'edit_link'             => '',
+				'author'                => '',
+				'date'                  => '',
+				'image'                 => '',
+			);
 		}
 
 		$post_type_label = $post_type->labels->singular_name;
@@ -234,21 +287,23 @@ class Inbound_Smart_Link extends Smart_Link {
 		$rest_endpoint .= false === $post_type->rest_base ? $post->post_type : $post_type->rest_base;
 
 		$this->post_data = array(
-			'id'                 => $post->ID,
-			'title'              => $post->post_title,
-			'type'               => array(
+			'id'                    => $post->ID,
+			'title'                 => $post->post_title,
+			'type'                  => array(
 				'name'  => $post->post_type,
 				'label' => $post_type_label,
 				'rest'  => $rest_endpoint,
 			),
-			'paragraph'          => $paragraph['paragraph'],
-			'permalink'          => get_permalink( $post ),
-			'edit_link'          => get_edit_post_link( $post, 'html' ),
-			'is_first_paragraph' => $paragraph['is_first_paragraph'],
-			'is_last_paragraph'  => $paragraph['is_last_paragraph'],
-			'author'             => $author_name,
-			'date'               => get_the_date( '', $post ),
-			'image'              => get_the_post_thumbnail_url( $post, 'medium' ),
+			'paragraph'             => $paragraph['paragraph'],
+			'paragraph_offset'      => $paragraph['paragraph_offset'],
+			'permalink'             => get_permalink( $post ),
+			'parsely_canonical_url' => Parsely::get_canonical_url_from_post( $post ),
+			'edit_link'             => get_edit_post_link( $post, 'html' ) !== null ? get_edit_post_link( $post, 'html' ) : '',
+			'is_first_paragraph'    => $paragraph['is_first_paragraph'],
+			'is_last_paragraph'     => $paragraph['is_last_paragraph'],
+			'author'                => $author_name,
+			'date'                  => (string) ( get_the_date( '', $post ) !== false ? get_the_date( '', $post ) : '' ),
+			'image'                 => get_the_post_thumbnail_url( $post, 'medium' ) !== false ? get_the_post_thumbnail_url( $post, 'medium' ) : '',
 		);
 
 		return $this->post_data;
@@ -466,7 +521,8 @@ class Inbound_Smart_Link extends Smart_Link {
 		$source_post       = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
 
 		if ( null !== $source_post ) {
-			$this->set_source_post( $source_post );
+			// Set the source post and update the canonical URL.
+			$this->set_source_post( $source_post, $url );
 			return true;
 		}
 
