@@ -168,16 +168,85 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return this.createTrafficBoostLinks( response.data );
 	}
 
+	public async generateBatchSuggestions(
+		postId: number,
+		numberOfSuggestions: number,
+		options?: {
+			discardPrevious?: boolean;
+			urlExclusionList?: string[];
+			maxRetries?: number;
+			onNewSuggestions?: ( suggestions: TrafficBoostLink[], isFirstIteration: boolean ) => void;
+			save?: boolean;
+			maxItemsPerBatch?: number;
+		},
+	): Promise<TrafficBoostLink[]> {
+		const maxItemsPerBatch = options?.maxItemsPerBatch ?? Math.min( numberOfSuggestions, 5 );
+
+		let maxRetries = options?.maxRetries ?? 3;
+		let totalSuggestions = 0;
+		let generatedSuggestions: TrafficBoostLink[] = [];
+		let excludedUrls: string[] = options?.urlExclusionList ?? [];
+
+		while ( totalSuggestions < numberOfSuggestions ) {
+			// Discard previous suggestions if this is the first batch, and if the option is set.
+			const discardPrevious = ( 0 === totalSuggestions ) && options?.discardPrevious;
+
+			// If we have no retries left, break.
+			if ( 0 === maxRetries ) {
+				break;
+			}
+
+			// Generate the suggestions.
+			try {
+				const newGeneratedSuggestions = await this.generateSuggestions( postId, {
+					discard_previous: discardPrevious,
+					url_exclusion_list: excludedUrls,
+					max_items: Math.min( numberOfSuggestions - totalSuggestions, maxItemsPerBatch ),
+					save: options?.save ?? false,
+				} );
+
+				// If there are no new suggestions, and we have no retries left, break.
+				if ( newGeneratedSuggestions.length === 0 ) {
+					maxRetries--;
+					continue;
+				}
+
+				// Remove the generated suggestions that already exist in the existing suggestions.
+				const filteredGeneratedSuggestions = newGeneratedSuggestions.filter(
+					( suggestion ) => ! excludedUrls.includes( suggestion.smartLink?.post_data?.parsely_canonical_url ?? '' )
+				);
+
+				// Update the excluded URLs.
+				excludedUrls = [ ...excludedUrls, ...filteredGeneratedSuggestions.map( ( suggestion ) => suggestion.smartLink?.post_data?.parsely_canonical_url ?? '' ) ];
+
+				// Call the callback if it is set.
+				const isFirstIteration = 0 === totalSuggestions;
+				options?.onNewSuggestions?.( filteredGeneratedSuggestions, isFirstIteration );
+
+				// Update the generated suggestions.
+				generatedSuggestions = [ ...generatedSuggestions, ...filteredGeneratedSuggestions ];
+				totalSuggestions += filteredGeneratedSuggestions.length;
+			} catch ( error ) {
+				// eslint-disable-next-line no-console
+				console.error( error );
+				maxRetries--;
+			}
+		}
+
+		return generatedSuggestions;
+	}
+
 	/**
 	 * Generates suggestions for a given post.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number}  postId                   The ID of the post to generate suggestions for.
-	 * @param {Object}  options                  The options for the suggestions.
-	 * @param {number}  options.max_items        The maximum number of items to generate.
-	 * @param {boolean} options.discard_previous Whether to discard previous suggestions.
-	 * @param {boolean} options.save             Whether to save the suggestions.
+	 * @param {number}   postId                     The ID of the post to generate suggestions for.
+	 * @param {Object}   options                    The options for the suggestions.
+	 * @param {number}   options.max_items          The maximum number of items to generate.
+	 * @param {boolean}  options.discard_previous   Whether to discard previous suggestions.
+	 * @param {string[]} options.url_exclusion_list The list of URLs to exclude from the suggestions.
+	 * @param {boolean}  options.save               Whether to save the suggestions.
 	 *
 	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
 	 */
@@ -187,6 +256,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			max_items?: number;
 			save?: boolean;
 			discard_previous?: boolean;
+			url_exclusion_list?: string[];
 		},
 	): Promise<TrafficBoostLink[]> {
 		const response = await this.fetch<InboundSmartLinkDataResponse>( {
@@ -195,6 +265,8 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			data: {
 				max_items: options?.max_items ?? 10,
 				save: options?.save ?? false,
+				discard_previous: options?.discard_previous ?? true,
+				url_exclusion_list: options?.url_exclusion_list,
 			},
 		} );
 

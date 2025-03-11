@@ -50,6 +50,7 @@ export type InboundSmartLink = SmartLink & {
 		is_first_paragraph: boolean;
 		is_last_paragraph: boolean;
 		permalink: string;
+		parsely_canonical_url: string;
 		edit_link: string;
 		author: string,
 		date: string,
@@ -84,6 +85,7 @@ export type SmartLinkMatch = {
 type LinkedPost = {
 	post_id: number;
 	post_type: string;
+	parsely_canonical_url: string;
 }
 
 /**

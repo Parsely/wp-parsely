@@ -115,6 +115,8 @@ const SuggestionsTab = ( {
 		currentPost,
 		selectedLink,
 		suggestions,
+		inboundLinks,
+		settings,
 		currentPage,
 		itemsPerPage,
 		isGeneratingSuggestions,
@@ -123,10 +125,12 @@ const SuggestionsTab = ( {
 		currentPost: select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
+		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
 		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
 		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
 		isLoadingSuggestions: select( TrafficBoostStore ).isLoadingSuggestions(),
+		settings: select( TrafficBoostStore ).getSettings(),
 	} ), [] );
 
 	const {
@@ -200,17 +204,37 @@ const SuggestionsTab = ( {
 
 		try {
 			setIsGeneratingSuggestions( true );
-			const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id, {
-				save: true,
-				max_items: 10, // TODO: Get this from the settings.
-				discard_previous: true,
-			} );
 
-			// Update the suggestions list.
-			setSuggestions( generatedSuggestions );
+			// Get the existing inbound links permalinks.
+			const existingInboundLinksPermalinks = inboundLinks.map(
+				( inboundLink ) => [
+					inboundLink.smartLink?.post_data?.parsely_canonical_url,
+					inboundLink.smartLink?.post_data?.permalink,
+				]
+			).flat().filter( ( url ) => url !== undefined );
 
-			// Change the active link to the first suggestion.
-			setSelectedLink( generatedSuggestions[ 0 ] );
+			// Clear the suggestions list.
+			setSuggestions( [] );
+
+			// Generate the suggestions in batches.
+			const generatedSuggestions = await trafficBoostProvider.generateBatchSuggestions(
+				currentPost.id,
+				settings.maxItems,
+				{
+					urlExclusionList: existingInboundLinksPermalinks,
+					discardPrevious: true,
+					save: true,
+					onNewSuggestions: ( newSuggestions, isFirstIteration ) => {
+						// Update the suggestions list.
+						setSuggestions( newSuggestions, false );
+
+						if ( isFirstIteration ) {
+							// Change the active link to the first suggestion.
+							setSelectedLink( newSuggestions[ 0 ] );
+						}
+					},
+				}
+			);
 
 			// Show a snackbar success message.
 			createSuccessNotice(

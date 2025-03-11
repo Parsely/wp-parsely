@@ -23,6 +23,15 @@ export enum TrafficBoostSidebarTabs {
 }
 
 /**
+ * The shape of the Traffic Boost settings.
+ *
+ * @since 3.18.0
+ */
+type TrafficBoostSettings = {
+	maxItems: number;
+};
+
+/**
  * The shape of the suggestions tab state.
  *
  * @since 3.18.0
@@ -72,6 +81,7 @@ type TrafficBoostState = {
 	removingLinks: string[];
 	generatingLinks: string[];
 	isGeneratingSuggestions: boolean;
+	settings: TrafficBoostSettings;
 };
 
 /********** Actions **********/
@@ -125,6 +135,7 @@ interface SetSelectedTabAction {
 interface SetSuggestionsAction {
 	type: 'SET_SUGGESTIONS';
 	suggestions: TrafficBoostLink[];
+	discardPrevious?: boolean;
 }
 
 /**
@@ -317,6 +328,16 @@ interface UpdateInboundLinkAction {
 }
 
 /**
+ * Interface for the SetSettingsAction.
+ *
+ * @since 3.18.0
+ */
+interface SetSettingsAction {
+	type: 'SET_SETTINGS';
+	settings: Partial<TrafficBoostSettings>;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -344,7 +365,8 @@ type ActionTypes =
 	| SetIsAcceptingAction
 	| SetIsRemovingAction
 	| SetIsGeneratingSuggestionsAction
-	| SetIsGeneratingAction;
+	| SetIsGeneratingAction
+	| SetSettingsAction;
 
 /**
  * Default state for the Traffic Boost store.
@@ -375,6 +397,9 @@ const defaultState: TrafficBoostState = {
 	removingLinks: [],
 	generatingLinks: [],
 	isGeneratingSuggestions: false,
+	settings: {
+		maxItems: 10,
+	},
 };
 
 /**
@@ -417,7 +442,9 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					...state,
 					suggestionsTab: {
 						...state.suggestionsTab,
-						suggestions: action.suggestions,
+						suggestions: action.discardPrevious
+							? action.suggestions
+							: [ ...state.suggestionsTab.suggestions, ...action.suggestions ],
 					},
 				};
 			case 'SET_SUGGESTIONS_PAGE':
@@ -596,6 +623,14 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						? [ ...state.generatingLinks, action.link.uid ]
 						: state.generatingLinks.filter( ( uid ) => uid !== action.link.uid ),
 				};
+			case 'SET_SETTINGS':
+				return {
+					...state,
+					settings: {
+						...state.settings,
+						...action.settings,
+					},
+				};
 			default:
 				return state;
 		}
@@ -626,11 +661,8 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				tab,
 			};
 		},
-		setSuggestions( suggestions: TrafficBoostLink[] ): SetSuggestionsAction {
-			return {
-				type: 'SET_SUGGESTIONS',
-				suggestions,
-			};
+		setSuggestions( suggestions: TrafficBoostLink[], discardPrevious: boolean = true ): SetSuggestionsAction {
+			return { type: 'SET_SUGGESTIONS', suggestions, discardPrevious };
 		},
 		setSuggestionsPage( page: number ): SetSuggestionsPageAction {
 			return {
@@ -749,6 +781,9 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				value,
 			};
 		},
+		setSettings( settings: Partial<TrafficBoostSettings> ): SetSettingsAction {
+			return { type: 'SET_SETTINGS', settings };
+		},
 	},
 	selectors: {
 		isLoading( state: TrafficBoostState ): boolean {
@@ -813,6 +848,9 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		},
 		isGenerating( state: TrafficBoostState, link: TrafficBoostLink ): boolean {
 			return state.generatingLinks.includes( link.uid );
+		},
+		getSettings( state: TrafficBoostState ): TrafficBoostSettings {
+			return state.settings;
 		},
 	},
 } );
