@@ -30,6 +30,7 @@ interface LinksListProps {
 	onPageChange?: ( page: number ) => void;
 	onItemsPerPageChange?: ( itemsPerPage: number ) => void;
 	renderEmptyState?: () => React.JSX.Element;
+	showPagination?: boolean;
 }
 
 /**
@@ -51,6 +52,7 @@ export const LinksList = ( {
 	onPageChange,
 	onItemsPerPageChange,
 	renderEmptyState,
+	showPagination = true,
 }: LinksListProps ): React.JSX.Element => {
 	const [ isLoading, setIsLoading ] = useState( isLoadingProp );
 	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>( [] );
@@ -274,22 +276,24 @@ export const LinksList = ( {
 				</div>
 				{ ! isLoading && links.length > itemsPerPage && totalPages > 0 && (
 					<>
-						<div className="page-selector">
-							<span>{ __( 'Page', 'wp-parsely' ) }</span>
-							<select
-								value={ currentPage }
-								onChange={ ( e ) => handlePageChange( e.target.value ) }
-							>
-								{ Array.from( { length: Math.max( 1, totalPages ) }, ( _, i ) => i + 1 ).map( ( page ) => (
-									<option key={ page } value={ page }>
-										{ page }
-									</option>
-								) ) }
-							</select>
-							<span>
-								{ __( 'of', 'wp-parsely' ) } { totalPages }
-							</span>
-						</div>
+						{ showPagination && (
+							<div className="page-selector">
+								<span>{ __( 'Page', 'wp-parsely' ) }</span>
+								<select
+									value={ currentPage }
+									onChange={ ( e ) => handlePageChange( e.target.value ) }
+								>
+									{ Array.from( { length: Math.max( 1, totalPages ) }, ( _, i ) => i + 1 ).map( ( page ) => (
+										<option key={ page } value={ page }>
+											{ page }
+										</option>
+									) ) }
+								</select>
+								<span>
+									{ __( 'of', 'wp-parsely' ) } { totalPages }
+								</span>
+							</div>
+						) }
 						<div className="page-navigation">
 							<Button
 								icon={ previous }

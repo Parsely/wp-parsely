@@ -7,6 +7,20 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../../common/cont
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 
 /**
+ * The loading messages for the traffic boost provider.
+ *
+ * @since 3.18.0
+ */
+export const TRAFFIC_BOOST_LOADING_MESSAGES = [
+	__( "We're finding the perfect spot to plant your links…", 'wp-parsely' ),
+	__( 'Analyzing your content to place links naturally…', 'wp-parsely' ),
+	__( 'Optimizing link placement for maximum impact…', 'wp-parsely' ),
+	__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
+	__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
+	__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
+];
+
+/**
  * Represents a Traffic Boost link.
  *
  * Stores the target post and the smart link associated with it.

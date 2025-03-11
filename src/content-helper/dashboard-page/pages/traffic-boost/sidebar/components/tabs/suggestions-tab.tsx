@@ -3,18 +3,19 @@
  */
 import { Button, Icon, PanelBody, PanelRow, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { error, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
-import { TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
+import { Loading as LoadingComponent } from '../../../../../../common/components/loading';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../../../common/content-helper-error';
+import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { AddNewLinkButton } from '../add-new-link-button';
 import { LinksList } from '../links-list/links-list';
-import { ContentHelperError, ContentHelperErrorCode } from '../../../../../../common/content-helper-error';
 
 /**
  * Component that renders the suggestions settings.
@@ -267,8 +268,11 @@ const SuggestionsTab = ( {
 	if ( isLoadingSuggestions && isGeneratingSuggestions ) {
 		return (
 			<div className="traffic-boost-suggestions-loading-generating">
-				<Spinner />
-				{ __( 'Hold on tight while we generate some suggestions for you.', 'wp-parsely' ) }
+				<LoadingComponent
+					messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
+					typewriter={ true }
+					randomOrder={ true }
+				/>
 			</div>
 		);
 	}
@@ -284,18 +288,33 @@ const SuggestionsTab = ( {
 				itemsPerPage={ itemsPerPage }
 				onPageChange={ setSuggestionsPage }
 				onItemsPerPageChange={ setSuggestionsItemsPerPage }
-				renderEmptyState={ () => (
-					<div className="traffic-boost-suggestions-empty-state">
-						<p>{ __( 'This post has no suggestions. Do you want to generate some?', 'wp-parsely' ) }</p>
-						<GenerateButton
-							variant="primary"
-							isGeneratingSuggestions={ isGeneratingSuggestions }
-							handleGenerateSuggestions={ handleGenerateSuggestions }
-						/>
-					</div>
-				) }
+				showPagination={ ! isGeneratingSuggestions } // Hide pagination when generating suggestions.
+				renderEmptyState={ () => {
+					if ( isGeneratingSuggestions ) {
+						return (
+							<div className="traffic-boost-suggestions-loading-generating">
+								<LoadingComponent
+									messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
+									typewriter={ true }
+									randomOrder={ true }
+								/>
+							</div>
+						);
+					}
+
+					return (
+						<div className="traffic-boost-suggestions-empty-state">
+							<p>{ __( 'This post has no suggestions. Do you want to generate some?', 'wp-parsely' ) }</p>
+							<GenerateButton
+								variant="primary"
+								isGeneratingSuggestions={ isGeneratingSuggestions }
+								handleGenerateSuggestions={ handleGenerateSuggestions }
+							/>
+						</div>
+					);
+				} }
 			>
-				{ ! isLoadingSuggestions && (
+				{ ! isLoadingSuggestions && ! isGeneratingSuggestions && (
 					<>
 						<GenerateButton
 							variant="secondary"
@@ -308,6 +327,18 @@ const SuggestionsTab = ( {
 							onPostClick={ addTrafficBoostLink }
 						/>
 					</>
+				) }
+				{ isGeneratingSuggestions && suggestions.length > 0 && (
+					<div className="traffic-boost-suggestions-generating-footer">
+						<Spinner />
+						<span>
+							{ sprintf(
+								/* translators: %d: number of suggestions generated */
+								_n( 'Generating %d last suggestion…', 'Generating %d more suggestions…', settings.maxItems - suggestions.length, 'wp-parsely' ),
+								settings.maxItems - suggestions.length
+							) }
+						</span>
+					</div>
 				) }
 			</LinksList>
 		</>
