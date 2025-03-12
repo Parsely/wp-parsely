@@ -554,6 +554,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// If the node has child nodes, recursively search for the text node.
 		if ( $node->hasChildNodes() ) {
+			/** @var \DOMNode $child */
 			foreach ( $node->childNodes as $child ) {
 				$result = $this->find_text_node( $child, $search_text, $offset );
 				if ( null !== $result ) {
