@@ -466,12 +466,20 @@ export const TrafficBoostPreview = ( {
 		setSelectedText( null );
 	};
 
+	const handleRegenerate = () => {
+		if ( activeLink.isSuggestion ) {
+			handleRegenerateSuggestion();
+		} else {
+			handleRegenerateInboundLink();
+		}
+	};
+
 	/**
-	 * Handles the regenerate pressed event.
+	 * Handles the regenerate suggestion event.
 	 *
 	 * @since 3.18.0
 	 */
-	const handleRegenerate = async () => {
+	const handleRegenerateSuggestion = async () => {
 		if ( ! post ) {
 			return;
 		}
@@ -495,7 +503,10 @@ export const TrafficBoostPreview = ( {
 				post,
 				activeLink.targetPost,
 				activeLink,
-				[ ...ignoredKeywords, oldSmartLink?.text ?? '' ],
+				{
+					ignoreKeywords: [ ...ignoredKeywords, oldSmartLink?.text ?? '' ],
+					performanceBlendingWeight: 0.5,
+				},
 			);
 
 			updateSuggestion( updatedLink );
@@ -519,6 +530,51 @@ export const TrafficBoostPreview = ( {
 					icon: <Icon icon={ error } />,
 				}
 			);
+		} finally {
+			// Refresh the iframe.
+			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
+		}
+	};
+
+	/**
+	 * Handles the regenerate inbound link event.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleRegenerateInboundLink = async () => {
+		if ( ! post ) {
+			return;
+		}
+
+		setIsGenerating( activeLink, true );
+		setSelectedText( null );
+		setIsLoading( true );
+
+		// Add the current keyword to the ignored keywords.
+		setIgnoredKeywords( [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ] );
+
+		try {
+			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
+				post,
+				activeLink.targetPost,
+				activeLink,
+				{
+					ignoreKeywords: [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ],
+					allowDuplicateLinks: true,
+					save: false,
+					performanceBlendingWeight: 0.5,
+				},
+			);
+			setIsGenerating( activeLink, false );
+			setIsLoading( false );
+			setSelectedText( { text: updatedLink.smartLink?.text ?? '', offset: updatedLink.smartLink?.offset ?? 0 } );
+		} catch ( err ) {
+			// eslint-disable-next-line no-console
+			console.error( err );
+
+			setSelectedText( null );
+			setIsGenerating( activeLink, false );
+			setIsLoading( false );
 		} finally {
 			// Refresh the iframe.
 			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );

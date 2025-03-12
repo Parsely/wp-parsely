@@ -144,10 +144,11 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @since 3.18.0
 	 *
 	 * @param bool $wp_error Whether to return a WP_Error object if the Smart Link has an invalid placement.
+	 * @param bool $allow_duplicate_links Whether to allow duplicate links.
 	 * @return bool|\WP_Error True if the Smart Link has a valid placement, WP_Error on failure if
 	 *                        $wp_error is true, false otherwise.
 	 */
-	public function has_valid_placement( bool $wp_error = false ) {
+	public function has_valid_placement( bool $wp_error = false, bool $allow_duplicate_links = false ) {
 		if ( null === $this->source_post ) {
 			$this->source_post = get_post( $this->source_post_id );
 		}
@@ -163,7 +164,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		// If the post content contains the smart link href, it is not valid.
-		if ( strpos( $post->post_content, $this->href ) !== false ) {
+		if ( ! $allow_duplicate_links && strpos( $post->post_content, $this->href ) !== false ) {
 			if ( $wp_error ) {
 				return new \WP_Error( 'traffic_boost_invalid_post', __( 'The link is already linked to this post.', 'wp-parsely' ) );
 			}

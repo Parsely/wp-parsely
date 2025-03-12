@@ -315,10 +315,14 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {HydratedPost}     sourcePost       The source post.
-	 * @param {HydratedPost}     destinationPost  The destination post.
-	 * @param {TrafficBoostLink} trafficBoostLink The traffic boost link to generate a placement for.
-	 * @param {string[]}         ignoreKeywords   The keywords to ignore.
+	 * @param {HydratedPost}     sourcePost                        The source post.
+	 * @param {HydratedPost}     destinationPost                   The destination post.
+	 * @param {TrafficBoostLink} trafficBoostLink                  The traffic boost link to generate a placement for.
+	 * @param {Object}           options                           The options for the suggestion.
+	 * @param {string[]}         options.ignoreKeywords            The keywords to ignore.
+	 * @param {boolean}          options.save                      Whether to save the suggestion.
+	 * @param {boolean}          options.allowDuplicateLinks       Whether to allow duplicate links.
+	 * @param {number}           options.performanceBlendingWeight The performance blending weight.
 	 *
 	 * @return {Promise<TrafficBoostLink>} The generated suggestion.
 	 */
@@ -326,7 +330,12 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		sourcePost: HydratedPost,
 		destinationPost: HydratedPost,
 		trafficBoostLink: TrafficBoostLink,
-		ignoreKeywords?: string[],
+		options?: {
+			ignoreKeywords?: string[];
+			save?: boolean;
+			allowDuplicateLinks?: boolean;
+			performanceBlendingWeight?: number;
+		},
 	): Promise<TrafficBoostLink> {
 		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ sourcePost.id }/generate-placement/${ destinationPost.id }`;
 
@@ -334,8 +343,10 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			method: 'POST',
 			path: requestPath,
 			data: {
-				keyword_exclusion_list: ignoreKeywords,
-				performance_blending_weight: 0.5,
+				keyword_exclusion_list: options?.ignoreKeywords,
+				performance_blending_weight: options?.performanceBlendingWeight ?? 0.5,
+				save: options?.save ?? true,
+				allow_duplicate_links: options?.allowDuplicateLinks ?? false,
 			},
 		} );
 

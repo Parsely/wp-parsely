@@ -156,6 +156,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'default'     => 0.5,
 					'required'    => false,
 				),
+				'allow_duplicate_links'       => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether to allow duplicate links.', 'wp-parsely' ),
+					'default'     => false,
+					'required'    => false,
+				),
+				'save'                        => array(
+					'type'        => 'boolean',
+					'description' => __( 'Whether to save the suggestion.', 'wp-parsely' ),
+					'default'     => true,
+					'required'    => false,
+				),
 			)
 		);
 
@@ -432,11 +444,25 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$keyword_exclusion_list = $request->get_param( 'keyword_exclusion_list' );
 
 		/**
+		 * Whether to allow duplicate links.
+		 *
+		 * @var bool $allow_duplicate_links
+		 */
+		$allow_duplicate_links = $request->get_param( 'allow_duplicate_links' );
+
+		/**
 		 * The performance blending weight.
 		 *
 		 * @var float $performance_blending_weight
 		 */
 		$performance_blending_weight = $request->get_param( 'performance_blending_weight' );
+
+		/**
+		 * Whether to save the suggestion.
+		 *
+		 * @var bool $save
+		 */
+		$save = $request->get_param( 'save' );
 
 		if ( null === $source_post ) {
 			return new WP_Error(
@@ -459,6 +485,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		}
 
 		$valid_suggestion = null;
+		$errors           = array();
 		// Try to find the first suggestion that has a valid placement.
 		foreach ( $suggestions as $suggestion ) {
 			// If the ignore keywords are set and the suggested text is in the ignore keywords, skip it.
@@ -466,11 +493,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				continue;
 			}
 
-			/** @var bool $valid_placement Whether the suggestion has a valid placement. */
-			$valid_placement = $suggestion->has_valid_placement();
-			if ( $valid_placement ) {
+			/** @var WP_Error|bool $valid_placement Whether the suggestion has a valid placement. */
+			$valid_placement = $suggestion->has_valid_placement( true, $allow_duplicate_links );
+			if ( ! is_wp_error( $valid_placement ) ) {
 				$valid_suggestion = $suggestion;
 				break;
+			} else {
+				$errors[] = $valid_placement;
 			}
 		}
 
@@ -478,7 +507,10 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			return new WP_Error(
 				'parsely_no_valid_placement',
 				__( 'No valid placement found.', 'wp-parsely' ),
-				array( 'suggestions' => $suggestions )
+				array(
+					'suggestions' => $suggestions,
+					'errors'      => $errors,
+				)
 			);
 		}
 
@@ -494,7 +526,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		}
 
 		// Save the suggestion to the database.
-		$valid_suggestion->save();
+		if ( $save ) {
+			$valid_suggestion->save();
+		}
 
 		return new WP_REST_Response( array( 'data' => $valid_suggestion->to_array() ), 200 );
 	}
