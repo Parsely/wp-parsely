@@ -89,9 +89,8 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint URL for the API request.
 	 *
-	 * This method appends the author, tag, and section parameters to the
-	 * endpoint URL, if they are set. Since the Parse.ly API needs a key for
-	 * every value (e.g. tag=tag1&tag=tag2), we need to append them manually.
+	 * This function supports repeating keys in the URL, which is a Parse.ly API
+	 * requirement for specifying multiple values (e.g. tag=tag1&tag=tag2).
 	 *
 	 * @since 3.17.0
 	 *
@@ -99,7 +98,7 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	 * @return string The endpoint URL for the API request.
 	 */
 	public function get_endpoint_url( array $query_args = array() ): string {
-		// Store the author, tag, and section parameters.
+		// Store the values of the parameters requiring repeating keys.
 		/** @var array<string> $authors */
 		$authors = $query_args['author'] ?? array();
 
@@ -112,7 +111,7 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		/** @var array<string> $urls */
 		$urls = $query_args['urls'] ?? array();
 
-		// Remove the author, tag, and section parameters from the query args.
+		// Remove the parameters requiring repeating keys.
 		unset( $query_args['author'] );
 		unset( $query_args['tag'] );
 		unset( $query_args['section'] );
@@ -121,7 +120,7 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		// Generate the endpoint URL.
 		$endpoint_url = parent::get_endpoint_url( $query_args );
 
-		// Append the author, tag, and section parameters to the endpoint URL.
+		// Append the parameters requiring repeating keys to the endpoint URL.
 		$endpoint_url = $this->append_same_key_params_to_url( $endpoint_url, $authors, 'author' );
 		$endpoint_url = $this->append_same_key_params_to_url( $endpoint_url, $tags, 'tag' );
 		$endpoint_url = $this->append_same_key_params_to_url( $endpoint_url, $sections, 'section' );
