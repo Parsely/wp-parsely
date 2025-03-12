@@ -59,7 +59,7 @@ class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
 	 */
 	public function get_links(
 		string $content,
-		$options = array(),
+		$options = array()
 	) {
 		$request_body = array(
 			'output_config' => array(
