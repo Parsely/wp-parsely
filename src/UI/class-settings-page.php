@@ -150,6 +150,8 @@ final class Settings_Page {
 	 */
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
+		// Show the plugin's settings page only under the Parse.ly menu.
+		add_action( 'admin_head', array( $this, 'remove_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_assets' ) );
 	}
@@ -204,6 +206,16 @@ final class Settings_Page {
 			// Adds help text when admin page loads.
 			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_help_text' ) );
 		}
+	}
+
+	/**
+	 * Removes the plugin's Settings page from the WordPress Settings menu,
+	 * while still keeping the page available through its slug/URL.
+	 *
+	 * @since 3.18.0
+	 */
+	public function remove_settings_sub_menu(): void {
+		remove_submenu_page( 'options-general.php', Parsely::MENU_SLUG );
 	}
 
 	/**

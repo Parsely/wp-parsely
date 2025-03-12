@@ -180,7 +180,7 @@ final class Dashboard_Page {
 			'Parse.ly Settings',
 			'Settings',
 			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
-			'parsely-dashboard-page#/settings',
+			Parsely::MENU_SLUG,
 			'__return_null'
 		);
 	}
@@ -261,7 +261,7 @@ final class Dashboard_Page {
 
 		if ( $this->parsely->site_id_is_set() ) {
 			wp_add_inline_script(
-				'parsely-dashboard-page', 
+				'parsely-dashboard-page',
 				'window.wpParselySiteId = ' . wp_json_encode( $this->parsely->get_site_id() ) . ';',
 				'before'
 			);
