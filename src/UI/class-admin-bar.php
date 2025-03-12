@@ -69,11 +69,11 @@ final class Admin_Bar {
 		/**
 		 * Variable.
 		 *
-		 * @var \WP_Term|\WP_Post_Type|WP_Post|\WP_User|null
+		 * @var \WP_Term|\WP_Post_Type|WP_Post|\WP_User|null|false
 		 */
 		$queried_object = $GLOBALS['wp_the_query']->get_queried_object();
 
-		if ( ! $queried_object || ! ( $queried_object instanceof WP_Post ) ) {
+		if ( ! ( $queried_object instanceof WP_Post ) ) {
 			return;
 		}
 
