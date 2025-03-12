@@ -25,6 +25,7 @@ use WP_Error;
  * @phpstan-import-type Endpoint_Suggest_Headline_Options from Endpoints\Endpoint_Suggest_Headline
  * @phpstan-import-type Endpoint_Suggest_Linked_Reference_Options from Endpoints\Endpoint_Suggest_Linked_Reference
  * @phpstan-import-type Endpoint_Suggest_Inbound_Links_Options from Endpoints\Endpoint_Suggest_Inbound_Links
+ * @phpstan-import-type Endpoint_Suggest_Inbound_Link_Positions_Options from Endpoints\Endpoint_Suggest_Inbound_Link_Positions
  */
 class Suggestions_API_Service extends Base_API_Service {
 	/**
@@ -137,15 +138,16 @@ class Suggestions_API_Service extends Base_API_Service {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param \WP_Post $source_post    The source post to get inbound link positions for.
-	 * @param \WP_Post $destination_post The destination post to get inbound link positions for.
+	 * @param \WP_Post                                        $source_post    The source post to get inbound link positions for.
+	 * @param \WP_Post                                        $destination_post The destination post to get inbound link positions for.
+	 * @param Endpoint_Suggest_Inbound_Link_Positions_Options $options The options to pass to the API request.
 	 * @return \Parsely\Models\Inbound_Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                                            object if the response is an error.
 	 */
-	public function get_inbound_link_positions( \WP_Post $source_post, \WP_Post $destination_post ) {
+	public function get_inbound_link_positions( \WP_Post $source_post, \WP_Post $destination_post, $options = array() ) {
 		/** @var Endpoints\Endpoint_Suggest_Inbound_Link_Positions $endpoint */
 		$endpoint = $this->get_endpoint( '/suggest-inbound-link-positions' );
 
-		return $endpoint->get_inbound_link_positions( $source_post, $destination_post );
+		return $endpoint->get_inbound_link_positions( $source_post, $destination_post, $options );
 	}
 }

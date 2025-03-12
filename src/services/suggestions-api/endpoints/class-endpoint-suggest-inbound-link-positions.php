@@ -141,6 +141,8 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 		$source_post = $args['source_post'] ?? null;
 		/** @var \WP_Post|null $destination_post */
 		$destination_post = $args['destination_post'] ?? null;
+		/** @var Endpoint_Suggest_Inbound_Link_Positions_Options $options */
+		$options = $args['options'] ?? array();
 
 		if ( ! ( $source_post instanceof \WP_Post ) || ! ( $destination_post instanceof \WP_Post ) ) {
 			return new \WP_Error(
@@ -150,6 +152,6 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 			);
 		}
 
-		return $this->get_inbound_link_positions( $source_post, $destination_post );
+		return $this->get_inbound_link_positions( $source_post, $destination_post, $options );
 	}
 }

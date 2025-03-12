@@ -425,11 +425,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$source_post = get_post( $source_post_id );
 
 		/**
-		 * The keywords to ignore.
+		 * The keyword exclusion list.
 		 *
-		 * @var array<string>|null $ignore_keywords
+		 * @var array<string> $keyword_exclusion_list
 		 */
-		$ignore_keywords = $request->get_param( 'ignore_keywords' );
+		$keyword_exclusion_list = $request->get_param( 'keyword_exclusion_list' );
+
+		/**
+		 * The performance blending weight.
+		 *
+		 * @var float $performance_blending_weight
+		 */
+		$performance_blending_weight = $request->get_param( 'performance_blending_weight' );
 
 		if ( null === $source_post ) {
 			return new WP_Error(
@@ -438,7 +445,14 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			);
 		}
 
-		$suggestions = $this->suggestions_api->get_inbound_link_positions( $source_post, $destination_post );
+		$suggestions = $this->suggestions_api->get_inbound_link_positions(
+			$source_post,
+			$destination_post,
+			array(
+				'performance_blending_weight' => $performance_blending_weight,
+				'keyword_exclusion_list'      => $keyword_exclusion_list,
+			)
+		);
 
 		if ( is_wp_error( $suggestions ) ) {
 			return $suggestions;
@@ -448,7 +462,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		// Try to find the first suggestion that has a valid placement.
 		foreach ( $suggestions as $suggestion ) {
 			// If the ignore keywords are set and the suggested text is in the ignore keywords, skip it.
-			if ( is_array( $ignore_keywords ) && in_array( $suggestion->text, $ignore_keywords, true ) ) {
+			if ( in_array( $suggestion->text, $keyword_exclusion_list, true ) ) {
 				continue;
 			}
 

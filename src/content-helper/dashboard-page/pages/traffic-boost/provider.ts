@@ -314,7 +314,8 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			method: 'POST',
 			path: requestPath,
 			data: {
-				ignore_keywords: ignoreKeywords,
+				keyword_exclusion_list: ignoreKeywords,
+				performance_blending_weight: 0.5,
 			},
 		} );
 
