@@ -118,32 +118,29 @@ const SuggestionsTab = ( {
 		suggestions,
 		inboundLinks,
 		settings,
-		currentPage,
-		itemsPerPage,
 		isGeneratingSuggestions,
 		isLoadingSuggestions,
+		suggestionsToGenerate,
 	} = useSelect( ( select ) => ( {
 		currentPost: select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
-		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
-		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
 		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
 		isLoadingSuggestions: select( TrafficBoostStore ).isLoadingSuggestions(),
 		settings: select( TrafficBoostStore ).getSettings(),
+		suggestionsToGenerate: select( TrafficBoostStore ).getSuggestionsToGenerate(),
 	} ), [] );
 
 	const {
 		setSelectedLink,
-		setSuggestionsPage,
-		setSuggestionsItemsPerPage,
 		addSuggestion,
 		setSuggestions,
 		updateSuggestion,
 		setIsGeneratingSuggestions,
 		setIsGenerating,
 		removeSuggestion,
+		setSuggestionsToGenerate,
 	} = useDispatch( TrafficBoostStore );
 
 	const { createSuccessNotice, createErrorNotice } = useDispatch( 'core/notices' );
@@ -216,9 +213,10 @@ const SuggestionsTab = ( {
 
 			// Clear the suggestions list.
 			setSuggestions( [] );
+			setSuggestionsToGenerate( settings.maxItems );
 
 			// Generate the suggestions in batches.
-			const generatedSuggestions = await trafficBoostProvider.generateBatchSuggestions(
+			await trafficBoostProvider.generateBatchSuggestions(
 				currentPost.id,
 				settings.maxItems,
 				{
@@ -233,15 +231,16 @@ const SuggestionsTab = ( {
 							// Change the active link to the first suggestion.
 							setSelectedLink( newSuggestions[ 0 ] );
 						}
+
+						// Update the remaining suggestions count
+						setSuggestionsToGenerate( ( previousCount ) => Math.max( 0, previousCount - newSuggestions.length ) );
 					},
 				}
 			);
 
 			// Show a snackbar success message.
 			createSuccessNotice(
-				sprintf(
-				/* translators: %d: number of suggestions generated */
-					__( 'Generated %d suggestions', 'wp-parsely' ), generatedSuggestions.length ),
+				__( 'Finished generating suggestions.', 'wp-parsely' ),
 				{
 					type: 'snackbar',
 					icon: <Icon icon={ update } />,
@@ -282,13 +281,9 @@ const SuggestionsTab = ( {
 			<LinksList
 				isLoading={ isLoadingSuggestions }
 				links={ suggestions }
+				useScrollbar={ true }
 				onClick={ onSuggestionClick }
 				activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
-				currentPage={ currentPage }
-				itemsPerPage={ itemsPerPage }
-				onPageChange={ setSuggestionsPage }
-				onItemsPerPageChange={ setSuggestionsItemsPerPage }
-				showPagination={ ! isGeneratingSuggestions } // Hide pagination when generating suggestions.
 				renderEmptyState={ () => {
 					if ( isGeneratingSuggestions ) {
 						return (
@@ -334,8 +329,8 @@ const SuggestionsTab = ( {
 						<span>
 							{ sprintf(
 								/* translators: %d: number of suggestions generated */
-								_n( 'Generating %d last suggestion…', 'Generating %d more suggestions…', settings.maxItems - suggestions.length, 'wp-parsely' ),
-								settings.maxItems - suggestions.length
+								_n( 'Generating %d last suggestion…', 'Generating %d more suggestions…', suggestionsToGenerate, 'wp-parsely' ),
+								suggestionsToGenerate
 							) }
 						</span>
 					</div>

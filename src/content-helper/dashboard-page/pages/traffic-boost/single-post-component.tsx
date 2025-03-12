@@ -10,7 +10,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { Icon } from '@wordpress/components';
 import { error as errorIcon, update } from '@wordpress/icons';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -65,6 +65,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		setIsGeneratingSuggestions,
 		setSelectedTab,
 		updateInboundLink,
+		setSuggestionsToGenerate,
 	} = useDispatch( TrafficBoostStore );
 
 	const { createSuccessNotice, createErrorNotice } = useDispatch( 'core/notices' );
@@ -392,8 +393,11 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 						]
 					).flat().filter( ( url ) => url !== undefined );
 
+					// Set the initial count of suggestions to generate
+					setSuggestionsToGenerate( settings.maxItems );
+
 					// Generate the suggestions in batches.
-					const generatedSuggestions = await trafficBoostProvider.generateBatchSuggestions(
+					await trafficBoostProvider.generateBatchSuggestions(
 						parseInt( postId ),
 						settings.maxItems,
 						{
@@ -411,15 +415,16 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 								if ( isFirstIteration ) {
 									setSelectedLink( newSuggestions[ 0 ] );
 								}
+
+								// Update the remaining suggestions count
+								setSuggestionsToGenerate( ( previousCount ) => Math.max( 0, previousCount - newSuggestions.length ) );
 							},
 						},
 					);
 
 					// Show a snackbar success message.
 					createSuccessNotice(
-						sprintf(
-							/* translators: %d: number of suggestions generated */
-							__( 'Generated %d suggestions', 'wp-parsely' ), generatedSuggestions.length ),
+						__( 'Finished generating suggestions.', 'wp-parsely' ),
 						{
 							type: 'snackbar',
 							icon: <Icon icon={ update } />,

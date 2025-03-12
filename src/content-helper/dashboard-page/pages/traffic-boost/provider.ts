@@ -182,6 +182,23 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return this.createTrafficBoostLinks( response.data );
 	}
 
+	/**
+	 * Generates batch suggestions for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number}   postId                   The ID of the post to generate suggestions for.
+	 * @param {number}   numberOfSuggestions      The number of suggestions to generate.
+	 * @param {Object}   options                  The options for the suggestions.
+	 * @param {boolean}  options.discardPrevious  Whether to discard previous suggestions.
+	 * @param {string[]} options.urlExclusionList The list of URLs to exclude from the suggestions.
+	 * @param {number}   options.maxRetries       The maximum number of retries.
+	 * @param {Function} options.onNewSuggestions The callback to call when new suggestions are generated.
+	 * @param {boolean}  options.save             Whether to save the suggestions.
+	 * @param {number}   options.maxItemsPerBatch The maximum number of items to generate per batch.
+	 *
+	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
+	 */
 	public async generateBatchSuggestions(
 		postId: number,
 		numberOfSuggestions: number,
@@ -213,9 +230,9 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			// Generate the suggestions.
 			try {
 				const newGeneratedSuggestions = await this.generateSuggestions( postId, {
-					discard_previous: discardPrevious,
-					url_exclusion_list: excludedUrls,
-					max_items: Math.min( numberOfSuggestions - totalSuggestions, maxItemsPerBatch ),
+					discardPrevious,
+					urlExclusionList: excludedUrls,
+					maxItems: Math.min( numberOfSuggestions - totalSuggestions, maxItemsPerBatch ),
 					save: options?.save ?? false,
 				} );
 
@@ -255,32 +272,35 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number}   postId                     The ID of the post to generate suggestions for.
-	 * @param {Object}   options                    The options for the suggestions.
-	 * @param {number}   options.max_items          The maximum number of items to generate.
-	 * @param {boolean}  options.discard_previous   Whether to discard previous suggestions.
-	 * @param {string[]} options.url_exclusion_list The list of URLs to exclude from the suggestions.
-	 * @param {boolean}  options.save               Whether to save the suggestions.
+	 * @param {number}   postId                            The ID of the post to generate suggestions for.
+	 * @param {Object}   options                           The options for the suggestions.
+	 * @param {number}   options.maxItems                  The maximum number of items to generate.
+	 * @param {boolean}  options.discardPrevious           Whether to discard previous suggestions.
+	 * @param {string[]} options.urlExclusionList          The list of URLs to exclude from the suggestions.
+	 * @param {number}   options.performanceBlendingWeight The performance blending weight.
+	 * @param {boolean}  options.save                      Whether to save the suggestions.
 	 *
 	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
 	 */
 	public async generateSuggestions(
 		postId: number,
 		options?: {
-			max_items?: number;
+			maxItems?: number;
 			save?: boolean;
-			discard_previous?: boolean;
-			url_exclusion_list?: string[];
+			discardPrevious?: boolean;
+			urlExclusionList?: string[];
+			performanceBlendingWeight?: number;
 		},
 	): Promise<TrafficBoostLink[]> {
 		const response = await this.fetch<InboundSmartLinkDataResponse>( {
 			method: 'POST',
 			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/generate`,
 			data: {
-				max_items: options?.max_items ?? 10,
+				max_items: options?.maxItems ?? 10,
 				save: options?.save ?? false,
-				discard_previous: options?.discard_previous ?? true,
-				url_exclusion_list: options?.url_exclusion_list,
+				discard_previous: options?.discardPrevious ?? true,
+				url_exclusion_list: options?.urlExclusionList,
+				performance_blending_weight: options?.performanceBlendingWeight ?? 0.5,
 			},
 		} );
 

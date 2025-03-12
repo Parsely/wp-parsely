@@ -369,8 +369,6 @@ export const PreviewIframe = ( {
 		highlightLinkType( iframe, selectedLinkType );
 	}, [ contentAreaRef, highlightLinkType, isLoading, selectedLinkType ] );
 
-	const messages = activeLink?.smartLink ? [ __( 'Done, loading your post…', 'wp-parsely' ) ] : TRAFFIC_BOOST_LOADING_MESSAGES;
-
 	return (
 		<div className="wp-parsely-preview">
 			<div className="preview-iframe-wrapper">
@@ -389,7 +387,7 @@ export const PreviewIframe = ( {
 										<>
 											<Loading
 												showSpinner={ false }
-												messages={ messages }
+												messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
 												typewriter={ true }
 												randomOrder={ true }
 											/>

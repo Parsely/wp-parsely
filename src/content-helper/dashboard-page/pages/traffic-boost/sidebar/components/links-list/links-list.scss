@@ -12,6 +12,7 @@
 		overflow-y: auto;
 		height: 0;
 		min-height: 0;
+		overscroll-behavior: contain;
 
 		.traffic-boost-single-link {
 			cursor: pointer;

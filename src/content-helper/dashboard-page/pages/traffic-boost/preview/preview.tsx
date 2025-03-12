@@ -474,6 +474,7 @@ export const TrafficBoostPreview = ( {
 		}
 
 		setIsGenerating( activeLink, true );
+		setSelectedText( null );
 		// Remove the smart link from the active link.
 		const oldSmartLink = activeLink.smartLink;
 		activeLink.smartLink = undefined;
