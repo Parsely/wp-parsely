@@ -73,7 +73,7 @@ final class Admin_Bar {
 		 */
 		$queried_object = $GLOBALS['wp_the_query']->get_queried_object();
 
-		if ( null === $queried_object || WP_Post::class !== get_class( $queried_object ) ) {
+		if ( ! $queried_object || ! ( $queried_object instanceof WP_Post ) ) {
 			return;
 		}
 
