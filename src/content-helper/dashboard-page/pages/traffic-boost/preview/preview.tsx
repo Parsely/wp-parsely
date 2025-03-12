@@ -69,6 +69,8 @@ export const TrafficBoostPreview = ( {
 	const [ totalItems, setTotalItems ] = useState<number>( 0 );
 	const [ itemIndex, setItemIndex ] = useState<number>( 0 );
 
+	const [ ignoredKeywords, setIgnoredKeywords ] = useState<string[]>( [] );
+
 	const {
 		createSuccessNotice,
 		createErrorNotice,
@@ -117,6 +119,7 @@ export const TrafficBoostPreview = ( {
 		setActivePost( activeLink.targetPost );
 		setIsInboundLink( ! activeLink.isSuggestion );
 		setSelectedText( null );
+		setIgnoredKeywords( [] );
 	}, [ activeLink ] );
 
 	/**
@@ -475,19 +478,24 @@ export const TrafficBoostPreview = ( {
 
 		setIsGenerating( activeLink, true );
 		setSelectedText( null );
+
 		// Remove the smart link from the active link.
 		const oldSmartLink = activeLink.smartLink;
 		activeLink.smartLink = undefined;
+
 		// Update the active link.
 		updateSuggestion( activeLink );
 		setIsLoading( true );
+
+		// Add the current keyword to the ignored keywords.
+		setIgnoredKeywords( [ ...ignoredKeywords, oldSmartLink?.text ?? '' ] );
 
 		try {
 			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
 				post,
 				activeLink.targetPost,
 				activeLink,
-				[ oldSmartLink?.text ?? '' ],
+				[ ...ignoredKeywords, oldSmartLink?.text ?? '' ],
 			);
 
 			updateSuggestion( updatedLink );
