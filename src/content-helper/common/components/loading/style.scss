@@ -2,15 +2,13 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 16px;
-	padding: 10px 15px;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-	color: #1e1e1e;
-	min-width: 300px;
-	min-height: 24px;
-	border-radius: 4px;
+	gap: var(--grid-unit-20);
+	padding: var(--grid-unit-10) var(--grid-unit-15);
+	color: var(--sidebar-black);
+	min-width: to_rem(300px);
+	min-height: to_rem(24px);
+	border-radius: to_rem(4px);
 
-	// Ensure the spinner stays on the left
 	.components-spinner {
 		flex-shrink: 0;
 		margin: 0;
@@ -18,7 +16,7 @@
 }
 
 .wp-parsely-loading-message {
-	font-size: 14px;
+	font-size: var(--font-size--medium);
 	line-height: 1.4;
 	margin: 0;
 	flex-grow: 1;
