@@ -66,28 +66,14 @@ export const PreviewFooter = ( {
 		isAccepting,
 		isRemoving,
 		isGenerating,
-		isGeneratingSuggestions,
-		hasSuggestions,
 	} = useSelect( ( select ) => ( {
 		isAccepting: activeLink ? select( TrafficBoostStore ).isAccepting( activeLink ) : false,
 		isRemoving: activeLink ? select( TrafficBoostStore ).isRemoving( activeLink ) : false,
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
-		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
-		hasSuggestions: select( TrafficBoostStore ).hasSuggestions(),
 	} ), [ activeLink ] );
 
 	if ( ! activeLink ) {
 		return <></>;
-	}
-
-	if ( isGeneratingSuggestions && ! hasSuggestions ) {
-		return <div
-			className="traffic-boost-preview-footer"
-			style={ {
-				height: '36px',
-			} }
-		>
-		</div>;
 	}
 
 	return (

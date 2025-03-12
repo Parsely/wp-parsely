@@ -46,6 +46,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		inboundLinks,
 		selectedLink,
 		settings,
+		suggestions,
 	} = useSelect( ( select ) => ( {
 		isLoadingPost: select( TrafficBoostStore ).isLoadingPost(),
 		error: select( TrafficBoostStore ).getError(),
@@ -53,6 +54,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		currentPost: state?.post ?? select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		settings: select( TrafficBoostStore ).getSettings(),
+		suggestions: select( TrafficBoostStore ).getSuggestions(),
 	} ), [ state?.post ] );
 
 	const {
@@ -184,6 +186,17 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			setSelectedLink( null );
 		};
 	}, [ setCurrentPost, setSelectedLink ] );
+
+	/**
+	 * Hides the preview if there are no suggestions.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( selectedLink?.isSuggestion && suggestions.length === 0 ) {
+			setSelectedLink( null );
+		}
+	}, [ setSelectedLink, suggestions, selectedLink ] );
 
 	/**
 	 * Redirects to the Traffic Boost page if no post is found after fetching.
