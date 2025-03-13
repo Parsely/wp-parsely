@@ -12,8 +12,6 @@ namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 
 use Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
-use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\RestAPI\BaseEndpointTest;
 use Parsely\Models\Smart_Link;
@@ -129,7 +127,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\Models\Base_Model::__construct
 	 * @uses \Parsely\Models\Smart_Link::__construct
 	 * @uses \Parsely\Models\Smart_Link::generate_uid
-	 * @uses \Parsely\Models\Smart_Link::get_post_id_by_url
 	 * @uses \Parsely\Models\Smart_Link::set_href
 	 * @uses \Parsely\Models\Smart_Link::to_array
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
@@ -137,6 +134,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
 	 */
 	public function test_generate_smart_links_returns_valid_response(): void {
 		// Create a mocked Suggestions API that returns two smart links.
@@ -221,7 +219,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\Models\Smart_Link::deserialize
 	 * @uses \Parsely\Models\Smart_Link::exists
 	 * @uses \Parsely\Models\Smart_Link::generate_uid
-	 * @uses \Parsely\Models\Smart_Link::get_post_id_by_url
 	 * @uses \Parsely\Models\Smart_Link::get_smart_link
 	 * @uses \Parsely\Models\Smart_Link::get_smart_link_object_by_uid
 	 * @uses \Parsely\Models\Smart_Link::load
@@ -255,6 +252,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
 	 */
 	public function test_add_smart_link_returns_valid_response(): void {
 		// Create mocked post.
@@ -320,7 +318,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\Models\Smart_Link::deserialize
 	 * @uses \Parsely\Models\Smart_Link::exists
 	 * @uses \Parsely\Models\Smart_Link::generate_uid
-	 * @uses \Parsely\Models\Smart_Link::get_post_id_by_url
 	 * @uses \Parsely\Models\Smart_Link::get_smart_link
 	 * @uses \Parsely\Models\Smart_Link::get_smart_link_object_by_uid
 	 * @uses \Parsely\Models\Smart_Link::load
@@ -354,6 +351,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
 	 */
 	public function test_add_multiple_smart_links_returns_valid_response(): void {
 		// Create mocked post.
