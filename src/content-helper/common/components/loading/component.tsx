@@ -1,13 +1,16 @@
+/**
+ * WordPress imports
+ */
 import { Spinner } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * TypewriterText component that animates text with a typewriter effect.
  *
  * @since 3.18.0
  *
- * @param {Object} props         Component props.
+ * @param {Object} props         The component's props.
  * @param {string} props.message The message to display with typewriter effect.
  *
  * @return {JSX.Element} The TypewriterText component.
@@ -94,7 +97,7 @@ export const Loading = ( {
 
 		const updateMessage = () => {
 			if ( randomOrder ) {
-				// Pick a random message different from the current one
+				// Pick a random message different from the current one.
 				let nextIndex;
 				do {
 					nextIndex = Math.floor( Math.random() * messages.length );
@@ -102,7 +105,7 @@ export const Loading = ( {
 				setCurrentIndex( nextIndex );
 				setCurrentMessage( messages[ nextIndex ] );
 			} else {
-				// Move to next message sequentially
+				// Move to next message sequentially.
 				const nextIndex = ( currentIndex + 1 ) % messages.length;
 				setCurrentIndex( nextIndex );
 				setCurrentMessage( messages[ nextIndex ] );

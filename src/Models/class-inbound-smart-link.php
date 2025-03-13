@@ -10,11 +10,10 @@ declare( strict_types = 1 );
 
 namespace Parsely\Models;
 
+use Masterminds\HTML5;
 use Parsely\Parsely;
-
 use ReflectionClass;
 use WP_Post;
-use Masterminds\HTML5;
 
 /**
  * Model for Inbound Smart Link.
@@ -27,7 +26,7 @@ use Masterminds\HTML5;
  *     is_last_paragraph: bool,
  *     paragraph_offset: int
  * }
- * 
+ *
  * @phpstan-type SmartLinkPostData array{
  *     id: int,
  *     title: string,
@@ -56,7 +55,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 *
 	 * @var array<string> The allowed tags.
 	 */
-	private const ALLOWED_TAGS = array( 'p', 'ul' ); 
+	private const ALLOWED_TAGS = array( 'p', 'ul' );
 
 	/**
 	 * The paragraph data.

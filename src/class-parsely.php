@@ -83,6 +83,7 @@ class Parsely {
 	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
 
 	private const PARSELY_CANONICAL_URL_META_KEY = '_parsely_canonical_url';
+
 	/**
 	 * The Content API service.
 	 *
@@ -1002,7 +1003,7 @@ class Parsely {
 	 *
 	 * If the current domain is different from the Parse.ly site ID, this function
 	 * will return the URL with the current domain.
-	 * 
+	 *
 	 * @since 3.18.0
 	 *
 	 * @param string $url The URL to get the canonical URL for.
@@ -1031,7 +1032,7 @@ class Parsely {
 
 	/**
 	 * Sets the Parse.ly canonical URL for a post.
-	 * 
+	 *
 	 * @since 3.18.0
 	 *
 	 * @param WP_Post|int $post The post object or post ID.
