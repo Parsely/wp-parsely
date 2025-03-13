@@ -164,7 +164,7 @@ export const PreviewHeader = ( {
 					disabled={ isLoading }
 					label={ __( 'Regenerate Suggested Link', 'wp-parsely' ) }
 				/>
-				{ ! isExternalURL( activeLink ) && (
+				{ ! isExternalURL( activeLink ) && false && (
 					<Button
 						icon={ desktop }
 						isPressed={ isFrontendPreview }
