@@ -15,7 +15,7 @@ use Parsely\UI\Settings_Page;
 
 use const Parsely\PARSELY_FILE;
 
-const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/options-general.php?page=parsely';
+const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/admin.php?page=parsely-settings';
 
 /**
  * Integration Tests for the plugin's wp-admin Settings page.
