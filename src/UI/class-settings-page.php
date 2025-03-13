@@ -229,7 +229,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Displays the Parse.ly settings screen (options-general.php?page=[SLUG]).
+	 * Displays the Parse.ly settings screen (admin.php?page=[SLUG]).
 	 */
 	public function display_settings(): void {
 		// phpcs:ignore WordPress.WP.Capabilities.Undetermined

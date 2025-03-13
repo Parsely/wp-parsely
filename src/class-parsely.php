@@ -77,7 +77,7 @@ class Parsely {
 	 * Declare our constants
 	 */
 	public const VERSION            = PARSELY_VERSION;
-	public const MENU_SLUG          = 'parsely-settings'; // The page param passed to options-general.php.
+	public const MENU_SLUG          = 'parsely-settings'; // The page param passed to admin.php.
 	public const OPTIONS_KEY        = 'parsely'; // The key used to store options in the WP database.
 	public const CAPABILITY         = 'manage_options'; // The capability required to administer settings.
 	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
@@ -685,7 +685,7 @@ class Parsely {
 	 * @return string
 	 */
 	public static function get_settings_url( ?int $_blog_id = null ): string {
-		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
+		return get_admin_url( $_blog_id, 'admin.php?page=' . self::MENU_SLUG );
 	}
 
 	/**
