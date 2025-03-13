@@ -73,7 +73,6 @@ final class Admin_Bar {
 		 * happen in practice.
 		 *
 		 * @var \WP_Term|\WP_Post_Type|WP_Post|\WP_User|null|false
-		 * @var \WP_Term|\WP_Post_Type|WP_Post|\WP_User|null|false
 		 */
 		$queried_object = $GLOBALS['wp_the_query']->get_queried_object();
 
