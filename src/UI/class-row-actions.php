@@ -139,8 +139,9 @@ final class Row_Actions {
 			return $actions;
 		}
 
-		// Disable for posts that are draft, private, or scheduled.
-		if ( 'draft' === $post->post_status || 'private' === $post->post_status || 'scheduled' === $post->post_status ) {
+		// Disable for posts that are draft, private, future, pending, or trash.
+		$non_publishable_statuses = array( 'draft', 'private', 'future', 'pending', 'trash' );
+		if ( in_array( $post->post_status, $non_publishable_statuses, true ) ) {
 			return $actions;
 		}
 
