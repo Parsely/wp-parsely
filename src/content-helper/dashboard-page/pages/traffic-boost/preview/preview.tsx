@@ -13,7 +13,11 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
-import { TrafficBoostLink, TrafficBoostProvider } from '../provider';
+import {
+	TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
+	TrafficBoostLink,
+	TrafficBoostProvider,
+} from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -505,7 +509,7 @@ export const TrafficBoostPreview = ( {
 				activeLink,
 				{
 					ignoreKeywords: [ ...ignoredKeywords, oldSmartLink?.text ?? '' ],
-					performanceBlendingWeight: 0.5,
+					performanceBlendingWeight: TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
 				},
 			);
 
@@ -562,7 +566,7 @@ export const TrafficBoostPreview = ( {
 					ignoreKeywords: [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ],
 					allowDuplicateLinks: true,
 					save: false,
-					performanceBlendingWeight: 0.5,
+					performanceBlendingWeight: TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
 				},
 			);
 			setIsGenerating( activeLink, false );
