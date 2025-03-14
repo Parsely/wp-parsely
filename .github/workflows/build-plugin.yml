@@ -1,0 +1,95 @@
+name: Build wp-parsely
+on:
+  push:
+    branches:
+      - trunk
+      - develop
+  workflow_dispatch:
+env:
+  SOURCE_REF: ${{ github.ref_name }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  build:
+    name: Build and Commit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Setup BUILT_BRANCH env
+        run: echo "BUILT_BRANCH=${SOURCE_REF}-built" >> $GITHUB_ENV
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Checkout the specific branch/ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_REF }}
+          fetch-depth: 0
+
+      - name: Fetch and checkout built branch
+        run: |
+          if git ls-remote --exit-code origin "${BUILT_BRANCH}"; then
+            git fetch origin "${BUILT_BRANCH}"
+            git checkout "${BUILT_BRANCH}"
+            git pull origin "${BUILT_BRANCH}"
+          else
+            git checkout --orphan "${BUILT_BRANCH}" "${SOURCE_REF}"
+            git commit --allow-empty -m "Create ${BUILT_BRANCH} branch"
+          fi
+
+      - name: Merge current branch into built
+        run: |
+          git merge "${SOURCE_REF}" --strategy-option theirs --no-edit --squash --allow-unrelated-histories
+
+      - name: Read .nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          composer install --no-dev --optimize-autoloader --classmap-authoritative
+
+      - name: Remove `/vendor` from .gitignore
+        run: |
+          sed -i '/vendor/d' .gitignore
+          # If the file was modified, add it to the git staging area
+          git status -s | grep .gitignore && git add .gitignore
+
+      - name: Get list of changed files
+        run: git status -s
+
+      - name: Create Commit Message
+        run: |
+          # Get the short SHA of the commit
+          COMMIT_SHA=${GITHUB_SHA::7}
+          # Retrieve the original commit message and replace newlines with spaces
+          ORIGINAL_COMMIT_MESSAGE=$(git log -1 --pretty=%B "${GITHUB_SHA}" | tr '\n' ' ' | awk '{$1=$1; sub(/^ +| +$/,"")}1')
+          # Construct the commit message safely using printf
+          printf "Build \"%s\" (%s)\n" "$ORIGINAL_COMMIT_MESSAGE" "$COMMIT_SHA"  > final_commit_message.txt
+
+      - name: Commit built files
+        run: |
+          # Add the built files
+          git add -A vendor/ build/
+          git status -s
+          # Commit the changes using the commit message file
+          git commit -F final_commit_message.txt --no-verify
+          git push origin "${BUILT_BRANCH}"
+
+      - name: Clean up commit message files
+        run: |
+          rm final_commit_message.txt

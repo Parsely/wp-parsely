@@ -1,0 +1,8 @@
+# See https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+# This team will be requested for review when someone opens a pull request.
+* @Parsely/wp-parsely
+
+# Don't assign owners for the following files:
+package.json
+package-lock.json

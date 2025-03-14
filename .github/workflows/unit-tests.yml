@@ -1,0 +1,77 @@
+name: Unit Tests
+
+on:
+  # Run on all pushes and on all pull requests.
+  # Prevent the "push" build from running when there are only irrelevant changes.
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+  # Allow manually triggering the workflow.
+  workflow_dispatch:
+
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-20.04
+
+    env:
+      WP_VERSION: latest
+
+    strategy:
+      # Note: Different PHP versions use different PHPUnit versions.
+      # Keys:
+      # - coverage: Whether to run the tests with code coverage.
+      # - experimental: Whether the build is "allowed to fail".
+      matrix:
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.3']
+        coverage: [none]
+        experimental: [false]
+        include:
+          # Run code coverage for only one PHP version
+          - php: '8.2'
+            coverage: pcov # Warning: PCOV might not work for PHP 8.4 or newer according to https://thephp.cc/articles/pcov-or-xdebug.
+            extensions: pcov
+            ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
+            experimental: false
+          - php: '8.4'
+            coverage: none
+            experimental: true
+      fail-fast: false
+    continue-on-error: ${{ matrix.experimental }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.extensions }}
+          ini-values: ${{ matrix.ini-values }}
+          coverage: ${{ matrix.coverage }}
+
+      - name: Setup problem matchers for PHP
+        run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+
+      - name: Setup Problem Matchers for PHPUnit
+        run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Install Composer dependencies for PHP < 8.2
+        if: ${{ matrix.php < 8.2 }}
+        uses: ramsey/composer-install@v3
+
+      - name: Install Composer dependencies for PHP >= 8.2
+        if: ${{ matrix.php >= 8.2 }}
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: --ignore-platform-reqs
+
+      - name: Run unit tests
+        run: composer test --no-interaction
