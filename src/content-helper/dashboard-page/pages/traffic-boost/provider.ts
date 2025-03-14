@@ -7,6 +7,27 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../../common/cont
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 
 /**
+ * The loading messages for the traffic boost provider.
+ *
+ * @since 3.18.0
+ */
+export const TRAFFIC_BOOST_LOADING_MESSAGES = [
+	__( "We're finding the perfect spot to plant your links…", 'wp-parsely' ),
+	__( 'Analyzing your content to place links naturally…', 'wp-parsely' ),
+	__( 'Optimizing link placement for maximum impact…', 'wp-parsely' ),
+	__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
+	__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
+	__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
+];
+
+/**
+ * The default performance blending weight for the traffic boost provider.
+ *
+ * @since 3.18.0
+ */
+export const TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT = 0.5;
+
+/**
  * Represents a Traffic Boost link.
  *
  * Stores the target post and the smart link associated with it.
@@ -169,32 +190,124 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
+	 * Generates batch suggestions for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number}   postId                   The ID of the post to generate suggestions for.
+	 * @param {number}   numberOfSuggestions      The number of suggestions to generate.
+	 * @param {Object}   options                  The options for the suggestions.
+	 * @param {boolean}  options.discardPrevious  Whether to discard previous suggestions.
+	 * @param {string[]} options.urlExclusionList The list of URLs to exclude from the suggestions.
+	 * @param {number}   options.maxRetries       The maximum number of retries.
+	 * @param {Function} options.onNewSuggestions The callback to call when new suggestions are generated.
+	 * @param {boolean}  options.save             Whether to save the suggestions.
+	 * @param {number}   options.maxItemsPerBatch The maximum number of items to generate per batch.
+	 *
+	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
+	 */
+	public async generateBatchSuggestions(
+		postId: number,
+		numberOfSuggestions: number,
+		options?: {
+			discardPrevious?: boolean;
+			urlExclusionList?: string[];
+			maxRetries?: number;
+			onNewSuggestions?: ( suggestions: TrafficBoostLink[], isFirstIteration: boolean ) => void;
+			save?: boolean;
+			maxItemsPerBatch?: number;
+		},
+	): Promise<TrafficBoostLink[]> {
+		const maxItemsPerBatch = options?.maxItemsPerBatch ?? Math.min( numberOfSuggestions, 5 );
+
+		let maxRetries = options?.maxRetries ?? 3;
+		let totalSuggestions = 0;
+		let generatedSuggestions: TrafficBoostLink[] = [];
+		let excludedUrls: string[] = options?.urlExclusionList ?? [];
+
+		while ( totalSuggestions < numberOfSuggestions ) {
+			// Discard previous suggestions if this is the first batch, and if the option is set.
+			const discardPrevious = ( 0 === totalSuggestions ) && options?.discardPrevious;
+
+			// If we have no retries left, break.
+			if ( 0 === maxRetries ) {
+				break;
+			}
+
+			// Generate the suggestions.
+			try {
+				const newGeneratedSuggestions = await this.generateSuggestions( postId, {
+					discardPrevious,
+					urlExclusionList: excludedUrls,
+					maxItems: Math.min( numberOfSuggestions - totalSuggestions, maxItemsPerBatch ),
+					save: options?.save ?? false,
+				} );
+
+				// If there are no new suggestions, and we have no retries left, break.
+				if ( newGeneratedSuggestions.length === 0 ) {
+					maxRetries--;
+					continue;
+				}
+
+				// Remove the generated suggestions that already exist in the existing suggestions.
+				const filteredGeneratedSuggestions = newGeneratedSuggestions.filter(
+					( suggestion ) => ! excludedUrls.includes( suggestion.smartLink?.post_data?.parsely_canonical_url ?? '' )
+				);
+
+				// Update the excluded URLs.
+				excludedUrls = [ ...excludedUrls, ...filteredGeneratedSuggestions.map( ( suggestion ) => suggestion.smartLink?.post_data?.parsely_canonical_url ?? '' ) ];
+
+				// Call the callback if it is set.
+				const isFirstIteration = 0 === totalSuggestions;
+				options?.onNewSuggestions?.( filteredGeneratedSuggestions, isFirstIteration );
+
+				// Update the generated suggestions.
+				generatedSuggestions = [ ...generatedSuggestions, ...filteredGeneratedSuggestions ];
+				totalSuggestions += filteredGeneratedSuggestions.length;
+			} catch ( error ) {
+				// eslint-disable-next-line no-console
+				console.error( error );
+				maxRetries--;
+			}
+		}
+
+		return generatedSuggestions;
+	}
+
+	/**
 	 * Generates suggestions for a given post.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number}  postId                   The ID of the post to generate suggestions for.
-	 * @param {Object}  options                  The options for the suggestions.
-	 * @param {number}  options.max_items        The maximum number of items to generate.
-	 * @param {boolean} options.discard_previous Whether to discard previous suggestions.
-	 * @param {boolean} options.save             Whether to save the suggestions.
+	 * @param {number}   postId                            The ID of the post to generate suggestions for.
+	 * @param {Object}   options                           The options for the suggestions.
+	 * @param {number}   options.maxItems                  The maximum number of items to generate.
+	 * @param {boolean}  options.discardPrevious           Whether to discard previous suggestions.
+	 * @param {string[]} options.urlExclusionList          The list of URLs to exclude from the suggestions.
+	 * @param {number}   options.performanceBlendingWeight The performance blending weight.
+	 * @param {boolean}  options.save                      Whether to save the suggestions.
 	 *
 	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
 	 */
 	public async generateSuggestions(
 		postId: number,
 		options?: {
-			max_items?: number;
+			maxItems?: number;
 			save?: boolean;
-			discard_previous?: boolean;
+			discardPrevious?: boolean;
+			urlExclusionList?: string[];
+			performanceBlendingWeight?: number;
 		},
 	): Promise<TrafficBoostLink[]> {
 		const response = await this.fetch<InboundSmartLinkDataResponse>( {
 			method: 'POST',
 			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/generate`,
 			data: {
-				max_items: options?.max_items ?? 10,
+				max_items: options?.maxItems ?? 10,
 				save: options?.save ?? false,
+				discard_previous: options?.discardPrevious ?? true,
+				url_exclusion_list: options?.urlExclusionList,
+				performance_blending_weight: options?.performanceBlendingWeight ?? TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
 			},
 		} );
 
@@ -209,10 +322,14 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {HydratedPost}     sourcePost       The source post.
-	 * @param {HydratedPost}     destinationPost  The destination post.
-	 * @param {TrafficBoostLink} trafficBoostLink The traffic boost link to generate a placement for.
-	 * @param {string[]}         ignoreKeywords   The keywords to ignore.
+	 * @param {HydratedPost}     sourcePost                        The source post.
+	 * @param {HydratedPost}     destinationPost                   The destination post.
+	 * @param {TrafficBoostLink} trafficBoostLink                  The traffic boost link to generate a placement for.
+	 * @param {Object}           options                           The options for the suggestion.
+	 * @param {string[]}         options.ignoreKeywords            The keywords to ignore.
+	 * @param {boolean}          options.save                      Whether to save the suggestion.
+	 * @param {boolean}          options.allowDuplicateLinks       Whether to allow duplicate links.
+	 * @param {number}           options.performanceBlendingWeight The performance blending weight.
 	 *
 	 * @return {Promise<TrafficBoostLink>} The generated suggestion.
 	 */
@@ -220,7 +337,12 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		sourcePost: HydratedPost,
 		destinationPost: HydratedPost,
 		trafficBoostLink: TrafficBoostLink,
-		ignoreKeywords?: string[],
+		options?: {
+			ignoreKeywords?: string[];
+			save?: boolean;
+			allowDuplicateLinks?: boolean;
+			performanceBlendingWeight?: number;
+		},
 	): Promise<TrafficBoostLink> {
 		const requestPath = `/wp-parsely/v2/content-helper/traffic-boost/${ sourcePost.id }/generate-placement/${ destinationPost.id }`;
 
@@ -228,7 +350,10 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			method: 'POST',
 			path: requestPath,
 			data: {
-				ignore_keywords: ignoreKeywords,
+				keyword_exclusion_list: options?.ignoreKeywords,
+				performance_blending_weight: options?.performanceBlendingWeight ?? TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
+				save: options?.save ?? true,
+				allow_duplicate_links: options?.allowDuplicateLinks ?? false,
 			},
 		} );
 

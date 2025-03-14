@@ -1,6 +1,12 @@
 /**
+ * External Dependencies
+ */
+import type { ForwardedRef } from 'react';
+
+/**
  * WordPress Dependencies
  */
+import { forwardRef } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -21,17 +27,17 @@ type SingleLinkProps = {
 };
 
 /**
- * Displays a single Traffic Boost link.
+ * The SingleLink component, before being forwarded.
  *
  * @since 3.18.0
  *
- * @param {SingleLinkProps} props The component's props.
+ * @param {SingleLinkProps}              props The component's props.
+ * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.
  */
-export const SingleLink = ( {
-	suggestion,
-	isActive,
-	onClick,
-}: SingleLinkProps ): React.JSX.Element => {
+export const SingleLinkComponent = (
+	{ suggestion, isActive, onClick }: SingleLinkProps,
+	ref: ForwardedRef<HTMLDivElement>
+): JSX.Element => {
 	const suggestedPost = suggestion.targetPost;
 
 	/**
@@ -46,6 +52,7 @@ export const SingleLink = ( {
 	return (
 		<div
 			className={ `traffic-boost-single-link ${ isActive ? 'active' : '' }` }
+			ref={ ref }
 			onClick={ ( e ) => {
 				e.preventDefault();
 				onClickHandler();
@@ -81,3 +88,13 @@ export const SingleLink = ( {
 		</div>
 	);
 };
+
+/**
+ * Displays a single Traffic Boost link.
+ *
+ * @since 3.18.0
+ *
+ * @param {SingleLinkProps}              props The component's props.
+ * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.
+ */
+export const SingleLink = forwardRef<HTMLDivElement, SingleLinkProps>( SingleLinkComponent );

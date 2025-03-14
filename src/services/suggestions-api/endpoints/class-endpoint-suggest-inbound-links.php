@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\Services\Suggestions_API\Endpoints;
 
+use Parsely\Parsely;
 use Parsely\Models\Inbound_Smart_Link;
 use WP_Error;
-
 /**
  * The endpoint for the Suggest Inbound Links API request.
  *
@@ -22,8 +22,8 @@ use WP_Error;
  *
  * @phpstan-type Endpoint_Suggest_Inbound_Links_Options = array{
  *     max_items?: int,
- *     title?: string,
- *     text?: string
+ *     url_exclusion_list?: array<string>,
+ *     performance_blending_weight?: float
  * }
  */
 class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
@@ -53,25 +53,26 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 		\WP_Post $post,
 		$options = array()
 	) {
-		/** @var string|false $post_url */
-		$post_url = get_permalink( $post );
-		if ( ! is_string( $post_url ) ) {
-			return new \WP_Error(
-				'parsely_invalid_post_url',
-				__( 'Could not get post URL.', 'wp-parsely' ),
-				array( 'status' => 400 )
-			);
-		}
+		/**
+		 * The Parse.ly canonical URL for the post.
+		 * 
+		 * @var string $post_url
+		 */
+		$post_url = Parsely::get_canonical_url_from_post( $post );
 
 		$request_body = array(
 			'canonical_url' => $post_url,
 			'output_config' => array(
-				'performance_blending_weight' => 0.9,
+				'performance_blending_weight' => $options['performance_blending_weight'] ?? 0.5,
 				'max_items'                   => $options['max_items'] ?? 10,
 			),
 			'title'         => $post->post_title,
 			'text'          => wp_strip_all_tags( $post->post_content ),
 		);
+
+		if ( isset( $options['url_exclusion_list'] ) && count( $options['url_exclusion_list'] ) > 0 ) {
+			$request_body['url_exclusion_list'] = $options['url_exclusion_list'];
+		}
 
 		$request_body = apply_filters( 'wp_parsely_suggest_inbound_links_request_body', $request_body, $post, $options );
 		$response     = $this->request( 'POST', array(), $request_body );

@@ -3,15 +3,16 @@
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal imports
  */
 import { usePrevious } from '@wordpress/compose';
+import { Loading } from '../../../../../common/components/loading';
 import { ErrorIcon } from '../../../../../common/icons/error-icon';
-import { TrafficBoostLink } from '../../provider';
+import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
@@ -53,7 +54,6 @@ export const PreviewIframe = ( {
 	onRestoreOriginal,
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null );
-	const [ messageIndex, setMessageIndex ] = useState<number>( 0 );
 
 	const iframeRef = useRef<HTMLIFrameElement>( null );
 	const isInboundLink = ! activeLink?.isSuggestion;
@@ -64,15 +64,6 @@ export const PreviewIframe = ( {
 	} ), [ activeLink ] );
 
 	const previousIsGenerating = usePrevious( isGenerating );
-
-	const messages = useMemo( () => [
-		__( "We're finding the perfect spot to plant your links…", 'wp-parsely' ),
-		__( 'Analyzing your content to place links naturally…', 'wp-parsely' ),
-		__( 'Optimizing link placement for maximum impact…', 'wp-parsely' ),
-		__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
-		__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
-		__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
-	].sort( () => Math.random() - 0.5 ), [] );
 
 	/**
 	 * Adds a random UUID to the iframe src. This triggers the WordPress Customizer to load
@@ -90,15 +81,6 @@ export const PreviewIframe = ( {
 
 		return url.toString();
 	}, [ previewUrl ] );
-
-	/**
-	 * Sets the message index to a random index based on the messages array length.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		setMessageIndex( Math.floor( Math.random() * messages.length ) );
-	}, [ isGenerating, isLoading, activeLink, messages ] );
 
 	/**
 	 * Highlights the smart link in the iframe.
@@ -387,25 +369,6 @@ export const PreviewIframe = ( {
 		highlightLinkType( iframe, selectedLinkType );
 	}, [ contentAreaRef, highlightLinkType, isLoading, selectedLinkType ] );
 
-	/**
-	 * Picks a random message with interval based on message length when
-	 * isGenerating is true.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		if ( ! isGenerating ) {
-			return;
-		}
-
-		const intervalId = setInterval( () => {
-			const randomIndex = Math.floor( Math.random() * messages.length );
-			setMessageIndex( randomIndex );
-		}, messages[ messageIndex ].length * 100 );
-
-		return () => clearInterval( intervalId );
-	}, [ isGenerating, messageIndex, messages, isLoading ] );
-
 	return (
 		<div className="wp-parsely-preview">
 			<div className="preview-iframe-wrapper">
@@ -417,13 +380,19 @@ export const PreviewIframe = ( {
 						</>
 					) : (
 						<>
-							<Spinner />
-							{ ( isGenerating || previousIsGenerating ) && (
+							{ isLoading && (
 								<>
-									{ activeLink?.smartLink
-										? __( 'Done, loading your post…', 'wp-parsely' )
-										: messages[ messageIndex ]
-									}
+									<Spinner />
+									{ ( isGenerating || previousIsGenerating ) && (
+										<>
+											<Loading
+												showSpinner={ false }
+												messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
+												typewriter={ true }
+												randomOrder={ true }
+											/>
+										</>
+									) }
 								</>
 							) }
 						</>

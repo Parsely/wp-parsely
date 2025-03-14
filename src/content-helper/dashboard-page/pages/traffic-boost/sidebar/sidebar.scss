@@ -112,20 +112,18 @@
 			gap: var(--grid-unit-20);
 			align-items: center;
 		}
-	}
 
-	.traffic-boost-sidebar-footer {
-		margin-top: var(--grid-unit-20);
-		width: 100%;
-		flex-shrink: 0;
-
-		.components-button.has-icon {
-			width: 100%;
+		.traffic-boost-suggestions-generating-footer {
 			display: flex;
-			justify-content: center;
 			align-items: center;
-			padding-left: var(--grid-unit-15);
-			padding-right: var(--grid-unit-15);
+			justify-content: center;
+			gap: var(--grid-unit-10);
+			width: 100%;
+			min-height: to_rem(36px);
+
+			span {
+				margin-top: to_rem(5px);
+			}
 		}
 	}
 

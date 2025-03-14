@@ -20,6 +20,7 @@ import { SingleLink } from './single-link';
  */
 interface LinksListProps {
 	isLoading: boolean;
+	useScrollbar?: boolean;
 	children?: React.ReactNode;
 	links: TrafficBoostLink[];
 	activeLink: TrafficBoostLink | null;
@@ -30,6 +31,7 @@ interface LinksListProps {
 	onPageChange?: ( page: number ) => void;
 	onItemsPerPageChange?: ( itemsPerPage: number ) => void;
 	renderEmptyState?: () => React.JSX.Element;
+	showPagination?: boolean;
 }
 
 /**
@@ -41,6 +43,7 @@ interface LinksListProps {
  */
 export const LinksList = ( {
 	isLoading: isLoadingProp,
+	useScrollbar = false,
 	children,
 	links,
 	onClick,
@@ -51,6 +54,7 @@ export const LinksList = ( {
 	onPageChange,
 	onItemsPerPageChange,
 	renderEmptyState,
+	showPagination = true,
 }: LinksListProps ): React.JSX.Element => {
 	const [ isLoading, setIsLoading ] = useState( isLoadingProp );
 	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>( [] );
@@ -59,6 +63,7 @@ export const LinksList = ( {
 
 	const containerRef = useRef<HTMLDivElement>( null );
 	const lastContainerHeight = useRef<number>( 0 );
+	const itemRefs = useRef<( HTMLDivElement | null )[]>( [] );
 
 	/**
 	 * Calculates the number of items that can fit in the container.
@@ -66,7 +71,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const calculateItemsPerPage = useCallback( () => {
-		if ( isLoading ) {
+		if ( isLoading || useScrollbar ) {
 			return;
 		}
 
@@ -90,7 +95,7 @@ export const LinksList = ( {
 
 		onItemsPerPageChange?.( newItemsPerPage );
 		setIsLoading( false );
-	}, [ isLoading, minItemsPerPage, onItemsPerPageChange ] );
+	}, [ isLoading, minItemsPerPage, onItemsPerPageChange, useScrollbar ] );
 
 	useEffect( () => {
 		setIsLoading( isLoadingProp );
@@ -106,11 +111,48 @@ export const LinksList = ( {
 	}, [ activeLink ] );
 
 	/**
+	 * Handles the scroll of the container to the active link when useScrollbar is true.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( ! useScrollbar || ! activeLink || ! containerRef.current ) {
+			return;
+		}
+
+		const activeIndex = links.findIndex( ( link ) => link.uid === activeLink.uid );
+
+		if ( -1 !== activeIndex && itemRefs.current[ activeIndex ] ) {
+			const container = containerRef.current;
+			const activeItem = itemRefs.current[ activeIndex ];
+
+			if ( activeItem ) {
+				if ( 0 === activeIndex ) {
+					container.scrollTop = 0;
+					return;
+				}
+
+				const containerRect = container.getBoundingClientRect();
+				const activeItemRect = activeItem.getBoundingClientRect();
+
+				// Check if the active item is out of view.
+				if ( activeItemRect.top < containerRect.top || activeItemRect.bottom > containerRect.bottom ) {
+					activeItem.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+				}
+			}
+		}
+	}, [ activeLink, links, useScrollbar ] );
+
+	/**
 	 * Sets up the resize observer to recalculate items per page when container size changes.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
+		if ( useScrollbar ) {
+			return;
+		}
+
 		calculateItemsPerPage();
 
 		const resizeObserver = new ResizeObserver( calculateItemsPerPage );
@@ -122,7 +164,7 @@ export const LinksList = ( {
 		return () => {
 			resizeObserver.disconnect();
 		};
-	}, [ calculateItemsPerPage ] );
+	}, [ calculateItemsPerPage, useScrollbar ] );
 
 	/**
 	 * Updates visible links when page, itemsPerPage, or links change.
@@ -130,7 +172,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( itemsPerPage === 0 ) {
+		if ( 0 === itemsPerPage || useScrollbar ) {
 			return;
 		}
 
@@ -147,7 +189,7 @@ export const LinksList = ( {
 		if ( calculatedTotalPages < currentPage && calculatedTotalPages > 0 ) {
 			onPageChange?.( calculatedTotalPages );
 		}
-	}, [ currentPage, itemsPerPage, links, onPageChange ] );
+	}, [ currentPage, itemsPerPage, links, onPageChange, useScrollbar ] );
 
 	/**
 	 * Sets the active link page when the active link changes.
@@ -155,19 +197,23 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
+		if ( useScrollbar ) {
+			return;
+		}
+
 		if ( activeLink && links ) {
 			// Find the index of the active link in the full list.
 			const activeIndex = links.findIndex( ( link ) =>
 				link.uid === activeLink.uid
 			);
 
-			if ( activeIndex !== -1 ) {
+			if ( -1 !== activeIndex ) {
 				// Calculate the correct page number based on the link's position.
 				const pageNumber = Math.floor( activeIndex / itemsPerPage ) + 1;
 				onPageChange?.( pageNumber );
 			}
 		}
-	}, [ activeLink, links, itemsPerPage, onPageChange ] );
+	}, [ activeLink, links, itemsPerPage, onPageChange, useScrollbar ] );
 
 	/**
 	 * Handles navigation to the previous page of suggestions.
@@ -175,6 +221,10 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const handlePrevious = () => {
+		if ( useScrollbar ) {
+			return;
+		}
+
 		onPageChange?.( Math.max( currentPage - 1, 1 ) );
 	};
 
@@ -184,6 +234,10 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const handleNext = () => {
+		if ( useScrollbar ) {
+			return;
+		}
+
 		onPageChange?.( Math.min( currentPage + 1, totalPages ) );
 	};
 
@@ -205,7 +259,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const renderLinksList = (): React.JSX.Element | null => {
-		if ( isLoading && visibleLinks.length === 0 ) {
+		if ( isLoading && 0 === visibleLinks.length ) {
 			return (
 				<div className="traffic-boost-links-list-loading">
 					<Spinner />
@@ -213,14 +267,21 @@ export const LinksList = ( {
 			);
 		}
 
+		let linksToRender = visibleLinks;
+
+		// If using the scrollbar, show all links.
+		if ( useScrollbar ) {
+			linksToRender = links;
+		}
+
 		// If we have links data but nothing is visible yet, don't show the "no posts" message.
-		const isInitialState = links.length > 0 && visibleLinks.length === 0;
-		if ( isInitialState ) {
+		const isInitialState = links.length > 0 && 0 === linksToRender.length;
+		if ( isInitialState && ! useScrollbar ) {
 			return null;
 		}
 
 		// If there are no visible links, show the empty state.
-		if ( visibleLinks.length === 0 ) {
+		if ( 0 === linksToRender.length ) {
 			if ( renderEmptyState ) {
 				return renderEmptyState();
 			}
@@ -229,13 +290,16 @@ export const LinksList = ( {
 
 		return (
 			<div className="traffic-boost-links-list">
-				{ visibleLinks.map( ( link: TrafficBoostLink ) => {
+				{ linksToRender.map( ( link: TrafficBoostLink, index ) => {
 					return (
 						<SingleLink
 							key={ link.targetPost.id + ( link.uid ?? '' ) }
 							suggestion={ link }
 							isActive={ link.uid === activeLinkPostId }
 							onClick={ onSuggestionClickHandler }
+							ref={ ( el ) => {
+								itemRefs.current[ index ] = el;
+							} }
 						/>
 					);
 				} ) }
@@ -251,6 +315,10 @@ export const LinksList = ( {
 	 * @param {string} value The value of the page change.
 	 */
 	const handlePageChange = ( value?: string ) => {
+		if ( ! useScrollbar ) {
+			return;
+		}
+
 		if ( ! value ) {
 			return;
 		}
@@ -265,31 +333,35 @@ export const LinksList = ( {
 	};
 
 	return (
-		<div className="traffic-boost-links" ref={ containerRef }>
+		<div
+			ref={ containerRef }
+			className={ `traffic-boost-links${ useScrollbar ? ' scrollbar' : '' }` }
+		>
 			{ renderLinksList() }
-
 			<div className="links-pagination">
 				<div className="links-pagination-children">
 					{ children }
 				</div>
-				{ ! isLoading && links.length > itemsPerPage && totalPages > 0 && (
+				{ ! useScrollbar && ! isLoading && links.length > itemsPerPage && totalPages > 0 && (
 					<>
-						<div className="page-selector">
-							<span>{ __( 'Page', 'wp-parsely' ) }</span>
-							<select
-								value={ currentPage }
-								onChange={ ( e ) => handlePageChange( e.target.value ) }
-							>
-								{ Array.from( { length: Math.max( 1, totalPages ) }, ( _, i ) => i + 1 ).map( ( page ) => (
-									<option key={ page } value={ page }>
-										{ page }
-									</option>
-								) ) }
-							</select>
-							<span>
-								{ __( 'of', 'wp-parsely' ) } { totalPages }
-							</span>
-						</div>
+						{ showPagination && (
+							<div className="page-selector">
+								<span>{ __( 'Page', 'wp-parsely' ) }</span>
+								<select
+									value={ currentPage }
+									onChange={ ( e ) => handlePageChange( e.target.value ) }
+								>
+									{ Array.from( { length: Math.max( 1, totalPages ) }, ( _, i ) => i + 1 ).map( ( page ) => (
+										<option key={ page } value={ page }>
+											{ page }
+										</option>
+									) ) }
+								</select>
+								<span>
+									{ __( 'of', 'wp-parsely' ) } { totalPages }
+								</span>
+							</div>
+						) }
 						<div className="page-navigation">
 							<Button
 								icon={ previous }

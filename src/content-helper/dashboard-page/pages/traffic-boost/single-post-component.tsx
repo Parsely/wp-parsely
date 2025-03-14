@@ -6,15 +6,16 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 /**
  * WordPress dependencies
  */
+import { Icon } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
-import { Icon } from '@wordpress/components';
-import { error as errorIcon } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { error as errorIcon, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
+import { SnackbarNotices } from '../../../common/components/snackbar-notices';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { PageContainer } from '../../components';
 import { TextSelection, TrafficBoostPreview } from './preview/preview';
@@ -22,7 +23,6 @@ import { TrafficBoostLink, TrafficBoostProvider } from './provider';
 import { TrafficBoostSidebar } from './sidebar/sidebar';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from './store';
 import './traffic-boost.scss';
-import { SnackbarNotices } from '../../../common/components/snackbar-notices';
 
 /**
  * Traffic Boost Post page component.
@@ -43,12 +43,18 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		isLoadingPost,
 		error,
 		currentPost: post,
+		inboundLinks,
 		selectedLink,
+		settings,
+		suggestions,
 	} = useSelect( ( select ) => ( {
 		isLoadingPost: select( TrafficBoostStore ).isLoadingPost(),
 		error: select( TrafficBoostStore ).getError(),
+		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		currentPost: state?.post ?? select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
+		settings: select( TrafficBoostStore ).getSettings(),
+		suggestions: select( TrafficBoostStore ).getSuggestions(),
 	} ), [ state?.post ] );
 
 	const {
@@ -61,9 +67,10 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		setIsGeneratingSuggestions,
 		setSelectedTab,
 		updateInboundLink,
+		setSuggestionsToGenerate,
 	} = useDispatch( TrafficBoostStore );
 
-	const { createErrorNotice } = useDispatch( 'core/notices' );
+	const { createSuccessNotice, createErrorNotice } = useDispatch( 'core/notices' );
 
 	/**
 	 * Sets the background color of the page container to the background color of the admin menu.
@@ -179,6 +186,17 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			setSelectedLink( null );
 		};
 	}, [ setCurrentPost, setSelectedLink ] );
+
+	/**
+	 * Hides the preview if there are no suggestions.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( selectedLink?.isSuggestion && 0 === suggestions.length ) {
+			setSelectedLink( null );
+		}
+	}, [ setSelectedLink, suggestions, selectedLink ] );
 
 	/**
 	 * Redirects to the Traffic Boost page if no post is found after fetching.
@@ -338,12 +356,12 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 
 			try {
 				setLoading( true, 'inbound-links' );
-				let inboundLinks = await TrafficBoostProvider.getInstance().getInboundLinks( parseInt( postId ) );
+				const storedInboundLinks = await TrafficBoostProvider.getInstance().getInboundLinks( parseInt( postId ) );
 
 				// Filter out the current post from the inbound links.
-				inboundLinks = inboundLinks.filter( ( link ) => link.targetPost?.id !== parseInt( postId ) );
+				const filteredInboundLinks = storedInboundLinks.filter( ( link ) => link.targetPost?.id !== parseInt( postId ) );
 
-				setInboundLinks( inboundLinks );
+				setInboundLinks( filteredInboundLinks );
 			} catch ( err ) {
 				if ( err instanceof ContentHelperError ) {
 					setError( err );
@@ -379,19 +397,52 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				// If there are no suggestions, trigger the generation of suggestions.
 				if ( 0 === fetchedSuggestions.length ) {
 					setIsGeneratingSuggestions( true );
-					const generatedSuggestions = await trafficBoostProvider.generateSuggestions(
+
+					// Get the existing inbound links permalinks.
+					const existingInboundLinksPermalinks = inboundLinks.map(
+						( inboundLink ) => [
+							inboundLink.smartLink?.post_data?.parsely_canonical_url,
+							inboundLink.smartLink?.post_data?.permalink,
+						]
+					).flat().filter( ( url ) => url !== undefined );
+
+					// Set the initial count of suggestions to generate
+					setSuggestionsToGenerate( settings.maxItems );
+
+					// Generate the suggestions in batches.
+					await trafficBoostProvider.generateBatchSuggestions(
 						parseInt( postId ),
+						settings.maxItems,
 						{
-							max_items: 10, // TODO: use the settings.
+							urlExclusionList: existingInboundLinksPermalinks,
+							discardPrevious: true,
 							save: true,
+							onNewSuggestions: ( newSuggestions, isFirstIteration ) => {
+								// Since we already have suggestions, we can stop loading.
+								if ( isFirstIteration ) {
+									setLoading( false, 'suggestions' );
+								}
+
+								setSuggestions( newSuggestions, false );
+
+								if ( isFirstIteration ) {
+									setSelectedLink( newSuggestions[ 0 ] );
+								}
+
+								// Update the remaining suggestions count.
+								setSuggestionsToGenerate( ( previousCount ) => Math.max( 0, previousCount - newSuggestions.length ) );
+							},
 						},
 					);
-					setSuggestions( generatedSuggestions );
 
-					// If there are suggestions, set the first one as the selected link.
-					if ( generatedSuggestions.length > 0 ) {
-						setSelectedLink( generatedSuggestions[ 0 ] );
-					}
+					// Show a snackbar success message.
+					createSuccessNotice(
+						__( 'Finished generating suggestions.', 'wp-parsely' ),
+						{
+							type: 'snackbar',
+							icon: <Icon icon={ update } />,
+						}
+					);
 				} else {
 					// Otherwise, set the fetched suggestions.
 					setSuggestions( fetchedSuggestions );
@@ -413,7 +464,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		};
 
 		fetchSuggestions();
-	}, [ postId, setError, setIsGeneratingSuggestions, setLoading, setSelectedLink, setSuggestions ] );
+	}, [ postId ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<PageContainer

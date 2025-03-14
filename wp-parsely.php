@@ -59,26 +59,41 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 // Load Telemetry classes.
 require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
 
+/**
+ * Gets the Parsely object.
+ *
+ * @since 3.18.0
+ *
+ * @return Parsely The Parsely object.
+ */
+function get_parsely(): Parsely {
+	if ( ! isset( $GLOBALS['parsely'] ) ) {
+		$GLOBALS['parsely'] = new Parsely();
+	}
+
+	return $GLOBALS['parsely'];
+}
+
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
  * Registers the basic classes to initialize the plugin.
  */
 function parsely_initialize_plugin(): void {
-	$GLOBALS['parsely'] = new Parsely();
-	$GLOBALS['parsely']->run();
+	$parsely = get_parsely();
+	$parsely->run();
 
 	if ( class_exists( 'WPGraphQL' ) ) {
-		$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
+		$graphql = new GraphQL_Metadata( $parsely );
 		$graphql->run();
 	}
 
-	$scripts = new Scripts( $GLOBALS['parsely'] );
+	$scripts = new Scripts( $parsely );
 	$scripts->run();
 
-	$admin_bar = new Admin_Bar( $GLOBALS['parsely'] );
+	$admin_bar = new Admin_Bar( $parsely );
 	$admin_bar->run();
 
-	$metadata_renderer = new Metadata_Renderer( $GLOBALS['parsely'] );
+	$metadata_renderer = new Metadata_Renderer( $parsely );
 	$metadata_renderer->run();
 }
 
@@ -87,7 +102,7 @@ add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
  * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
  */
 function parsely_admin_init_register(): void {
-	$parsely = $GLOBALS['parsely'];
+	$parsely = get_parsely();
 
 	( new Admin_Warning( $parsely ) )->run();
 	( new Plugins_Actions() )->run();
@@ -103,20 +118,21 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
  * Network Admin Sites List table.
  */
 function parsely_wp_admin_early_register(): void {
+	$parsely = get_parsely();
 
 	// Plugin dashboard page.
-	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page( $GLOBALS['parsely'] );
+	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page( $parsely );
 	$GLOBALS['parsely_dashboard_page']->run();
 
 	// Plugin settings page.
-	$GLOBALS['parsely_settings_page'] = new Settings_Page( $GLOBALS['parsely'] );
+	$GLOBALS['parsely_settings_page'] = new Settings_Page( $parsely );
 	$GLOBALS['parsely_settings_page']->run();
 
-	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
+	$network_admin_sites_list = new Network_Admin_Sites_List( $parsely );
 	$network_admin_sites_list->run();
 
 	// Initialize the REST API Controller.
-	$rest_api_controller = $GLOBALS['parsely']->get_rest_api_controller();
+	$rest_api_controller = $parsely->get_rest_api_controller();
 	$rest_api_controller->init();
 }
 
@@ -128,7 +144,9 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
  * @since 3.2.0
  */
 function parsely_rest_api_init(): void {
-	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
+	$parsely = get_parsely();
+
+	$rest = new Rest_Metadata( $parsely );
 	$rest->run();
 }
 
@@ -167,7 +185,9 @@ function parsely_content_helper_editor_sidebar_features(): void {
 		 * @since 3.16.0
 		 * @var Editor_Sidebar $GLOBALS['parsely_editor_sidebar']
 		 */
-		$GLOBALS['parsely_editor_sidebar'] = new Editor_Sidebar( $GLOBALS['parsely'] );
+		$parsely = get_parsely();
+
+		$GLOBALS['parsely_editor_sidebar'] = new Editor_Sidebar( $parsely );
 		$GLOBALS['parsely_editor_sidebar']->init_features();
 	}
 }
@@ -177,7 +197,9 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
  * Registers the Parse.ly Recommended widget.
  */
 function parsely_recommended_widget_register(): void {
-	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
+	$parsely = get_parsely();
+
+	register_widget( new Recommended_Widget( $parsely ) );
 }
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
@@ -194,7 +216,7 @@ function parsely_integrations( $parsely = null ): Integrations {
 	// hook and we can get the value from $GLOBALS. If $parsely is an instance
 	// of the Parsely object, then this function is being called by a test.
 	if ( ! is_object( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
-		$parsely = $GLOBALS['parsely'];
+		$parsely = get_parsely();
 	}
 
 	$parsely_integrations = new Integrations( $parsely );

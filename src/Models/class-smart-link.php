@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Parsely\Models;
 
 use InvalidArgumentException;
+use Parsely\Parsely;
 use Parsely\Utils\Utils;
 
 /**
@@ -518,11 +519,12 @@ class Smart_Link extends Base_Model {
 	 * @since 3.18.0
 	 *
 	 * @see Smart_Link::set_source_post_id()
-	 * @param \WP_Post $post The source post.
+	 * @param \WP_Post    $post The source post.
+	 * @param string|null $canonical_url The canonical URL for the source post, to be set if it is not already set.
 	 */
-	public function set_source_post( \WP_Post $post ): void {
+	public function set_source_post( \WP_Post $post, $canonical_url = null ): void {
 		$this->source_post = $post;
-		$this->set_source_post_id( $post->ID );
+		$this->set_source_post_id( $post->ID, $canonical_url );
 	}
 
 	/**
@@ -530,9 +532,10 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param int $source_post_id The source post ID.
+	 * @param int         $source_post_id The source post ID.
+	 * @param string|null $canonical_url The canonical URL for the source post, to be set if it is not already set.
 	 */
-	public function set_source_post_id( int $source_post_id ): void {
+	public function set_source_post_id( int $source_post_id, $canonical_url = null ): void {
 		if ( 0 === $source_post_id ) {
 			return;
 		}
@@ -552,6 +555,11 @@ class Smart_Link extends Base_Model {
 		} else {
 			$this->source_post_type = 'unknown';
 		}
+
+		// Update the canonical URL for the source post.
+		if ( null !== $canonical_url ) {
+			Parsely::set_canonical_url( $this->source_post_id, $canonical_url );
+		}
 	}
 
 	/**
@@ -559,9 +567,10 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param \WP_Post $post The destination post.
+	 * @param \WP_Post    $post The destination post.
+	 * @param string|null $canonical_url The canonical URL for the destination post, to be set if it is not already set.
 	 */
-	public function set_destination_post( \WP_Post $post ): void {
+	public function set_destination_post( \WP_Post $post, $canonical_url = null ): void {
 		$this->destination_post_id = $post->ID;
 		$this->href                = get_permalink( $post );
 
@@ -575,6 +584,11 @@ class Smart_Link extends Base_Model {
 		} else {
 			$this->destination_post_type = 'external';
 		}
+
+		// Update the canonical URL for the destination post.
+		if ( null !== $canonical_url ) {
+			Parsely::set_canonical_url( $this->destination_post_id, $canonical_url );
+		}
 	}
 
 	/**
@@ -583,15 +597,16 @@ class Smart_Link extends Base_Model {
 	 * @since 3.18.0
 	 *
 	 * @see Smart_Link::set_destination_post()
-	 * @param int $destination_post_id The destination post ID.
+	 * @param int         $destination_post_id The destination post ID.
+	 * @param string|null $canonical_url The canonical URL for the destination post, to be set if it is not already set.
 	 */
-	public function set_destination_post_id( int $destination_post_id ): void {
+	public function set_destination_post_id( int $destination_post_id, $canonical_url = null ): void {
 		$post = get_post( $destination_post_id );
 		if ( null === $post ) {
 			return;
 		}
 
-		$this->set_destination_post( $post );
+		$this->set_destination_post( $post, $canonical_url );
 	}
 
 	/**
@@ -613,12 +628,12 @@ class Smart_Link extends Base_Model {
 	 * @param string $href The href of the smart link.
 	 */
 	public function set_href( string $href ): void {
-		$this->href                = $href;
-		$this->destination_post_id = Utils::get_post_id_by_url( $href );
+		$this->href          = $href;
+		$destination_post_id = Utils::get_post_id_by_url( $href );
 
-		if ( 0 !== $this->destination_post_id ) {
-			$post_type                   = get_post_type( $this->destination_post_id );
-			$this->destination_post_type = false !== $post_type ? $post_type : 'external';
+		if ( 0 !== $destination_post_id ) {
+			// Set the destination post ID, and update the canonical URL.
+			$this->set_destination_post_id( $destination_post_id, $href );
 		}
 	}
 
@@ -653,12 +668,14 @@ class Smart_Link extends Base_Model {
 			'offset'        => $this->offset,
 			'applied'       => $this->applied,
 			'source'        => array(
-				'post_type' => $this->source_post_type,
-				'post_id'   => $this->source_post_id,
+				'post_type'     => $this->source_post_type,
+				'post_id'       => $this->source_post_id,
+				'canonical_url' => Parsely::get_canonical_url_from_post( $this->source_post_id ),
 			),
 			'destination'   => array(
-				'post_type' => $this->destination_post_type,
-				'post_id'   => $this->destination_post_id,
+				'post_type'     => $this->destination_post_type,
+				'post_id'       => $this->destination_post_id,
+				'canonical_url' => Parsely::get_canonical_url_from_post( $this->destination_post_id ),
 			),
 		);
 	}

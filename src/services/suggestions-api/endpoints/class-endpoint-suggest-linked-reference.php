@@ -29,7 +29,8 @@ use WP_Error;
  *     performance_blending_weight?: float,
  *     max_items?: int,
  *     max_link_words?: int,
- *     traffic_sources?: array<int, Traffic_Source>
+ *     traffic_sources?: array<int, Traffic_Source>,
+ *     url_exclusion_list?: array<string>
  * }
  */
 class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
@@ -53,14 +54,12 @@ class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
 	 *
 	 * @param string                                    $content             The content to generate links for.
 	 * @param Endpoint_Suggest_Linked_Reference_Options $options The options to pass to the API request.
-	 * @param array<string>                             $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 * @return array<Smart_Link>|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
 	public function get_links(
 		string $content,
-		$options = array(),
-		array $url_exclusion_list = array()
+		$options = array()
 	) {
 		$request_body = array(
 			'output_config' => array(
@@ -70,8 +69,8 @@ class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
 			'text'          => wp_strip_all_tags( $content ),
 		);
 
-		if ( count( $url_exclusion_list ) > 0 ) {
-			$request_body['url_exclusion_list'] = $url_exclusion_list;
+		if ( isset( $options['url_exclusion_list'] ) && count( $options['url_exclusion_list'] ) > 0 ) {
+			$request_body['url_exclusion_list'] = $options['url_exclusion_list'];
 		}
 
 		$response = $this->request( 'POST', array(), $request_body );
@@ -109,9 +108,7 @@ class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
 		$content = $args['content'] ?? '';
 		/** @var Endpoint_Suggest_Linked_Reference_Options $options */
 		$options = $args['options'] ?? array();
-		/** @var string[] $url_exclusion_list */
-		$url_exclusion_list = $args['url_exclusion_list'] ?? array();
 
-		return $this->get_links( $content, $options, $url_exclusion_list );
+		return $this->get_links( $content, $options );
 	}
 }
