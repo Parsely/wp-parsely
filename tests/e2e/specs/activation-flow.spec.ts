@@ -30,7 +30,7 @@ test.describe( 'Activation flow', (): void => {
 
 		await setSiteKeys( page, '', '' );
 
-		await admin.visitAdminPage( '/options-general.php?page=parsely' );
+		await admin.visitAdminPage( '/admin.php?page=parsely-settings' );
 
 		const errorMessage = page.getByText(
 			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.',
@@ -52,7 +52,7 @@ test.describe( 'Activation flow', (): void => {
 	test( 'Should present a settings page that behaves as expected', async ( { admin } ): Promise<void> => {
 		const page = admin.page;
 
-		await admin.visitAdminPage( '/options-general.php?page=parsely' );
+		await admin.visitAdminPage( '/admin.php?page=parsely-settings' );
 
 		// Initialize locators.
 		const basicTab = page.getByRole( 'link', { name: 'Basic' } );
