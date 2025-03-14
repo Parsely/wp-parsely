@@ -135,13 +135,17 @@ final class Row_Actions {
 	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_traffic_boost_link( array $actions, WP_Post $post ): array {
-		if ( ! Permissions::current_user_can_use_pch_feature( 'traffic_boost', $this->parsely->get_options()['content_helper'] ) ) {
+		if ( ! Permissions::current_user_can_use_pch_feature( 
+			'traffic_boost', 
+			$this->parsely->get_options()['content_helper'] 
+		) ) {
 			return $actions;
 		}
 
 		// Disable for posts that are draft, private, future, pending, or trash.
 		$non_public_statuses = array( 'draft', 'private', 'future', 'pending', 'trash' );
-		if ( in_array( $post->post_status, $non_public_statuses, true ) ) {
+		if ( in_array( $post->post_status, $non_public_statuses, true ) && 
+			! Parsely::post_has_trackable_status( $post ) ) {
 			return $actions;
 		}
 
