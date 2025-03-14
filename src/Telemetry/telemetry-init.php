@@ -52,7 +52,7 @@ add_action(
 			),
 			// Setting events.
 			array(
-				'action_hook' => 'load-settings_page_parsely',
+				'action_hook' => 'load-parse-ly_page_parsely-settings',
 				'callable'    => 'Parsely\Telemetry\record_settings_page_loaded',
 			),
 			array(

@@ -120,13 +120,13 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 function parsely_wp_admin_early_register(): void {
 	$parsely = get_parsely();
 
-	// Plugin settings page.
-	$GLOBALS['parsely_settings_page'] = new Settings_Page( $parsely );
-	$GLOBALS['parsely_settings_page']->run();
-
 	// Plugin dashboard page.
 	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page( $parsely );
 	$GLOBALS['parsely_dashboard_page']->run();
+
+	// Plugin settings page.
+	$GLOBALS['parsely_settings_page'] = new Settings_Page( $parsely );
+	$GLOBALS['parsely_settings_page']->run();
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $parsely );
 	$network_admin_sites_list->run();
