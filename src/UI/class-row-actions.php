@@ -125,8 +125,8 @@ final class Row_Actions {
 	/**
 	 * Adds a link to Traffic Boost in the row actions.
 	 * 
-	 * If the user doesn't have permission to use Traffic Boost, or if the post is a draft, private, or scheduled,
-	 * the link is not added.
+	 * If the user doesn't have permission to use Traffic Boost, or if the post 
+	 * is a draft, private, future, pending, or trash, the link is not added.
 	 *
 	 * @since 3.18.0
 	 *
@@ -140,8 +140,8 @@ final class Row_Actions {
 		}
 
 		// Disable for posts that are draft, private, future, pending, or trash.
-		$non_publishable_statuses = array( 'draft', 'private', 'future', 'pending', 'trash' );
-		if ( in_array( $post->post_status, $non_publishable_statuses, true ) ) {
+		$non_public_statuses = array( 'draft', 'private', 'future', 'pending', 'trash' );
+		if ( in_array( $post->post_status, $non_public_statuses, true ) ) {
 			return $actions;
 		}
 
