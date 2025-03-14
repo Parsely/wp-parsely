@@ -6,15 +6,16 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 /**
  * WordPress dependencies
  */
+import { Icon } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
-import { Icon } from '@wordpress/components';
-import { error as errorIcon, update } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { error as errorIcon, update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
+import { SnackbarNotices } from '../../../common/components/snackbar-notices';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { PageContainer } from '../../components';
 import { TextSelection, TrafficBoostPreview } from './preview/preview';
@@ -22,7 +23,6 @@ import { TrafficBoostLink, TrafficBoostProvider } from './provider';
 import { TrafficBoostSidebar } from './sidebar/sidebar';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from './store';
 import './traffic-boost.scss';
-import { SnackbarNotices } from '../../../common/components/snackbar-notices';
 
 /**
  * Traffic Boost Post page component.
@@ -418,7 +418,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 							discardPrevious: true,
 							save: true,
 							onNewSuggestions: ( newSuggestions, isFirstIteration ) => {
-								// Since it already have suggestions, we can stop the loading.
+								// Since we already have suggestions, we can stop loading.
 								if ( isFirstIteration ) {
 									setLoading( false, 'suggestions' );
 								}
@@ -429,7 +429,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 									setSelectedLink( newSuggestions[ 0 ] );
 								}
 
-								// Update the remaining suggestions count
+								// Update the remaining suggestions count.
 								setSuggestionsToGenerate( ( previousCount ) => Math.max( 0, previousCount - newSuggestions.length ) );
 							},
 						},

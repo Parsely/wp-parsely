@@ -1,7 +1,7 @@
 <?php
 /**
- * Class for validating the URL exclusion list parameter.
- * 
+ * Class for validating the URL exclusion list parameter
+ *
  * @package Parsely\REST_API\Content_Helper\Validations
  * @since 3.18.0
  */
@@ -16,11 +16,10 @@ use WP_Error;
 
 /**
  * Class for validating the URL exclusion list parameter.
- * 
+ *
  * @since 3.18.0
  */
 class Validate_Url_Exclusion_List extends Base_Validation {
-
 	/**
 	 * Validates the URL exclusion list parameter.
 	 *
@@ -33,8 +32,12 @@ class Validate_Url_Exclusion_List extends Base_Validation {
 	 */
 	public static function validate( $param, WP_REST_Request $request ) {
 		if ( ! is_array( $param ) ) {
-			return new WP_Error( 'invalid_url_exclusion_list', __( 'The URL exclusion list must be an array.', 'wp-parsely' ) );
+			return new WP_Error(
+				'invalid_url_exclusion_list',
+				__( 'The URL exclusion list must be an array.', 'wp-parsely' )
+			);
 		}
+
 		return true;
 	}
 
@@ -42,7 +45,7 @@ class Validate_Url_Exclusion_List extends Base_Validation {
 	 * Sanitizes the URL exclusion list parameter.
 	 *
 	 * @since 3.18.0
-	 * 
+	 *
 	 * @param mixed           $value   The value to sanitize.
 	 * @param WP_REST_Request $request The request object.
 	 * @param string          $param   The parameter name.
@@ -52,7 +55,7 @@ class Validate_Url_Exclusion_List extends Base_Validation {
 		if ( ! is_array( $value ) ) {
 			return array();
 		}
-		
+
 		return array_filter(
 			$value,
 			function ( $url ) {

@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\Services\Suggestions_API\Endpoints;
 
-use Parsely\Parsely;
 use Parsely\Models\Inbound_Smart_Link;
+use Parsely\Parsely;
 use WP_Error;
 
 /**
@@ -20,13 +20,14 @@ use WP_Error;
  * @since 3.18.0
  *
  * @link https://content-suggestions-api.parsely.net/prod/docs#/prototype/suggest_inbound_link_positions_suggest_inbound_link_positions_post
- * 
+ *
  * @phpstan-type LinkPositionResponse = array{
  *     anchor_texts: array<array{text: string, offset: int}>,
  *     title: string,
  *     source_url: string,
  *     target_url: string,
  * }
+ *
  * @phpstan-type Endpoint_Suggest_Inbound_Link_Positions_Options = array{
  *     performance_blending_weight?: float,
  *     keyword_exclusion_list?: array<string>
@@ -63,14 +64,14 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	) {
 		/**
 		 * The Parse.ly canonical URL for the source post.
-		 * 
+		 *
 		 * @var string $source_post_url
 		 */
 		$source_post_url = Parsely::get_canonical_url_from_post( $source_post );
 
 		/**
 		 * The Parse.ly canonical URL for the destination post.
-		 * 
+		 *
 		 * @var string $destination_post_url
 		 */
 		$destination_post_url = Parsely::get_canonical_url_from_post( $destination_post );
@@ -108,7 +109,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 		$suggestions = array();
 		/** @var LinkPositionResponse $link */
 		$link = $response[0];
-		
+
 		foreach ( $link['anchor_texts'] as $anchor_text_suggestion ) {
 			$smart_link = new Inbound_Smart_Link(
 				$link['target_url'],
@@ -119,6 +120,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 
 			// Set the source post and update the canonical URL.
 			$smart_link->set_source_post( $source_post, $link['source_url'] );
+
 			// Set the destination post.
 			$smart_link->set_destination_post( $destination_post );
 
@@ -127,7 +129,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 
 		return $suggestions;
 	}
-	
+
 	/**
 	 * Executes the API request.
 	 *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Base Validation class for REST API parameters.
+ * Base Validation class for REST API parameters
  *
  * @package Parsely
  * @since 3.18.0
@@ -15,16 +15,15 @@ use WP_Error;
 
 /**
  * Base class for validating REST API parameters.
- * 
+ *
  * @since 3.18.0
  */
 abstract class Base_Validation {
-
 	/**
 	 * Validates a parameter.
-	 * 
+	 *
 	 * @since 3.18.0
-	 * 
+	 *
 	 * @param mixed           $param   The parameter value.
 	 * @param WP_REST_Request $request The request object.
 	 * @return true|WP_Error Whether the parameter is valid.
@@ -33,9 +32,9 @@ abstract class Base_Validation {
 
 	/**
 	 * Sanitizes a parameter.
-	 * 
+	 *
 	 * @since 3.18.0
-	 * 
+	 *
 	 * @param mixed           $value   The value to sanitize.
 	 * @param WP_REST_Request $request The request object.
 	 * @param string          $param   The parameter name.
