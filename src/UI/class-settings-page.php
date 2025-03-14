@@ -160,7 +160,7 @@ final class Settings_Page {
 	 * @param string|null $hook_suffix The current page being loaded.
 	 */
 	public function enqueue_settings_assets( ?string $hook_suffix ): void {
-		if ( ! is_string( $hook_suffix ) || 'settings_page_parsely' !== $hook_suffix ) {
+		if ( ! is_string( $hook_suffix ) || $this->hook_suffix !== $hook_suffix ) {
 			return;
 		}
 
@@ -190,9 +190,10 @@ final class Settings_Page {
 	 * Adds the Parse.ly settings page in WordPress settings menu.
 	 */
 	public function add_settings_sub_menu(): void {
-		$suffix = add_options_page(
+		$suffix = add_submenu_page(
+			'parsely-dashboard-page',
 			__( 'Parse.ly Settings', 'wp-parsely' ),
-			__( 'Parse.ly', 'wp-parsely' ),
+			__( 'Settings', 'wp-parsely' ),
 			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			Parsely::MENU_SLUG,
 			array( $this, 'display_settings' )
@@ -228,7 +229,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Displays the Parse.ly settings screen (options-general.php?page=[SLUG]).
+	 * Displays the Parse.ly settings screen (admin.php?page=[SLUG]).
 	 */
 	public function display_settings(): void {
 		// phpcs:ignore WordPress.WP.Capabilities.Undetermined

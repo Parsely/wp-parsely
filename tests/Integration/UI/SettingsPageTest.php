@@ -15,7 +15,7 @@ use Parsely\UI\Settings_Page;
 
 use const Parsely\PARSELY_FILE;
 
-const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/options-general.php?page=parsely';
+const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/admin.php?page=parsely-settings';
 
 /**
  * Integration Tests for the plugin's wp-admin Settings page.
@@ -569,7 +569,7 @@ final class SettingsPageTest extends TestCase {
 		);
 
 		self::assertSame(
-			'http://' . self::VALID_SITE_ID . '/vip/wp-admin/options-general.php?page=parsely',
+			'http://' . self::VALID_SITE_ID . '/vip/wp-admin/admin.php?page=parsely-settings',
 			self::$parsely::get_settings_url( $subsite_blog_id ),
 			'The URL did not match when passing $subsite_blog_id.'
 		);
@@ -577,7 +577,7 @@ final class SettingsPageTest extends TestCase {
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 		switch_to_blog( $subsite_blog_id );
 		self::assertSame(
-			'http://' . self::VALID_SITE_ID . '/vip/wp-admin/options-general.php?page=parsely',
+			'http://' . self::VALID_SITE_ID . '/vip/wp-admin/admin.php?page=parsely-settings',
 			self::$parsely::get_settings_url(),
 			'The URL did not match the subsite without passing a $blog_id param.'
 		);

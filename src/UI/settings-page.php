@@ -38,6 +38,8 @@ if ( is_multisite() && is_main_site() ) {
 	<h1 class="wp-heading-inline"><?php echo esc_html_e( 'Parse.ly Settings', 'wp-parsely' ); ?></h1>
 	<span id="wp-parsely_version"><?php echo esc_html( $parsely_version_string ); ?></span>
 
+	<?php settings_errors(); ?>
+	
 	<?php $wp_parsely_settings->show_setting_tabs(); ?>
 
 	<form name="parsely" method="post" action='options.php' novalidate hidden>

@@ -175,14 +175,11 @@ final class Dashboard_Page {
 			'__return_null'
 		);
 
-		add_submenu_page(
-			'parsely-dashboard-page',
-			'Parse.ly Settings',
-			'Settings',
-			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
-			'parsely-dashboard-page#/settings',
-			'__return_null'
-		);
+		/**
+		 * Settings submenu is registered in add_settings_sub_menu() at src/UI/class-settings-page.php.
+		 *
+		 * @see Settings_Page::add_settings_sub_menu()
+		 */
 	}
 
 	/**

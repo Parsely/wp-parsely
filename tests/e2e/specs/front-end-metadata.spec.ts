@@ -35,7 +35,7 @@ test.describe( 'Front end metadata insertion', () => {
 		await setSiteKeys( page, VALID_SITE_ID, '' );
 
 		// Activate tracking for logged-in users.
-		await page.goto( '/wp-admin/options-general.php?page=parsely' );
+		await page.goto( '/wp-admin/admin.php?page=parsely-settings' );
 		await page.getByLabel( 'Yes, track logged-in users.' ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 	} );
@@ -183,7 +183,7 @@ class Utils {
 	async setMetadataFormat( format: string ) {
 		const page = this.admin.page;
 
-		await this.admin.visitAdminPage( '/options-general.php?page=parsely' );
+		await this.admin.visitAdminPage( '/admin.php?page=parsely-settings' );
 
 		await page.locator( `#meta_type_${ format }` ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();

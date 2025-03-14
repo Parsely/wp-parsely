@@ -25,7 +25,7 @@ test.describe( 'The plugin\'s entry in the WordPress Plugins page', () => {
 		await page.locator( '#the-list' ).getByRole( 'link', { name: 'Settings' } ).click();
 
 		// Check loaded page's URL and heading.
-		await page.waitForURL( '**/wp-admin/options-general.php?page=parsely' );
+		await page.waitForURL( '**/wp-admin/admin.php?page=parsely-settings' );
 		await expect(
 			page.getByText( 'Parse.ly Settings', { exact: true } )
 		).toBeVisible();
