@@ -12,8 +12,6 @@ import { __ } from '@wordpress/i18n';
  *
  * @param {Object} props         The component's props.
  * @param {string} props.message The message to display with typewriter effect.
- *
- * @return {JSX.Element} The TypewriterText component.
  */
 const TypewriterText = ( { message }: { message: string } ): JSX.Element => {
 	const [ displayText, setDisplayText ] = useState( '' );
@@ -71,8 +69,6 @@ type LoadingProps = {
  * @since 3.18.0
  *
  * @param {LoadingProps} props The component's props.
- *
- * @return {JSX.Element} The Loading component.
  */
 export const Loading = ( {
 	className = '',
@@ -91,7 +87,7 @@ export const Loading = ( {
 			return;
 		}
 
-		if ( currentMessage === '' ) {
+		if ( '' === currentMessage ) {
 			setCurrentMessage( messages[ randomOrder ? Math.floor( Math.random() * messages.length ) : 0 ] );
 		}
 

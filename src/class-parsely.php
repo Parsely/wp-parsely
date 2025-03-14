@@ -1041,7 +1041,7 @@ class Parsely {
 	 */
 	public static function set_canonical_url( $post, string $url ): bool {
 		$post_id = is_int( $post ) ? $post : $post->ID;
-		return update_post_meta( $post_id, self::PARSELY_CANONICAL_URL_META_KEY, $url ) !== false;
+		return false !== update_post_meta( $post_id, self::PARSELY_CANONICAL_URL_META_KEY, $url );
 	}
 
 	/**

@@ -1,9 +1,13 @@
 /**
+ * External Dependencies
+ */
+import type { ForwardedRef } from 'react';
+
+/**
  * WordPress Dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
 import { forwardRef } from '@wordpress/element';
-import type { ForwardedRef } from 'react';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal Dependencies
@@ -29,7 +33,6 @@ type SingleLinkProps = {
  *
  * @param {SingleLinkProps}              props The component's props.
  * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.
- * @return {JSX.Element} The SingleLink component.
  */
 export const SingleLinkComponent = (
 	{ suggestion, isActive, onClick }: SingleLinkProps,
@@ -93,6 +96,5 @@ export const SingleLinkComponent = (
  *
  * @param {SingleLinkProps}              props The component's props.
  * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.
- * @return {JSX.Element} The SingleLink component.
  */
 export const SingleLink = forwardRef<HTMLDivElement, SingleLinkProps>( SingleLinkComponent );

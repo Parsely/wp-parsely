@@ -122,12 +122,12 @@ export const LinksList = ( {
 
 		const activeIndex = links.findIndex( ( link ) => link.uid === activeLink.uid );
 
-		if ( activeIndex !== -1 && itemRefs.current[ activeIndex ] ) {
+		if ( -1 !== activeIndex && itemRefs.current[ activeIndex ] ) {
 			const container = containerRef.current;
 			const activeItem = itemRefs.current[ activeIndex ];
 
 			if ( activeItem ) {
-				if ( activeIndex === 0 ) {
+				if ( 0 === activeIndex ) {
 					container.scrollTop = 0;
 					return;
 				}
@@ -172,7 +172,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( itemsPerPage === 0 || useScrollbar ) {
+		if ( 0 === itemsPerPage || useScrollbar ) {
 			return;
 		}
 
@@ -207,7 +207,7 @@ export const LinksList = ( {
 				link.uid === activeLink.uid
 			);
 
-			if ( activeIndex !== -1 ) {
+			if ( -1 !== activeIndex ) {
 				// Calculate the correct page number based on the link's position.
 				const pageNumber = Math.floor( activeIndex / itemsPerPage ) + 1;
 				onPageChange?.( pageNumber );
@@ -259,7 +259,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const renderLinksList = (): React.JSX.Element | null => {
-		if ( isLoading && visibleLinks.length === 0 ) {
+		if ( isLoading && 0 === visibleLinks.length ) {
 			return (
 				<div className="traffic-boost-links-list-loading">
 					<Spinner />
@@ -275,13 +275,13 @@ export const LinksList = ( {
 		}
 
 		// If we have links data but nothing is visible yet, don't show the "no posts" message.
-		const isInitialState = links.length > 0 && linksToRender.length === 0;
+		const isInitialState = links.length > 0 && 0 === linksToRender.length;
 		if ( isInitialState && ! useScrollbar ) {
 			return null;
 		}
 
 		// If there are no visible links, show the empty state.
-		if ( linksToRender.length === 0 ) {
+		if ( 0 === linksToRender.length ) {
 			if ( renderEmptyState ) {
 				return renderEmptyState();
 			}

@@ -33,7 +33,11 @@ abstract class Base_Validation {
 	/**
 	 * Sanitizes a parameter.
 	 *
+	 * If a sanitize method is not implemented, it will throw an exception.
+	 *
 	 * @since 3.18.0
+	 * 
+	 * @throws \Exception The sanitize method is not implemented.
 	 *
 	 * @param mixed           $value   The value to sanitize.
 	 * @param WP_REST_Request $request The request object.
@@ -41,6 +45,6 @@ abstract class Base_Validation {
 	 * @return mixed The sanitized value.
 	 */
 	public static function sanitize( $value, $request, $param ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
-		return $value;
+		throw new \Exception( 'Trying to sanitize ' . esc_html( $param ) . ' parameter without a sanitize method.' );
 	}
 }

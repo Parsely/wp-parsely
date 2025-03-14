@@ -2,7 +2,7 @@
 /**
  * Class for validating the URL exclusion list parameter
  *
- * @package Parsely\REST_API\Content_Helper\Validations
+ * @package Parsely
  * @since 3.18.0
  */
 

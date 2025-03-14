@@ -117,10 +117,11 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'sanitize_callback' => array( Validations\Validate_Url_Exclusion_List::class, 'sanitize' ),
 				),
 				'performance_blending_weight' => array(
-					'type'        => 'float',
-					'description' => __( 'The performance blending weight.', 'wp-parsely' ),
-					'default'     => 0.5,
-					'required'    => false,
+					'type'              => 'float',
+					'description'       => __( 'The performance blending weight.', 'wp-parsely' ),
+					'default'           => 0.5,
+					'required'          => false,
+					'validate_callback' => array( Validations\Validate_Blending_Weight::class, 'validate' ),
 				),
 			)
 		);
@@ -151,10 +152,11 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 					'default'     => array(),
 				),
 				'performance_blending_weight' => array(
-					'type'        => 'float',
-					'description' => __( 'The performance blending weight.', 'wp-parsely' ),
-					'default'     => 0.5,
-					'required'    => false,
+					'type'              => 'float',
+					'description'       => __( 'The performance blending weight.', 'wp-parsely' ),
+					'default'           => 0.5,
+					'required'          => false,
+					'validate_callback' => array( Validations\Validate_Blending_Weight::class, 'validate' ),
 				),
 				'allow_duplicate_links'       => array(
 					'type'        => 'boolean',

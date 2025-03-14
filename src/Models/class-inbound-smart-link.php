@@ -207,6 +207,31 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return SmartLinkPostData The post data.
 	 */
 	private function get_post_data(): array {
+		/**
+		 * Empty post data.
+		 *
+		 * @var SmartLinkPostData
+		 */
+		$empty_post_data = array(
+			'id'                    => 0,
+			'title'                 => '',
+			'type'                  => array(
+				'name'  => '',
+				'label' => '',
+				'rest'  => '',
+			),
+			'paragraph'             => '',
+			'is_first_paragraph'    => false,
+			'is_last_paragraph'     => false,
+			'paragraph_offset'      => 0,
+			'permalink'             => '',
+			'parsely_canonical_url' => '',
+			'edit_link'             => '',
+			'author'                => '',
+			'date'                  => '',
+			'image'                 => '',
+		);
+
 		if ( null !== $this->post_data ) {
 			return $this->post_data;
 		}
@@ -217,25 +242,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$post = $this->source_post;
 		if ( ! $post instanceof WP_Post ) {
-			return array(
-				'id'                    => 0,
-				'title'                 => '',
-				'type'                  => array(
-					'name'  => '',
-					'label' => '',
-					'rest'  => '',
-				),
-				'paragraph'             => '',
-				'is_first_paragraph'    => false,
-				'is_last_paragraph'     => false,
-				'paragraph_offset'      => 0,
-				'permalink'             => '',
-				'parsely_canonical_url' => '',
-				'edit_link'             => '',
-				'author'                => '',
-				'date'                  => '',
-				'image'                 => '',
-			);
+			return $empty_post_data;
 		}
 
 		// Get the paragraph that has the smart link UID.
@@ -260,25 +267,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$post_type = get_post_type_object( $post->post_type );
 		if ( null === $post_type ) {
-			return array(
-				'id'                    => 0,
-				'title'                 => '',
-				'type'                  => array(
-					'name'  => '',
-					'label' => '',
-					'rest'  => '',
-				),
-				'paragraph'             => '',
-				'is_first_paragraph'    => false,
-				'is_last_paragraph'     => false,
-				'paragraph_offset'      => 0,
-				'permalink'             => '',
-				'parsely_canonical_url' => '',
-				'edit_link'             => '',
-				'author'                => '',
-				'date'                  => '',
-				'image'                 => '',
-			);
+			return $empty_post_data;
 		}
 
 		$post_type_label = $post_type->labels->singular_name;

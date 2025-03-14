@@ -193,7 +193,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( selectedLink?.isSuggestion && suggestions.length === 0 ) {
+		if ( selectedLink?.isSuggestion && 0 === suggestions.length ) {
 			setSelectedLink( null );
 		}
 	}, [ setSelectedLink, suggestions, selectedLink ] );

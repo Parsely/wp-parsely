@@ -21,6 +21,13 @@ export const TRAFFIC_BOOST_LOADING_MESSAGES = [
 ];
 
 /**
+ * The default performance blending weight for the traffic boost provider.
+ *
+ * @since 3.18.0
+ */
+export const TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT = 0.5;
+
+/**
  * Represents a Traffic Boost link.
  *
  * Stores the target post and the smart link associated with it.
@@ -300,7 +307,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				save: options?.save ?? false,
 				discard_previous: options?.discardPrevious ?? true,
 				url_exclusion_list: options?.urlExclusionList,
-				performance_blending_weight: options?.performanceBlendingWeight ?? 0.5,
+				performance_blending_weight: options?.performanceBlendingWeight ?? TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
 			},
 		} );
 
@@ -344,7 +351,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			path: requestPath,
 			data: {
 				keyword_exclusion_list: options?.ignoreKeywords,
-				performance_blending_weight: options?.performanceBlendingWeight ?? 0.5,
+				performance_blending_weight: options?.performanceBlendingWeight ?? TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
 				save: options?.save ?? true,
 				allow_duplicate_links: options?.allowDuplicateLinks ?? false,
 			},
