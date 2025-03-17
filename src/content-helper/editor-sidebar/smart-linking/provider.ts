@@ -149,6 +149,16 @@ export class SmartLinkingProvider extends BaseProvider {
 		return SmartLinkingProvider.instance;
 	}
 
+	/**
+	 * Fetches the extra data - WordPress post meta and Parse.ly stats - for the
+	 * outbound smart links.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {SmartLink[]} smartLinks The outbound smart links.
+	 *
+	 * @return {Promise<SmartLink[]>} The outbound smart links with the extra data.
+	 */
 	private async fetchSmartLinksExtraData( smartLinks: SmartLink[] ): Promise<SmartLink[]> {
 		// Fetch the posts stats and meta for the outbound smart links.
 		const [ postsStats, postsMetas ] = await Promise.all( [
