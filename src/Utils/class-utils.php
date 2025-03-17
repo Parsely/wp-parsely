@@ -22,7 +22,7 @@ use const Parsely\PARSELY_FILE;
  * Utils Class.
  *
  * @since 3.17.0
- * 
+ *
  * @phpstan-type ItmParams array{
  *     campaign: string,
  *     source?: string,

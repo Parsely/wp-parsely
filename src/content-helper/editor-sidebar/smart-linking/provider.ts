@@ -20,6 +20,7 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
  *
  * @since 3.14.0
  * @since 3.16.0 Added the `applied`, `match`, `source` and `destination` properties.
+ * @since 3.18.0 Added the `wp_post_meta` and `post_stats` properties.
  */
 export type SmartLink = {
 	uid: string;
@@ -32,6 +33,12 @@ export type SmartLink = {
 	match?: SmartLinkMatch;
 	source?: LinkedPost;
 	destination?: LinkedPost;
+	wp_post_meta?: PostMeta;
+	post_stats?: {
+		avg_engaged?: string;
+		views?: string;
+		visitors?: string;
+	}
 };
 
 /**
@@ -64,21 +71,6 @@ export type InboundSmartLink = SmartLink & {
 		reason?: string;
 	};
 	is_link_replacement?: boolean;
-}
-
-/**
- * Structure of an outbound smart link, which is a smart link in the current
- * post, that links to a different post.
- *
- * @since 3.18.0
- */
-export type OutboundSmartLink = SmartLink & {
-	wp_post_meta: PostMeta;
-	post_stats: {
-		avg_engaged?: string;
-		views?: string;
-		visitors?: string;
-	}
 }
 
 /**
@@ -170,35 +162,18 @@ export class SmartLinkingProvider extends BaseProvider {
 	}
 
 	/**
-	 * Returns a list of suggested links for the given content.
+	 * Fetches the extra data - WordPress post meta and Parse.ly stats - for the
+	 * outbound smart links.
 	 *
-	 * @param {string}   content          The content to generate links for.
-	 * @param {number}   maxLinksPerPost  The maximum number of links to return.
-	 * @param {string[]} urlExclusionList A list of URLs to exclude from the suggestions.
+	 * @since 3.18.0
 	 *
-	 * @return {Promise<OutboundSmartLink[]>} The resulting list of links.
+	 * @param {SmartLink[]} smartLinks The outbound smart links.
+	 *
+	 * @return {Promise<SmartLink[]>} The outbound smart links with the extra data.
 	 */
-	public async generateSmartLinks(
-		content: string,
-		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
-		urlExclusionList: string[] = [],
-	): Promise<OutboundSmartLink[]> {
-		// Get the smart links.
-		const smartLinks = await this.fetch<SmartLink[]>( {
-			method: 'POST',
-			path: addQueryArgs( '/wp-parsely/v2/content-helper/smart-linking/generate', {
-				max_links: maxLinksPerPost,
-			} ),
-			data: {
-				url_exclusion_list: urlExclusionList,
-				text: content,
-			},
-		} );
-
-		// Get all the extra data needed to create outbound smart links.
+	private async fetchSmartLinksExtraData( smartLinks: SmartLink[] ): Promise<SmartLink[]> {
+		// Fetch the posts stats and meta for the outbound smart links.
 		const [ postsStats, postsMetas ] = await Promise.all( [
-			// Posts performance data, fetched from the Parse.ly API. Might not
-			// be available for all posts.
 			this.fetch<PerformanceData[]>( {
 				path: addQueryArgs(
 					`/wp-parsely/v2/stats/posts`, {
@@ -208,12 +183,11 @@ export class SmartLinkingProvider extends BaseProvider {
 						urls: smartLinks.map( ( link ) => link.href ),
 					} ),
 			} ),
-			// Posts meta, fetched from WordPress.
 			this.getPostMetaForURLs( smartLinks.map( ( link ) => link.href ) ),
 		] );
 
-		// Create the outbound smart links from all the data.
-		const outboundSmartLinks = smartLinks.map( ( link ) => {
+		// Update the smart links with the extra data.
+		const updatedSmartLinks = smartLinks.map( ( link ) => {
 			const postMeta = postsMetas.find( ( meta ) => meta.url === link.href );
 			const postStats = postsStats.find( ( stat ) => stat.url === link.href );
 
@@ -226,8 +200,14 @@ export class SmartLinkingProvider extends BaseProvider {
 				return null;
 			}
 
-			return {
-				...link,
+			const extraData: {
+				wp_post_meta?: PostMeta;
+				post_stats?: {
+					avg_engaged?: string;
+					views?: string;
+					visitors?: string;
+				};
+			} = {
 				wp_post_meta: {
 					// Use WordPress post meta values, as data from the Parse.ly
 					// API could be unavailable or outdated. Use stats values as
@@ -239,13 +219,53 @@ export class SmartLinkingProvider extends BaseProvider {
 					url: postMeta?.url ?? postStats?.url,
 					type: postMeta?.type,
 				},
-				post_stats: {
+			};
+
+			if ( undefined !== postStats ) {
+				extraData.post_stats = {
 					avg_engaged: postStats?.avgEngaged,
 					views: postStats?.views,
 					visitors: postStats?.visitors,
-				},
+				};
+			}
+
+			return {
+				...link,
+				...extraData,
 			};
 		} ).filter( ( link ) => link !== null );
+
+		return updatedSmartLinks;
+	}
+
+	/**
+	 * Returns a list of suggested links for the given content.
+	 *
+	 * @param {string}   content          The content to generate links for.
+	 * @param {number}   maxLinksPerPost  The maximum number of links to return.
+	 * @param {string[]} urlExclusionList A list of URLs to exclude from the suggestions.
+	 *
+	 * @return {Promise<SmartLink[]>} The resulting list of links.
+	 */
+	public async generateSmartLinks(
+		content: string,
+		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
+		urlExclusionList: string[] = [],
+	): Promise<SmartLink[]> {
+		// Get the smart links.
+		const smartLinks = await this.fetch<SmartLink[]>( {
+			method: 'POST',
+			path: addQueryArgs( '/wp-parsely/v2/content-helper/smart-linking/generate', {
+				max_links: maxLinksPerPost,
+			} ),
+			data: {
+				url_exclusion_list: urlExclusionList,
+				text: content,
+			},
+		} );
+
+		// Create the outbound smart links from all the data.
+		const outboundSmartLinks = await this.fetchSmartLinksExtraData( smartLinks );
 
 		return outboundSmartLinks;
 	}
@@ -345,10 +365,18 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @return {Promise<SmartLink[]>} The list of smart links for the post.
 	 */
 	public async getSmartLinks( postID: number ): Promise<GetSmartLinksResponse> {
-		return await this.fetch<GetSmartLinksResponse>( {
+		const smartLinks = await this.fetch<GetSmartLinksResponse>( {
 			method: 'GET',
 			path: `/wp-parsely/v2/content-helper/smart-linking/${ postID }/get`,
 		} );
+
+		// Fetch the extra data for the outbound smart links.
+		const outboundSmartLinks = await this.fetchSmartLinksExtraData( smartLinks.outbound );
+
+		return {
+			outbound: outboundSmartLinks,
+			inbound: smartLinks.inbound,
+		};
 	}
 
 	/**
