@@ -22,6 +22,14 @@ use const Parsely\PARSELY_FILE;
  * Utils Class.
  *
  * @since 3.17.0
+ * 
+ * @phpstan-type ItmParams array{
+ *     campaign: string,
+ *     source?: string,
+ *     medium?: string,
+ *     content?: string,
+ *     term?: string,
+ * }
  */
 class Utils {
 	const DATE_UTC_FORMAT     = 'Y-m-d';
@@ -432,5 +440,34 @@ class Utils {
 		}
 
 		return $post_id;
+	}
+
+	/**
+	 * Appends ITM parameters to a URL.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string    $url The URL to append the ITM parameters to.
+	 * @param ItmParams $params The ITM parameters to append.
+	 * @return string The URL with the ITM parameters appended.
+	 */
+	public static function append_itm_params( string $url, $params ): string {
+		// Convert the params array to the correct format.
+		$mapping = array(
+			'campaign' => 'itm_campaign',
+			'source'   => 'itm_source',
+			'medium'   => 'itm_medium',
+			'content'  => 'itm_content',
+			'term'     => 'itm_term',
+		);
+
+		$itm_params = array();
+		foreach ( $params as $key => $value ) {
+			if ( array_key_exists( $key, $mapping ) ) {
+				$itm_params[ $mapping[ $key ] ] = $value;
+			}
+		}
+
+		return add_query_arg( $itm_params, $url );
 	}
 }

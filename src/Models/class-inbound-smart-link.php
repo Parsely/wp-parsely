@@ -593,7 +593,8 @@ class Inbound_Smart_Link extends Smart_Link {
 				}
 
 				// Check if the link is already linked to this smart link.
-				if ( $current instanceof \DOMElement && $current->getAttribute( 'href' ) === $this->href ) {
+				if ( $current instanceof \DOMElement &&
+					strpos( $current->getAttribute( 'href' ), $this->get_link_href() ) !== false ) {
 					return new \WP_Error(
 						'traffic_boost_invalid_link_placement',
 						__( 'The current link is already linked to this smart link.', 'wp-parsely' )
@@ -746,7 +747,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			}
 
 			// Update the existing link.
-			$existing_link->setAttribute( 'href', $this->href );
+			$existing_link->setAttribute( 'href', $this->get_link_href() );
 			$existing_link->setAttribute( 'data-smartlink', $this->uid );
 			$existing_link->setAttribute( 'title', $this->title );
 			$smart_link_node = $existing_link;
@@ -762,7 +763,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 			// Create the smart link anchor element.
 			$smart_link_anchor = $temp_doc->createElement( 'a' );
-			$smart_link_anchor->setAttribute( 'href', $this->href );
+			$smart_link_anchor->setAttribute( 'href', $this->get_link_href() );
 			$smart_link_anchor->setAttribute( 'data-smartlink', $this->uid );
 			$smart_link_anchor->setAttribute( 'title', $this->title );
 			$smart_link_anchor->textContent = $this->text;
