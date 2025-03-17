@@ -12,6 +12,7 @@ namespace Parsely\Models;
 
 use Masterminds\HTML5;
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use ReflectionClass;
 use WP_Post;
 
@@ -484,34 +485,11 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @param string $url The URL.
 	 */
 	public function set_source_from_url( string $url ): bool {
-		// First try to find a post by URL.
-		if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
-			$source_post_id = wpcom_vip_url_to_postid( $url );
-		} else {
-			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
-			$source_post_id = url_to_postid( $url );
-		}
+		$source_post_id = Utils::get_post_id_by_url( $url );
 
-		// Found a post by URL, set the source post.
 		if ( 0 !== $source_post_id ) {
-			$this->set_source_post_id( $source_post_id );
-			return true;
-		}
-
-		// Since we couldn't find a post by URL, try to find a post with the same slug.
-		$post_slug = basename( $url );
-
-		$public_post_types = get_post_types(
-			array(
-				'public'       => true,
-				'show_in_rest' => true,
-			)
-		);
-		$source_post       = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
-
-		if ( null !== $source_post ) {
 			// Set the source post and update the canonical URL.
-			$this->set_source_post( $source_post, $url );
+			$this->set_source_post_id( $source_post_id );
 			return true;
 		}
 
