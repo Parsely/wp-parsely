@@ -503,12 +503,16 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				$post = get_post( $post_id );
 
 				if ( null !== $post ) {
+					$post_type_obj  = get_post_type_object( $post->post_type );
+					$post_type_name = $post_type_obj instanceof \WP_Post_Type ? $post_type_obj->labels->singular_name : '';
+
 					$posts_meta[] = array(
 						'author'    => get_the_author_meta( 'display_name', intval( $post->post_author ) ),
 						'date'      => get_the_date( '', $post ),
 						'id'        => $post_id,
+						'title'     => $post->post_title,
 						'thumbnail' => get_the_post_thumbnail_url( $post, 'thumbnail' ),
-						'type'      => get_post_type( $post ),
+						'type'      => $post_type_name,
 						'url'       => $url,
 					);
 				}
