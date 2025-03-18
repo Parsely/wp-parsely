@@ -27,7 +27,7 @@ import {
 	isInEnum,
 } from '../../common/utils/constants';
 import { PostData } from '../../common/utils/post';
-import { SidebarPostData } from '../editor-sidebar';
+import { SidebarPostData, SidebarPostDataCategory } from '../editor-sidebar';
 import { RelatedPostsFilterSettings } from './component-filter-settings';
 import { RelatedPostItem } from './component-item';
 import { usePostData } from './hooks';
@@ -111,11 +111,30 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 			return array.map( ( item ) => item.name );
 		};
 
+		/**
+		 * Returns the name and slug properties present in the passed value, or
+		 * an empty array if any errors occur.
+		 *
+		 * @since 3.18.0
+		 *
+		 * @param {unknown} value The value to be processed.
+		 *
+		 * @return {SidebarPostDataCategory[]} The categories data extracted from the value.
+		 */
+		const extractCategoriesDataAsArray = ( value: unknown ): SidebarPostDataCategory[] => {
+			if ( ! isArrayOfUsersOrTaxonomies( value ) ) {
+				return [];
+			}
+
+			const array = value as SidebarPostDataCategory[];
+			return array.map( ( item ) => ( { name: item.name, slug: item.slug } ) );
+		};
+
 		setPostData( {
 			// Pass the data through validation, as `usePostData()` could return
 			// unexpected results.
 			authors: extractNamesAsArray( authors ),
-			categories: extractNamesAsArray( categories ),
+			categories: extractCategoriesDataAsArray( categories ),
 			tags: extractNamesAsArray( tags ),
 		} );
 	}, [ authors, categories, tags, isPostDataReady ] );

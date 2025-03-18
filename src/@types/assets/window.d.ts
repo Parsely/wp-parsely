@@ -33,6 +33,7 @@ declare global {
 		wpParselySiteId: string,
 		wpParselySmartLinkingAllowedBlocks: string[];
 		wpParselyTrackableStatuses: string[];
+		wpParselyUseSectionSlugsInSearches: boolean;
 
 		/**
 		 * Jetpack Editor Initial State.

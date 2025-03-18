@@ -178,6 +178,13 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			'before'
 		);
 
+		$use_section_slugs_in_searches = apply_filters( 'wp_parsely_use_section_slugs_in_searches', false );
+		wp_add_inline_script(
+			static::get_script_id(),
+			'window.wpParselyUseSectionSlugsInSearches = ' . wp_json_encode( $use_section_slugs_in_searches ) . ';',
+			'before'
+		);
+
 		wp_enqueue_style(
 			static::get_style_id(),
 			$built_assets_url . 'editor-sidebar.css',
