@@ -435,11 +435,7 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 		const uid = link.getAttribute( 'data-smartlink' ) ?? '';
 		const href = {
 			raw: removeITMParamsFromURL( link.href ),
-			itm: addITMParamsToURL( link.href, {
-				campaign: 'parsely-pch',
-				source: 'smart-link',
-				term: uid,
-			} ),
+			itm: addSmartLinkITMParamsToURL( link.href, uid ),
 		};
 		const text = link.textContent ?? '';
 		const title = link.title;
@@ -753,3 +749,22 @@ export function trimURLForDisplay( url: string, maxLength: number ): string {
 export function getAllSmartLinksURLs( smartLinks: SmartLink[] ): string[] {
 	return smartLinks.map( ( link ) => link.href.raw );
 }
+
+/**
+ * Adds ITM parameters to a smart link URL.
+ *
+ * @since 3.18.0
+ *
+ * @param {string} url          The URL to add ITM parameters to.
+ * @param {string} smartLinkUid The smart link UID to add ITM parameters for.
+ *
+ * @return {string} The URL with ITM parameters added.
+ */
+export function addSmartLinkITMParamsToURL( url: string, smartLinkUid: string ): string {
+	return addITMParamsToURL( url, {
+		campaign: 'parsely-pch',
+		source: 'smart-link',
+		term: smartLinkUid,
+	} );
+}
+
