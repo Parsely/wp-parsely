@@ -192,7 +192,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return bool True if the smart link is a link replacement, false otherwise.
 	 */
 	public function did_replace_link(): bool {
-		if ( ! $this->applied ) {
+		if ( ! $this->is_applied() ) {
 			return false;
 		}
 
@@ -389,7 +389,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		/** @var \DOMElement $p The paragraph element. */
 		foreach ( $paragraphs as $p ) {
 			// If the smart link is applied, we need to find the paragraph that contains the smart link.
-			if ( $this->applied ) {
+			if ( $this->is_applied() ) {
 				// Check each anchor tag within the paragraph.
 				$anchors = $p->getElementsByTagName( 'a' );
 				/** @var \DOMElement $anchor The anchor element. */
@@ -651,7 +651,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public function apply() {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
-		if ( $this->applied ) {
+		if ( $this->is_applied() ) {
 			return new \WP_Error( 'traffic_boost_already_applied', __( 'Smart link already applied', 'wp-parsely' ) );
 		}
 
@@ -836,7 +836,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		self::flush_cache_by_post_id( $this->source_post_id );
 
 		// Set the applied flag to true.
-		$this->applied = true;
+		$this->set_status( Smart_Link_Status::APPLIED );
 
 		// Save the smart link.
 		$this->save();
@@ -857,7 +857,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	public function remove( $restore_original_link = false, $delete_smart_link = true ) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// If the smart link is not applied, we can just delete it.
-		if ( ! $this->applied ) {
+		if ( ! $this->is_applied() ) {
 			if ( $delete_smart_link ) {
 				return $this->delete();
 			}
@@ -966,7 +966,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		self::flush_cache_by_post_id( $this->source_post_id );
 
 		// Set the applied flag to false.
-		$this->applied = false;
+		$this->set_status( Smart_Link_Status::PENDING );
 
 		// Delete the smart link.
 		if ( $delete_smart_link ) {

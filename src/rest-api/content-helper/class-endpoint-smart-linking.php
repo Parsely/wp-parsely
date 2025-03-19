@@ -319,7 +319,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		}
 
 		// Mark as applied.
-		$smart_link->applied = true;
+		$smart_link->set_status( Smart_Link_Status::APPLIED );
 
 		// The smart link properties are set in the validate callback.
 		$saved = $smart_link->save();
@@ -375,7 +375,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			$updated_link = $smart_link->exists() && $should_update;
 
 			// Mark as applied.
-			$smart_link->applied = true;
+			$smart_link->set_status( Smart_Link_Status::APPLIED );
 
 			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
@@ -468,7 +468,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 		foreach ( $smart_links as $smart_link ) {
 			// Mark as applied.
-			$smart_link->applied = true;
+			$smart_link->set_status( Smart_Link_Status::APPLIED );
 
 			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();

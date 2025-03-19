@@ -15,6 +15,13 @@ import { PerformanceData } from '../performance-stats/model';
 import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
+ * The status of a smart link.
+ *
+ * @since 3.18.0
+ */
+type SmartLinkStatus = 'applied' | 'pending';
+
+/**
  * Structure of a link suggestion returned by the
  * 'content-suggestions/suggest-linked-reference' endpoint.
  *
@@ -29,6 +36,7 @@ export type SmartLink = {
 	title: string;
 	offset: number;
 	applied: boolean;
+	status: SmartLinkStatus;
 	match?: SmartLinkMatch;
 	source?: LinkedPost;
 	destination?: LinkedPost;
