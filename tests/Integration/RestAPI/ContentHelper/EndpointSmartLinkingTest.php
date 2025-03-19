@@ -265,7 +265,9 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 
 		$smart_link_data = array(
 			'uid'    => md5( 'link1' ),
-			'href'   => 'http://example.com/1',
+			'href'   => array(
+				'raw' => 'http://example.com/1',
+			),
 			'title'  => 'Example 1',
 			'text'   => 'Example 1',
 			'offset' => 0,
@@ -304,6 +306,14 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 		foreach ( $smart_link_attributes as $attribute ) {
 			self::assertObjectHasProperty( $attribute, $data['data'] );
 		}
+
+		self::assertObjectHasProperty( 'raw', $data['data']->href );
+		self::assertObjectHasProperty( 'itm', $data['data']->href );
+
+		// Assert ITM parameters are added to the href.
+		self::assertStringContainsString( 'itm_campaign=parsely-pch', $data['data']->href->itm );
+		self::assertStringContainsString( 'itm_source=smart-link', $data['data']->href->itm );
+		self::assertStringContainsString( 'itm_term=' . $smart_link_data['uid'], $data['data']->href->itm );
 	}
 
 	/**
@@ -365,21 +375,27 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 		$smart_links_data = array(
 			array(
 				'uid'    => md5( 'link1' ),
-				'href'   => 'http://example.com/1',
+				'href'   => array(
+					'raw' => 'http://example.com/1',
+				),
 				'title'  => 'Example 1',
 				'text'   => 'Example 1',
 				'offset' => 0,
 			),
 			array(
 				'uid'    => md5( 'link2' ),
-				'href'   => 'http://example.com/2',
+				'href'   => array(
+					'raw' => 'http://example.com/2',
+				),
 				'title'  => 'Example 2',
 				'text'   => 'Example 2',
 				'offset' => 0,
 			),
 			array(
 				'uid'    => md5( 'link3' ),
-				'href'   => 'http://example.com/3',
+				'href'   => array(
+					'raw' => 'http://example.com/3',
+				),
 				'title'  => 'Example 3',
 				'text'   => 'Example 3',
 				'offset' => 0,
@@ -422,6 +438,14 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 			foreach ( $smart_link_attributes as $attribute ) {
 				self::assertArrayHasKey( $attribute, $smart_link );
 			}
+
+			self::assertArrayHasKey( 'raw', $smart_link['href'] );
+			self::assertArrayHasKey( 'itm', $smart_link['href'] );
+
+			// Assert ITM parameters are added to the href.
+			self::assertStringContainsString( 'itm_campaign=parsely-pch', $smart_link['href']['itm'] );
+			self::assertStringContainsString( 'itm_source=smart-link', $smart_link['href']['itm'] );
+			self::assertStringContainsString( 'itm_term=' . $smart_link['uid'], $smart_link['href']['itm'] );
 		}
 	}
 }
