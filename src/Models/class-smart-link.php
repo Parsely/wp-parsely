@@ -453,7 +453,7 @@ class Smart_Link extends Base_Model {
 				'campaign' => 'parsely-pch',
 				'source'   => 'smart-link',
 				'term'     => $this->uid,
-			) 
+			)
 		);
 	}
 
@@ -685,7 +685,10 @@ class Smart_Link extends Base_Model {
 		return array(
 			'smart_link_id' => $this->smart_link_id,
 			'uid'           => $this->uid,
-			'href'          => $this->get_link_href(),
+			'href'          => array(
+				'raw' => $this->href,
+				'itm' => $this->get_link_href(),
+			),
 			'title'         => $this->title,
 			'text'          => $this->text,
 			'offset'        => $this->offset,
@@ -722,7 +725,7 @@ class Smart_Link extends Base_Model {
 		}
 
 		// If the UID has been provided, set it on the model.
-		$smart_link = new Smart_Link( $data['href'], $data['title'], $data['text'], $data['offset'] );
+		$smart_link = new Smart_Link( $data['href']['raw'], $data['title'], $data['text'], $data['offset'] );
 
 		if ( isset( $data['uid'] ) ) {
 			$smart_link->set_uid( $data['uid'] );
@@ -730,7 +733,7 @@ class Smart_Link extends Base_Model {
 			if ( $smart_link->exists() ) {
 				$smart_link->load();
 				// Update the fields.
-				$smart_link->set_href( $data['href'] );
+				$smart_link->set_href( $data['href']['raw'] );
 				$smart_link->title  = $data['title'];
 				$smart_link->text   = $data['text'];
 				$smart_link->offset = $data['offset'];

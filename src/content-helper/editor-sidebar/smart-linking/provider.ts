@@ -25,7 +25,10 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
 export type SmartLink = {
 	uid: string;
 	smart_link_id: number;
-	href: string;
+	href: {
+		raw: string;
+		itm: string;
+	};
 	text: string;
 	title: string;
 	offset: number;
@@ -172,6 +175,10 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @return {Promise<SmartLink[]>} The outbound smart links with the extra data.
 	 */
 	private async fetchSmartLinksExtraData( smartLinks: SmartLink[] ): Promise<SmartLink[]> {
+		if ( smartLinks.length === 0 ) {
+			return [];
+		}
+
 		// Fetch the posts stats and meta for the outbound smart links.
 		const [ postsStats, postsMetas ] = await Promise.all( [
 			this.fetch<PerformanceData[]>( {
@@ -180,16 +187,16 @@ export class SmartLinkingProvider extends BaseProvider {
 						...getApiPeriodParams( Period.Days30 ),
 						limit: smartLinks.length,
 						sort: Metric.AvgEngaged, // Force return of visitors and avg_engaged.
-						urls: smartLinks.map( ( link ) => link.href ),
+						urls: smartLinks.map( ( link ) => link.href.raw ),
 					} ),
 			} ),
-			this.getPostMetaForURLs( smartLinks.map( ( link ) => link.href ) ),
+			this.getPostMetaForURLs( smartLinks.map( ( link ) => link.href.raw ) ),
 		] );
 
 		// Update the smart links with the extra data.
 		const updatedSmartLinks = smartLinks.map( ( link ) => {
-			const postMeta = postsMetas.find( ( meta ) => meta.url === link.href );
-			const postStats = postsStats.find( ( stat ) => stat.url === link.href );
+			const postMeta = postsMetas.find( ( meta ) => meta.url === link.href.raw );
+			const postStats = postsStats.find( ( stat ) => stat.url === link.href.raw );
 
 			// Don't include links for which we didn't find any data, as the URL
 			// probably doesn't exist. Include stats data in the check, so most
