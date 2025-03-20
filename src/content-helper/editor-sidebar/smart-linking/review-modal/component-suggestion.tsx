@@ -34,7 +34,7 @@ import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { Thumbnail } from '../../../common/components/thumbnail';
 import { getSmartShortDate } from '../../../common/utils/date';
 import { formatToImpreciseNumber } from '../../../common/utils/number';
-import { InboundSmartLink, OutboundSmartLink, SmartLink } from '../provider';
+import { InboundSmartLink, SmartLink } from '../provider';
 import { BlockPreview } from './component-block-preview';
 import { InboundLinkDetails } from './component-inbound-link';
 
@@ -106,19 +106,20 @@ const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): React.JSX.
  * The LinkDetails component, which renders the details of the link suggestion.
  *
  * @since 3.16.0
+ * @since 3.18.0 Added the post type to the link details.
  *
- * @param {{link: OutboundSmartLink}} props The component props.
+ * @param {{link: SmartLink}} props The component props.
  */
-const LinkDetails = ( { link }: { link: OutboundSmartLink } ): React.JSX.Element => {
-	const author = link.wp_post_meta.author ?? __( 'N/A', 'wp-parsely' );
-	const avgEngaged = link.post_stats.avg_engaged ?? __( 'N/A', 'wp-parsely' );
-	const date = link.wp_post_meta.date ? getSmartShortDate( new Date( link.wp_post_meta.date ) ) : __( 'N/A', 'wp-parsely' );
-	const thumbnail = link.wp_post_meta.thumbnail ?? false;
-	const title = link.wp_post_meta.title ?? __( 'N/A', 'wp-parsely' );
-	const type = link.wp_post_meta.type ?? __( 'External', 'wp-parsely' );
-	const url = link.wp_post_meta.url; // Used for the link button.
-	const views = link.post_stats.views ? formatToImpreciseNumber( link.post_stats.views ) : __( 'N/A', 'wp-parsely' );
-	const visitors = link.post_stats.visitors ? formatToImpreciseNumber( link.post_stats.visitors ) : __( 'N/A', 'wp-parsely' );
+const LinkDetails = ( { link }: { link: SmartLink } ): React.JSX.Element => {
+	const author = link.wp_post_meta?.author ?? __( 'N/A', 'wp-parsely' );
+	const avgEngaged = link.post_stats?.avg_engaged ?? __( 'N/A', 'wp-parsely' );
+	const date = link.wp_post_meta?.date ? getSmartShortDate( new Date( link.wp_post_meta.date ) ) : __( 'N/A', 'wp-parsely' );
+	const thumbnail = link.wp_post_meta?.thumbnail ?? false;
+	const title = link.wp_post_meta?.title ?? __( 'N/A', 'wp-parsely' );
+	const type = link.wp_post_meta?.type ?? __( 'External', 'wp-parsely' );
+	const url = link.wp_post_meta?.url; // Used for the link button.
+	const views = link.post_stats?.views ? formatToImpreciseNumber( link.post_stats.views ) : __( 'N/A', 'wp-parsely' );
+	const visitors = link.post_stats?.visitors ? formatToImpreciseNumber( link.post_stats.visitors ) : __( 'N/A', 'wp-parsely' );
 
 	return (
 		<div className="wp-parsely-link-suggestion-link-details">
@@ -156,17 +157,25 @@ const LinkDetails = ( { link }: { link: OutboundSmartLink } ): React.JSX.Element
 						<Tooltip text={ type }><span>{ type }</span></Tooltip>
 					</div>
 				</div>
-				<div className="data-row">
-					<div className="data-point">
-						<Icon icon={ seen } size={ 16 } /><span>{ views }</span>
+				{ link.post_stats && (
+					<div className="data-row">
+						{ views && (
+							<div className="data-point">
+								<Icon icon={ seen } size={ 16 } /><span>{ views }</span>
+							</div>
+						) }
+						{ visitors && (
+							<div className="data-point">
+								<Icon icon={ people } size={ 16 } /><span>{ visitors }</span>
+							</div>
+						) }
+						{ avgEngaged && (
+							<div className="data-point">
+								<Dashicon icon="clock" size={ 16 } /><span>{ avgEngaged }</span>
+							</div>
+						) }
 					</div>
-					<div className="data-point">
-						<Icon icon={ people } size={ 16 } /><span>{ visitors }</span>
-					</div>
-					<div className="data-point">
-						<Dashicon icon="clock" size={ 16 } /><span>{ avgEngaged }</span>
-					</div>
-				</div>
+				) }
 			</div>
 		</div>
 	);
@@ -178,7 +187,7 @@ const LinkDetails = ( { link }: { link: OutboundSmartLink } ): React.JSX.Element
  * @since 3.16.0
  */
 type ReviewSuggestionProps = {
-	link: OutboundSmartLink,
+	link: SmartLink,
 	onNext: () => void,
 	onPrevious: () => void,
 	onAccept: () => void,
