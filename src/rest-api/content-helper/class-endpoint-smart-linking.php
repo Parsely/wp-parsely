@@ -568,11 +568,19 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			return false;
 		}
 
+		if ( ! is_array( $params['href'] ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $params['href']['raw'] ) ) {
+			return false;
+		}
+
 		// Try to get the smart link from the UID.
 		$smart_link = Smart_Link::get_smart_link( $params['uid'], intval( $post_id ) );
 		if ( $smart_link->exists() ) {
 			// Update the smart link with the new data.
-			$smart_link->set_href( $params['href'] );
+			$smart_link->set_href( $params['href']['raw'] );
 			$smart_link->title  = $params['title'];
 			$smart_link->text   = $params['text'];
 			$smart_link->offset = $params['offset'];

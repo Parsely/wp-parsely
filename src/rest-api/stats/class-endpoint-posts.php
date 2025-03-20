@@ -178,6 +178,7 @@ class Endpoint_Posts extends Base_Endpoint {
 						'description'       => 'The URLs to fetch data for.',
 						'type'              => 'array',
 						'sanitize_callback' => array( $this, 'sanitize_urls' ),
+						'validate_callback' => array( $this, 'validate_urls' ),
 						'required'          => false,
 					),
 				),
@@ -212,6 +213,24 @@ class Endpoint_Posts extends Base_Endpoint {
 	 */
 	public function sanitize_urls( array $urls ): array {
 		return array_map( 'sanitize_url', $urls );
+	}
+
+	/**
+	 * Validates if the provided array is a list of URLs.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param array<string> $urls The array to validate.
+	 * @return true|WP_Error
+	 */
+	public function validate_urls( array $urls ) {
+		foreach ( $urls as $url ) {
+			if ( false === filter_var( $url, FILTER_VALIDATE_URL ) ) {
+				return new WP_Error( 'invalid_param', __( 'The parameter must be a list of URLs.', 'wp-parsely' ) );
+			}
+		}
+
+		return true;
 	}
 
 	/**
