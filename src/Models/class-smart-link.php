@@ -118,7 +118,7 @@ class Smart_Link extends Base_Model {
 	 * @since 3.18.0
 	 * @var string|null The status of the smart link.
 	 */
-	private $status = null;
+	protected $status = null;
 
 	/**
 	 * Whether the smart link exists on the database.
@@ -253,30 +253,7 @@ class Smart_Link extends Base_Model {
 		$this->text   = $this->get_string_meta( '_smart_link_text' );
 		$this->offset = $this->get_int_meta( '_smart_link_offset' );
 
-		// If the deprecated applied meta key exists, set the status accordingly.
-		$has_applied_meta = array_key_exists( '_smart_link_applied', $this->smart_link_post_meta );
-		if ( $has_applied_meta ) {
-			$applied_meta = $this->get_bool_meta( '_smart_link_applied', true );
-			$this->set_status( $applied_meta ? Smart_Link_Status::APPLIED : Smart_Link_Status::PENDING );
-
-			// Remove the deprecated meta key.
-			delete_post_meta( $this->smart_link_id, '_smart_link_applied' );
-		}
-
-		// If the status term does not exist, and the meta key is not set, we need to
-		// consider the smart link as accepted, for backwards compatibility with
-		// Parse.ly < 3.18.0.
-		$status_term = wp_get_post_terms( $this->smart_link_id, 'smart_link_status' );
-		if ( is_wp_error( $status_term ) || count( $status_term ) === 0 ) {
-			if ( ! $has_applied_meta ) {
-				$this->set_status( Smart_Link_Status::APPLIED, true );
-			} else {
-				$this->set_status( Smart_Link_Status::PENDING, true );
-			}
-		} else {
-			// Otherwise, get the status from the term.
-			$this->status = $status_term[0]->slug;
-		}
+		$this->status = $this->get_status();
 
 		// Load the source post ID.
 		$source_terms = wp_get_post_terms( $this->smart_link_id, 'smart_link_source' );
@@ -521,7 +498,7 @@ class Smart_Link extends Base_Model {
 		}
 
 		if ( $save && null !== $this->smart_link_id ) {
-			wp_set_post_terms( $this->smart_link_id, $status, 'smart_link_status' );
+			$result = wp_set_post_terms( $this->smart_link_id, $status, 'smart_link_status' );
 		}
 
 		$this->status = $status;
@@ -576,32 +553,6 @@ class Smart_Link extends Base_Model {
 		}
 
 		return (int) $value;
-	}
-
-	/**
-	 * Gets a boolean meta value from the smart link post.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param string $meta_key The meta key to get the value for.
-	 * @param bool   $default_value The default value to return if the meta value is not a boolean.
-	 * @return bool The meta value.
-	 */
-	private function get_bool_meta( string $meta_key, bool $default_value = false ): bool {
-		if ( ! isset( $this->smart_link_post_meta[ $meta_key ] ) ) {
-			return $default_value;
-		}
-
-		$meta_value = $this->smart_link_post_meta[ $meta_key ][0];
-		if ( 'true' === $meta_value || '1' === $meta_value ) {
-			return true;
-		}
-
-		if ( 'false' === $meta_value || '0' === $meta_value ) {
-			return false;
-		}
-
-		return $default_value;
 	}
 
 	/**
@@ -836,7 +787,7 @@ class Smart_Link extends Base_Model {
 	 * @param int $smart_link_id The ID of the smart link.
 	 * @return Smart_Link|false The smart link object, or false if it does not exist.
 	 */
-	protected static function get_smart_link_by_id( int $smart_link_id ) {
+	public static function get_smart_link_by_id( int $smart_link_id ) {
 		$smart_link                = new Smart_Link( '', '', '', 0 );
 		$smart_link->smart_link_id = $smart_link_id;
 		if ( $smart_link->load() ) {
@@ -859,6 +810,11 @@ class Smart_Link extends Base_Model {
 	 * @return array<Smart_Link> The smart links in the post.
 	 */
 	public static function get_outbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
+		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
+			$status = 'all';
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+		}
+
 		$cache_key   = 'outbound-' . $post_id . '-' . $status;
 		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
 
@@ -880,19 +836,12 @@ class Smart_Link extends Base_Model {
 		);
 
 		// Add the status term to the tax query.
-		if ( Smart_Link_Status::APPLIED === $status ) {
+		if ( Smart_Link_Status::ALL !== $status ) {
 			$tax_query[] = array(
 				'taxonomy'         => 'smart_link_status',
 				'include_children' => false,
 				'field'            => 'name',
-				'terms'            => Smart_Link_Status::APPLIED,
-			);
-		} elseif ( Smart_Link_Status::PENDING === $status ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_status',
-				'include_children' => false,
-				'field'            => 'name',
-				'terms'            => Smart_Link_Status::PENDING,
+				'terms'            => $status,
 			);
 		}
 
@@ -948,6 +897,8 @@ class Smart_Link extends Base_Model {
 			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
 		}
 
+		//$status = 'all';
+
 		$cache_key   = 'inbound-' . $post_id . '-' . $status;
 		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
 
@@ -969,19 +920,12 @@ class Smart_Link extends Base_Model {
 		);
 
 		// Add the status term to the tax query.
-		if ( Smart_Link_Status::APPLIED === $status ) {
+		if ( Smart_Link_Status::ALL !== $status ) {
 			$tax_query[] = array(
 				'taxonomy'         => 'smart_link_status',
 				'include_children' => false,
 				'field'            => 'name',
-				'terms'            => Smart_Link_Status::APPLIED,
-			);
-		} elseif ( Smart_Link_Status::PENDING === $status ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_status',
-				'include_children' => false,
-				'field'            => 'name',
-				'terms'            => Smart_Link_Status::PENDING,
+				'terms'            => $status,
 			);
 		}
 
@@ -1009,11 +953,20 @@ class Smart_Link extends Base_Model {
 			}
 
 			$smart_link = Inbound_Smart_Link::from_smart_link( $smart_link );
+			$is_linked = $smart_link->is_linked();
+			$status = $smart_link->get_status();
+
+			// If the smart link is linked and the status is pending, set the status to applied.
+			// This is to ensure backwards compatibility with Parse.ly < 3.18.0.
+			if ( $is_linked && $status === Smart_Link_Status::PENDING ) {
+				$smart_link->set_status( Smart_Link_Status::APPLIED, true );
+				$status = Smart_Link_Status::APPLIED;
+			}
 
 			// Check if this inbound smart link is still linked to a post.
 			// If not, do not add it to the array, and instead remove it.
-			if ( $smart_link->get_status() === Smart_Link_Status::APPLIED && ! $smart_link->is_linked() ) {
-				$smart_link->delete();
+			if ( $status === Smart_Link_Status::APPLIED && ! $is_linked ) {
+				//$smart_link->delete(); TODO: Uncomment this when we are ready to delete the deprecated _smart_link_applied meta.
 				continue;
 			}
 

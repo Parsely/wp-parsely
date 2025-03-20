@@ -51,6 +51,7 @@ if ( class_exists( Parsely::class ) ) {
 
 const PARSELY_VERSION = '3.17.0';
 const PARSELY_FILE    = __FILE__;
+const PARSELY_DATA_SCHEMA_VERSION = '1';
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
@@ -226,4 +227,88 @@ function parsely_integrations( $parsely = null ): Integrations {
 	$parsely_integrations->integrate();
 
 	return $parsely_integrations;
+}
+
+
+add_action( 'admin_init', __NAMESPACE__ . '\\check_data_scheme_updates', 999 );
+/**
+ * Checks and performs any data scheme updates.
+ *
+ * @since 3.18.0 Handles the update from schema version 0 to 1.
+ */
+function check_data_scheme_updates(): void {
+	$current_data_schema_version = get_option( 'parsely_data_schema_version' ) ?? 0;
+
+	if ( PARSELY_DATA_SCHEMA_VERSION <= $current_data_schema_version ) {
+		return;
+	}
+
+	/**
+	 * Updates the smart links to have the Smart Link Status terms,
+	 * and deletes the _smart_link_applied meta.
+	 * 
+	 * Schema version 1.
+	 * 
+	 * @since 3.18.0
+	 */
+	if ( 0 === $current_data_schema_version ) {
+		global $wpdb;
+
+		// Get all the smart links that do not have any Smart Link Status terms.
+		$smart_links_without_status = get_posts( array(
+			'post_type' => 'parsely_smart_link',
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+			'suppress_filters' => false,
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'smart_link_status',
+					'field' => 'name',
+					'terms' => array(
+						\Parsely\Models\Smart_Link_Status::get_all_statuses(),
+					),
+					'operator' => 'NOT IN',
+				),
+			),
+		) );
+
+		if ( count( $smart_links_without_status ) === 0 ) {
+			update_option( 'parsely_data_schema_version', PARSELY_DATA_SCHEMA_VERSION );
+			return;
+		}
+
+		// Loop through the smart links and update them to have the Smart Link Status terms.
+		foreach ( $smart_links_without_status as $post_id ) {
+			$smart_link = \Parsely\Models\Smart_Link::get_smart_link_by_id( intval( $post_id ) );		
+			if( false === $smart_link ) {
+				continue;
+			}
+
+			$meta_exists = metadata_exists( 'post', $post_id, '_smart_link_applied' );
+
+			// If there is no meta, it means that the smart link is considered applied,
+			// for backwards compatibility with Parse.ly < 3.18.0.
+			if ( ! $meta_exists ) {
+				$smart_link->set_status( \Parsely\Models\Smart_Link_Status::APPLIED, true );
+				continue;
+			}
+
+			// Get the value of the _smart_link_applied meta.
+			$meta_value = get_post_meta( $post_id, '_smart_link_applied', true );
+
+			// If the meta value is true, then the smart link is considered applied.
+			if ( $meta_value === 'true' || $meta_value === true ) {
+				$smart_link->set_status( \Parsely\Models\Smart_Link_Status::APPLIED, true );
+			} else {
+				// If the meta value is not true, then the smart link is considered pending.
+				$smart_link->set_status( \Parsely\Models\Smart_Link_Status::PENDING, true );
+			}
+
+			// Delete the deprecated _smart_link_applied meta.
+			delete_post_meta( $post_id, '_smart_link_applied' );
+		}
+
+		update_option( 'parsely_data_schema_version', PARSELY_DATA_SCHEMA_VERSION );
+		return;
+	}
 }
