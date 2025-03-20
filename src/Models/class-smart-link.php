@@ -521,7 +521,7 @@ class Smart_Link extends Base_Model {
 		}
 
 		if ( $save && null !== $this->smart_link_id ) {
-			$result = wp_set_post_terms( $this->smart_link_id, $status, 'smart_link_status' );
+			wp_set_post_terms( $this->smart_link_id, $status, 'smart_link_status' );
 		}
 
 		$this->status = $status;

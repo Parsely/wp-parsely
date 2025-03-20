@@ -271,7 +271,7 @@ function parsely_check_data_scheme_updates(): void {
 						'operator' => 'NOT IN',
 					),
 				),
-			) 
+			)
 		);
 
 		if ( count( $smart_links_without_status ) === 0 ) {
@@ -315,6 +315,5 @@ function parsely_check_data_scheme_updates(): void {
 		}
 
 		update_option( 'parsely_data_schema_version', PARSELY_DATA_SCHEMA_VERSION );
-		return;
 	}
 }
