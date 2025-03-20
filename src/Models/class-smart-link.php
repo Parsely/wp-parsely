@@ -897,8 +897,6 @@ class Smart_Link extends Base_Model {
 			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
 		}
 
-		//$status = 'all';
-
 		$cache_key   = 'inbound-' . $post_id . '-' . $status;
 		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
 
@@ -953,20 +951,20 @@ class Smart_Link extends Base_Model {
 			}
 
 			$smart_link = Inbound_Smart_Link::from_smart_link( $smart_link );
-			$is_linked = $smart_link->is_linked();
-			$status = $smart_link->get_status();
+			$is_linked  = $smart_link->is_linked();
+			$status     = $smart_link->get_status();
 
 			// If the smart link is linked and the status is pending, set the status to applied.
 			// This is to ensure backwards compatibility with Parse.ly < 3.18.0.
-			if ( $is_linked && $status === Smart_Link_Status::PENDING ) {
+			if ( $is_linked && Smart_Link_Status::PENDING === $status ) {
 				$smart_link->set_status( Smart_Link_Status::APPLIED, true );
 				$status = Smart_Link_Status::APPLIED;
 			}
 
 			// Check if this inbound smart link is still linked to a post.
 			// If not, do not add it to the array, and instead remove it.
-			if ( $status === Smart_Link_Status::APPLIED && ! $is_linked ) {
-				//$smart_link->delete(); TODO: Uncomment this when we are ready to delete the deprecated _smart_link_applied meta.
+			if ( Smart_Link_Status::APPLIED === $status && ! $is_linked ) {
+				$smart_link->delete();
 				continue;
 			}
 

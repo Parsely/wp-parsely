@@ -1080,26 +1080,25 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public static function delete_pending_suggestions( int $post_id ): array {
 		// Get all posts of type parsely_smart_link that have the destination taxonomy set to the post_id
-		// and the _smart_link_applied meta set to false.
+		// and the smart_link_status set to pending.
 		$args = array(
 			'post_type'      => 'parsely_smart_link',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			'tax_query'      => array(
+				'relation' => 'AND',
 				array(
 					'taxonomy'         => 'smart_link_destination',
 					'field'            => 'name',
 					'include_children' => false,
 					'terms'            => (string) $post_id,
 				),
-			),
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-			'meta_query'     => array(
 				array(
-					'key'     => '_smart_link_applied',
-					'value'   => 'false',
-					'compare' => '=',
+					'taxonomy'         => 'smart_link_status',
+					'field'            => 'name',
+					'include_children' => false,
+					'terms'            => Smart_Link_Status::PENDING,
 				),
 			),
 		);
