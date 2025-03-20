@@ -307,6 +307,9 @@ function parsely_check_data_scheme_updates(): void {
 				$smart_link->set_status( \Parsely\Models\Smart_Link_Status::PENDING, true );
 			}
 
+			// Flush the cache for the smart link.
+			$smart_link->flush_all_cache();
+
 			// Delete the deprecated _smart_link_applied meta.
 			delete_post_meta( $post_id, '_smart_link_applied' );
 		}

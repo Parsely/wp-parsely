@@ -1003,7 +1003,7 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.18.0
 	 */
-	protected function flush_all_cache(): void {
+	public function flush_all_cache(): void {
 		$this->flush_cache();
 		if ( $this->source_post_id > 0 ) {
 			self::flush_cache_by_post_id( $this->source_post_id );
