@@ -382,15 +382,6 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
-	 * Updates the UID of the smart link.
-	 *
-	 * @since 3.18.0
-	 */
-	public function update_uid(): void {
-		$this->uid = $this->generate_uid();
-	}
-
-	/**
 	 * Removes the smart link from the database.
 	 *
 	 * @since 3.18.0
@@ -440,6 +431,38 @@ class Smart_Link extends Base_Model {
 		$this->exists        = false;
 		$this->smart_link_id = 0;
 		return false;
+	}
+
+	/**
+	 * Updates the UID of the smart link.
+	 *
+	 * @since 3.18.0
+	 */
+	public function update_uid(): void {
+		$this->uid = $this->generate_uid();
+	}
+
+	/**
+	 * Returns the href of the smart link with ITM parameters appended.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param bool $skip_utm_params Whether to skip the ITM parameters.
+	 * @return string The href of the smart link with ITM parameters appended.
+	 */
+	public function get_link_href( $skip_utm_params = false ): string {
+		if ( $skip_utm_params ) {
+			return $this->href;
+		}
+
+		return Utils::append_itm_params(
+			$this->href,
+			array(
+				'campaign' => 'parsely-pch',
+				'source'   => 'smart-link',
+				'term'     => $this->uid,
+			)
+		);
 	}
 
 	/**
@@ -706,7 +729,10 @@ class Smart_Link extends Base_Model {
 		return array(
 			'smart_link_id' => $this->smart_link_id,
 			'uid'           => $this->uid,
-			'href'          => $this->href,
+			'href'          => array(
+				'raw' => $this->href,
+				'itm' => $this->get_link_href(),
+			),
 			'title'         => $this->title,
 			'text'          => $this->text,
 			'offset'        => $this->offset,
@@ -744,7 +770,7 @@ class Smart_Link extends Base_Model {
 		}
 
 		// If the UID has been provided, set it on the model.
-		$smart_link = new Smart_Link( $data['href'], $data['title'], $data['text'], $data['offset'] );
+		$smart_link = new Smart_Link( $data['href']['raw'], $data['title'], $data['text'], $data['offset'] );
 
 		if ( isset( $data['uid'] ) ) {
 			$smart_link->set_uid( $data['uid'] );
@@ -752,7 +778,7 @@ class Smart_Link extends Base_Model {
 			if ( $smart_link->exists() ) {
 				$smart_link->load();
 				// Update the fields.
-				$smart_link->set_href( $data['href'] );
+				$smart_link->set_href( $data['href']['raw'] );
 				$smart_link->title  = $data['title'];
 				$smart_link->text   = $data['text'];
 				$smart_link->offset = $data['offset'];

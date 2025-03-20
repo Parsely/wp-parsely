@@ -9,7 +9,7 @@ import { dispatch, select } from '@wordpress/data';
  * Internal dependencies
  */
 import { dispatchCoreBlockEditor } from '../../../@types/gutenberg/types';
-import { escapeRegExp } from '../../common/utils/functions';
+import { addITMParamsToURL, escapeRegExp, removeITMParamsFromURL } from '../../common/utils/functions';
 import { InboundSmartLink, SmartLink } from './provider';
 import { ALLOWED_BLOCKS } from './smart-linking';
 import { SmartLinkingStore } from './store';
@@ -433,7 +433,10 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 
 	allLinks.forEach( ( link ) => {
 		const uid = link.getAttribute( 'data-smartlink' ) ?? '';
-		const href = link.href;
+		const href = {
+			raw: removeITMParamsFromURL( link.href ),
+			itm: addSmartLinkITMParamsToURL( link.href, uid ),
+		};
 		const text = link.textContent ?? '';
 		const title = link.title;
 
@@ -595,7 +598,7 @@ export async function validateAndFixSmartLinks(
 
 		const link = Array.from( blockDoc.querySelectorAll( 'a' ) ).find( ( a ) => {
 			return a.textContent === missingSmartLink.text &&
-				a.href === missingSmartLink.href &&
+				a.href.includes( missingSmartLink.href.raw ) &&
 				! a.hasAttribute( 'data-smartlink' );
 		} );
 
@@ -608,6 +611,7 @@ export async function validateAndFixSmartLinks(
 
 		// Restore the missing fields from the link (data-smartlink and title).
 		link.setAttribute( 'data-smartlink', missingSmartLink.uid );
+		link.setAttribute( 'href', missingSmartLink.href.itm );
 		link.title = missingSmartLink.title;
 
 		// Update the block content with the new content.
@@ -744,5 +748,24 @@ export function trimURLForDisplay( url: string, maxLength: number ): string {
  * @return {string[]} The URLs from the smart links.
  */
 export function getAllSmartLinksURLs( smartLinks: SmartLink[] ): string[] {
-	return smartLinks.map( ( link ) => link.href );
+	return smartLinks.map( ( link ) => link.href.raw );
 }
+
+/**
+ * Adds ITM parameters to a smart link URL.
+ *
+ * @since 3.18.0
+ *
+ * @param {string} url          The URL to add ITM parameters to.
+ * @param {string} smartLinkUid The smart link UID to add ITM parameters for.
+ *
+ * @return {string} The URL with ITM parameters added.
+ */
+export function addSmartLinkITMParamsToURL( url: string, smartLinkUid: string ): string {
+	return addITMParamsToURL( url, {
+		campaign: 'parsely-pch',
+		source: 'smart-link',
+		term: smartLinkUid,
+	} );
+}
+
