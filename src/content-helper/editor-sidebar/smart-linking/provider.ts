@@ -248,6 +248,9 @@ export class SmartLinkingProvider extends BaseProvider {
 	/**
 	 * Returns a list of suggested links for the given content.
 	 *
+	 * @since 3.15.0
+	 * @since 3.18.0 Fetches the extra data for the outbound smart links.
+	 *
 	 * @param {string}   content          The content to generate links for.
 	 * @param {number}   maxLinksPerPost  The maximum number of links to return.
 	 * @param {string[]} urlExclusionList A list of URLs to exclude from the suggestions.
