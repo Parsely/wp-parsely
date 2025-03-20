@@ -88,6 +88,7 @@ export function addITMParamsToURL( url: string, itmParams: {
 	if ( itmParams.term ) {
 		urlObj.searchParams.set( 'itm_term', itmParams.term );
 	}
+
 	return urlObj.toString();
 }
 
@@ -107,5 +108,6 @@ export function removeITMParamsFromURL( url: string ): string {
 	urlObj.searchParams.delete( 'itm_medium' );
 	urlObj.searchParams.delete( 'itm_content' );
 	urlObj.searchParams.delete( 'itm_term' );
+
 	return urlObj.toString();
 }

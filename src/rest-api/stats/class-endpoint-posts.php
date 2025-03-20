@@ -232,6 +232,7 @@ class Endpoint_Posts extends Base_Endpoint {
 
 		return true;
 	}
+
 	/**
 	 * Validates that the parameter has at most 5 items.
 	 *

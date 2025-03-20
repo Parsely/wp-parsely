@@ -310,7 +310,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 		self::assertObjectHasProperty( 'raw', $data['data']->href );
 		self::assertObjectHasProperty( 'itm', $data['data']->href );
 
-		// Assert ITM parameters are added to the href.
+		// Assert that ITM parameters are added to the href.
 		self::assertStringContainsString( 'itm_campaign=parsely-pch', $data['data']->href->itm );
 		self::assertStringContainsString( 'itm_source=smart-link', $data['data']->href->itm );
 		self::assertStringContainsString( 'itm_term=' . $smart_link_data['uid'], $data['data']->href->itm );
@@ -442,7 +442,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 			self::assertArrayHasKey( 'raw', $smart_link['href'] );
 			self::assertArrayHasKey( 'itm', $smart_link['href'] );
 
-			// Assert ITM parameters are added to the href.
+			// Assert that ITM parameters are added to the href.
 			self::assertStringContainsString( 'itm_campaign=parsely-pch', $smart_link['href']['itm'] );
 			self::assertStringContainsString( 'itm_source=smart-link', $smart_link['href']['itm'] );
 			self::assertStringContainsString( 'itm_term=' . $smart_link['uid'], $smart_link['href']['itm'] );
