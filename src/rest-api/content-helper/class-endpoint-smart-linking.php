@@ -514,12 +514,16 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				$post = get_post( $post_id );
 
 				if ( null !== $post ) {
+					$post_type_obj  = get_post_type_object( $post->post_type );
+					$post_type_name = $post_type_obj instanceof \WP_Post_Type ? $post_type_obj->labels->singular_name : '';
+
 					$posts_meta[] = array(
 						'author'    => get_the_author_meta( 'display_name', intval( $post->post_author ) ),
 						'date'      => get_the_date( '', $post ),
 						'id'        => $post_id,
+						'title'     => $post->post_title,
 						'thumbnail' => get_the_post_thumbnail_url( $post, 'thumbnail' ),
-						'type'      => get_post_type( $post ),
+						'type'      => $post_type_name,
 						'url'       => $url,
 					);
 				}
@@ -564,11 +568,19 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			return false;
 		}
 
+		if ( ! is_array( $params['href'] ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $params['href']['raw'] ) ) {
+			return false;
+		}
+
 		// Try to get the smart link from the UID.
 		$smart_link = Smart_Link::get_smart_link( $params['uid'], intval( $post_id ) );
 		if ( $smart_link->exists() ) {
 			// Update the smart link with the new data.
-			$smart_link->set_href( $params['href'] );
+			$smart_link->set_href( $params['href']['raw'] );
 			$smart_link->title  = $params['title'];
 			$smart_link->text   = $params['text'];
 			$smart_link->offset = $params['offset'];

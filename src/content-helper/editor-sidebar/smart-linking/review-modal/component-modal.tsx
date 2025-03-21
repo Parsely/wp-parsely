@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { dispatchCoreBlockEditor, dispatchCoreEditor } from '../../../../@types/gutenberg/types';
 import { Telemetry } from '../../../../js/telemetry/telemetry';
-import { InboundSmartLink, OutboundSmartLink, SmartLink } from '../provider';
+import { SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock, isInboundSmartLink, selectSmartLink } from '../utils';
 import { InboundLinkDetails } from './component-inbound-link';
@@ -83,7 +83,7 @@ const SmartLinkingReviewModalComponent = ( {
 		[],
 	);
 
-	const [ selectedLink, setSelectedLink ] = useState<OutboundSmartLink | InboundSmartLink>( smartLinks[ 0 ] );
+	const [ selectedLink, setSelectedLink ] = useState<SmartLink>( smartLinks[ 0 ] );
 
 	/**
 	 * Loads the Smart Linking store actions.
@@ -109,7 +109,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 */
 	const applyLinkToBlock = async ( blockId: string, linkSuggestion: SmartLink ) => {
 		const anchor = document.createElement( 'a' );
-		anchor.href = linkSuggestion.href;
+		anchor.href = linkSuggestion.href.itm;
 		anchor.title = linkSuggestion.title;
 		// Add data-smartlink attribute to the anchor tag.
 		anchor.setAttribute( 'data-smartlink', linkSuggestion.uid );
@@ -293,7 +293,7 @@ const SmartLinkingReviewModalComponent = ( {
 		await applyLinkToBlock( selectedLink.match.blockId, selectedLink );
 
 		Telemetry.trackEvent( 'smart_linking_link_accepted', {
-			link: selectedLink.href,
+			link: selectedLink.href.raw,
 			title: selectedLink.title,
 			text: selectedLink.text,
 			uid: selectedLink.uid,
@@ -341,7 +341,7 @@ const SmartLinkingReviewModalComponent = ( {
 		await removeSmartLink( selectedLink.uid );
 
 		Telemetry.trackEvent( 'smart_linking_link_rejected', {
-			link: selectedLink.href,
+			link: selectedLink.href.raw,
 			title: selectedLink.title,
 			text: selectedLink.text,
 			uid: selectedLink.uid,
@@ -369,7 +369,7 @@ const SmartLinkingReviewModalComponent = ( {
 			await removeLinkFromBlock( block, selectedLink );
 
 			Telemetry.trackEvent( 'smart_linking_link_removed', {
-				link: selectedLink.href,
+				link: selectedLink.href.raw,
 				title: selectedLink.title,
 				text: selectedLink.text,
 				uid: selectedLink.uid,

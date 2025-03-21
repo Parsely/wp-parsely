@@ -374,7 +374,7 @@ export const SmartLinkingPanel = ( {
 
 		// Filter out self-referencing links.
 		links = links.filter( ( link ) => {
-			if ( link.href.includes( strippedPermalink ) ) {
+			if ( link.href.raw.includes( strippedPermalink ) ) {
 				// eslint-disable-next-line no-console
 				console.warn( `PCH Smart Linking: Skipping self-reference link: ${ link.href }` );
 				return false;

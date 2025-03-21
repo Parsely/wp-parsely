@@ -22,6 +22,14 @@ use const Parsely\PARSELY_FILE;
  * Utils Class.
  *
  * @since 3.17.0
+ *
+ * @phpstan-type ItmParams array{
+ *     campaign: string,
+ *     source?: string,
+ *     medium?: string,
+ *     content?: string,
+ *     term?: string,
+ * }
  */
 class Utils {
 	const DATE_UTC_FORMAT     = 'Y-m-d';
@@ -431,6 +439,60 @@ class Utils {
 			wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
 		}
 
-		return $post_id;
+		// A post ID was found, return it.
+		if ( 0 !== $post_id ) {
+			return $post_id;
+		}
+
+		// No post ID was found, try to find it from the slug.
+		$clean_url = preg_replace( '/\?.*$/', '', $url ); // Remove the query string from the URL.
+		if ( null === $clean_url ) {
+			$clean_url = $url;
+		}
+		$post_slug = basename( $clean_url );
+
+		$public_post_types = get_post_types(
+			array(
+				'public'       => true,
+				'show_in_rest' => true,
+			)
+		);
+		$post              = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
+
+		if ( null !== $post ) {
+			wp_cache_set( $url, $post->ID, 'wp_parsely_smart_link_url_to_postid' );
+			return $post->ID;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Appends ITM parameters to a URL.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string    $url The URL to append the ITM parameters to.
+	 * @param ItmParams $params The ITM parameters to append.
+	 * @return string The URL with the ITM parameters appended.
+	 */
+	public static function append_itm_params( string $url, $params ): string {
+		// Convert the params array to the correct format.
+		$mapping = array(
+			'campaign' => 'itm_campaign',
+			'source'   => 'itm_source',
+			'medium'   => 'itm_medium',
+			'content'  => 'itm_content',
+			'term'     => 'itm_term',
+		);
+
+		$itm_params = array();
+		foreach ( $params as $key => $value ) {
+			if ( array_key_exists( $key, $mapping ) ) {
+				$itm_params[ $mapping[ $key ] ] = $value;
+			}
+		}
+
+		return add_query_arg( $itm_params, $url );
 	}
 }
