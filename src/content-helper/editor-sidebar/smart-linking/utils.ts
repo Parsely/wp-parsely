@@ -762,8 +762,9 @@ export function getAllSmartLinksURLs( smartLinks: SmartLink[] ): string[] {
  */
 export function addSmartLinkITMParamsToURL( url: string, smartLinkUid: string ): string {
 	return addITMParamsToURL( url, {
-		campaign: 'parsely-pch',
-		source: 'smart-link',
+		campaign: 'wp-parsely',
+		medium: 'smart-link',
+		source: 'smart-linking',
 		term: smartLinkUid,
 	} );
 }

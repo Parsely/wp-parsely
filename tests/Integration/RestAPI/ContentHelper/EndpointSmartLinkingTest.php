@@ -311,8 +311,9 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 		self::assertObjectHasProperty( 'itm', $data['data']->href );
 
 		// Assert that ITM parameters are added to the href.
-		self::assertStringContainsString( 'itm_campaign=parsely-pch', $data['data']->href->itm );
-		self::assertStringContainsString( 'itm_source=smart-link', $data['data']->href->itm );
+		self::assertStringContainsString( 'itm_campaign=wp-parsely', $data['data']->href->itm );
+		self::assertStringContainsString( 'itm_medium=smart-link', $data['data']->href->itm );
+		self::assertStringContainsString( 'itm_source=smart-linking', $data['data']->href->itm );
 		self::assertStringContainsString( 'itm_term=' . $smart_link_data['uid'], $data['data']->href->itm );
 	}
 
@@ -443,8 +444,9 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 			self::assertArrayHasKey( 'itm', $smart_link['href'] );
 
 			// Assert that ITM parameters are added to the href.
-			self::assertStringContainsString( 'itm_campaign=parsely-pch', $smart_link['href']['itm'] );
-			self::assertStringContainsString( 'itm_source=smart-link', $smart_link['href']['itm'] );
+			self::assertStringContainsString( 'itm_campaign=wp-parsely', $smart_link['href']['itm'] );
+			self::assertStringContainsString( 'itm_medium=smart-link', $smart_link['href']['itm'] );
+			self::assertStringContainsString( 'itm_source=smart-linking', $smart_link['href']['itm'] );
 			self::assertStringContainsString( 'itm_term=' . $smart_link['uid'], $smart_link['href']['itm'] );
 		}
 	}
