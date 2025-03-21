@@ -3,7 +3,8 @@
 
 .traffic-boost-sidebar {
 	display: flex;
-	width: to_rem(450px);
+	max-width: to_rem(450px);
+	min-width: to_rem(320px);
 	flex-direction: column;
 	align-items: flex-start;
 	box-shadow:

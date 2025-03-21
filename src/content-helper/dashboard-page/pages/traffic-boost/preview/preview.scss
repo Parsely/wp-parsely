@@ -10,6 +10,7 @@
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+	min-width: to_rem(300px);
 
 	.wp-parsely-preview {
 		flex: 1;
