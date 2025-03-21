@@ -69,6 +69,15 @@
 				font-size: var(--font-size--extra-large);
 				font-weight: 500;
 				line-height: var(--font-size--extra-large);
+
+				.wp-parsely-loading {
+					width: 90%;
+
+					.wp-parsely-loading-message {
+						text-align: center;
+						max-width: to_rem(600px);
+					}
+				}
 			}
 
 			.components-spinner {
