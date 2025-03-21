@@ -824,6 +824,131 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
+	 * Gets smart links based on the specified parameters.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int                                                                  $post_id The post ID to get the smart links for.
+	 * @param string                                                               $type The type of smart links to get (outbound or inbound or all).
+	 * @param string                                                               $status The status of the smart links to get (all or pending or applied).
+	 * @param array<string,mixed>                                                  $args WP_Query arguments to pass to the query.
+	 * @param callable(Smart_Link):(Smart_Link|Inbound_Smart_Link|false|null)|null $process_smart_link_callback A callback to process each individual smart link.
+	 * @return array<Smart_Link> The smart links.
+	 */
+	public static function get_smart_links( int $post_id, string $type, string $status, array $args = array(), $process_smart_link_callback = null ): array {
+		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
+			$status = 'all';
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+		}
+
+		if ( ! in_array( $type, array( 'outbound', 'inbound', 'all' ), true ) ) {
+			_doing_it_wrong( __METHOD__, 'Invalid type, defaulting to outbound.', '3.18.0' );
+			$type = 'outbound';
+		}
+
+		$skip_cache = isset( $args['skip_cache'] ) && true === $args['skip_cache'];
+		$cache_key  = $type . '-' . $post_id . '-' . $status;
+
+		// If the cache is not being skipped, get the smart links from the cache.
+		if ( ! $skip_cache ) {
+			/** @var array<Smart_Link|Inbound_Smart_Link>|false $smart_links */
+			$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
+
+			if ( false !== $smart_links && count( $smart_links ) > 0 ) {
+				/** @var array<Smart_Link|Inbound_Smart_Link> $smart_links */
+				return $smart_links;
+			}
+		}
+
+		$tax_query = array();
+
+		// Add the tax query for the type of smart links to get.
+		if ( 'outbound' === $type ) {
+			$tax_query[] = array(
+				'taxonomy'         => 'smart_link_source',
+				'include_children' => false, // Performance optimization.
+				'field'            => 'name',
+				'terms'            => (string) $post_id,
+			);
+		} elseif ( 'inbound' === $type ) {
+			$tax_query[] = array(
+				'taxonomy'         => 'smart_link_destination',
+				'include_children' => false, // Performance optimization.
+				'field'            => 'name',
+				'terms'            => (string) $post_id,
+			);
+		}
+
+		// Add the tax query for the status of the smart links to get.
+		if ( Smart_Link_Status::ALL === $status ) {
+			$tax_query[] = array(
+				'taxonomy'         => 'smart_link_status',
+				'include_children' => false,
+				'field'            => 'name',
+				'terms'            => Smart_Link_Status::get_all_statuses(),
+			);
+		} else {
+			$tax_query[] = array(
+				'taxonomy'         => 'smart_link_status',
+				'include_children' => false,
+				'field'            => 'name',
+				'terms'            => array( $status ),
+			);
+		}
+		// Build the query arguments.
+		$query_args = array(
+			'post_type'      => 'parsely_smart_link',
+			'posts_per_page' => -1,
+			'fields'         => 'ids', // Only get the post IDs to improve performance.
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'tax_query'      => array_merge( array( 'relation' => 'AND' ), $tax_query ),
+		);
+
+		// Merge the query arguments with the additional arguments.
+		$query_args = array_merge( $query_args, $args );
+
+		// Get the smart links post objects.
+		$smart_links_query = new \WP_Query( $query_args );
+
+		// Create and process the smart links.
+		$smart_links = array();
+		foreach ( $smart_links_query->posts as $smart_link_id ) {
+			/** @var int $smart_link_id */
+			$smart_link = self::get_smart_link_by_id( $smart_link_id );
+
+			if ( false === $smart_link ) {
+				continue;
+			}
+
+			if ( is_callable( $process_smart_link_callback ) ) {
+				/** 
+				 * The processed smart link after it has been processed by the callback.
+				 *
+				 * This callback is used to modify the smart link before it is added to the array,
+				 * or false if the smart link should be skipped.
+				 *
+				 * @since 3.18.0
+				 * 
+				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link 
+				 * */
+				$smart_link = $process_smart_link_callback( $smart_link );
+			}
+
+			if ( false === $smart_link || null === $smart_link ) {
+				continue;
+			}
+
+			$smart_links[] = $smart_link;
+		}
+
+		// Cache the smart links, even if the cache is being skipped, to ensure that
+		// the existing cache stays fresh.
+		wp_cache_set( $cache_key, $smart_links, self::get_cache_group_for_post( $post_id ) );
+
+		return $smart_links;
+	}
+
+	/**
 	 * Gets the outbound smart links in a post.
 	 *
 	 * Outbound smart links are smart links that link to other posts.
@@ -836,73 +961,16 @@ class Smart_Link extends Base_Model {
 	 * @return array<Smart_Link> The smart links in the post.
 	 */
 	public static function get_outbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
-		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
-			$status = 'all';
-			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
-		}
-
-		$cache_key   = 'outbound-' . $post_id . '-' . $status;
-		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
-
-		// If the smart links are cached, return them.
-		if ( false !== $smart_links ) {
-			/** @var array<Smart_Link> $smart_links */
-			return $smart_links;
-		}
-
-		// Build the tax query.
-		$tax_query = array(
-			'relation' => 'AND',
+		/** @var array<Smart_Link> */
+		return self::get_smart_links(
+			$post_id,
+			'outbound',
+			$status,
 			array(
-				'taxonomy'         => 'smart_link_source',
-				'include_children' => false, // Performance optimization.
-				'field'            => 'name',
-				'terms'            => (string) $post_id,
-			),
+				'orderby' => 'date',
+				'order'   => 'ASC',
+			) 
 		);
-
-		// Add the status term to the tax query.
-		if ( Smart_Link_Status::ALL !== $status ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_status',
-				'include_children' => false,
-				'field'            => 'name',
-				'terms'            => $status,
-			);
-		}
-
-		// Build the query arguments.
-		$query_args = array(
-			'post_type'      => 'parsely_smart_link',
-			'posts_per_page' => -1,
-			'fields'         => 'ids', // Only get the post IDs to improve performance.
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-			'tax_query'      => $tax_query,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
-		);
-
-		// Get the smart links.
-		$smart_links = new \WP_Query( $query_args );
-
-		$links = array();
-		foreach ( $smart_links->posts as $smart_link_id ) {
-			if ( ! is_int( $smart_link_id ) ) {
-				continue;
-			}
-			$smart_link = self::get_smart_link_by_id( $smart_link_id );
-
-			if ( false === $smart_link ) {
-				continue;
-			}
-
-			$links[] = $smart_link;
-		}
-
-		// Cache the smart links.
-		wp_cache_set( $cache_key, $links, self::get_cache_group_for_post( $post_id ) );
-
-		return $links;
 	}
 
 	/**
@@ -918,89 +986,44 @@ class Smart_Link extends Base_Model {
 	 * @return array<Inbound_Smart_Link> The smart links in the post.
 	 */
 	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
-		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
-			$status = 'all';
-			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
-		}
-
-		$cache_key   = 'inbound-' . $post_id . '-' . $status;
-		$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
-
-		// If the smart links are cached, return them.
-		if ( false !== $smart_links ) {
-			/** @var array<Inbound_Smart_Link> $smart_links */
-			return $smart_links;
-		}
-
-		// Build the tax query.
-		$tax_query = array(
-			'relation' => 'AND',
+		/** @var array<Inbound_Smart_Link> */
+		return self::get_smart_links( 
+			$post_id, 
+			'inbound', 
+			$status, 
 			array(
-				'taxonomy'         => 'smart_link_destination',
-				'include_children' => false, // Performance optimization.
-				'field'            => 'name',
-				'terms'            => (string) $post_id,
+				'orderby' => 'date modified',
+				'order'   => 'ASC',
 			),
+			/**
+			 * Process the smart link to convert it to an inbound smart link.
+			 *
+			 * @param Smart_Link $smart_link The smart link to process.
+			 * @return Inbound_Smart_Link|false The processed smart link.
+			 */
+			function ( Smart_Link $smart_link ) {
+				$smart_link = Inbound_Smart_Link::from_smart_link( $smart_link );
+				$is_linked  = $smart_link->is_linked();
+				$status     = $smart_link->get_status();
+
+				// If the smart link is linked and the status is pending, set the status to applied.
+				// This is to ensure backwards compatibility with Parse.ly < 3.18.0.
+				if ( $is_linked && Smart_Link_Status::PENDING === $status ) {
+					$smart_link->set_status( Smart_Link_Status::APPLIED, true );
+					$status = Smart_Link_Status::APPLIED;
+				}
+
+				// Check if this inbound smart link is still linked to a post.
+				// If not, do not add it to the array, and instead remove it.
+				if ( Smart_Link_Status::APPLIED === $status && ! $is_linked ) {
+					$smart_link->delete();
+					return false;
+				}
+
+				/** @var Inbound_Smart_Link */
+				return $smart_link;
+			}
 		);
-
-		// Add the status term to the tax query.
-		if ( Smart_Link_Status::ALL !== $status ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_status',
-				'include_children' => false,
-				'field'            => 'name',
-				'terms'            => $status,
-			);
-		}
-
-		// Build the query arguments.
-		$query_args = array(
-			'post_type'      => 'parsely_smart_link',
-			'posts_per_page' => -1,
-			'fields'         => 'ids', // Only get the post IDs to improve performance.
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-			'tax_query'      => $tax_query,
-			'orderby'        => 'date modified',
-			'order'          => 'ASC',
-		);
-
-		// Get the smart links.
-		$smart_links = new \WP_Query( $query_args );
-
-		$links = array();
-		foreach ( $smart_links->posts as $smart_link_id ) {
-			/** @var int $smart_link_id */
-			$smart_link = self::get_smart_link_by_id( $smart_link_id );
-
-			if ( false === $smart_link ) {
-				continue;
-			}
-
-			$smart_link = Inbound_Smart_Link::from_smart_link( $smart_link );
-			$is_linked  = $smart_link->is_linked();
-			$status     = $smart_link->get_status();
-
-			// If the smart link is linked and the status is pending, set the status to applied.
-			// This is to ensure backwards compatibility with Parse.ly < 3.18.0.
-			if ( $is_linked && Smart_Link_Status::PENDING === $status ) {
-				$smart_link->set_status( Smart_Link_Status::APPLIED, true );
-				$status = Smart_Link_Status::APPLIED;
-			}
-
-			// Check if this inbound smart link is still linked to a post.
-			// If not, do not add it to the array, and instead remove it.
-			if ( Smart_Link_Status::APPLIED === $status && ! $is_linked ) {
-				$smart_link->delete();
-				continue;
-			}
-
-			$links[] = $smart_link;
-		}
-
-		// Cache the smart links.
-		wp_cache_set( $cache_key, $links, self::get_cache_group_for_post( $post_id ) );
-
-		return $links;
 	}
 
 	/**
