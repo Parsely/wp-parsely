@@ -218,7 +218,7 @@ export const PreviewIframe = ( {
 		}
 
 		const scrollToHighlightedElement = async () => {
-			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
+			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight:not(.previous-suggestion)' );
 			if ( highlightedElement ) {
 				// Wait 100ms to ensure the highlighted element is visible.
 				await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
@@ -235,7 +235,7 @@ export const PreviewIframe = ( {
 		// So we use a MutationObserver to watch for DOM changes and scroll to the highlighted
 		// element once it's visible.
 		const watchForHighlightedElement = () => {
-			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
+			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight:not(.previous-suggestion)' );
 			if ( highlightedElement ) {
 				scrollToHighlightedElement();
 			}
@@ -353,7 +353,8 @@ export const PreviewIframe = ( {
 
 		removeSmartLinkHighlights( iframe );
 		highlightSmartLink( iframe );
-	}, [ contentAreaRef, highlightSmartLink, isLoading, removeSmartLinkHighlights, selectedText ] );
+		jumpToSmartLink( iframe );
+	}, [ contentAreaRef, highlightSmartLink, isLoading, jumpToSmartLink, removeSmartLinkHighlights, selectedText ] );
 
 	/**
 	 * Highlights the link type in the iframe.
