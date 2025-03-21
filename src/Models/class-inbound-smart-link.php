@@ -88,23 +88,28 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$data['post_data'] = $this->get_post_data();
 
-		$has_valid_placement = $this->has_valid_placement( true );
+		// If the smart link is not applied, check if it has a valid placement.
+		if ( ! $this->is_applied() ) {
+			$has_valid_placement = $this->has_valid_placement( true );
 
-		if ( is_wp_error( $has_valid_placement ) ) {
-			$data['validation'] = array(
-				'valid'  => false,
-				'reason' => $has_valid_placement->get_error_message(),
-			);
-		} else {
-			$data['validation'] = array(
-				'valid' => true,
-			);
+			if ( is_wp_error( $has_valid_placement ) ) {
+				$data['validation'] = array(
+					'valid'  => false,
+					'reason' => $has_valid_placement->get_error_message(),
+				);
+			} else {
+				$data['validation'] = array(
+					'valid' => true,
+				);
+			}
 		}
 
-		$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
-
-		if ( '' !== $previous_link_attributes ) {
-			$data['is_link_replacement'] = true;
+		// If the smart link is applied, check if it is a link replacement.
+		if ( $this->is_applied() ) {
+			$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
+			if ( '' !== $previous_link_attributes ) {
+				$data['is_link_replacement'] = true;
+			}
 		}
 
 		return $data;
