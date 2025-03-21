@@ -229,13 +229,13 @@ function parsely_integrations( $parsely = null ): Integrations {
 	return $parsely_integrations;
 }
 
-add_action( 'admin_init', __NAMESPACE__ . '\\parsely_check_data_scheme_updates', 999 );
+add_action( 'admin_init', __NAMESPACE__ . '\\parsely_check_data_schema_updates', 999 );
 /**
- * Checks and performs any data scheme updates.
+ * Checks and performs any data schema updates.
  *
  * @since 3.18.0 Handles the update from schema version 0 to 1.
  */
-function parsely_check_data_scheme_updates(): void {
+function parsely_check_data_schema_updates(): void {
 	$current_data_schema_version = get_option( 'parsely_data_schema_version' );
 
 	if ( false === $current_data_schema_version ) {
@@ -248,7 +248,7 @@ function parsely_check_data_scheme_updates(): void {
 
 	/**
 	 * Updates the smart links to have the Smart Link Status terms,
-	 * and deletes the _smart_link_applied meta, if it exists.
+	 * and checks the _smart_link_applied meta, if it exists.
 	 *
 	 * Schema version 1.
 	 *
@@ -309,9 +309,6 @@ function parsely_check_data_scheme_updates(): void {
 
 			// Flush the cache for the smart link.
 			$smart_link->flush_all_cache();
-
-			// Delete the deprecated _smart_link_applied meta.
-			delete_post_meta( $post_id, '_smart_link_applied' );
 		}
 
 		update_option( 'parsely_data_schema_version', PARSELY_DATA_SCHEMA_VERSION );
