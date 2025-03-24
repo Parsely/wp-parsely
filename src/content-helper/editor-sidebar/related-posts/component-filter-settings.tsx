@@ -48,17 +48,17 @@ export const RelatedPostsFilterSettings = ( {
 		value: author, label: author,
 	} ) );
 
-	let sectionOptions: { value: string, label: string }[] = [];
+	let categoryOptions: { value: string, label: string }[] = [];
 
-	if ( true !== window.wpParselyUseSectionSlugsInSearches ) {
+	if ( true !== window.wpParselyUseCategorySlugsInSearches ) {
 		// Default behavior: Use section names to search.
-		sectionOptions = postData.categories.map( ( section: SidebarPostDataCategory ) => ( {
-			value: section.name, label: section.name,
+		categoryOptions = postData.categories.map( ( category: SidebarPostDataCategory ) => ( {
+			value: category.name, label: category.name,
 		} ) );
 	} else {
 		// Overridden behavior: Use section slugs to search.
-		sectionOptions = postData.categories.map( ( section: SidebarPostDataCategory ) => ( {
-			value: section.slug, label: section.name,
+		categoryOptions = postData.categories.map( ( category: SidebarPostDataCategory ) => ( {
+			value: category.slug, label: category.name,
 		} ) );
 	}
 
@@ -84,7 +84,7 @@ export const RelatedPostsFilterSettings = ( {
 					onChange={ ( selection ) => props.onFiltersChange(
 						selection, PostFilterType.Section
 					) }
-					options={ sectionOptions }
+					options={ categoryOptions }
 					value={ filters.section }
 				/>
 			) }

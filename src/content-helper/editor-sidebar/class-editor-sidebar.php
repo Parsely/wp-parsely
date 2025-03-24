@@ -178,10 +178,10 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			'before'
 		);
 
-		$use_section_slugs_in_searches = apply_filters( 'wp_parsely_use_section_slugs_in_searches', false );
+		$use_category_slugs_in_searches = apply_filters( 'wp_parsely_use_category_slugs_in_searches', false );
 		wp_add_inline_script(
 			static::get_script_id(),
-			'window.wpParselyUseSectionSlugsInSearches = ' . wp_json_encode( $use_section_slugs_in_searches ) . ';',
+			'window.wpParselyUseCategorySlugsInSearches = ' . wp_json_encode( $use_category_slugs_in_searches ) . ';',
 			'before'
 		);
 
