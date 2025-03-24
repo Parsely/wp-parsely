@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-labels: "wp-parsely, bug"
+labels: "wp-parsely, Type: Bug"
 ---
 
 <!--
