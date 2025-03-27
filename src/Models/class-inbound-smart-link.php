@@ -88,23 +88,28 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$data['post_data'] = $this->get_post_data();
 
-		$has_valid_placement = $this->has_valid_placement( true );
+		// If the smart link is not applied, check if it has a valid placement.
+		if ( ! $this->is_applied() ) {
+			$has_valid_placement = $this->has_valid_placement( true );
 
-		if ( is_wp_error( $has_valid_placement ) ) {
-			$data['validation'] = array(
-				'valid'  => false,
-				'reason' => $has_valid_placement->get_error_message(),
-			);
-		} else {
-			$data['validation'] = array(
-				'valid' => true,
-			);
+			if ( is_wp_error( $has_valid_placement ) ) {
+				$data['validation'] = array(
+					'valid'  => false,
+					'reason' => $has_valid_placement->get_error_message(),
+				);
+			} else {
+				$data['validation'] = array(
+					'valid' => true,
+				);
+			}
 		}
 
-		$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
-
-		if ( '' !== $previous_link_attributes ) {
-			$data['is_link_replacement'] = true;
+		// If the smart link is applied, check if it is a link replacement.
+		if ( $this->is_applied() ) {
+			$previous_link_attributes = get_post_meta( $this->smart_link_id, '_traffic_boost_original_link_attributes', true );
+			if ( '' !== $previous_link_attributes ) {
+				$data['is_link_replacement'] = true;
+			}
 		}
 
 		return $data;
@@ -193,7 +198,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return bool True if the smart link is a link replacement, false otherwise.
 	 */
 	public function did_replace_link(): bool {
-		if ( ! $this->applied ) {
+		if ( ! $this->is_applied() ) {
 			return false;
 		}
 
@@ -390,7 +395,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		/** @var \DOMElement $p The paragraph element. */
 		foreach ( $paragraphs as $p ) {
 			// If the smart link is applied, we need to find the paragraph that contains the smart link.
-			if ( $this->applied ) {
+			if ( $this->is_applied() ) {
 				// Check each anchor tag within the paragraph.
 				$anchors = $p->getElementsByTagName( 'a' );
 				/** @var \DOMElement $anchor The anchor element. */
@@ -630,7 +635,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public function apply() {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
-		if ( $this->applied ) {
+		if ( $this->is_applied() ) {
 			return new \WP_Error( 'traffic_boost_already_applied', __( 'Smart link already applied', 'wp-parsely' ) );
 		}
 
@@ -815,7 +820,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		self::flush_cache_by_post_id( $this->source_post_id );
 
 		// Set the applied flag to true.
-		$this->applied = true;
+		$this->set_status( Smart_Link_Status::APPLIED );
 
 		// Save the smart link.
 		$this->save();
@@ -836,7 +841,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	public function remove( $restore_original_link = false, $delete_smart_link = true ) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// If the smart link is not applied, we can just delete it.
-		if ( ! $this->applied ) {
+		if ( ! $this->is_applied() ) {
 			if ( $delete_smart_link ) {
 				return $this->delete();
 			}
@@ -945,7 +950,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		self::flush_cache_by_post_id( $this->source_post_id );
 
 		// Set the applied flag to false.
-		$this->applied = false;
+		$this->set_status( Smart_Link_Status::PENDING );
 
 		// Delete the smart link.
 		if ( $delete_smart_link ) {
@@ -1059,26 +1064,25 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public static function delete_pending_suggestions( int $post_id ): array {
 		// Get all posts of type parsely_smart_link that have the destination taxonomy set to the post_id
-		// and the _smart_link_applied meta set to false.
+		// and the smart_link_status set to pending.
 		$args = array(
 			'post_type'      => 'parsely_smart_link',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			'tax_query'      => array(
+				'relation' => 'AND',
 				array(
 					'taxonomy'         => 'smart_link_destination',
 					'field'            => 'name',
 					'include_children' => false,
 					'terms'            => (string) $post_id,
 				),
-			),
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-			'meta_query'     => array(
 				array(
-					'key'     => '_smart_link_applied',
-					'value'   => 'false',
-					'compare' => '=',
+					'taxonomy'         => 'smart_link_status',
+					'field'            => 'name',
+					'include_children' => false,
+					'terms'            => Smart_Link_Status::PENDING,
 				),
 			),
 		);
