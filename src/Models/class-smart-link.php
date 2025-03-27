@@ -45,9 +45,9 @@ class Smart_Link extends Base_Model {
 	 * For example, 'traffic_boost' or 'smart_linking'.
 	 *
 	 * @since 3.18.0
-	 * @var string|false The context of the smart link.
+	 * @var string|null The context of the smart link.
 	 */
-	protected $context = false;
+	protected $context = null;
 
 	/**
 	 * The source post object.
@@ -369,7 +369,7 @@ class Smart_Link extends Base_Model {
 			'_smart_link_offset' => $this->offset,
 		);
 
-		if ( false !== $this->context ) {
+		if ( null !== $this->context ) {
 			$meta['_smart_link_context'] = $this->context;
 		}
 
@@ -481,7 +481,7 @@ class Smart_Link extends Base_Model {
 		);
 
 		// If the context is set, add it to the params as the source.
-		if ( false !== $this->get_context() ) {
+		if ( null !== $this->get_context() ) {
 			// Replace underscores with hyphens, for consistency with the ITM parameters.
 			$params['source'] = str_replace( '_', '-', $this->get_context() );
 		}
@@ -494,7 +494,7 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @return string|false The context of the smart link.
+	 * @return string|null The context of the smart link.
 	 */
 	public function get_context() {
 		return $this->context;
@@ -739,7 +739,7 @@ class Smart_Link extends Base_Model {
 		}
 	}
 
-	/**
+	/** 
 	 * Sets the context of the smart link.
 	 *
 	 * @since 3.18.0
@@ -782,9 +782,9 @@ class Smart_Link extends Base_Model {
 			'title'         => $this->title,
 			'text'          => $this->text,
 			'offset'        => $this->offset,
+			'context'       => $this->context,
 			'status'        => $this->status,
 			'applied'       => $this->is_applied(),
-			'context'       => $this->context,
 			'source'        => array(
 				'post_type'     => $this->source_post_type,
 				'post_id'       => $this->source_post_id,
@@ -968,15 +968,15 @@ class Smart_Link extends Base_Model {
 			}
 
 			if ( is_callable( $process_smart_link_callback ) ) {
-				/**
+				/** 
 				 * The processed smart link after it has been processed by the callback.
 				 *
 				 * This callback is used to modify the smart link before it is added to the array,
 				 * or false if the smart link should be skipped.
 				 *
 				 * @since 3.18.0
-				 *
-				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link
+				 * 
+				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link 
 				 * */
 				$smart_link = $process_smart_link_callback( $smart_link );
 			}
@@ -1016,7 +1016,7 @@ class Smart_Link extends Base_Model {
 			array(
 				'orderby' => 'date',
 				'order'   => 'ASC',
-			)
+			) 
 		);
 	}
 
@@ -1034,10 +1034,10 @@ class Smart_Link extends Base_Model {
 	 */
 	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		/** @var array<Inbound_Smart_Link> */
-		return self::get_smart_links(
-			$post_id,
-			'inbound',
-			$status,
+		return self::get_smart_links( 
+			$post_id, 
+			'inbound', 
+			$status, 
 			array(
 				'orderby' => 'date modified',
 				'order'   => 'ASC',

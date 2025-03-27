@@ -325,7 +325,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$smart_link->set_status( Smart_Link_Status::APPLIED );
 
 		// If the context is not set, set it to the Smart Linking.
-		if ( false === $smart_link->get_context() ) {
+		if ( null === $smart_link->get_context() ) {
 			$smart_link->set_context( $this->get_pch_feature_name() );
 		}
 
@@ -603,7 +603,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		}
 
 		// If the context is not set, set it to the Smart Linking.
-		if ( false === $smart_link->get_context() ) {
+		if ( null === $smart_link->get_context() ) {
 			$smart_link->set_context( $this->get_pch_feature_name() );
 		}
 

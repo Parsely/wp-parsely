@@ -857,7 +857,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		}
 
 		// If the context is not set, set it to the Traffic Boost.
-		if ( false === $inbound_link->get_context() ) {
+		if ( null === $inbound_link->get_context() ) {
 			$inbound_link->set_context( $this->get_pch_feature_name() );
 		}
 
