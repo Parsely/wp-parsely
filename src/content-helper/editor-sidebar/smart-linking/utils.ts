@@ -457,6 +457,7 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 			href,
 			text,
 			title,
+			status: 'applied',
 			applied: true,
 			offset: getLinkOffset( link, doc ),
 			match: {

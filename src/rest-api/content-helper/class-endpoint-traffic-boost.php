@@ -383,7 +383,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 
 		$suggestions = array_map(
 			function ( Inbound_Smart_Link $link ) use ( $save ) {
-				$link->applied = false;
+				$link->set_status( Smart_Link_Status::PENDING );
 
 				// Set the smart link context.
 				$link->set_context( $this->get_pch_feature_name() );
@@ -803,7 +803,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			$inbound_link->offset = $offset;
 		}
 
-		if ( $inbound_link->applied ) {
+		if ( $inbound_link->is_applied() ) {
 			return new WP_Error(
 				'parsely_smart_link_already_applied',
 				__( 'Smart link already applied.', 'wp-parsely' )
