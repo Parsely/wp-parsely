@@ -188,7 +188,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @link https://docs.parse.ly/api-analytics-endpoint/#1-get-analytics-posts
 	 *
-	 * @param array<string,mixed> $params The parameters to pass to the API request.
+	 * @param array<string,mixed|array<string,mixed>> $params The parameters to pass to the API request.
 	 * @return array<mixed>|WP_Error Returns the posts analytics or a WP_Error object in case of an error.
 	 */
 	public function get_posts( array $params = array() ) {

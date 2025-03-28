@@ -101,6 +101,10 @@ trait Post_Data_Trait {
 			$data['visitors'] = number_format_i18n( $item['metrics']['visitors'] );
 		}
 
+		if ( isset( $item['metrics']['recirculation_rate'] ) ) {
+			$data['recirculationRate'] = number_format_i18n( $item['metrics']['recirculation_rate'], 3 );
+		}
+
 		// The avg_engaged metric can be in different locations depending on the
 		// endpoint and passed sort/url parameters.
 		$avg_engaged = $item['metrics']['avg_engaged'] ?? $item['avg_engaged'] ?? null;
@@ -116,12 +120,37 @@ trait Post_Data_Trait {
 			$data['title'] = $item['title'];
 		}
 
-		if ( isset( $item['url'] ) ) {
-			$site_id = $this->parsely->get_site_id();
-			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
-			$post_id = url_to_postid( $item['url'] ); // 0 if the post cannot be found.
+		// Handle the campaign metrics, if they exist.
+		if ( isset( $item['campaign_metrics'] ) && is_array( $item['campaign_metrics'] ) ) {
+			$data['campaign'] = array();
 
+			if ( isset( $item['campaign_metrics']['views'] ) ) {
+				$data['campaign']['views'] = number_format_i18n( $item['campaign_metrics']['views'] );
+			}
+
+			if ( isset( $item['campaign_metrics']['visitors'] ) ) {
+				$data['campaign']['visitors'] = number_format_i18n( $item['campaign_metrics']['visitors'] );
+			}
+
+			if ( isset( $item['campaign_metrics']['recirculation_rate'] ) ) {
+				$data['campaign']['recirculationRate'] = number_format_i18n( $item['campaign_metrics']['recirculation_rate'], 3 );
+			}
+
+			if ( isset( $item['campaign_metrics']['avg_engaged'] ) ) {
+				$data['campaign']['avgEngaged'] = Utils::get_formatted_duration( (float) $item['campaign_metrics']['avg_engaged'] );
+			}
+		}
+
+		if ( isset( $item['url'] ) ) {
+			$site_id  = $this->parsely->get_site_id();
+			$post_id  = Utils::get_post_id_by_url( $item['url'] );
 			$post_url = Parsely::get_url_with_itm_source( $item['url'], null );
+
+			// If we have a post ID, update the post canonical URL.
+			if ( 0 !== $post_id ) {
+				Parsely::set_canonical_url( $post_id, $post_url );
+			}
+
 			if ( Utils::parsely_is_https_supported() ) {
 				$post_url = str_replace( 'http://', 'https://', $post_url );
 			}
