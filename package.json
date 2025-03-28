@@ -59,7 +59,7 @@
 		"@wordpress/components": "^29.6.0",
 		"@wordpress/compose": "^7.21.0",
 		"@wordpress/core-data": "^7.20.0",
-		"@wordpress/data": "^10.20.0",
+		"@wordpress/data": "^10.21.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.21.0",
 		"@wordpress/edit-post": "^8.20.0",
 		"@wordpress/editor": "^14.20.0",
