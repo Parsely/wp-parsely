@@ -816,8 +816,8 @@ class Inbound_Smart_Link extends Smart_Link {
 			return $updated_post;
 		}
 
-		// Flush the cache for the post.
-		self::flush_cache_by_post_id( $this->source_post_id );
+		// Flush the caches for the smart link.
+		$this->flush_all_cache();
 
 		// Set the applied flag to true.
 		$this->set_status( Smart_Link_Status::APPLIED );
@@ -947,7 +947,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		// Flush the cache for the post.
-		self::flush_cache_by_post_id( $this->source_post_id );
+		$this->flush_all_cache();
 
 		// Set the applied flag to false.
 		$this->set_status( Smart_Link_Status::PENDING );
@@ -1055,6 +1055,52 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
+	 * Gets the number of pending (suggestions) inbound smart links for a post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $post_id The post ID.
+	 * @return int The number of pending inbound smart links.
+	 */
+	public static function get_suggestions_count( int $post_id ): int {
+		$cache_key = 'traffic_boost_suggestions_count_' . $post_id;
+		$count     = wp_cache_get( $cache_key );
+
+		if ( false !== $count ) {
+			/** @var int $count */
+			return $count;
+		}
+
+		$args = array(
+			'post_type'      => 'parsely_smart_link',
+			'posts_per_page' => 0,
+			'fields'         => 'ids',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'tax_query'      => array(
+				'relation' => 'AND',
+				array(
+					'taxonomy'         => 'smart_link_destination',
+					'field'            => 'slug',
+					'include_children' => false,
+					'terms'            => (string) $post_id,
+				),
+				array(
+					'taxonomy'         => 'smart_link_status',
+					'field'            => 'slug',
+					'include_children' => false,
+					'terms'            => Smart_Link_Status::PENDING,
+				),
+			),
+		);
+
+		$query = new \WP_Query( $args );
+
+		wp_cache_set( $cache_key, $query->found_posts );
+		
+		return $query->found_posts;
+	}
+
+	/**
 	 * Deletes all pending (not applied) inbound smart links suggestions for a given post.
 	 *
 	 * @since 3.18.0
@@ -1074,13 +1120,13 @@ class Inbound_Smart_Link extends Smart_Link {
 				'relation' => 'AND',
 				array(
 					'taxonomy'         => 'smart_link_destination',
-					'field'            => 'name',
+					'field'            => 'slug',
 					'include_children' => false,
 					'terms'            => (string) $post_id,
 				),
 				array(
 					'taxonomy'         => 'smart_link_status',
-					'field'            => 'name',
+					'field'            => 'slug',
 					'include_children' => false,
 					'terms'            => Smart_Link_Status::PENDING,
 				),
@@ -1175,13 +1221,13 @@ class Inbound_Smart_Link extends Smart_Link {
 			'tax_query'      => array(
 				array(
 					'taxonomy'         => 'smart_link_destination',
-					'field'            => 'name',
+					'field'            => 'slug',
 					'include_children' => false,
 					'terms'            => (string) $destination_post_id,
 				),
 				array(
 					'taxonomy'         => 'smart_link_source',
-					'field'            => 'name',
+					'field'            => 'slug',
 					'include_children' => false,
 					'terms'            => (string) $source_post_id,
 				),
@@ -1279,5 +1325,18 @@ class Inbound_Smart_Link extends Smart_Link {
 		$text2 = html_entity_decode( $text2 );
 
 		return $text1 === $text2;
+	}
+
+	/**
+	 * Flushes the cache for the post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param int $post_id The post ID.
+	 */
+	protected static function flush_cache_by_post_id( int $post_id ): void {
+		parent::flush_cache_by_post_id( $post_id );
+
+		wp_cache_delete( 'traffic_boost_suggestions_count_' . $post_id );
 	}
 }

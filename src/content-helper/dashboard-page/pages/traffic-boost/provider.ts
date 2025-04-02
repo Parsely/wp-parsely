@@ -2,8 +2,8 @@
  * Internal dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { BaseWordPressProvider, HydratedPost } from '../../../common/base-wordpress-provider';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
+import { BaseWordPressProvider, HydratedPost } from '../../../common/providers/base-wordpress-provider';
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 
 /**
@@ -265,6 +265,14 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				generatedSuggestions = [ ...generatedSuggestions, ...filteredGeneratedSuggestions ];
 				totalSuggestions += filteredGeneratedSuggestions.length;
 			} catch ( error ) {
+				// If the error is an AbortError, we need to throw it.
+				if (
+					( error instanceof DOMException && error.name === 'AbortError' ) ||
+					( error instanceof ContentHelperError && error.code === ContentHelperErrorCode.ParselyAborted )
+				) {
+					throw error;
+				}
+
 				// eslint-disable-next-line no-console
 				console.error( error );
 				maxRetries--;
@@ -603,6 +611,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				include: postIds,
 				posts_per_page: 100,
 				status: 'any',
+				context: 'edit',
 				rest_endpoint: postRestEndpoint,
 			} );
 

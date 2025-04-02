@@ -7,14 +7,14 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
-import { BaseProvider } from '../common/base-provider';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../common/content-helper-error';
+import { BaseProvider } from '../common/providers/base-provider';
+import { TopPostsSettings } from '../common/settings';
 import { getApiPeriodParams } from '../common/utils/api';
 import { PostData } from '../common/utils/post';
-import { TopPostsSettings } from '../common/settings';
 
 export const TOP_POSTS_DEFAULT_LIMIT = 5;
 

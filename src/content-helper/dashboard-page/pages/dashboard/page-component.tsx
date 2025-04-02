@@ -6,12 +6,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { useState } from '@wordpress/element';
 import { SettingsProvider, TrafficBoostSettings } from '../../../common/settings';
 import { VerifyCredentials } from '../../../common/verify-credentials';
 import { PageBody, PageContainer, PostsTable } from '../../components';
 import { DashboardHeading } from '../../components/typography-components';
-import { DashboardHeader } from './header-component';
 import './dashboard.scss';
+import { DashboardHeader } from './header-component';
 
 /**
  * Gets the settings from the passed JSON.
@@ -62,6 +63,7 @@ const getSettingsFromJson = ( settingsJson: string ): TrafficBoostSettings => {
  * @since 3.18.0
  */
 export const DashboardPage = (): React.JSX.Element => {
+	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 	return (
 		<SettingsProvider
 			endpoint="traffic-boost"
@@ -78,10 +80,14 @@ export const DashboardPage = (): React.JSX.Element => {
 								'wp-parsely'
 							) }
 						</p>
-						<PostsTable query={ {
-							status: 'publish',
-							per_page: 5,
-						} } />
+						<PostsTable
+							currentPage={ currentPage }
+							setCurrentPage={ setCurrentPage }
+							query={ {
+								status: 'publish',
+								per_page: 5,
+							} }
+						/>
 					</PageBody>
 				</PageContainer>
 			</VerifyCredentials>

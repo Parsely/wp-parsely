@@ -9,8 +9,8 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { HydratedPost } from '../../../../../common/providers/base-wordpress-provider';
 import { TrafficBoostStore } from '../../store';
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 
 /**
  * Represents the type of link.

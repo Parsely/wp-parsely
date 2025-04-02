@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal imports
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { HydratedPost } from '../../../../../common/providers/base-wordpress-provider';
 import { TrafficBoostLink } from '../../provider';
 
 /**

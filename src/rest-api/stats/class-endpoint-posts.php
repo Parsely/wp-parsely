@@ -109,6 +109,12 @@ class Endpoint_Posts extends Base_Endpoint {
 			array( $this, 'get_posts' ),
 			array_merge(
 				array(
+					'use_wp_permalink' => array(
+						'description' => 'Whether to use the WordPress permalink.',
+						'type'        => 'boolean',
+						'required'    => false,
+						'default'     => false,
+					),
 					'period_start'     => array(
 						'description' => 'The start of the period to query.',
 						'type'        => 'string',
@@ -303,6 +309,21 @@ class Endpoint_Posts extends Base_Endpoint {
 			isset( $params['campaign_content'] ) || 
 			isset( $params['campaign_term'] ) ) {
 			$use_campaign_params = true;
+		}
+
+		// If we are using the WordPress permalink, generate a canonical URL for each URL.
+		if ( isset( $params['use_wp_permalink'] ) && $params['use_wp_permalink'] ) {
+			$new_urls = array();
+
+			foreach ( $params['urls'] as $url ) {
+				// Generate a canonical URL for the WordPress permalink.
+				$new_urls[] = \Parsely\Parsely::get_canonical_url( $url );
+
+				// Also append the WordPress permalink to the new URLs as a fallback.
+				$new_urls[] = $url;
+			}
+
+			$params['urls'] = $new_urls;
 		}
 
 		// Build the request params.

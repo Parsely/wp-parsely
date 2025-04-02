@@ -343,6 +343,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			);
 		}
 
+		// Clear the cache for the smart link.
+		$smart_link->flush_all_cache();
+
 		return new WP_REST_Response(
 			array(
 				'data' => json_decode( $smart_link->serialize() ),
@@ -398,6 +401,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			} else {
 				$added_links[] = $smart_link;
 			}
+
+			// Clear the cache for the smart link.
+			$smart_link->flush_all_cache();
 		}
 
 		// If no link was added, return an error response.
@@ -468,6 +474,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			if ( ! $found ) {
 				$removed_links[] = $existing_link;
 				$existing_link->delete();
+
+				// Clear the cache for the smart link.
+				$existing_link->flush_all_cache();
 			}
 		}
 
@@ -487,6 +496,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			}
 
 			$saved_links[] = $smart_link;
+
+			// Clear the cache for the smart link.
+			$smart_link->flush_all_cache();
 		}
 
 		$response = array(

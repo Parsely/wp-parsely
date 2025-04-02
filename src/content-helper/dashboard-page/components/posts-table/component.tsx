@@ -1,75 +1,25 @@
 /**
- * External dependencies
- */
-import { Link } from 'react-router';
-
-/**
  * WordPress dependencies
  */
 import {
 	Button,
-	DropdownMenu,
-	MenuGroup,
-	MenuItem,
 	__experimentalNumberControl as NumberControl,
 	Spinner,
 } from '@wordpress/components';
-import { format } from '@wordpress/date';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	chevronLeft,
 	chevronRight,
-	moreVertical,
 } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
-import { HydratedPost, QueryParams } from '../../../common/base-wordpress-provider';
-import { Thumbnail } from '../../../common/components/thumbnail';
+import { HydratedPost, QueryParams } from '../../../common/providers/base-wordpress-provider';
+import { PostStats, StatsProvider } from '../../../common/providers/stats-provider';
 import { DashboardProvider } from '../../provider';
-
-/**
- * PostInfo component.
- *
- * Represents the post information, the first column in the PostsTable.
- *
- * @since 3.18.0
- *
- * @param {Object}       props      The component props.
- * @param {HydratedPost} props.post The post object.
- */
-const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
-	const prettyDate = format( 'M j, o', post.date ?? '' );
-
-	return (
-		<div className="posts-table-post-info">
-			<Thumbnail
-				post={ post }
-				size={ 45 }
-				className="posts-table-thumbnail"
-			/>
-			<div className="post-details">
-				<div className="post-title">
-					{ post.title.rendered !== ''
-						? <div dangerouslySetInnerHTML={ { __html: post.title.rendered } } />
-						: __( '(no title)', 'wp-parsely' )
-					}
-				</div>
-				<div className="post-meta">
-					<span className="post-date">{ prettyDate }</span>
-					<span className="post-author">{ post.author?.name }</span>
-					<div className="post-categories">
-						{ post.categories.map( ( category ) => (
-							<span key={ category.id }>{ category.name }</span>
-						) ) }
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-};
+import { SinglePostRow } from './components/single-post-row';
 
 /**
  * TablePagination component.
@@ -77,6 +27,7 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
  * Represents the pagination controls for the PostsTable.
  *
  * @since 3.18.0
+  import { SinglePostRow } from './components/single-post-row';
  *
  * @param {Object}   props                The component props.
  * @param {boolean}  props.isLoading      Whether the posts are loading.
@@ -134,39 +85,20 @@ const TablePagination = ( {
 };
 
 /**
- * ActionDropdown component.
- *
- * Represents the action dropdown for each post in the PostsTable.
- *
- * @since 3.18.0
- */
-const ActionDropdown = () => (
-	<DropdownMenu icon={ moreVertical } label={ __( 'Actions', 'wp-parsely' ) }>
-		{ ( { onClose } ) => (
-			<>
-				<MenuGroup>
-					<MenuItem onClick={ onClose }>
-						{ __( 'View', 'wp-parsely' ) }
-					</MenuItem>
-					<MenuItem onClick={ onClose }>
-						{ __( 'Edit', 'wp-parsely' ) }
-					</MenuItem>
-				</MenuGroup>
-			</>
-		) }
-	</DropdownMenu>
-);
-
-/**
  * Type definition for the PostsTable component.
  *
  * @since 3.18.0
  */
 type PostsTableType = {
 	query?: QueryParams;
+	currentPage: number;
+	setCurrentPage: ( value: number | ( ( prev: number ) => number ) ) => void;
 	hideHeader?: boolean;
 	hidePagination?: boolean;
 	hideLoading?: boolean;
+	hideSuggestionBubble?: boolean;
+	hideStats?: boolean;
+	hideActions?: boolean;
 	compact?: boolean;
 	noResultsMessage?: React.ReactNode;
 	className?: string;
@@ -184,9 +116,14 @@ type PostsTableType = {
  */
 export const PostsTable = ( {
 	query = {},
+	currentPage,
+	setCurrentPage,
 	hideHeader = false,
 	hidePagination = false,
 	hideLoading = false,
+	hideSuggestionBubble = false,
+	hideStats = false,
+	hideActions = false,
 	compact = false,
 	noResultsMessage = __( 'No posts found.', 'wp-parsely' ),
 	className,
@@ -194,12 +131,13 @@ export const PostsTable = ( {
 }: PostsTableType ): React.JSX.Element => {
 	// TODO: Add a global state to store the posts for faster loading.
 	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
+	const [ stats, setStats ] = useState<PostStats[]>( [] );
 
-	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 	const [ totalPages, setTotalPages ] = useState<number>( 1 );
 	const [ itemsPerPage ] = useState<number>( query.per_page ?? 10 );
 
 	const [ isLoading, setIsLoading ] = useState<boolean>( true );
+	const [ isLoadingStats, setIsLoadingStats ] = useState<boolean>( true );
 	const didFirstSearch = useRef( false );
 
 	/**
@@ -211,11 +149,26 @@ export const PostsTable = ( {
 		const fetchPosts = async () => {
 			try {
 				const fetchedPosts = await DashboardProvider.getInstance().getPosts( {
+					context: 'embed',
 					...query,
 					per_page: itemsPerPage,
 					page: currentPage,
 				} );
 
+				if ( ! hideStats ) {
+					// Fetch the stats for the posts.
+					const fetchedStats = await StatsProvider.getInstance().getStatsForPosts( fetchedPosts.data, {
+						limit: fetchedPosts.data.length,
+						period_start: '30d',
+						page: 1,
+						campaign_id: 'wp-parsely',
+						campaign_medium: 'smart-link',
+					} );
+
+					setStats( fetchedStats );
+				}
+
+				// Set the posts and total pages after fetching the stats.
 				setPosts( fetchedPosts.data );
 				setTotalPages( fetchedPosts.total_pages );
 				didFirstSearch.current = true;
@@ -223,11 +176,44 @@ export const PostsTable = ( {
 				console.error( error ); // eslint-disable-line no-console
 			} finally {
 				setIsLoading( false );
+				setIsLoadingStats( false );
 			}
 		};
+
 		setIsLoading( true );
+		setIsLoadingStats( true );
+
 		fetchPosts();
-	}, [ currentPage, itemsPerPage, query ] );
+	}, [ currentPage, itemsPerPage, query, hideStats ] );
+
+	/**
+	 * Handles when the initial stats loading fails.
+	 *
+	 * It tries to fetch the stats again for this URL, but instead try with the WordPress permalink.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to fetch the stats for.
+	 */
+	const onErrorLoadingStats = useCallback( async ( post: HydratedPost ) => {
+		try {
+			// Try to fetch the stats again for this URL, but instead try with the WordPress permalink.
+			// The API will then try to convert the permalink to a canonical URL, and use
+			// both the permalink and the canonical URL to fetch the stats.
+			const fetchedStats = await StatsProvider.getInstance().getStatsForPosts( [ post ], {
+				limit: 1,
+				period_start: '30d',
+				page: 1,
+				campaign_id: 'wp-parsely',
+				campaign_medium: 'smart-link',
+				use_wp_permalink: true,
+			} );
+
+			setStats( ( prevStats ) => [ ...prevStats, fetchedStats[ 0 ] ] );
+		} catch ( error ) {
+			// Do nothing.
+		}
+	}, [] );
 
 	/**
 	 * Handles the previous button click.
@@ -246,6 +232,18 @@ export const PostsTable = ( {
 	const handleNext = () => {
 		setCurrentPage( ( prev ) => prev + 1 );
 	};
+
+	/**
+	 * Gets the stats for a specific post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to get the stats for.
+	 * @return {PostStats} The stats for the post.
+	 */
+	const getStatsForPost = useCallback( ( post: HydratedPost ) => {
+		return stats.find( ( stat ) => stat.postId === post.id );
+	}, [ stats ] );
 
 	const tableClasses: string[] = [ 'parsely-table-container' ];
 	if ( className ) {
@@ -292,42 +290,34 @@ export const PostsTable = ( {
 				{ ! hideHeader && (
 					<thead>
 						<tr>
-							<th className="post-info-header">{ __( 'POST', 'wp-parsely' ) }</th>
+							<th scope="col" className="post-info-header">{ __( 'POST', 'wp-parsely' ) }</th>
 							{ ! compact && (
-								<th className="boost-perf-header">{ __( 'BOOST PERFORMANCE', 'wp-parsely' ) }</th>
+								<>
+									<th scope="col" className="views-header">
+										{ __( 'VIEWS', 'wp-parsely' ) }
+										<span className="views-header-period">(30 days)</span>
+									</th>
+								</>
 							) }
+
 						</tr>
 					</thead>
 				) }
 				<tbody>
 					{ posts.map( ( post, index ) => (
-						<tr
+						<SinglePostRow
 							key={ post.id }
-							className={ index % 2 === 0 ? 'row-even' : 'row-odd' }
-							onClick={ () => onPostClick?.( post ) }
-						>
-							<td className="post-info">
-								<PostInfo post={ post } />
-							</td>
-							{ ! compact && (
-								<>
-									<td className="boost-perf">35%</td>
-									<td className="actions">
-										<Link
-											to={ {
-												pathname: `/traffic-boost/${ post.id }`,
-											} }
-											state={ {
-												post,
-											} }
-										>
-											{ __( 'Boost Traffic', 'wp-parsely' ) }
-										</Link>
-										<ActionDropdown />
-									</td>
-								</>
-							) }
-						</tr>
+							post={ post }
+							stats={ getStatsForPost( post ) }
+							isLoadingStats={ isLoadingStats }
+							index={ index }
+							onPostClick={ onPostClick }
+							compact={ compact }
+							showSuggestionBubble={ ! hideSuggestionBubble }
+							showStats={ ! hideStats }
+							showActions={ ! hideActions }
+							onErrorLoadingStats={ onErrorLoadingStats }
+						/>
 					) ) }
 				</tbody>
 			</table>

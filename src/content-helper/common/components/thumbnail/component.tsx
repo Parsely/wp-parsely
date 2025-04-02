@@ -7,7 +7,7 @@ import { page } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../base-wordpress-provider';
+import { HydratedPost } from '../../providers/base-wordpress-provider';
 
 /**
  * Defines the props structure for Thumbnail.

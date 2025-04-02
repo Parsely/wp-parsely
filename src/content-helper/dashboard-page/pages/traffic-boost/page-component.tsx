@@ -3,8 +3,8 @@
  */
 import { SearchControl } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -19,7 +19,12 @@ import './traffic-boost.scss';
  */
 export const TrafficBoostPage = (): React.JSX.Element => {
 	const [ searchQuery, setSearchQuery ] = useState<string>( '' );
-	const debouncedSetSearchQuery = useDebounce( setSearchQuery, 300 );
+	const debouncedSetSearchQuery = useDebounce( ( value: string ) => {
+		setSearchQuery( value );
+		setCurrentPage( 1 );
+	}, 300 );
+
+	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 
 	return (
 		<PageContainer name="traffic-boost">
@@ -37,10 +42,13 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 					/>
 				</div>
 				<PostsTable
+					currentPage={ currentPage }
+					setCurrentPage={ setCurrentPage }
 					query={ {
 						status: 'publish',
 						per_page: 10,
 						search: searchQuery,
+						search_columns: [ 'post_title', 'post_excerpt' ],
 					} }
 				/>
 			</PageBody>

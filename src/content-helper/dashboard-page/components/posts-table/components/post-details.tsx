@@ -1,0 +1,75 @@
+/**
+ * WordPress dependencies
+ */
+import { format } from '@wordpress/date';
+import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import { Thumbnail } from '../../../../common/components/thumbnail';
+import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
+import { SuggestionBubble } from './suggestion-bubble';
+
+/**
+ * Type definition for the PostDetails component.
+ *
+ * @since 3.18.0
+ */
+type PostDetailsProps = {
+	post: HydratedPost;
+	showSuggestionBubble?: boolean;
+};
+
+/**
+ * PostDetails component.
+ *
+ * Represents the post details, the first column in the PostsTable.
+ *
+ * @since 3.18.0
+ *
+ * @param {PostDetailsProps} props The component props.
+ */
+export const PostDetails = ( { post, showSuggestionBubble = true }: PostDetailsProps ): React.JSX.Element => {
+	const prettyDate = format( 'M j, o', post.date ?? '' );
+	const numberOfSuggestions = post.parsely?.traffic_boost_suggestions_count ?? 0;
+
+	let postTitle = post.title.rendered;
+
+	// If the title is longer than 80 characters, truncate it and add an ellipsis.
+	if ( postTitle !== '' ) {
+		if ( postTitle.length > 80 ) {
+			postTitle = postTitle.substring( 0, 80 ) + '&hellip;';
+		}
+	}
+
+	return (
+		<div className="posts-table-post-info">
+			<Thumbnail
+				post={ post }
+				size={ 45 }
+				className="posts-table-thumbnail"
+			/>
+			<div className="post-details">
+				<div className="post-title">
+					{ postTitle !== ''
+						? <span title={ post.title.rendered } dangerouslySetInnerHTML={ { __html: postTitle } }	/>
+						: __( '(no title)', 'wp-parsely' )
+					}
+					{ showSuggestionBubble && numberOfSuggestions > 0 && (
+						<SuggestionBubble postId={ post.id } numberOfSuggestions={ numberOfSuggestions } />
+					) }
+				</div>
+				<div className="post-meta">
+					<span className="post-date">{ prettyDate }</span>
+					<span className="post-author">{ post.author?.name }</span>
+					<div className="post-categories">
+						{ post.categories.map( ( category ) => (
+							<span key={ category.id }>{ category.name }</span>
+						) ) }
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+};

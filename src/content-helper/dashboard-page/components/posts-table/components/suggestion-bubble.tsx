@@ -1,0 +1,55 @@
+/**
+ * External dependencies
+ */
+import { useNavigate } from 'react-router';
+
+/**
+ * WordPress dependencies
+ */
+import { Tooltip } from '@wordpress/components';
+
+/**
+ * Type definition for the SuggestionBubble component.
+ *
+ * @since 3.18.0
+ */
+type SuggestionBubbleProps = {
+	postId: number;
+	numberOfSuggestions: number;
+};
+
+/**
+ * SuggestionBubble component.
+ *
+ * Used to display the number of pending suggestions for a post.
+ *
+ * @since 3.18.0
+ *
+ * @param {SuggestionBubbleProps} props The props for the SuggestionBubble component.
+ */
+export const SuggestionBubble = ( { postId, numberOfSuggestions }: SuggestionBubbleProps ) => {
+	const navigate = useNavigate();
+
+	/**
+	 * Handles the click event on the suggestion bubble.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleClick = () => {
+		navigate( `/traffic-boost/${ postId }` );
+	};
+
+	return (
+		<Tooltip
+			text={ `${ numberOfSuggestions } pending suggestions` }
+			className="suggestion-bubble"
+		>
+			<button
+				className="suggestion-bubble"
+				onClick={ handleClick }
+			>
+				<span className="suggestion-bubble-number">{ numberOfSuggestions }</span>
+			</button>
+		</Tooltip>
+	);
+};

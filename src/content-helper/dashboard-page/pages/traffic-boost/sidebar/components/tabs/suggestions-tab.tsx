@@ -9,9 +9,9 @@ import { error, update } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
 import { Loading as LoadingComponent } from '../../../../../../common/components/loading';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../../../common/content-helper-error';
+import { HydratedPost } from '../../../../../../common/providers/base-wordpress-provider';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { AddNewLinkButton } from '../add-new-link-button';
