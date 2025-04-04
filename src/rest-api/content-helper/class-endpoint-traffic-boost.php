@@ -385,6 +385,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			function ( Inbound_Smart_Link $link ) use ( $save ) {
 				$link->set_status( Smart_Link_Status::PENDING );
 
+				// Set the context to Traffic Boost.
+				$link->set_context( $this->get_pch_feature_name() );
+
 				// If the save flag is set, save the smart link.
 				if ( $save ) {
 					$link->save();
@@ -515,6 +518,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				)
 			);
 		}
+
+		// Set the context to Traffic Boost.
+		$valid_suggestion->set_context( $this->get_pch_feature_name() );
 
 		// Check if there's already a smart link with the same source and destination posts.
 		$existing_smart_link = Inbound_Smart_Link::get_smart_link_by_source_and_destination( $source_post_id, $destination_post->ID );
@@ -848,6 +854,11 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				'parsely_smart_link_not_found',
 				__( 'Smart link not found', 'wp-parsely' )
 			);
+		}
+
+		// If the context is not set, set it to Traffic Boost.
+		if ( null === $inbound_link->get_context() ) {
+			$inbound_link->set_context( $this->get_pch_feature_name() );
 		}
 
 		// Set the inbound link in the request.

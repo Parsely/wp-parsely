@@ -249,6 +249,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 		$smart_links = array_map(
 			function ( Smart_Link $link ) {
+				// Set the context to Smart Linking.
+				$link->set_context( $this->get_pch_feature_name() );
+
 				return $link->to_array();
 			},
 			$response
@@ -320,6 +323,11 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 		// Mark as applied.
 		$smart_link->set_status( Smart_Link_Status::APPLIED );
+
+		// If the context is not set, set it to Smart Linking.
+		if ( null === $smart_link->get_context() ) {
+			$smart_link->set_context( $this->get_pch_feature_name() );
+		}
 
 		// The smart link properties are set in the validate callback.
 		$saved = $smart_link->save();
@@ -592,6 +600,11 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			 */
 			$smart_link = Smart_Link::deserialize( $encoded_data );
 			$smart_link->set_source_post_id( intval( $post_id ) );
+		}
+
+		// If the context is not set, set it to Smart Linking.
+		if ( null === $smart_link->get_context() ) {
+			$smart_link->set_context( $this->get_pch_feature_name() );
 		}
 
 		// Set the smart link attribute in the request.

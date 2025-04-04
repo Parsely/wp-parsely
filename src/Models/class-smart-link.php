@@ -40,6 +40,16 @@ class Smart_Link extends Base_Model {
 	public $source_post_id = 0;
 
 	/**
+	 * The context of the smart link.
+	 *
+	 * For example, 'traffic_boost' or 'smart_linking'.
+	 *
+	 * @since 3.18.0
+	 * @var string|null The context of the smart link.
+	 */
+	protected $context = null;
+
+	/**
 	 * The source post object.
 	 *
 	 * @since 3.18.0
@@ -255,6 +265,11 @@ class Smart_Link extends Base_Model {
 
 		$this->status = $this->get_status();
 
+		// Load the context of the smart link, if it exists.
+		if ( isset( $this->smart_link_post_meta['_smart_link_context'] ) ) {
+			$this->context = $this->get_string_meta( '_smart_link_context' );
+		}
+
 		// Load the source post ID.
 		$source_terms = wp_get_post_terms( $this->smart_link_id, 'smart_link_source' );
 		if ( ! is_wp_error( $source_terms ) && count( $source_terms ) > 0 ) {
@@ -353,6 +368,10 @@ class Smart_Link extends Base_Model {
 			'_smart_link_text'   => $this->text,
 			'_smart_link_offset' => $this->offset,
 		);
+
+		if ( null !== $this->context ) {
+			$meta['_smart_link_context'] = $this->context;
+		}
 
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $this->smart_link_id, $key, $value );
@@ -455,14 +474,30 @@ class Smart_Link extends Base_Model {
 			return $this->href;
 		}
 
-		return Utils::append_itm_params(
-			$this->href,
-			array(
-				'campaign' => 'parsely-pch',
-				'source'   => 'smart-link',
-				'term'     => $this->uid,
-			)
+		$params = array(
+			'campaign' => 'wp-parsely',
+			'medium'   => 'smart-link',
+			'term'     => $this->uid,
 		);
+
+		// If the context is set, add it to the params as the source.
+		if ( null !== $this->get_context() ) {
+			// Replace underscores with hyphens, for consistency with the ITM parameters.
+			$params['source'] = str_replace( '_', '-', $this->get_context() );
+		}
+
+		return Utils::append_itm_params( $this->href, $params );
+	}
+
+	/**
+	 * Returns the context of the smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @return string|null The context of the smart link.
+	 */
+	public function get_context() {
+		return $this->context;
 	}
 
 	/**
@@ -705,6 +740,17 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
+	 * Sets the context of the smart link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $context The context of the smart link.
+	 */
+	public function set_context( string $context ): void {
+		$this->context = $context;
+	}
+
+	/**
 	 * Generates a unique ID for the suggested link.
 	 *
 	 * It takes the href, title, text, and offset properties and concatenates
@@ -736,6 +782,7 @@ class Smart_Link extends Base_Model {
 			'title'         => $this->title,
 			'text'          => $this->text,
 			'offset'        => $this->offset,
+			'context'       => $this->context,
 			'status'        => $this->status,
 			'applied'       => $this->is_applied(),
 			'source'        => array(
@@ -921,16 +968,16 @@ class Smart_Link extends Base_Model {
 			}
 
 			if ( is_callable( $process_smart_link_callback ) ) {
-				/** 
+				/**
 				 * The processed smart link after it has been processed by the callback.
 				 *
 				 * This callback is used to modify the smart link before it is added to the array,
 				 * or false if the smart link should be skipped.
 				 *
 				 * @since 3.18.0
-				 * 
-				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link 
-				 * */
+				 *
+				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link
+				 */
 				$smart_link = $process_smart_link_callback( $smart_link );
 			}
 
@@ -969,7 +1016,7 @@ class Smart_Link extends Base_Model {
 			array(
 				'orderby' => 'date',
 				'order'   => 'ASC',
-			) 
+			)
 		);
 	}
 
@@ -988,9 +1035,9 @@ class Smart_Link extends Base_Model {
 	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		/** @var array<Inbound_Smart_Link> */
 		return self::get_smart_links( 
-			$post_id, 
-			'inbound', 
-			$status, 
+			$post_id,
+			'inbound',
+			$status,
 			array(
 				'orderby' => 'date modified',
 				'order'   => 'ASC',
