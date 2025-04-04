@@ -2,7 +2,7 @@
 name: Release template
 about: Internally used for new releases
 title: Release wp-parsely x.y.z
-labels: "wp-parsely, Type: Maintenance"
+labels: "wp-parsely, Maintenance"
 ---
 
 This is an issue for tracking the next `wp-parsely` release. This ticket is to be opened the week before the actual release, so we have enough time to complete all the related tasks.
