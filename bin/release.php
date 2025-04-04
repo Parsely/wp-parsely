@@ -79,6 +79,7 @@ function generate_release_log( string $milestone ): string {
 	$result = '';
 	$delay  = 500; // Delay between API calls in milliseconds.
 	$labels = array( // GitHub labels for which to get data.
+		'Breaking Changes',
 		'Added',
 		'Changed',
 		'Deprecated',
