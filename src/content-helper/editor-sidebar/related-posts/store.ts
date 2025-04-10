@@ -37,7 +37,11 @@ interface SetFilterParamsAction {
 	filters: PostFilters;
 }
 
-type ActionTypes = SetFirstRunAction | SetLoadingAction | SetPostsAction | SetFilterParamsAction;
+interface ResetAction {
+	type: 'RESET';
+}
+
+type ActionTypes = SetFirstRunAction | SetLoadingAction | SetPostsAction | SetFilterParamsAction | ResetAction;
 
 const defaultState: PostsState = {
 	isFirstRun: true,
@@ -79,6 +83,8 @@ export const RelatedPostsStore = createReduxStore( 'wp-parsely/related-posts', {
 					...state,
 					filters: action.filters,
 				};
+			case 'RESET':
+				return defaultState;
 			default:
 				return state;
 		}
@@ -106,6 +112,18 @@ export const RelatedPostsStore = createReduxStore( 'wp-parsely/related-posts', {
 			return {
 				type: 'SET_FILTERS',
 				filters,
+			};
+		},
+		/**
+		 * Resets the state to the default state. Useful for testing.
+		 *
+		 * @since 3.18.0
+		 *
+		 * @return {ResetAction} Action object for resetting the state.
+		 */
+		reset(): ResetAction {
+			return {
+				type: 'RESET',
 			};
 		},
 	},
