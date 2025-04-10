@@ -5,6 +5,11 @@ import { createReduxStore, register } from '@wordpress/data';
 import { PostData } from '../../common/utils/post';
 import { PostFilters } from '../../common/utils/constants';
 
+/**
+ * Represents the state for the Related Posts sidebar component.
+ *
+ * @since 3.18.0
+ */
 interface PostsState {
 	isFirstRun: boolean;
 	isLoading: boolean;
@@ -45,6 +50,11 @@ const defaultState: PostsState = {
 	posts: [],
 };
 
+/**
+ * Redux store for managing filter and posts state for the Related Posts sidebar component.
+ *
+ * @since 3.18.0
+ */
 export const RelatedPostsStore = createReduxStore( 'wp-parsely/related-posts', {
 	initialState: defaultState,
 	reducer( state: PostsState = defaultState, action: ActionTypes ): PostsState {
