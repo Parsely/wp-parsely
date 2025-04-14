@@ -11,7 +11,7 @@ import {
  */
 import { __ } from '@wordpress/i18n';
 import { PostFilters, PostFilterType } from '../../common/utils/constants';
-import { SidebarPostData } from '../editor-sidebar';
+import { SidebarPostData, SidebarPostDataCategory } from '../editor-sidebar';
 
 /**
  * Defines the props structure for FilterControls.
@@ -48,9 +48,19 @@ export const RelatedPostsFilterSettings = ( {
 		value: author, label: author,
 	} ) );
 
-	const sectionOptions = postData.categories.map( ( section: string ) => ( {
-		value: section, label: section,
-	} ) );
+	let categoryOptions: { value: string, label: string }[] = [];
+
+	if ( true !== window.wpParselyUseCategorySlugsInSearches ) {
+		// Default behavior: Use section names to search.
+		categoryOptions = postData.categories.map( ( category: SidebarPostDataCategory ) => ( {
+			value: category.name, label: category.name,
+		} ) );
+	} else {
+		// Overridden behavior: Use section slugs to search.
+		categoryOptions = postData.categories.map( ( category: SidebarPostDataCategory ) => ( {
+			value: category.slug, label: category.name,
+		} ) );
+	}
 
 	return (
 		<div className="related-posts-filter-settings">
@@ -74,7 +84,7 @@ export const RelatedPostsFilterSettings = ( {
 					onChange={ ( selection ) => props.onFiltersChange(
 						selection, PostFilterType.Section
 					) }
-					options={ sectionOptions }
+					options={ categoryOptions }
 					value={ filters.section }
 				/>
 			) }

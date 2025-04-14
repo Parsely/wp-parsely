@@ -51,8 +51,18 @@ export type OnSettingChangeFunction = ( key: keyof SidebarSettings, value: strin
  */
 export interface SidebarPostData {
 	authors: string[];
-	categories: string[];
+	categories: SidebarPostDataCategory[];
 	tags: string[];
+}
+
+/**
+ * Defines the structure of a SidebarPostData category.
+ *
+ * @since 3.18.0
+ */
+export interface SidebarPostDataCategory {
+	name: string;
+	slug: string;
 }
 
 /**
