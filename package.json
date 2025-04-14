@@ -62,7 +62,7 @@
 		"@wordpress/data": "^10.22.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.22.0",
 		"@wordpress/edit-post": "^8.21.0",
-		"@wordpress/editor": "^14.21.0",
+		"@wordpress/editor": "^14.22.0",
 		"@wordpress/element": "^6.22.0",
 		"@wordpress/env": "^10.22.0",
 		"@wordpress/eslint-plugin": "^22.8.0",
