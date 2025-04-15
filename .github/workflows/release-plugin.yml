@@ -142,9 +142,10 @@ jobs:
           TAG_NAME="${{ env.VERSION }}"
           if ${{ env.DRY_RUN }}; then
             TAG_NAME="dry-run-${{ env.VERSION }}"
-            # If the tag already exists, delete the tag
+            # If the tag already exists, delete it both locally and remotely
             if git tag --list | grep -q "${TAG_NAME}"; then
               git tag -d "${TAG_NAME}"
+              git push --delete origin ":refs/tags/${TAG_NAME}" || true
             fi
           fi
 
