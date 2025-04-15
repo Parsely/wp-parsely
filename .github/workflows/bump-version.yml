@@ -105,7 +105,7 @@ jobs:
 
       - name: Format the version changelog
         run: |
-          PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g')
+          PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g' | sed 's/^[[:space:]]*//')
           echo $PARSELY_RELEASE_LOG
           # Write the multiline variable to $GITHUB_ENV using the correct syntax
           echo "PARSELY_RELEASE_LOG<<EOF" >> $GITHUB_ENV
@@ -120,4 +120,5 @@ jobs:
             $PARSELY_RELEASE_LOG" \
             --base ${{ github.ref_name }} \
             --head update/wp-parsely-version-to-${{ env.NEW_VERSION }} \
-            --assignee ${{ github.actor }}
+            --assignee ${{ github.actor }} \
+            --milestone ${{ env.NEW_VERSION }}
