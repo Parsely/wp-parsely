@@ -15,7 +15,7 @@ env:
 jobs:
   validate_version:
     name: Validate the new version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       current_version: ${{ steps.get_current_version.outputs.current_version }}
 
@@ -68,7 +68,7 @@ jobs:
   run_release_php_script:
     name: Bump the version and create the PR
     needs: validate_version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
       GH_TOKEN: ${{ github.token }}
