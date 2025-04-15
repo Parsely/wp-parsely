@@ -106,11 +106,11 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		/**
 		 * The post object.
 		 *
-		 * @var WP_Post $post
+		 * @var WP_Post|null $post
 		 */
 		$post = get_post( $post_id );
 
-		if ( ! Dashboard_Link::can_show_link( $post, $this->parsely ) ) {
+		if ( null === $post || ! Dashboard_Link::can_show_link( $post, $this->parsely ) ) {
 			return null;
 		}
 
