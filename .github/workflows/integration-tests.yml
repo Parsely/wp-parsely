@@ -18,7 +18,7 @@ concurrency:
 jobs:
   test:
     name: PHP ${{ matrix.php }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     env:
       WP_VERSION: ${{ matrix.wp }}
@@ -72,6 +72,11 @@ jobs:
         uses: ramsey/composer-install@v3
         with:
           composer-options: --ignore-platform-reqs
+
+      - name: Install Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install subversion
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
