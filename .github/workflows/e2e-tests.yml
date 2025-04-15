@@ -27,10 +27,13 @@ jobs:
       - name: Refresh Composer autoload files
         run: composer dump-autoload --classmap-authoritative
 
-      - name: Use desired version of NodeJS
+      - name: Read .nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4.1.0
         with:
-          node-version: 18
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
       - name: Npm install
