@@ -73,6 +73,11 @@ jobs:
         with:
           composer-options: --ignore-platform-reqs
 
+      - name: Install Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install subversion
+
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
 
