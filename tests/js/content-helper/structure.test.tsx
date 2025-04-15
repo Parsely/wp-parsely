@@ -9,6 +9,11 @@ import {
 } from '@testing-library/react';
 
 /**
+ * WordPress dependencies
+ */
+import { dispatch } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import {
@@ -26,6 +31,9 @@ import {
 	RELATED_POSTS_DEFAULT_LIMIT,
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
+import {
+	RelatedPostsStore,
+} from '../../../src/content-helper/editor-sidebar/related-posts/store';
 
 // Avoid "ReferenceError: ResizeObserver is not defined" error.
 window.ResizeObserver =
@@ -119,6 +127,11 @@ jest.mock( '../../../src/content-helper/editor-sidebar/related-posts/hooks', () 
 const relatedPostsPanel = <RelatedPostsPanel />;
 
 describe( 'PCH Editor Sidebar Related Post panel', () => {
+	beforeEach( () => {
+		// Reset <RelatedPostsPanel /> to its initial state for each test.
+		dispatch( RelatedPostsStore ).reset();
+	} );
+
 	afterEach( () => {
 		jest.clearAllMocks();
 		setMockPostData( [ 'admin' ], [], [] );

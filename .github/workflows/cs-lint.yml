@@ -19,7 +19,7 @@ concurrency:
 jobs:
   checkcs:
     name: 'Basic CS and QA checks'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     env:
       XMLLINT_INDENT: '	'

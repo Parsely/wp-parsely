@@ -34,7 +34,7 @@ env:
 jobs:
   validate_version:
     name: Validate Version and Branch
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Output Inputs
         run: |
@@ -121,7 +121,7 @@ jobs:
     name: Tag and Release
     needs: [ validate_version, integration_tests, e2e_tests ]
     if: ${{ !failure() && !cancelled() }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
@@ -142,9 +142,10 @@ jobs:
           TAG_NAME="${{ env.VERSION }}"
           if ${{ env.DRY_RUN }}; then
             TAG_NAME="dry-run-${{ env.VERSION }}"
-            # If the tag already exists, delete the tag
+            # If the tag already exists, delete it both locally and remotely
             if git tag --list | grep -q "${TAG_NAME}"; then
               git tag -d "${TAG_NAME}"
+              git push --delete origin ":refs/tags/${TAG_NAME}" || true
             fi
           fi
 
@@ -211,7 +212,7 @@ jobs:
     name: Deploy to WordPress.org
     needs: tag_and_release
     if: ${{ !failure() && !cancelled() }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Deploy Details
         run: |
