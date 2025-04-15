@@ -2,8 +2,12 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { PostData } from '../../common/utils/post';
+
+/**
+ * Internal dependencies
+ */
 import { PostFilters } from '../../common/utils/constants';
+import { PostData } from '../../common/utils/post';
 
 /**
  * Represents the state for the Related Posts sidebar component.

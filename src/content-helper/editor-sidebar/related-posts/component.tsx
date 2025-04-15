@@ -187,6 +187,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 	const onMetricChange = ( selection: string ) => {
 		if ( isInEnum( selection, Metric ) ) {
 			const updatedMetric = selection as Metric;
+
 			setSettings( {
 				RelatedPosts: {
 					...settings.RelatedPosts,
@@ -223,16 +224,19 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 	};
 
 	/**
-	 * Fetches related posts.
+	 * Fetches the related posts.
 	 *
-	 * @since 3.17.0
+	 * @since 3.4.0
+	 * @since 3.18.0 Added `fetchPeriod`, `fetchMetric`, and `fetchFilters` parameters.
 	 *
-	 * @param {Period}      fetchPeriod  The period.
-	 * @param {Metric}      fetchMetric  The metric.
-	 * @param {PostFilters} fetchFilters The filters.
-	 * @param {number}      retries      The number of retries.
+	 * @param {Period}      fetchPeriod  The period for which to fetch data.
+	 * @param {Metric}      fetchMetric  The metric to sort by.
+	 * @param {PostFilters} fetchFilters The filters to use in the request.
+	 * @param {number}      retries      The max number of retries to perform in case of failure(s).
 	 */
-	const fetchPosts = async ( fetchPeriod: Period, fetchMetric: Metric, fetchFilters: PostFilters, retries: number ) => {
+	const fetchPosts = async (
+		fetchPeriod: Period, fetchMetric: Metric, fetchFilters: PostFilters, retries: number
+	) : Promise<void> => {
 		setLoading( true );
 
 		RelatedPostsProvider.getInstance().getRelatedPosts( fetchPeriod, fetchMetric, fetchFilters )

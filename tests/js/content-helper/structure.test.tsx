@@ -9,6 +9,11 @@ import {
 } from '@testing-library/react';
 
 /**
+ * WordPress dependencies
+ */
+import { dispatch } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import {
@@ -23,13 +28,12 @@ import {
 	RelatedPostsPanel,
 } from '../../../src/content-helper/editor-sidebar/related-posts/component';
 import {
-	RelatedPostsStore,
-} from '../../../src/content-helper/editor-sidebar/related-posts/store';
-import {
 	RELATED_POSTS_DEFAULT_LIMIT,
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
-import { dispatch } from '@wordpress/data';
+import {
+	RelatedPostsStore,
+} from '../../../src/content-helper/editor-sidebar/related-posts/store';
 
 // Avoid "ReferenceError: ResizeObserver is not defined" error.
 window.ResizeObserver =
@@ -124,7 +128,7 @@ const relatedPostsPanel = <RelatedPostsPanel />;
 
 describe( 'PCH Editor Sidebar Related Post panel', () => {
 	beforeEach( () => {
-		// Reset RelatedPostsStore so that <RelatedPostsPanel /> is in the initial state each test.
+		// Reset <RelatedPostsPanel /> to its initial state for each test.
 		dispatch( RelatedPostsStore ).reset();
 	} );
 
