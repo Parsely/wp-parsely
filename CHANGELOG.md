@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.17.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.17.0+label%3ADeps).
 
 ## [3.16.4](https://github.com/Parsely/wp-parsely/compare/3.16.3...3.16.4) - 2024-08-21
 
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.16.4+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.16.4+label%3ADeps).
 
 ## [3.16.3](https://github.com/Parsely/wp-parsely/compare/3.16.2...3.16.3) - 2024-08-08
 
@@ -98,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.16.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.16.0+label%3ADeps).
 
 ## [3.15.0](https://github.com/Parsely/wp-parsely/compare/3.14.5...3.15.0) - 2024-05-14
 
@@ -117,7 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.15.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.15.0+label%3ADeps).
 
 ## [3.14.5](https://github.com/Parsely/wp-parsely/compare/3.14.4...3.14.5) - 2024-05-09
 
@@ -153,7 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.14.3+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.14.3+label%3ADeps).
 
 ## [3.14.2](https://github.com/Parsely/wp-parsely/compare/3.14.1...3.14.2) - 2024-03-19
 
@@ -170,7 +170,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.14.2+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.14.2+label%3ADeps).
 
 ## [3.14.1](https://github.com/Parsely/wp-parsely/compare/3.14.0...3.14.1) - 2024-03-14
 
@@ -203,7 +203,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.14.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.14.0+label%3ADeps).
 
 ## [3.13.3](https://github.com/Parsely/wp-parsely/compare/3.13.2...3.13.3) - 2024-02-01
 
@@ -213,13 +213,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.3+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.3+label%3ADeps).
 
 ## [3.13.2](https://github.com/Parsely/wp-parsely/compare/3.13.1...3.13.2) - 2024-01-29
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.2+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.2+label%3ADeps).
 
 ## [3.13.1](https://github.com/Parsely/wp-parsely/compare/3.13.0...3.13.1) - 2024-01-23
 
@@ -230,7 +230,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.1+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.1+label%3ADeps).
 
 ## [3.13.0](https://github.com/Parsely/wp-parsely/compare/3.12.0...3.13.0) - 2024-01-22
 
@@ -253,7 +253,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.13.0+label%3ADeps).
 
 ## [3.12.0](https://github.com/Parsely/wp-parsely/compare/3.11.1...3.12.0) - 2023-12-05
 
@@ -273,7 +273,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.12.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.12.0+label%3ADeps).
 
 ## [3.11.1](https://github.com/Parsely/wp-parsely/compare/3.11.0...3.11.1) - 2023-11-13
 
@@ -312,7 +312,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.11.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.11.0+label%3ADeps).
 
 ## [3.10.0](https://github.com/Parsely/wp-parsely/compare/3.9.0...3.10.0) - 2023-09-25
 
@@ -333,7 +333,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.10.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.10.0+label%3ADeps).
 
 ## [3.9.0](https://github.com/Parsely/wp-parsely/compare/3.8.4...3.9.0) - 2023-09-04
 
@@ -370,7 +370,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.9.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.9.0+label%3ADeps).
 
 ## [3.8.4](https://github.com/Parsely/wp-parsely/compare/3.8.3...3.8.4) - 2023-03-16
 
@@ -383,7 +383,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.4+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.4+label%3ADeps).
 
 ## [3.8.3](https://github.com/Parsely/wp-parsely/compare/3.8.2...3.8.3) - 2023-03-14
 
@@ -394,7 +394,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.3+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.3+label%3ADeps).
 
 ## [3.8.2](https://github.com/Parsely/wp-parsely/compare/3.8.1...3.8.2) - 2023-03-08
 
@@ -405,7 +405,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.2+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.2+label%3ADeps).
 
 ## [3.8.1](https://github.com/Parsely/wp-parsely/compare/3.8.0...3.8.1) - 2023-03-06
 
@@ -427,7 +427,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.0+label%3ADeps).
 
 ## [3.7.2](https://github.com/Parsely/wp-parsely/compare/3.7.1...3.7.2) - 2023-03-08
 
@@ -477,7 +477,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.7.0+label%3A%22Component%3A+Dependencies%22).
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.7.0+label%3ADeps).
 
 ## [3.6.2](https://github.com/Parsely/wp-parsely/compare/3.6.1...3.6.2) - 2023-02-13
 
@@ -534,7 +534,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependency Updates
 
-- View the list of all dependency updates [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.6.0+label%3A%22Component%3A+Dependencies%22).
+- View the list of all dependency updates [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.6.0+label%3ADeps).
 
 ## [3.5.2](https://github.com/Parsely/wp-parsely/compare/3.5.1...3.5.2) - 2022-09-27
 
