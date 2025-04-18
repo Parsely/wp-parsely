@@ -739,7 +739,7 @@ class Smart_Link extends Base_Model {
 		}
 	}
 
-	/** 
+	/**
 	 * Sets the context of the smart link.
 	 *
 	 * @since 3.18.0
@@ -968,16 +968,16 @@ class Smart_Link extends Base_Model {
 			}
 
 			if ( is_callable( $process_smart_link_callback ) ) {
-				/** 
+				/**
 				 * The processed smart link after it has been processed by the callback.
 				 *
 				 * This callback is used to modify the smart link before it is added to the array,
 				 * or false if the smart link should be skipped.
 				 *
 				 * @since 3.18.0
-				 * 
-				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link 
-				 * */
+				 *
+				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link
+				 */
 				$smart_link = $process_smart_link_callback( $smart_link );
 			}
 
@@ -1016,7 +1016,7 @@ class Smart_Link extends Base_Model {
 			array(
 				'orderby' => 'date',
 				'order'   => 'ASC',
-			) 
+			)
 		);
 	}
 
@@ -1035,9 +1035,9 @@ class Smart_Link extends Base_Model {
 	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		/** @var array<Inbound_Smart_Link> */
 		return self::get_smart_links( 
-			$post_id, 
-			'inbound', 
-			$status, 
+			$post_id,
+			'inbound',
+			$status,
 			array(
 				'orderby' => 'date modified',
 				'order'   => 'ASC',
