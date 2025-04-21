@@ -123,7 +123,7 @@ final class MetadataRendererTest extends TestCase {
 		 */
 		$out = ob_get_clean();
 
-		self::assertStringContainsString( '<script type="application/ld+json">', $out );
+		self::assertStringContainsString( '<script type="application/ld+json" class="wp-parsely-metadata">', $out );
 		self::assertStringContainsString( '</script>', $out );
 	}
 

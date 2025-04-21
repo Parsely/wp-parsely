@@ -285,7 +285,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		self::assertNotContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 	}
 
-
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
@@ -502,7 +501,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 			$this->get_utc_published_times_property( $obj )
 		);
 	}
-
 
 	/**
 	 * Verifies content of Parse.ly Stats column.
@@ -767,7 +765,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		return $obj;
 	}
-
 
 	/**
 	 * Verifies Parse.ly API call and enqueued status of Parse.ly Stats script.
@@ -1200,7 +1197,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 			$res['data'] ?? null
 		);
 	}
-
 
 	/**
 	 * Verifies Parse.ly Stats response.

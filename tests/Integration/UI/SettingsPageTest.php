@@ -660,7 +660,6 @@ final class SettingsPageTest extends TestCase {
 		self::expectOutputContains( $expected_html );
 	}
 
-
 	/**
 	 * Mocks a success response from the API credentials validation endpoint.
 	 *
