@@ -178,7 +178,6 @@ trait ContentHelperFeatureTestTrait {
 		self::assertInstanceOf( WP_Error::class, $this->get_endpoint()->is_available_to_current_user( new WP_REST_Request() ) );
 	}
 
-
 	/**
 	 * Tests that the endpoint is not available to the current user, since the user is not logged in.
 	 *

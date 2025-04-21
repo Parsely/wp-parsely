@@ -19,7 +19,7 @@ concurrency:
 jobs:
   test:
     name: PHP ${{ matrix.php }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     env:
       WP_VERSION: latest
@@ -30,13 +30,12 @@ jobs:
       # - coverage: Whether to run the tests with code coverage.
       # - experimental: Whether the build is "allowed to fail".
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.3']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
         coverage: [none]
         experimental: [false]
         include:
-          # Run code coverage for only one PHP version
-          - php: '8.2'
-            coverage: pcov # Warning: PCOV might not work for PHP 8.4 or newer according to https://thephp.cc/articles/pcov-or-xdebug.
+          - php: '8.3'
+            coverage: pcov
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             experimental: false
