@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.18.0](https://github.com/Parsely/wp-parsely/compare/3.17.0...3.18.0) - 2025-04-21
+
+### Added
+
+- PCH: Add category slug support in search ([#3210](https://github.com/Parsely/wp-parsely/pull/3210))
+- Smart Linking: Add post details to the "Review" modal ([#3176](https://github.com/Parsely/wp-parsely/pull/3176))
+- PCH Related Posts: Add advanced search ([#3117](https://github.com/Parsely/wp-parsely/pull/3117))
+- Add identifier to JSON-LD metadata ([#3007](https://github.com/Parsely/wp-parsely/pull/3007))
+
+### Changed
+
+- Simplify check in admin_bar_parsely_stats_button() ([#3181](https://github.com/Parsely/wp-parsely/pull/3181))
+- PCH: Remove beta messaging ([#3066](https://github.com/Parsely/wp-parsely/pull/3066))
+
+### Fixed
+
+- Fix issue checking queried object with a false queried object ([#3178](https://github.com/Parsely/wp-parsely/pull/3178))
+- PCH: Fix issue with potential duplicate API calls in settings and smart links ([#3095](https://github.com/Parsely/wp-parsely/pull/3095))
+- Fix update metadata endpoint calling issues ([#3092](https://github.com/Parsely/wp-parsely/pull/3092))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.18.0+label%3ADeps).
+
 ## [3.17.0](https://github.com/Parsely/wp-parsely/compare/3.16.4...3.17.0) - 2024-11-12
 
 ### Added
