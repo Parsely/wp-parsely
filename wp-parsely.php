@@ -49,8 +49,8 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.18.1';
-const PARSELY_FILE    = __FILE__;
+const PARSELY_VERSION             = '3.18.1';
+const PARSELY_FILE                = __FILE__;
 const PARSELY_DATA_SCHEMA_VERSION = '1';
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
