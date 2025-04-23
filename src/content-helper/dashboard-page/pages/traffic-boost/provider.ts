@@ -12,12 +12,11 @@ import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider
  * @since 3.18.0
  */
 export const TRAFFIC_BOOST_LOADING_MESSAGES = [
-	__( "We're finding the perfect spot to plant your links…", 'wp-parsely' ),
-	__( 'Analyzing your content to place links naturally…', 'wp-parsely' ),
-	__( 'Optimizing link placement for maximum impact…', 'wp-parsely' ),
-	__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
-	__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
-	__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
+	__( 'Analyzing your content…', 'wp-parsely' ),
+	__( 'Searching for posts with related topics…', 'wp-parsely' ),
+	__( 'Detecting and removing low relevancy suggestions…', 'wp-parsely' ),
+	__( 'Performing additional filtering…', 'wp-parsely' ),
+	__( 'Checking if extra processing is needed…', 'wp-parsely' ),
 ];
 
 /**

@@ -33,21 +33,20 @@ The following additional tasks might be needed depending on the release and its 
 ## Release process
 
 **1. Update version numbers and changelog**
-- [ ] Run `php bin/release.php $OLD_VERSION $NEW_VERSION` to update version numbers, the changelog, and to push the PR to GitHub. Copy the changelog's new release text for later use.
-- [ ] Verify that the PR code looks correct. You can amend it with new commits if needed.
+- [ ] [Run the "Bump wp-parsely version"](https://github.com/Parsely/wp-parsely/actions/workflows/bump-version.yml) GitHub Action to update the version numbers in the plugin files. Use the branch you want to release from (usually `develop`).
+- [ ] Verify that the generated PR looks correct. You can amend it with new commits if needed.
 - [ ] Merge the PR into the target branch (usually `develop`).
 
 **2. Merge develop into trunk**
 - [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/trunk...develop?quick_pull=1&title=Release+wp-parsely+x.y.z&body=This+PR+merges+the+`develop`+branch+into+the+`trunk`+branch+in+order+to+release+wp-parsely+x.y.z.) that merges the target branch (usually `develop`) into `trunk`, named _Release wp-parsely x.y.z_.
 - [ ] Merge the PR into `trunk`.
 
-**3. Create the GitHub release**
-- [ ] [Create a GitHub release](https://github.com/Parsely/wp-parsely/releases/new?target=trunk) that targets `trunk`.
-- [ ] For the release's text, use the changelog text that was posted by the `bin/release.php` script into the PR in step 1.
-- [ ] Verify that you're using the appropriate name and tag (should be the version that is being released, without a leading 'v' character), and publish the release.
-
-**4. Deploy the release to wordpress.org**
-- [ ] Run the [Deploy to WordPress.org](https://github.com/Parsely/wp-parsely/actions/workflows/deploy.yml) GitHub workflow, selecting the new version tag.
+**3. Create release and deploy to WordPress.org**
+- [ ] Check if the `develop` and `trunk` branches built successfully. You can check it in the [GitHub Actions](https://github.com/Parsely/wp-parsely/actions/workflows/build-plugin.yml) tab.
+- [ ] [Run the "Release wp-parsely"](https://github.com/Parsely/wp-parsely/actions/workflows/release-plugin.yml) GitHub Action, on the `trunk-built` branch, inputting the new version number, and without selecting Dry run.
+- [ ] Check the action logs for any errors. If there are any, fix them and rerun the action.
+- [ ] Check the new release on the [GitHub releases page](https://github.com/Parsely/wp-parsely/releases) and verify that it is correct.
+- [ ] Verify that the release was successful by checking the [WordPress.org plugin page](https://wordpress.org/plugins/wp-parsely/).
 
 ## After releasing
 
