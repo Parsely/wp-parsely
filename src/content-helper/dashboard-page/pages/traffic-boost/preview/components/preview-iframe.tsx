@@ -390,7 +390,7 @@ export const PreviewIframe = ( {
 												showSpinner={ false }
 												messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
 												typewriter={ true }
-												randomOrder={ true }
+												randomOrder={ false }
 											/>
 										</>
 									) }
