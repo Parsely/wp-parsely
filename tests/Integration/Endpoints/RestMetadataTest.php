@@ -195,15 +195,19 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( (string) $this->get_permalink( $post_id ) );
+		$permalink = (string) $this->get_permalink( $post_id );
+		$this->go_to( $permalink );
 
-		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
-		$metadata    = new Metadata( self::$parsely );
+		$meta_object   = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
+		$metadata      = new Metadata( self::$parsely );
+		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
+
 		$expected    = array(
-			'version'     => '1.1.0',
-			'meta'        => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'    => self::$rest->get_rendered_meta( 'json_ld' ),
-			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'version'       => '1.1.0',
+			'canonical_url' => $canonical_url,
+			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
+			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -252,12 +256,15 @@ final class RestMetadataTest extends TestCase {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
-		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
-		$metadata    = new Metadata( self::$parsely );
+		$meta_object   = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
+		$metadata      = new Metadata( self::$parsely );
+		$canonical_url = \Parsely\Parsely::get_canonical_url( (string) $this->get_permalink( $post_id ) );
+
 		$expected    = array(
-			'version'     => '1.1.0',
-			'meta'        => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'version'       => '1.1.0',
+			'canonical_url' => $canonical_url,
+			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -307,14 +314,18 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( (string) $this->get_permalink( $post_id ) );
+		$permalink = (string) $this->get_permalink( $post_id );
+		$this->go_to( $permalink );
 
 		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
 		$metadata    = new Metadata( self::$parsely );
+		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
+
 		$expected    = array(
-			'version'  => '1.1.0',
-			'meta'     => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered' => self::$rest->get_rendered_meta( 'json_ld' ),
+			'version'       => '1.1.0',
+			'canonical_url' => $canonical_url,
+			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -337,10 +348,11 @@ final class RestMetadataTest extends TestCase {
 	public function test_get_callback_with_non_existent_post(): void {
 		$meta_object = self::$rest->get_callback( array() );
 		$expected    = array(
-			'version'     => '1.1.0',
-			'meta'        => '',
-			'rendered'    => '',
-			'tracker_url' => '',
+			'version'       => '1.1.0',
+			'meta'          => '',
+			'rendered'      => '',
+			'tracker_url'   => '',
+			'canonical_url' => 'no permalink',
 		);
 
 		self::assertSame( $expected, $meta_object );
