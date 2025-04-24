@@ -202,7 +202,7 @@ final class RestMetadataTest extends TestCase {
 		$metadata      = new Metadata( self::$parsely );
 		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
 
-		$expected    = array(
+		$expected = array(
 			'version'       => '1.1.0',
 			'canonical_url' => $canonical_url,
 			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
@@ -260,7 +260,7 @@ final class RestMetadataTest extends TestCase {
 		$metadata      = new Metadata( self::$parsely );
 		$canonical_url = \Parsely\Parsely::get_canonical_url( (string) $this->get_permalink( $post_id ) );
 
-		$expected    = array(
+		$expected = array(
 			'version'       => '1.1.0',
 			'canonical_url' => $canonical_url,
 			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
@@ -317,11 +317,11 @@ final class RestMetadataTest extends TestCase {
 		$permalink = (string) $this->get_permalink( $post_id );
 		$this->go_to( $permalink );
 
-		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
-		$metadata    = new Metadata( self::$parsely );
+		$meta_object   = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
+		$metadata      = new Metadata( self::$parsely );
 		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
 
-		$expected    = array(
+		$expected = array(
 			'version'       => '1.1.0',
 			'canonical_url' => $canonical_url,
 			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
@@ -400,7 +400,11 @@ final class RestMetadataTest extends TestCase {
 		TestCase::set_options();
 
 		global $post;
-		/** @var int $post_id */
+		/**
+		 * Post ID for test.
+		 *
+		 * @var int $post_id
+		 */
 		$post_id = self::factory()->post->create(
 			array(
 				'post_title' => 'My test_get_rendered_meta_json_ld title',
@@ -464,7 +468,11 @@ final class RestMetadataTest extends TestCase {
 
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
-		/** @var int $post_id */
+		/**
+		 * Post ID for test.
+		 *
+		 * @var int $post_id
+		 */
 		$post_id = self::factory()->post->create(
 			array(
 				'post_title' => 'My test_get_rendered_repeated_metas title',
