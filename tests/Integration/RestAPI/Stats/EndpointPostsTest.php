@@ -324,10 +324,11 @@ class EndpointPostsTest extends BaseEndpointTest {
 
 		self::assertEquals(
 			array(
-				'limit'      => 5,
-				'sort'       => 'views',
-				'page'       => 1,
-				'itm_source' => 'wp-parsely-content-helper',
+				'limit'            => 5,
+				'sort'             => 'views',
+				'page'             => 1,
+				'itm_source'       => 'wp-parsely-content-helper',
+				'use_wp_permalink' => false,
 			),
 			$response_data['params']
 		);

@@ -203,11 +203,16 @@ final class RestMetadataTest extends TestCase {
 		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
 
 		$expected = array(
-			'version'       => '1.1.0',
-			'canonical_url' => $canonical_url,
-			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
-			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'version'                         => '1.1.0',
+			'canonical_url'                   => $canonical_url,
+			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
+			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'smart_links'                     => array(
+				'inbound'  => 0,
+				'outbound' => 0,
+			),
+			'traffic_boost_suggestions_count' => 0,
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -261,10 +266,15 @@ final class RestMetadataTest extends TestCase {
 		$canonical_url = \Parsely\Parsely::get_canonical_url( (string) $this->get_permalink( $post_id ) );
 
 		$expected = array(
-			'version'       => '1.1.0',
-			'canonical_url' => $canonical_url,
-			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'version'                         => '1.1.0',
+			'canonical_url'                   => $canonical_url,
+			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'smart_links'                     => array(
+				'inbound'  => 0,
+				'outbound' => 0,
+			),
+			'traffic_boost_suggestions_count' => 0,
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -322,10 +332,15 @@ final class RestMetadataTest extends TestCase {
 		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
 
 		$expected = array(
-			'version'       => '1.1.0',
-			'canonical_url' => $canonical_url,
-			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
+			'version'                         => '1.1.0',
+			'canonical_url'                   => $canonical_url,
+			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
+			'smart_links'                     => array(
+				'inbound'  => 0,
+				'outbound' => 0,
+			),
+			'traffic_boost_suggestions_count' => 0,
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -348,11 +363,13 @@ final class RestMetadataTest extends TestCase {
 	public function test_get_callback_with_non_existent_post(): void {
 		$meta_object = self::$rest->get_callback( array() );
 		$expected    = array(
-			'version'       => '1.1.0',
-			'meta'          => '',
-			'rendered'      => '',
-			'tracker_url'   => '',
-			'canonical_url' => 'no permalink',
+			'version'                         => '1.1.0',
+			'canonical_url'                   => 'no permalink',
+			'smart_links'                     => array(
+				'inbound'  => 0,
+				'outbound' => 0,
+			),
+			'traffic_boost_suggestions_count' => 0,
 		);
 
 		self::assertSame( $expected, $meta_object );

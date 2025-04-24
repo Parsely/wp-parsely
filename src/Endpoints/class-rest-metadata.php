@@ -122,11 +122,10 @@ class Rest_Metadata extends Metadata_Endpoint {
 			}
 		}
 
-		// Fetch Smart Link and Traffic Boost data.
-		$response['smart_links']                     = Smart_Link::get_link_counts( 
-			$post_id, 
-			Smart_Link_Status::APPLIED 
-		);
+		// Fetch Smart Link data.
+		$response['smart_links'] = Smart_Link::get_link_counts( $post_id, Smart_Link_Status::APPLIED );
+
+		// Fetch Traffic Boost data.
 		$response['traffic_boost_suggestions_count'] = Inbound_Smart_Link::get_suggestions_count( $post_id );
 
 		return $response;
