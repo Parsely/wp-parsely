@@ -76,19 +76,21 @@ class Rest_Metadata extends Metadata_Endpoint {
 		$post_id = $object_data['ID'] ?? $object_data['id'] ?? 0;
 		$post    = WP_Post::get_instance( $post_id );
 
-		if ( false === $post ) {
-			return array(
-				'version' => self::REST_VERSION,
-				'meta'    => array(),
-			);
-		}
-
 		$options = $this->parsely->get_options();
 
 		$response = array(
-			'version'       => self::REST_VERSION,
-			'canonical_url' => \Parsely\Parsely::get_canonical_url_from_post( $post_id ),
+			'version'                         => self::REST_VERSION,
+			'canonical_url'                   => \Parsely\Parsely::get_canonical_url_from_post( $post_id ),
+			'smart_links'                     => array(
+				'inbound'  => 0,
+				'outbound' => 0,
+			),
+			'traffic_boost_suggestions_count' => 0,
 		);
+
+		if ( false === $post ) {
+			return $response;
+		}
 
 		$metadata         = ( new Metadata( $this->parsely ) )->construct_metadata( $post );
 		$response['meta'] = $metadata;
