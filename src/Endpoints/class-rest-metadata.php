@@ -31,7 +31,9 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * @since 3.1.0
 	 */
 	public function run(): void {
-		$this->register_meta();
+		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) && $this->parsely->site_id_is_set() ) {
+			$this->register_meta();
+		}
 	}
 
 	/**
@@ -73,6 +75,14 @@ class Rest_Metadata extends Metadata_Endpoint {
 		/** @var int $post_id */
 		$post_id = $object_data['ID'] ?? $object_data['id'] ?? 0;
 		$post    = WP_Post::get_instance( $post_id );
+
+		if ( false === $post ) {
+			return array(
+				'version' => self::REST_VERSION,
+				'meta'    => array(),
+			);
+		}
+
 		$options = $this->parsely->get_options();
 
 		$response = array(
@@ -80,46 +90,32 @@ class Rest_Metadata extends Metadata_Endpoint {
 			'canonical_url' => \Parsely\Parsely::get_canonical_url_from_post( $post_id ),
 		);
 
+		$metadata         = ( new Metadata( $this->parsely ) )->construct_metadata( $post );
+		$response['meta'] = $metadata;
+
 		/**
-		 * Filter whether REST API metadata support is enabled or not.
+		 * Filter whether REST API support in rendered string format is enabled
+		 * or not.
 		 *
 		 * @since 3.1.0
 		 *
 		 * @param bool $enabled True if enabled, false if not.
+		 * @param WP_Post|false $post Current post object.
 		 */
-		$metadata_enabled = false !== $post &&
-			apply_filters( 'wp_parsely_enable_rest_api_support', true ) &&
-			$this->parsely->site_id_is_set();
+		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true, $post ) ) {
+			$response['rendered'] = $this->get_rendered_meta( $options['meta_type'] );
+		}
 
-		if ( $metadata_enabled ) {
-			$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $post );
-
-			$response['meta'] = $metadata;
-
-			/**
-			 * Filter whether REST API support in rendered string format is enabled
-			 * or not.
-			 *
-			 * @since 3.1.0
-			 *
-			 * @param bool $enabled True if enabled, false if not.
-			 * @param WP_Post|false $post Current post object.
-			 */
-			if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true, $post ) ) {
-				$response['rendered'] = $this->get_rendered_meta( $options['meta_type'] );
-			}
-
-			/**
-			 * Filter whether the REST API returns the tracker URL.
-			 *
-			 * @since 3.3.0
-			 *
-			 * @param bool $enabled True if enabled, false if not.
-			 * @param WP_Post|false $post Current post object.
-			 */
-			if ( apply_filters( 'wp_parsely_enable_tracker_url', true, $post ) ) {
-				$response['tracker_url'] = $this->parsely->get_tracker_url();
-			}
+		/**
+		 * Filter whether the REST API returns the tracker URL.
+		 *
+		 * @since 3.3.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 * @param WP_Post|false $post Current post object.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_tracker_url', true, $post ) ) {
+			$response['tracker_url'] = $this->parsely->get_tracker_url();
 		}
 
 		// Fetch Smart Link data.
