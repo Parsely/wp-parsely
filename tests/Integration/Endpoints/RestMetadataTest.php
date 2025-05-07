@@ -205,14 +205,14 @@ final class RestMetadataTest extends TestCase {
 		$expected = array(
 			'version'                         => '1.1.0',
 			'canonical_url'                   => $canonical_url,
-			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
-			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
 			'smart_links'                     => array(
 				'inbound'  => 0,
 				'outbound' => 0,
 			),
 			'traffic_boost_suggestions_count' => 0,
+			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
+			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -268,13 +268,13 @@ final class RestMetadataTest extends TestCase {
 		$expected = array(
 			'version'                         => '1.1.0',
 			'canonical_url'                   => $canonical_url,
-			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
 			'smart_links'                     => array(
 				'inbound'  => 0,
 				'outbound' => 0,
 			),
 			'traffic_boost_suggestions_count' => 0,
+			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -334,13 +334,13 @@ final class RestMetadataTest extends TestCase {
 		$expected = array(
 			'version'                         => '1.1.0',
 			'canonical_url'                   => $canonical_url,
-			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
 			'smart_links'                     => array(
 				'inbound'  => 0,
 				'outbound' => 0,
 			),
 			'traffic_boost_suggestions_count' => 0,
+			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 
 		self::assertSame( $expected, $meta_object );
