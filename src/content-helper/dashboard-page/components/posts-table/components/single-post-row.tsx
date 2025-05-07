@@ -146,7 +146,7 @@ export const SinglePostRow = ( {
 								{ isLoadingStats && (
 									<Spinner />
 								) }
-								{ ! isLoadingStats && views && (
+								{ ! isLoadingStats && views > 0 && (
 									<div className="metric-views">
 										{ views.toLocaleString() }
 										{ smartLinkViews > 0 && (
