@@ -226,12 +226,12 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 
 			// Extract categories and tags data from _embedded.
 			// The first element in the array is categories, the second is tags.
-			if ( post._embedded && post._embedded[ 'wp:term' ] ) {
+			if ( post?._embedded?.[ 'wp:term' ] ) {
 				[ categories, tags ] = post._embedded[ 'wp:term' ];
 			}
 
 			// Get the post thumbnail.
-			if ( post._embedded && post._embedded[ 'wp:featuredmedia' ] ) {
+			if ( post?._embedded?.[ 'wp:featuredmedia' ] ) {
 				const featuredMedia = post._embedded[ 'wp:featuredmedia' ]?.[ 0 ];
 				thumbnail = featuredMedia?.media_details?.sizes?.thumbnail?.source_url;
 

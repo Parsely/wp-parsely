@@ -141,38 +141,36 @@ export const SinglePostRow = ( {
 			{ ! compact && (
 				<>
 					{ showStats && (
-						<>
-							<td className="metrics">
-								<div className="metrics-container">
-									{ isLoadingStats && (
-										<Spinner />
-									) }
-									{ ! isLoadingStats && views && (
-										<div className="metric-views">
-											{ views.toLocaleString() }
-											{ smartLinkViews > 0 && (
-												<span className="metric-change metric-change-positive">
-													+{ smartLinkViews.toLocaleString() }
-												</span>
-											) }
-											{ isPostBoosted && smartLinkViews === 0 && (
-												<span className="metric-change metric-change-neutral">
-													=
-												</span>
-											) }
-										</div>
-									) }
-									{ ! isLoadingStats && trafficBoostPercentage > 0 && (
-										<div className="metric-boost-percentage">
-											{
-											/* translators: %f is the boost percentage */
-												sprintf( __( '%f%% BOOSTED', 'wp-parsely' ), trafficBoostPercentage.toFixed( 1 ) )
-											}
-										</div>
-									) }
-								</div>
-							</td>
-						</>
+						<td className="metrics">
+							<div className="metrics-container">
+								{ isLoadingStats && (
+									<Spinner />
+								) }
+								{ ! isLoadingStats && views && (
+									<div className="metric-views">
+										{ views.toLocaleString() }
+										{ smartLinkViews > 0 && (
+											<span className="metric-change metric-change-positive">
+												+{ smartLinkViews.toLocaleString() }
+											</span>
+										) }
+										{ isPostBoosted && smartLinkViews === 0 && (
+											<span className="metric-change metric-change-neutral">
+												=
+											</span>
+										) }
+									</div>
+								) }
+								{ ! isLoadingStats && trafficBoostPercentage > 0 && (
+									<div className="metric-boost-percentage">
+										{
+										/* translators: %f is the boost percentage */
+											sprintf( __( '%f%% BOOSTED', 'wp-parsely' ), trafficBoostPercentage.toFixed( 1 ) )
+										}
+									</div>
+								) }
+							</div>
+						</td>
 					) }
 					{ showActions && (
 						<td className="actions">

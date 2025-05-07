@@ -12,8 +12,6 @@
 		border-spacing: 0;
 
 		tr {
-			//padding: var(--grid-unit-15) 0;
-			//gap: var(--grid-unit-20);
 			position: relative;
 
 			&::after {
@@ -253,7 +251,6 @@
 				white-space: nowrap;
 				text-overflow: ellipsis;
 				overflow: hidden;
-				//width: 96%;
 			}
 		}
 

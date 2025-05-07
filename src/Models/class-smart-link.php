@@ -1034,7 +1034,7 @@ class Smart_Link extends Base_Model {
 	 */
 	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		/** @var array<Inbound_Smart_Link> */
-		return self::get_smart_links( 
+		return self::get_smart_links(
 			$post_id,
 			'inbound',
 			$status,
@@ -1127,7 +1127,7 @@ class Smart_Link extends Base_Model {
 					'field'    => 'slug',
 					'terms'    => $post_id,
 				),
-			) 
+			)
 		);
 
 		// Build the query arguments for the outbound links.
@@ -1143,9 +1143,9 @@ class Smart_Link extends Base_Model {
 							'field'    => 'slug',
 							'terms'    => $post_id,
 						),
-					) 
+					)
 				),
-			) 
+			)
 		);
 
 		// Get the inbound links.
