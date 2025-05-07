@@ -518,7 +518,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 *
 	 * Returns post meta for the passed URLs.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.

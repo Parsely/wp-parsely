@@ -238,7 +238,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	/**
 	 * Sanitizes all the items of an array as URLs.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @param array<string> $urls The array to sanitize.
 	 * @return array<string> The sanitized array.

@@ -27,7 +27,7 @@ type SmartLinkStatus = 'applied' | 'pending';
  *
  * @since 3.14.0
  * @since 3.16.0 Added the `applied`, `match`, `source` and `destination` properties.
- * @since 3.19.0 Added the `wp_post_meta` and `post_stats` properties.
+ * @since 3.18.0 Added the `wp_post_meta` and `post_stats` properties.
  */
 export type SmartLink = {
 	uid: string;
@@ -88,7 +88,7 @@ export type InboundSmartLink = SmartLink & {
  * Structure of a post meta object, returned by the
  * 'content-helper/smart-linking/get-post-meta-for-urls' endpoint.
  *
- * @since 3.19.0
+ * @since 3.18.0
  */
 type PostMeta = {
 	author?: string;
@@ -176,7 +176,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * Fetches the extra data - WordPress post meta and Parse.ly stats - for the
 	 * outbound smart links.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @param {SmartLink[]} smartLinks The outbound smart links.
 	 *
@@ -400,7 +400,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	/**
 	 * Returns WordPress post meta for the given URLs.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @param {string[]} urls The URLs of the posts.
 	 *

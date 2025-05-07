@@ -6,7 +6,7 @@
  *  php lint.php // Show errors.
  *  php lint.php --fix // Auto-fix errors where supported.
  *
- * @since 3.19.0
+ * @since 3.18.0
  */
 
 // Configuration.
@@ -40,7 +40,7 @@ exit( $exit_code ?? 0 );
 /**
  * A class representing a linting rule.
  *
- * @since 3.19.0
+ * @since 3.18.0
  */
 class Lint_Rule {
 	/**
@@ -76,7 +76,7 @@ class Lint_Rule {
 	/**
 	 * Constructor.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @param string        $error_message The error message to display.
 	 * @param string        $error_pattern The regex matching the rule violation.
@@ -101,7 +101,7 @@ class Lint_Rule {
 	/**
 	 * Runs the rule to detect or auto-fix any violations.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @param bool $auto_fix_mode Whether violations should be auto-fixed.
 	 * @return string The violations found, or an empty string.
@@ -162,7 +162,7 @@ class Lint_Rule {
 	 * Creates an iterator that iterates across the project's folder structure,
 	 * skipping excluded directories.
 	 *
-	 * @since 3.19.0
+	 * @since 3.18.0
 	 *
 	 * @return RecursiveIteratorIterator
 	 */

@@ -58,7 +58,7 @@ export interface SidebarPostData {
 /**
  * Defines the structure of a SidebarPostData category.
  *
- * @since 3.19.0
+ * @since 3.18.0
  */
 export interface SidebarPostDataCategory {
 	name: string;

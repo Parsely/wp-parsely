@@ -12,7 +12,7 @@ import { HydratedPost } from '../../providers/base-wordpress-provider';
 /**
  * Defines the props structure for Thumbnail.
  *
- * @since 3.19.0
+ * @since 3.18.0
  */
 interface ThumbnailProps {
     post?: HydratedPost;
@@ -25,7 +25,7 @@ interface ThumbnailProps {
 /**
  * Thumbnail component that displays either a post's thumbnail, a custom image, or a fallback icon.
  *
- * @since 3.19.0
+ * @since 3.18.0
  *
  * @param {ThumbnailProps} props The component's props.
  */
