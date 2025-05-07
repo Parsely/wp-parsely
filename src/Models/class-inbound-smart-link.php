@@ -15,6 +15,7 @@ use Parsely\Parsely;
 use Parsely\Utils\Utils;
 use ReflectionClass;
 use WP_Post;
+use WP_Error;
 
 /**
  * Model for Inbound Smart Link.
@@ -812,7 +813,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			true
 		);
 
-		if ( is_wp_error( $updated_post ) ) {
+		if ( is_wp_error( $updated_post ) && ! $this->is_ignorable_update_error( $updated_post ) ) {
 			return $updated_post;
 		}
 
@@ -942,7 +943,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			true
 		);
 
-		if ( is_wp_error( $updated_post ) ) {
+		if ( is_wp_error( $updated_post ) && ! $this->is_ignorable_update_error( $updated_post ) ) {
 			return $updated_post;
 		}
 
@@ -1279,5 +1280,28 @@ class Inbound_Smart_Link extends Smart_Link {
 		$text2 = html_entity_decode( $text2 );
 
 		return $text1 === $text2;
+	}
+
+	/**
+	 * Checks if a WP_Error from wp_update_post() is ignorable.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param WP_Error $error The error to check.
+	 * @return bool True if the error is ignorable, false otherwise.
+	 */
+	private function is_ignorable_update_error( WP_Error $error ): bool {
+		// The 'invalid_page_template' error can be returned from wp_update_post()
+		// if the saved page template is a custom type that no longer exists.
+		// This error is returned *after* the post has been updated with a new smart
+		// link, so we can safely ignore it.
+		//
+		// The post will use the 'default' page template if a custom type
+		// doesn't exist anyway.
+		if ( 'invalid_page_template' === $error->get_error_code() ) {
+			return true;
+		}
+
+		return false;
 	}
 }
