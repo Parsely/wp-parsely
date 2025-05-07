@@ -2,7 +2,7 @@
 /**
  * Template for the preview frame.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @global string $post_title The title of the post being previewed
  * @global string $block_content The rendered content of the post being previewed

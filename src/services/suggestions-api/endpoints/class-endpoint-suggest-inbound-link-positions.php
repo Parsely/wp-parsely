@@ -17,7 +17,7 @@ use WP_Error;
 /**
  * The endpoint for the Suggest Inbound Link Positions API request.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @link https://content-suggestions-api.parsely.net/prod/docs#/prototype/suggest_inbound_link_positions_suggest_inbound_link_positions_post
  *
@@ -37,7 +37,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	/**
 	 * Returns the endpoint for the API request.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return string The endpoint for the API request.
 	 */
@@ -49,7 +49,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	 * Gets suggested inbound link positions for a given source and destination post using the Parse.ly
 	 * Content Suggestion API.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \WP_Post                                        $source_post    The post where the inbound link will be placed.
 	 * @param \WP_Post                                        $destination_post The post where the inbound link will point to.
@@ -133,7 +133,7 @@ class Endpoint_Suggest_Inbound_Link_Positions extends Suggestions_API_Base_Endpo
 	/**
 	 * Executes the API request.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API.

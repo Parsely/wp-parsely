@@ -106,7 +106,7 @@ const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): React.JSX.
  * The LinkDetails component, which renders the details of the link suggestion.
  *
  * @since 3.16.0
- * @since 3.18.0 Added the post type to the link details.
+ * @since 3.19.0 Added the post type to the link details.
  *
  * @param {{link: SmartLink}} props The component props.
  */

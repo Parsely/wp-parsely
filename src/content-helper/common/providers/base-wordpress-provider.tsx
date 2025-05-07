@@ -19,7 +19,7 @@ import { BaseProvider } from './base-provider';
  *
  * The core Taxonomy needs to be extended as the core type is missing a few properties.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type Taxonomy = CoreTaxonomy & {
 	id: number;
@@ -29,7 +29,7 @@ type Taxonomy = CoreTaxonomy & {
 /**
  * Extended Post interface to include embedded data.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export interface Post extends CorePost {
 	_embedded?: {
@@ -74,7 +74,7 @@ export interface Post extends CorePost {
  *
  * A hydrated post is a post with additional data, already fetched.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export type HydratedPost = Omit<Post, 'author' | 'categories' | 'tags'> & {
 	link: string;
@@ -87,7 +87,7 @@ export type HydratedPost = Omit<Post, 'author' | 'categories' | 'tags'> & {
 /**
  * Type definition for a fetch response.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @template T The type of the data to fetch.
  * @property {number}   total_items The total number of items.
@@ -105,7 +105,7 @@ export type FetchResponse<T> = {
 /**
  * Type definition for query parameters.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export type QueryParams = Record<string, any> & { // eslint-disable-line @typescript-eslint/no-explicit-any
 	context?: 'view' | 'edit' | 'embed';
@@ -117,13 +117,13 @@ export type QueryParams = Record<string, any> & { // eslint-disable-line @typesc
  * Provides a common interface for fetching data from the WordPress REST API,
  * with support for cancelling requests.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export abstract class BaseWordPressProvider extends BaseProvider {
 	/**
 	 * Fetches data from the WordPress REST API using apiFetch.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @template T The type of the data to fetch.
 	 *
@@ -185,7 +185,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 * This method is a wrapper around apiFetch() that automatically adds the
 	 * AbortController signal.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @template T The type of the data to fetch.
 	 *
@@ -207,7 +207,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 * This method extracts the author, categories, tags and thumbnail from the
 	 * _embedded property of the Post object.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Post[]} posts Array of Post objects to hydrate.
 	 *
@@ -259,7 +259,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	/**
 	 * Fetches a list of posts from the REST API and hydrates them with embedded data.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {QueryParams?} queryParams Optional query parameters.
 	 * @param {string?}      id          The (optional) ID of the request.
@@ -290,7 +290,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	/**
 	 * Fetches a list of pages from the REST API and hydrates them with embedded data.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {QueryParams?} queryParams Optional query parameters.
 	 * @param {string?}      id          The (optional) ID of the request.
@@ -320,7 +320,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	/**
 	 * Fetches a single post by ID from the REST API and hydrates it with embedded data.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number}  postId The ID of the post to fetch.
 	 * @param {string?} id     The (optional) ID of the request.
@@ -347,7 +347,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	/**
 	 * Generic method to fetch any REST API endpoint.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @template T The type of the data to fetch.
 	 *

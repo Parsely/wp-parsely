@@ -52,7 +52,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Allowed HTML tags that can contain a smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @var array<string> The allowed tags.
 	 */
@@ -146,7 +146,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Checks if the Smart Link has a valid placement.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param bool $wp_error Whether to return a WP_Error object if the Smart Link has an invalid placement.
 	 * @param bool $allow_duplicate_links Whether to allow duplicate links.
@@ -193,7 +193,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Checks if the smart link is a link replacement.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return bool True if the smart link is a link replacement, false otherwise.
 	 */
@@ -485,7 +485,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Sets the source post from a URL.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $url The URL.
 	 */
@@ -504,7 +504,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Recursively searches for text nodes containing the specified text.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \DOMNode $node        The node to search in.
 	 * @param string   $search_text The text to search for.
@@ -545,7 +545,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * Checks if the node is inside a link and if so, only allows the operation
 	 * if it's replacing the entire link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \DOMNode $node        The node to validate.
 	 * @param string   $search_text The text that will be linked.
@@ -602,7 +602,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * Finds the smart link anchor element in the paragraph that has the data-smartlink attribute set
 	 * to the smart link UID.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \DOMDocument $node The node to search in.
 	 * @return \DOMElement|false The smart link anchor element if found, false otherwise.
@@ -629,7 +629,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Applies the inbound smart link to the post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return bool|\WP_Error True if the inbound smart link was applied, WP_Error on failure.
 	 */
@@ -832,7 +832,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Removes an inbound smart link from the post, and deletes the smart link by default.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param bool $restore_original_link Whether to restore the original link, if it was replaced.
 	 * @param bool $delete_smart_link Whether to delete the smart link after removing it from the post.
@@ -964,7 +964,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Updates the text of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $new_text The new text of the smart link.
 	 * @param int    $offset The offset of the text to update.
@@ -1042,7 +1042,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Gets the existing inbound smart links for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $post_id The post ID.
 	 * @return array<Inbound_Smart_Link> The existing inbound smart links.
@@ -1057,7 +1057,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Gets the number of pending (suggestions) inbound smart links for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $post_id The post ID.
 	 * @return int The number of pending inbound smart links.
@@ -1096,14 +1096,14 @@ class Inbound_Smart_Link extends Smart_Link {
 		$query = new \WP_Query( $args );
 
 		wp_cache_set( $cache_key, $query->found_posts );
-		
+
 		return $query->found_posts;
 	}
 
 	/**
 	 * Deletes all pending (not applied) inbound smart links suggestions for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $post_id The post ID.
 	 * @return array<string,int> The results of the deletion.
@@ -1169,7 +1169,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Gets the inbound smart links for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int    $post_id The ID of the post.
 	 * @param string $status The status of the smart links to get.
@@ -1189,7 +1189,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Gets an inbound smart link by its ID.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $smart_link_id The ID of the smart link.
 	 * @return self|false The inbound smart link, or false if not found.
@@ -1206,7 +1206,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Gets an inbound smart link by its source and destination posts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $source_post_id The ID of the source post.
 	 * @param int $destination_post_id The ID of the destination post.
@@ -1249,7 +1249,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Finds the line containing the specified text in the HTML.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $html HTML to search through.
 	 * @param string $text Text to search for.
@@ -1272,7 +1272,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * This is used to find which line in the original text should be replaced with the new
 	 * line, that includes the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $original_text The original text.
 	 * @param string $search_line The line to search through.
@@ -1297,7 +1297,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Compares two strings to check if they are equal when ignoring HTML and formatting.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $line1 First line to compare.
 	 * @param string $line2 Second line to compare.
@@ -1330,7 +1330,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Flushes the cache for the post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $post_id The post ID.
 	 */

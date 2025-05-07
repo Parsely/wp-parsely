@@ -238,7 +238,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	/**
 	 * Sanitizes all the items of an array as URLs.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<string> $urls The array to sanitize.
 	 * @return array<string> The sanitized array.
@@ -250,7 +250,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	/**
 	 * Validates if the provided array is a list of URLs.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<string> $urls The array to validate.
 	 * @return true|WP_Error
@@ -303,10 +303,10 @@ class Endpoint_Posts extends Base_Endpoint {
 
 		// Determine if we should use the campaign parameters.
 		$use_campaign_params = false;
-		if ( isset( $params['campaign_id'] ) || 
-			isset( $params['campaign_medium'] ) || 
-			isset( $params['campaign_source'] ) || 
-			isset( $params['campaign_content'] ) || 
+		if ( isset( $params['campaign_id'] ) ||
+			isset( $params['campaign_medium'] ) ||
+			isset( $params['campaign_source'] ) ||
+			isset( $params['campaign_content'] ) ||
 			isset( $params['campaign_term'] ) ) {
 			$use_campaign_params = true;
 		}
@@ -381,8 +381,8 @@ class Endpoint_Posts extends Base_Endpoint {
 
 	/**
 	 * Fetches the campaign data for the posts.
-	 * 
-	 * @since 3.18.0
+	 *
+	 * @since 3.19.0
 	 *
 	 * @param array<int<0, max>, array<string, mixed>> $posts The posts.
 	 * @param array<string, mixed>                     $params The parameters.
@@ -419,10 +419,10 @@ class Endpoint_Posts extends Base_Endpoint {
 				continue;
 			}
 
-			/** 
+			/**
 			 * Post URL without ITM parameters.
-			 * 
-			 * @var string $post_url 
+			 *
+			 * @var string $post_url
 			 */
 			$post_url    = \Parsely\Parsely::get_url_with_itm_source( $post['link'], null );
 			$post_urls[] = $post_url;
@@ -438,7 +438,7 @@ class Endpoint_Posts extends Base_Endpoint {
 		 * @var array<array<string, mixed>>|WP_Error $campaign_request
 		 */
 		$campaign_request = $this->content_api->get_posts( $request_params_with_campaign );
-		
+
 		if ( is_wp_error( $campaign_request ) ) {
 			/** @var WP_Error $campaign_request */
 			return $campaign_request;
@@ -451,7 +451,7 @@ class Endpoint_Posts extends Base_Endpoint {
 				$campaign_request,
 				function ( array $item ) use ( $post ) {
 					return $item['link'] === $post['link'];
-				} 
+				}
 			);
 
 			/** @var array<string, array<string, mixed>> $campaign_post */
@@ -461,12 +461,12 @@ class Endpoint_Posts extends Base_Endpoint {
 				'views'              => $campaign_post['metrics']['views'],
 				'visitors'           => $campaign_post['metrics']['visitors'],
 				'recirculation_rate' => $campaign_post['metrics']['recirculation_rate'],
-				'avg_engaged'        => $campaign_post['metrics']['avg_engaged'],  
+				'avg_engaged'        => $campaign_post['metrics']['avg_engaged'],
 			);
 
 			$posts_with_campaign_data[] = $post;
 		}
-		
+
 		return $posts_with_campaign_data;
 	}
 }

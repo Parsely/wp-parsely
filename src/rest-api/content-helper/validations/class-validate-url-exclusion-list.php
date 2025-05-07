@@ -3,7 +3,7 @@
  * Class for validating the URL exclusion list parameter
  *
  * @package Parsely
- * @since 3.18.0
+ * @since 3.19.0
  */
 
 declare(strict_types=1);
@@ -17,14 +17,14 @@ use WP_Error;
 /**
  * Class for validating the URL exclusion list parameter.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 class Validate_Url_Exclusion_List extends Base_Validation {
 	/**
 	 * Validates the URL exclusion list parameter.
 	 *
 	 * @since 3.17.0
-	 * @since 3.18.0 Refactored to use the Base_Validation class.
+	 * @since 3.19.0 Refactored to use the Base_Validation class.
 	 *
 	 * @param mixed           $param   The parameter value.
 	 * @param WP_REST_Request $request The request object.
@@ -44,7 +44,7 @@ class Validate_Url_Exclusion_List extends Base_Validation {
 	/**
 	 * Sanitizes the URL exclusion list parameter.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param mixed           $value   The value to sanitize.
 	 * @param WP_REST_Request $request The request object.

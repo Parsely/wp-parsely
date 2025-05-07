@@ -16,7 +16,7 @@ import { SingleLink } from './single-link';
 /**
  * Defines the props structure for LinksList.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface LinksListProps {
 	isLoading: boolean;
@@ -37,7 +37,7 @@ interface LinksListProps {
 /**
  * Displays a list of Traffic Boost links.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {LinksListProps} props The component's props.
  */
@@ -68,7 +68,7 @@ export const LinksList = ( {
 	/**
 	 * Calculates the number of items that can fit in the container.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const calculateItemsPerPage = useCallback( () => {
 		if ( isLoading || useScrollbar ) {
@@ -104,7 +104,7 @@ export const LinksList = ( {
 	/**
 	 * Sets the active link post ID when the active link changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setActiveLinkPostId( activeLink?.uid ?? null );
@@ -113,7 +113,7 @@ export const LinksList = ( {
 	/**
 	 * Handles the scroll of the container to the active link when useScrollbar is true.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( ! useScrollbar || ! activeLink || ! containerRef.current ) {
@@ -146,7 +146,7 @@ export const LinksList = ( {
 	/**
 	 * Sets up the resize observer to recalculate items per page when container size changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( useScrollbar ) {
@@ -169,7 +169,7 @@ export const LinksList = ( {
 	/**
 	 * Updates visible links when page, itemsPerPage, or links change.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( 0 === itemsPerPage || useScrollbar ) {
@@ -194,7 +194,7 @@ export const LinksList = ( {
 	/**
 	 * Sets the active link page when the active link changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( useScrollbar ) {
@@ -218,7 +218,7 @@ export const LinksList = ( {
 	/**
 	 * Handles navigation to the previous page of suggestions.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handlePrevious = () => {
 		if ( useScrollbar ) {
@@ -231,7 +231,7 @@ export const LinksList = ( {
 	/**
 	 * Handles navigation to the next page of suggestions.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleNext = () => {
 		if ( useScrollbar ) {
@@ -244,7 +244,7 @@ export const LinksList = ( {
 	/**
 	 * Handles the click event for the single link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} suggestion The suggestion to click.
 	 */
@@ -256,7 +256,7 @@ export const LinksList = ( {
 	/**
 	 * Renders the suggestions list and handles loading and empty state.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const renderLinksList = (): React.JSX.Element | null => {
 		if ( isLoading && 0 === visibleLinks.length ) {
@@ -310,7 +310,7 @@ export const LinksList = ( {
 	/**
 	 * Handles the page change event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {string} value The value of the page change.
 	 */

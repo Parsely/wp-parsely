@@ -63,7 +63,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * REST API field. It generates the `parsely` object in the REST API.
 	 *
 	 * @since 3.1.0
-	 * @since 3.18.0 Added the `canonical_url` field.
+	 * @since 3.19.0 Added the `canonical_url` field.
 	 *
 	 * @param array<string, mixed> $object_data The data of the object to render the metadata for,
 	 *                                          usually a post or a page.

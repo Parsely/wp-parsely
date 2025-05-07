@@ -6,7 +6,7 @@ import { TrafficBoostLink } from '../provider';
 /**
  * Checks if a URL is external.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TrafficBoostLink} link The link to check.
  *
@@ -27,7 +27,7 @@ export const isExternalURL = ( link: TrafficBoostLink ): boolean => {
 /**
  * The class name used to mark the content area in the preview.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 const PARSELY_PREVIEW_MARKER_CLASS = 'wp-parsely-preview-marker';
 
@@ -37,7 +37,7 @@ const PARSELY_PREVIEW_MARKER_CLASS = 'wp-parsely-preview-marker';
  * It tries to get the content area by checking for the PARSELY_PREVIEW_MARKER_CLASS.
  * The content area is the element that contains the marker as a child.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {Document} document The document to get the content area from.
  *

@@ -15,14 +15,14 @@ import { TrafficBoostStore } from '../../store';
 /**
  * Represents the type of link.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export type LinkType = 'external' | 'internal' | 'smart';
 
 /**
  * Represents the links for a post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
 	total: number;
@@ -31,7 +31,7 @@ export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
 /**
  * The shape of the link counter object.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type LinkCount = {
 	[key in LinkType]: number;
@@ -40,7 +40,7 @@ type LinkCount = {
 /**
  * Props for the LinkCounter component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface LinkCounterProps {
 	post: HydratedPost;
@@ -51,7 +51,7 @@ interface LinkCounterProps {
 /**
  * Component that displays a counter for different types of links.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {LinkCounterProps} props The component's props.
  */
@@ -101,7 +101,7 @@ export const LinkCounter = ( {
 	/**
 	 * Sets the selected link type and preview link type when the initial selected link type changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setSelectedLinkType( initialSelectedLinkType );
@@ -111,7 +111,7 @@ export const LinkCounter = ( {
 	/**
 	 * Handles click events on link type buttons.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {LinkType} type The type of link that was clicked.
 	 */
@@ -132,7 +132,7 @@ export const LinkCounter = ( {
 	/**
 	 * Checks if a link type is currently selected.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {LinkType} type The type to check.
 	 *

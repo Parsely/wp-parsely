@@ -22,7 +22,7 @@ import { LinksList } from '../links-list/links-list';
  *
  * Note: Not in use yet.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SuggestionsSettings = (): React.JSX.Element => {
@@ -59,7 +59,7 @@ const SuggestionsSettings = (): React.JSX.Element => {
 /**
  * Defines the props structure for GenerateButton.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface GenerateButtonProps {
 	variant: 'primary' | 'secondary' | 'tertiary';
@@ -70,7 +70,7 @@ interface GenerateButtonProps {
 /**
  * Component that renders the generate button.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {GenerateButtonProps} props The component's props.
  */
@@ -94,7 +94,7 @@ const GenerateButton = ( {
 /**
  * Defines the props structure for SuggestionsTab.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SuggestionsTabProps {
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
@@ -103,7 +103,7 @@ interface SuggestionsTabProps {
 /**
  * Component that renders the suggestions tab.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SuggestionsTabProps} props The component's props.
  */
@@ -148,7 +148,7 @@ const SuggestionsTab = ( {
 	/**
 	 * Adds a Traffic Boost link suggestion to the current post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HydratedPost} post The post that will be added to the suggestion list.
 	 */
@@ -193,7 +193,7 @@ const SuggestionsTab = ( {
 	/**
 	 * Handles the generation of suggestions.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleGenerateSuggestions = async () => {
 		if ( ! currentPost ) {

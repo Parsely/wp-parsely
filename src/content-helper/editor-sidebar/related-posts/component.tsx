@@ -116,7 +116,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 		 * Returns the name and slug properties present in the passed value, or
 		 * an empty array if any errors occur.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 *
 		 * @param {unknown} value The value to be processed.
 		 *
@@ -227,7 +227,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 	 * Fetches the related posts.
 	 *
 	 * @since 3.4.0
-	 * @since 3.18.0 Added `fetchPeriod`, `fetchMetric`, and `fetchFilters` parameters.
+	 * @since 3.19.0 Added `fetchPeriod`, `fetchMetric`, and `fetchFilters` parameters.
 	 *
 	 * @param {Period}      fetchPeriod  The period for which to fetch data.
 	 * @param {Metric}      fetchMetric  The metric to sort by.

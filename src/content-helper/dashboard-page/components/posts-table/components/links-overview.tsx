@@ -8,7 +8,7 @@ import { external } from '@wordpress/icons';
 /**
  * The props for the LinksOverview component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type LinksOverviewProps = {
 	inboundLinks: number;
@@ -18,7 +18,7 @@ type LinksOverviewProps = {
 /**
  * Displays the inbound and outbound links for a post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {LinksOverviewProps} props - The props for the LinksOverview component.
  */

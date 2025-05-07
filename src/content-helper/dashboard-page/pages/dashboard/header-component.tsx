@@ -14,7 +14,7 @@ import { PageHeader } from '../../components';
  *
  * Renders a summary of the site performance.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 const HeaderSummary = (): React.JSX.Element => {
 	return (
@@ -34,7 +34,7 @@ const HeaderSummary = (): React.JSX.Element => {
 /**
  * Type definition for the HeaderCard component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type HeaderCardProps = {
 	title?: string;
@@ -48,7 +48,7 @@ type HeaderCardProps = {
 /**
  * Single stat card component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {HeaderCardProps} props The component's props.
  */
@@ -80,7 +80,7 @@ const StatCard = (
  *
  * Renders the header of the main dashboard page.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const DashboardHeader = (): React.JSX.Element => {
 	return (

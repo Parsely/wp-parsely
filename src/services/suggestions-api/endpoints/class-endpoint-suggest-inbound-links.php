@@ -16,7 +16,7 @@ use WP_Error;
 /**
  * The endpoint for the Suggest Inbound Links API request.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @link https://content-suggestions-api.parsely.net/prod/docs#/default/suggest_inbound_links_suggest_inbound_links_post
  *
@@ -30,7 +30,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint for the API request.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return string The endpoint for the API request.
 	 */
@@ -42,7 +42,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	 * Gets suggested inbound links for the given URL using the Parse.ly
 	 * Content Suggestion API.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \WP_Post                               $post    The post to get inbound link suggestions for.
 	 * @param Endpoint_Suggest_Inbound_Links_Options $options The options to pass to the API request.
@@ -55,7 +55,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	) {
 		/**
 		 * The Parse.ly canonical URL for the post.
-		 * 
+		 *
 		 * @var string $post_url
 		 */
 		$post_url = Parsely::get_canonical_url_from_post( $post );
@@ -131,7 +131,7 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Executes the API request.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API.

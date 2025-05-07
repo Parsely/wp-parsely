@@ -14,7 +14,7 @@ import { HydratedPost } from './base-wordpress-provider';
 /**
  * Type definition for metrics data.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface PostMetrics {
 	views: string;
@@ -26,7 +26,7 @@ interface PostMetrics {
 /**
  * Type definition for a post's stats data.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export interface PostStats extends Partial<PostMetrics> {
 	author?: string;
@@ -44,7 +44,7 @@ export interface PostStats extends Partial<PostMetrics> {
 /**
  * Type definition for the stats request parameters.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface StatsRequestParams {
 	urls?: string[];
@@ -74,7 +74,7 @@ interface StatsRequestParams {
  *
  * Allows fetching stats from the Parse.ly API for WordPress posts.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export class StatsProvider extends BaseProvider {
 	private static instance: StatsProvider;
@@ -82,7 +82,7 @@ export class StatsProvider extends BaseProvider {
 	/**
 	 * Get the singleton instance of the StatsProvider.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return {StatsProvider} The singleton instance of the StatsProvider.
 	 */
@@ -96,7 +96,7 @@ export class StatsProvider extends BaseProvider {
 	/**
 	 * Get stats for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {StatsRequestParams} args The request parameters.
 	 *
@@ -122,7 +122,7 @@ export class StatsProvider extends BaseProvider {
 	/**
 	 * Get stats for a list of posts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HydratedPost[]}     posts The posts to get stats for.
 	 * @param {StatsRequestParams} args  The request parameters.

@@ -39,7 +39,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	 * Verifies that the endpoint is not being called when credentials are
 	 * insufficient.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Parsely::call_update_metadata_endpoint
 	 * @uses \Parsely\Parsely::__construct
@@ -73,7 +73,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	/**
 	 * Provides data for test_endpoint_is_not_being_called_when_credentials_are_insufficient().
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return array<string, array<array<string, string>>>
 	 */
@@ -103,7 +103,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	/**
 	 * Verifies that endpoint calls work as expected with default post types.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Parsely::call_update_metadata_endpoint
 	 * @uses \Parsely\Parsely::__construct
@@ -138,7 +138,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	/**
 	 * Provides data for test_updates_metadata_endpoint_calls_work_as_expected_with_default_post_types().
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return array<string, array<mixed>>
 	 */
@@ -167,7 +167,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	 * Verifies that the endpoint isn't being called when the ID of a
 	 * nonexistent post gets passed to the function.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Parsely::call_update_metadata_endpoint
 	 * @uses \Parsely\Parsely::__construct
@@ -192,7 +192,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	/**
 	 * Verifies that endpoint calls work as expected with custom post types.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Parsely::call_update_metadata_endpoint
 	 * @uses \Parsely\Parsely::__construct
@@ -237,7 +237,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	 * Verifies that endpoint calls work as expected for posts with trackable
 	 * and non-trackable post statuses.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Parsely::call_update_metadata_endpoint
 	 * @uses \Parsely\Parsely::__construct
@@ -278,7 +278,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	 * Verifies that endpoint calls work as expected for posts with custom post
 	 * statuses.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Parsely::call_update_metadata_endpoint
 	 * @uses \Parsely\Parsely::__construct
@@ -323,7 +323,7 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 	/**
 	 * Adds an "active" post status to the array of trackable post statuses.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<string>    $statuses The array of trackable post statuses.
 	 * @param WP_Post|int|null $post The post being checked.

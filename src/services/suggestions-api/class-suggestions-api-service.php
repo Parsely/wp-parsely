@@ -119,7 +119,7 @@ class Suggestions_API_Service extends Base_API_Service {
 	/**
 	 * Gets suggested inbound links for the given URL.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \WP_Post                               $post    The post to get inbound link suggestions for.
 	 * @param Endpoint_Suggest_Inbound_Links_Options $options The options to pass to the API request.
@@ -136,7 +136,7 @@ class Suggestions_API_Service extends Base_API_Service {
 	/**
 	 * Gets suggested inbound link positions for the given source and destination posts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param \WP_Post                                        $source_post    The source post to get inbound link positions for.
 	 * @param \WP_Post                                        $destination_post The destination post to get inbound link positions for.

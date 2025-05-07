@@ -420,7 +420,7 @@ class Utils {
 	 * Returns the post ID for the passed URL.
 	 *
 	 * @since 3.16.0
-	 * @since 3.18.0 Moved from `Models/class-smart-link.php`.
+	 * @since 3.19.0 Moved from `Models/class-smart-link.php`.
 	 *
 	 * @param string $url The URL to get the post ID for.
 	 * @return int The post ID of the URL, 0 if not found.
@@ -470,7 +470,7 @@ class Utils {
 	/**
 	 * Appends ITM parameters to a URL.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string    $url The URL to append the ITM parameters to.
 	 * @param ItmParams $params The ITM parameters to append.

@@ -9,7 +9,7 @@ import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider
 /**
  * The loading messages for the traffic boost provider.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const TRAFFIC_BOOST_LOADING_MESSAGES = [
 	__( 'Analyzing your content…', 'wp-parsely' ),
@@ -22,7 +22,7 @@ export const TRAFFIC_BOOST_LOADING_MESSAGES = [
 /**
  * The default performance blending weight for the traffic boost provider.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT = 0.5;
 
@@ -31,7 +31,7 @@ export const TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT = 0.5;
  *
  * Stores the target post and the smart link associated with it.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export interface TrafficBoostLink {
 	uid: string;
@@ -43,7 +43,7 @@ export interface TrafficBoostLink {
 /**
  * Represents the response from the Generate Suggestions endpoint.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface InboundSmartLinkDataResponse {
 	data: InboundSmartLink[];
@@ -52,7 +52,7 @@ interface InboundSmartLinkDataResponse {
 /**
  * Represents the response from the Generate Placement endpoint.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface InboundSmartLinkPlacementResponse {
 	data: InboundSmartLink;
@@ -61,7 +61,7 @@ interface InboundSmartLinkPlacementResponse {
 /**
  * Represents the response from the Discard Suggestions endpoint.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface DiscardSuggestionsResponse {
 	success: number;
@@ -71,7 +71,7 @@ interface DiscardSuggestionsResponse {
 /**
  * Represents a success response.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SuccessResponse {
 	data: {
@@ -82,7 +82,7 @@ interface SuccessResponse {
 /**
  * Represents an error response.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface ErrorResponse {
 	error: string;
@@ -93,7 +93,7 @@ interface ErrorResponse {
 /**
  * Represents the response from the Accept Suggestion endpoint.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type AcceptSuggestionResponse = {
 	data: {
@@ -105,7 +105,7 @@ type AcceptSuggestionResponse = {
 /**
  * Represents the response from the Update Inbound Link endpoint.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type UpdateInboundLinkResponse = {
 	data: {
@@ -119,7 +119,7 @@ type UpdateInboundLinkResponse = {
 /**
  * Represents the return value from the acceptSuggestion method.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type AcceptSuggestionReturn = {
 	success: boolean;
@@ -130,7 +130,7 @@ type AcceptSuggestionReturn = {
 /**
  * Represents the response from the Discard Suggestion endpoint.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type DiscardSuggestionResponse = SuccessResponse & ErrorResponse;
 
@@ -140,20 +140,20 @@ type DiscardSuggestionResponse = SuccessResponse & ErrorResponse;
  * Provides methods to fetch Traffic Boost links and inbound smart links,
  * and to generate boost links.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * The singleton instance of the TrafficBoostProvider.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	protected static instance: TrafficBoostProvider;
 
 	/**
 	 * Returns the singleton instance of the TrafficBoostProvider.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return {TrafficBoostProvider} The singleton instance.
 	 */
@@ -167,7 +167,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Gets the existing suggestions for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number} postId The ID of the post to get suggestions for.
 	 *
@@ -191,7 +191,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Generates batch suggestions for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number}   postId                   The ID of the post to generate suggestions for.
 	 * @param {number}   numberOfSuggestions      The number of suggestions to generate.
@@ -284,7 +284,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Generates suggestions for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number}   postId                            The ID of the post to generate suggestions for.
 	 * @param {Object}   options                           The options for the suggestions.
@@ -327,7 +327,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Generates a placement suggestion for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HydratedPost}     sourcePost                        The source post.
 	 * @param {HydratedPost}     destinationPost                   The destination post.
@@ -380,7 +380,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Removes an inbound link from a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number}  postId          The ID of the post to remove the inbound link from.
 	 * @param {number}  smartLinkId     The ID of the inbound smart link to remove.
@@ -405,7 +405,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Updates an inbound smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number}  postId                   The ID of the post to update the inbound smart link for.
 	 * @param {number}  smartLinkId              The ID of the inbound smart link to update.
@@ -438,7 +438,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Gets the inbound smart links for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number} postId The ID of the post to get inbound smart links for.
 	 *
@@ -457,7 +457,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Gets the boost links for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number} postId The ID of the post to get boost links for.
 	 *
@@ -477,7 +477,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Accepts a suggestion for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number} postId         The ID of the post to accept the suggestion for.
 	 * @param {number} suggestionId   The ID of the suggestion to accept.
@@ -522,7 +522,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Discards all existing suggestions for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number} postId The ID of the post to discard suggestions for.
 	 *
@@ -540,7 +540,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Discards a specific suggestion for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {number} postId       The ID of the post to discard the suggestion for.
 	 * @param {number} suggestionId The ID of the suggestion to discard.
@@ -559,7 +559,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Creates a suggestion for a given post, without generating the placement.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HydratedPost} post The post to create a suggestion for.
 	 *
@@ -576,7 +576,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Creates traffic boost links from inbound smart links.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {InboundSmartLink[]} inboundSmartLinks The inbound smart links to create traffic boost links from.
 	 *
@@ -636,7 +636,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Creates a traffic boost link from an inbound smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {InboundSmartLink} inboundSmartLink The inbound smart link to create the traffic boost link from.
 	 * @param {HydratedPost}     targetPost       The target post to create the traffic boost link for.

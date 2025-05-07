@@ -19,7 +19,7 @@ import { TrafficBoostLink } from '../../provider';
 /**
  * Props structure for LinkOptionsPanel.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface LinkOptionsPanelProps {
 	post: HydratedPost;
@@ -33,7 +33,7 @@ interface LinkOptionsPanelProps {
 /**
  * Defines the state structure for LinkOptionsPanel.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface OptionsState {
 	linkText: string;
@@ -48,7 +48,7 @@ interface OptionsState {
  *
  * Note: not in use currently.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {LinkOptionsPanelProps} props The component's props.
  */
@@ -70,7 +70,7 @@ export const LinkOptionsPanel = ( {
 	/**
 	 * Updates the link text when the linkText prop changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setOptions( ( prevOptions: OptionsState ) => ( {
@@ -82,7 +82,7 @@ export const LinkOptionsPanel = ( {
 	/**
 	 * Updates the link options when the active link changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setOptions( ( prevOptions ) => ( {

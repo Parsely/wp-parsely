@@ -27,7 +27,7 @@ import './preview.scss';
 /**
  * Structure of a text selection.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export interface TextSelection {
 	text: string;
@@ -37,7 +37,7 @@ export interface TextSelection {
 /**
  * Props for the TrafficBoostPreview component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
@@ -50,7 +50,7 @@ interface TrafficBoostPreviewProps {
 /**
  * Component that renders the Traffic Boost preview.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TrafficBoostPreviewProps} props The component's props.
  */
@@ -107,7 +107,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Sets the active link to the provided active link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setActiveLink( providedActiveLink );
@@ -117,7 +117,7 @@ export const TrafficBoostPreview = ( {
 	 * Sets the active post to the target post of the active link,
 	 * and unsets the text selection when the active link changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setActivePost( activeLink.targetPost );
@@ -129,7 +129,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Sets the total items and item index based on the active link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( activeLink.isSuggestion ) {
@@ -144,7 +144,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Sets the preview URL based on the active post and frontend preview setting.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( ! activePost ) {
@@ -174,7 +174,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Opens the post in a new tab.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const openPostInNewTab = () => {
 		if ( ! activePost?.link ) {
@@ -187,7 +187,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Opens the post editor in a new tab.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const openPostEditor = () => {
 		if ( ! activePost?.id ) {
@@ -200,7 +200,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Opens the Parse.ly dashboard for this post in a new tab.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const openParselyDashboard = () => {
 		if ( ! activePost?.link ) {
@@ -214,7 +214,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the next item event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleNext = () => {
 		let nextItem: TrafficBoostLink | undefined;
@@ -233,7 +233,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the previous item event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handlePrevious = () => {
 		let previousItem: TrafficBoostLink | undefined;
@@ -253,7 +253,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the accept event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link The link to accept.
 	 */
@@ -326,7 +326,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Discards a suggestion.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link The link to discard.
 	 */
@@ -351,7 +351,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Removes an inbound link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link            The link to remove.
 	 * @param {boolean}          restoreOriginal Whether to restore the original link.
@@ -413,7 +413,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the update link event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link            The link to update.
 	 * @param {boolean}          restoreOriginal Whether to restore the original link.
@@ -481,7 +481,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the regenerate suggestion event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleRegenerateSuggestion = async () => {
 		if ( ! post ) {
@@ -543,7 +543,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the regenerate inbound link event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleRegenerateInboundLink = async () => {
 		if ( ! post ) {

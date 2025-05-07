@@ -26,7 +26,7 @@ use WP_REST_Response;
  *
  * Provides an endpoint for getting traffic boost suggestions for a given post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 class Endpoint_Traffic_Boost extends Base_Endpoint {
 	use Content_Helper_Feature;
@@ -35,7 +35,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * The Suggestions API service.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @var Suggestions_API_Service $suggestions_api
 	 */
@@ -44,7 +44,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Initializes the class.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param Content_Helper_Controller $controller The Content Helper controller.
 	 */
@@ -56,7 +56,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Returns the name of the endpoint.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return string The endpoint name.
 	 */
@@ -67,7 +67,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Returns the name of the feature associated with the current endpoint.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return string The feature name.
 	 */
@@ -78,7 +78,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Registers the routes for the endpoint.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function register_routes(): void {
 		/**
@@ -313,7 +313,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Gets traffic boost suggestions for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response|WP_Error The response object.
@@ -414,7 +414,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Generates placement suggestions for a specific post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response|WP_Error The response object.
@@ -546,7 +546,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Gets the existing inbound smart links for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.
@@ -588,7 +588,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Gets the inbound smart links for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.
@@ -615,7 +615,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Discards all existing suggestions for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.
@@ -633,7 +633,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Discards a specific suggestion for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.
@@ -656,7 +656,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Deletes an inbound smart link for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response|WP_Error The response object.
@@ -698,7 +698,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Updates an inbound smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response|WP_Error The response object.
@@ -765,7 +765,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * Accepts a specific suggestion for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response|WP_Error The response object.
@@ -842,7 +842,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	/**
 	 * Validates a smart link ID.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int             $smart_link_id The smart link ID.
 	 * @param WP_REST_Request $request The request object.

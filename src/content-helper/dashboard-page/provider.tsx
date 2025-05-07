@@ -8,20 +8,20 @@ import { BaseWordPressProvider } from '../common/providers/base-wordpress-provid
  *
  * Extends the BaseWordPressProvider to inherit WordPress REST API functionalities.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export class DashboardProvider extends BaseWordPressProvider {
 	/**
 	 * The singleton instance of the DashboardProvider.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	protected static instance: DashboardProvider;
 
 	/**
 	 * Returns the singleton instance of the DashboardProvider.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return {DashboardProvider} The singleton instance.
 	 */

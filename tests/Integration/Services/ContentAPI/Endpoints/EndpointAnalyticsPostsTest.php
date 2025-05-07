@@ -51,7 +51,7 @@ class EndpointAnalyticsPostsTest extends ContentAPIBaseEndpointTestCase {
 	 * Verifies that append_same_key_params_to_url() returns the expected
 	 * results.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @covers \Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Posts::append_same_key_params_to_url
 	 * @uses \Parsely\Services\Base_Service_Endpoint::__construct
@@ -83,7 +83,7 @@ class EndpointAnalyticsPostsTest extends ContentAPIBaseEndpointTestCase {
 	/**
 	 * Provides data for test_append_same_key_params_to_url().
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return iterable<string, mixed>
 	 */

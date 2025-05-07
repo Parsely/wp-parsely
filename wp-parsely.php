@@ -63,7 +63,7 @@ require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
 /**
  * Gets the Parsely object.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @return Parsely The Parsely object.
  */
@@ -233,7 +233,7 @@ add_action( 'admin_init', __NAMESPACE__ . '\\parsely_check_data_schema_updates',
 /**
  * Checks and performs any data schema updates.
  *
- * @since 3.18.0 Handles the update from schema version 0 to 1.
+ * @since 3.19.0 Handles the update from schema version 0 to 1.
  */
 function parsely_check_data_schema_updates(): void {
 	$current_data_schema_version = get_option( 'parsely_data_schema_version' );
@@ -252,7 +252,7 @@ function parsely_check_data_schema_updates(): void {
 	 *
 	 * Schema version 1.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	if ( 0 === $current_data_schema_version ) {
 		// Get all the smart links that do not have any Smart Link Status terms.

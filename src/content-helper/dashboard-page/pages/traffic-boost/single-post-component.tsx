@@ -27,7 +27,7 @@ import './traffic-boost.scss';
 /**
  * Traffic Boost Post page component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const TrafficBoostPostPage = (): React.JSX.Element => {
 	const { postId } = useParams();
@@ -79,7 +79,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 *
 	 * When the component unmounts, it cancels all the provider requests and cleans up the store state.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		// Set the background color of the page container to the background color of the admin menu.
@@ -100,7 +100,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		/**
 		 * Updates the sidebar width.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 */
 		const updateSidebarWidth = () => {
 			const width = adminMenuBack.getBoundingClientRect().width;
@@ -140,7 +140,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Fetches the current post data from the dashboard provider.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		// If the post is passed in the navigation state, use it.
@@ -178,7 +178,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Clears the post and selected link when the component unmounts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		return () => {
@@ -190,7 +190,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Hides the preview if there are no suggestions.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( selectedLink?.isSuggestion && 0 === suggestions.length ) {
@@ -201,7 +201,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Redirects to the Traffic Boost page if no post is found after fetching.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( hasFetchedPost && ! isLoadingPost && ! post ) {
@@ -212,7 +212,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Handles the click event on a suggestion.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link The link that was clicked.
 	 */
@@ -223,7 +223,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Handles the error states and clears the error after the error is handled.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( ! error ) {
@@ -245,7 +245,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Handles the accept event on a suggestion.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link         The link that was accepted.
 	 * @param {TextSelection}    selectedText The selected text.
@@ -279,7 +279,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Handles the discard event on a suggestion.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link The link that was discarded.
 	 */
@@ -296,7 +296,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Handles the remove event on an inbound link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link            The link that was removed.
 	 * @param {boolean}          restoreOriginal Whether to restore the original link.
@@ -314,7 +314,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Handles the update event on an inbound link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link            The link that was updated.
 	 * @param {string}           text            The text of the link.
@@ -346,7 +346,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Fetches the inbound links for the post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const fetchInboundLinks = async () => {
@@ -380,7 +380,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	/**
 	 * Fetches suggestions for Boost Links to the current post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( ! postId ) {

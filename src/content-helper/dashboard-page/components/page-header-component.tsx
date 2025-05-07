@@ -1,7 +1,7 @@
 /**
  * Props for the PageHeader component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type PageHeaderProps = {
 	className?: string;
@@ -13,7 +13,7 @@ type PageHeaderProps = {
  *
  * Used to wrap the header content of a dashboard page.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PageHeaderProps} props The component's props.
  */

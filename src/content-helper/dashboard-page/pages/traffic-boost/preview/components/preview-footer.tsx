@@ -9,16 +9,16 @@ import { arrowLeft, arrowRight } from '@wordpress/icons';
 /**
  * Internal imports
  */
+import { useState } from '@wordpress/element';
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { TextSelection } from '../preview';
-import { useState } from '@wordpress/element';
 
 /**
  * Props structure for PreviewFooter.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface PreviewFooterProps {
 	activeLink: TrafficBoostLink | null;
@@ -39,7 +39,7 @@ interface PreviewFooterProps {
  * Preview footer component for the Traffic Boost feature.
  * Displays link options for a selected post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PreviewFooterProps} props The component's props.
  */

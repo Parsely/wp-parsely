@@ -16,7 +16,7 @@ import SuggestionsTab from './tabs/suggestions-tab';
 /**
  * Defines the props structure for TabsContent.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TabsContentProps {
 	activeTab: { name: string };
@@ -31,7 +31,7 @@ interface TabsContentProps {
  * - Suggestions tab shows recommended content to boost
  * - Inbound Links tab shows currently boosted content
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TabsContentProps} props The component's props.
  */
@@ -50,7 +50,7 @@ export const TabsContent = ( {
 	/**
 	 * Sets the selected tab when the active tab changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setSelectedTab( activeTab.name as TrafficBoostSidebarTabs );
@@ -59,7 +59,7 @@ export const TabsContent = ( {
 	/**
 	 * Changes the selected tab depending on the selected link type.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( selectedLink?.isSuggestion ) {
