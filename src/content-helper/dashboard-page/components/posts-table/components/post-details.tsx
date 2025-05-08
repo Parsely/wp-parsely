@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { format } from '@wordpress/date';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -10,6 +9,7 @@ import { __ } from '@wordpress/i18n';
 import { Thumbnail } from '../../../../common/components/thumbnail';
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
 import { SuggestionBubble } from './suggestion-bubble';
+import { getSmartShortDate } from '../../../../common/utils/date';
 
 /**
  * Type definition for the PostDetails component.
@@ -31,7 +31,7 @@ type PostDetailsProps = {
  * @param {PostDetailsProps} props The component props.
  */
 export const PostDetails = ( { post, showSuggestionBubble = true }: PostDetailsProps ): React.JSX.Element => {
-	const prettyDate = format( 'M j, o', post.date ?? '' );
+	const prettyDate = post.date ? getSmartShortDate( new Date( post.date ) ) : '';
 	const numberOfSuggestions = post.parsely?.traffic_boost_suggestions_count ?? 0;
 
 	let postTitle = post.title.rendered;

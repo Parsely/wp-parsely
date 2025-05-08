@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
  * WordPress dependencies
  */
 import { Tooltip } from '@wordpress/components';
+import { _n, sprintf } from '@wordpress/i18n';
 
 /**
  * Type definition for the SuggestionBubble component.
@@ -39,9 +40,14 @@ export const SuggestionBubble = ( { postId, numberOfSuggestions }: SuggestionBub
 		navigate( `/traffic-boost/${ postId }` );
 	};
 
+	const pendingSuggestionsText = sprintf( /* translators: 1: Number of suggestions generated on this post */
+		_n( '%d pending suggestion', '%d pending suggestions', numberOfSuggestions, 'wp-parsely' ),
+		numberOfSuggestions
+	);
+
 	return (
 		<Tooltip
-			text={ `${ numberOfSuggestions } pending suggestions` }
+			text={ pendingSuggestionsText }
 			className="suggestion-bubble"
 		>
 			<button
