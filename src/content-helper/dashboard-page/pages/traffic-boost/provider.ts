@@ -1,7 +1,11 @@
 /**
- * Internal dependencies
+ * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
 import { ContentHelperError, ContentHelperErrorCode } from '../../../common/content-helper-error';
 import { BaseWordPressProvider, HydratedPost } from '../../../common/providers/base-wordpress-provider';
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';

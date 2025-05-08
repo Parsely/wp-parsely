@@ -1056,7 +1056,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
-	 * Gets the number of pending (suggestions) inbound smart links for a post.
+	 * Gets the number of pending inbound smart link suggestions for a post.
 	 *
 	 * @since 3.18.0
 	 *

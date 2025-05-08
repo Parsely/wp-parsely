@@ -20,7 +20,7 @@ type LinksOverviewProps = {
  *
  * @since 3.18.0
  *
- * @param {LinksOverviewProps} props - The props for the LinksOverview component.
+ * @param {LinksOverviewProps} props The props for the LinksOverview component.
  */
 export const LinksOverview = ( { inboundLinks, outboundLinks }: LinksOverviewProps ) => {
 	return (
