@@ -27,7 +27,6 @@ import { SinglePostRow } from './components/single-post-row';
  * Represents the pagination controls for the PostsTable.
  *
  * @since 3.18.0
-  import { SinglePostRow } from './components/single-post-row';
  *
  * @param {Object}   props                The component props.
  * @param {boolean}  props.isLoading      Whether the posts are loading.
