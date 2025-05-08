@@ -3,13 +3,13 @@
  */
 import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight } from '@wordpress/icons';
 
 /**
  * Internal imports
  */
-import { useState } from '@wordpress/element';
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
