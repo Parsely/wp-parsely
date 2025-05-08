@@ -885,11 +885,11 @@ class Smart_Link extends Base_Model {
 	public static function get_smart_links( int $post_id, string $type, string $status, array $args = array(), $process_smart_link_callback = null ): array {
 		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
 			$status = 'all';
-			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.19.0' );
 		}
 
 		if ( ! in_array( $type, array( 'outbound', 'inbound', 'all' ), true ) ) {
-			_doing_it_wrong( __METHOD__, 'Invalid type, defaulting to outbound.', '3.18.0' );
+			_doing_it_wrong( __METHOD__, 'Invalid type, defaulting to outbound.', '3.19.0' );
 			$type = 'outbound';
 		}
 
@@ -1085,7 +1085,7 @@ class Smart_Link extends Base_Model {
 	public static function get_link_counts( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
 			$status = Smart_Link_Status::ALL;
-			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.19.0' );
 		}
 
 		$cache_key   = 'smart-link-counts-' . $post_id . '-' . $status;
