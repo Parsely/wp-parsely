@@ -74,7 +74,6 @@ type SinglePostRowProps = {
 	stats?: PostStats;
 	compact: boolean;
 	isLoadingStats: boolean;
-	showSuggestionBubble?: boolean;
 	showStats?: boolean;
 	showActions?: boolean;
 	onErrorLoadingStats?: ( post: HydratedPost ) => void;
@@ -96,7 +95,6 @@ export const SinglePostRow = ( {
 	stats,
 	compact,
 	isLoadingStats: initialIsLoadingStats,
-	showSuggestionBubble = true,
 	showStats = true,
 	showActions = true,
 	onErrorLoadingStats,
@@ -130,7 +128,7 @@ export const SinglePostRow = ( {
 			onClick={ () => onPostClick?.( post ) }
 		>
 			<td className="post-info">
-				<PostDetails post={ post } showSuggestionBubble={ showSuggestionBubble } />
+				<PostDetails post={ post } />
 			</td>
 			{ ! compact && (
 				<>

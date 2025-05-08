@@ -1338,7 +1338,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	protected static function flush_cache_by_post_id( int $post_id ): void {
 		parent::flush_cache_by_post_id( $post_id );
 
-		wp_cache_delete( 'traffic_boost_suggestions_count_' . $post_id );
+		wp_cache_delete( 'traffic_boost_suggestions_count_' . $post_id, 'parsely' );
 	}
 
 	/**

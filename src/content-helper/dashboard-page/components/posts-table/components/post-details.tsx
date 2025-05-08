@@ -17,7 +17,6 @@ import { getSmartShortDate } from '../../../../common/utils/date';
  */
 type PostDetailsProps = {
 	post: HydratedPost;
-	showSuggestionBubble?: boolean;
 };
 
 /**
