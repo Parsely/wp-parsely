@@ -61,11 +61,13 @@ export const PostDetails = ( { post }: PostDetailsProps ): React.JSX.Element => 
 				</div>
 				<div className="post-meta">
 					<span className="post-date">{ prettyDate }</span>
-					<span className="post-author">{ post.author?.name }</span>
+					{ post.author && <span className="post-author">{ post.author.name }</span> }
 					<div className="post-categories">
-						{ post.categories.map( ( category ) => (
-							<span key={ category.id }>{ category.name }</span>
-						) ) }
+						{ post.categories && post.categories.length > 0 && 
+							post.categories.map( ( category ) => (
+								<span key={ category.id }>{ category.name }</span>
+							) ) 
+						}
 					</div>
 				</div>
 			</div>
