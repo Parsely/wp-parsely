@@ -16,8 +16,18 @@ import { moreVertical } from '@wordpress/icons';
  */
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
 import { PostStats } from '../../../../common/providers/stats-provider';
+import { getPostEditUrl } from '../../../../common/utils/post';
 import { LinksOverview } from './links-overview';
 import { PostDetails } from './post-details';
+
+/**
+ * ActionDropdownProps type.
+ *
+ * @since 3.19.0
+ */
+type ActionDropdownProps = {
+	post: HydratedPost;
+};
 
 /**
  * ActionDropdown component.
@@ -25,20 +35,30 @@ import { PostDetails } from './post-details';
  * Represents the action dropdown for each post in the PostsTable.
  *
  * @since 3.19.0
+ *
+ * @param {ActionDropdownProps} props The props for the ActionDropdown component.
  */
-const ActionDropdown = () => (
+const ActionDropdown = ( { post }: ActionDropdownProps ): React.JSX.Element => (
 	<DropdownMenu icon={ moreVertical } label={ __( 'Actions', 'wp-parsely' ) }>
 		{ ( { onClose } ) => (
-			<>
-				<MenuGroup>
-					<MenuItem onClick={ onClose }>
-						{ __( 'View', 'wp-parsely' ) }
-					</MenuItem>
-					<MenuItem onClick={ onClose }>
-						{ __( 'Edit', 'wp-parsely' ) }
-					</MenuItem>
-				</MenuGroup>
-			</>
+			<MenuGroup>
+				<MenuItem
+					onClick={ () => {
+						window.open( post.link, '_blank', 'noopener,noreferrer' );
+						onClose();
+					} }
+				>
+					{ __( 'View', 'wp-parsely' ) }
+				</MenuItem>
+				<MenuItem
+					onClick={ () => {
+						window.open( getPostEditUrl( post.id ), '_blank', 'noopener,noreferrer' );
+						onClose();
+					} }
+				>
+					{ __( 'Edit', 'wp-parsely' ) }
+				</MenuItem>
+			</MenuGroup>
 		) }
 	</DropdownMenu>
 );
@@ -121,38 +141,36 @@ export const SinglePostRow = ( {
 			{ ! compact && (
 				<>
 					{ showStats && (
-						<>
-							<td className="metrics">
-								<div className="metrics-container">
-									{ isLoadingStats && (
-										<Spinner />
-									) }
-									{ ! isLoadingStats && views && (
-										<div className="metric-views">
-											{ views.toLocaleString() }
-											{ smartLinkViews > 0 && (
-												<span className="metric-change metric-change-positive">
-													+{ smartLinkViews.toLocaleString() }
-												</span>
-											) }
-											{ isPostBoosted && smartLinkViews === 0 && (
-												<span className="metric-change metric-change-neutral">
-													=
-												</span>
-											) }
-										</div>
-									) }
-									{ ! isLoadingStats && trafficBoostPercentage > 0 && (
-										<div className="metric-boost-percentage">
-											{
-											/* translators: %f is the boost percentage */
-												sprintf( __( '%f%% BOOSTED', 'wp-parsely' ), trafficBoostPercentage.toFixed( 1 ) )
-											}
-										</div>
-									) }
-								</div>
-							</td>
-						</>
+						<td className="metrics">
+							<div className="metrics-container">
+								{ isLoadingStats && (
+									<Spinner />
+								) }
+								{ ! isLoadingStats && views > 0 && (
+									<div className="metric-views">
+										{ views.toLocaleString() }
+										{ smartLinkViews > 0 && (
+											<span className="metric-change metric-change-positive">
+												+{ smartLinkViews.toLocaleString() }
+											</span>
+										) }
+										{ isPostBoosted && smartLinkViews === 0 && (
+											<span className="metric-change metric-change-neutral">
+												=
+											</span>
+										) }
+									</div>
+								) }
+								{ ! isLoadingStats && trafficBoostPercentage > 0 && (
+									<div className="metric-boost-percentage">
+										{
+										/* translators: %f is the boost percentage */
+											sprintf( __( '%f%% BOOSTED', 'wp-parsely' ), trafficBoostPercentage.toFixed( 1 ) )
+										}
+									</div>
+								) }
+							</div>
+						</td>
 					) }
 					{ showActions && (
 						<td className="actions">
@@ -174,7 +192,7 @@ export const SinglePostRow = ( {
 									/>
 								) }
 							</div>
-							<ActionDropdown />
+							<ActionDropdown post={ post } />
 						</td>
 					) }
 				</>

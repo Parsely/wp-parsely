@@ -90,6 +90,7 @@ export class StatsProvider extends BaseProvider {
 		if ( ! this.instance ) {
 			this.instance = new StatsProvider();
 		}
+
 		return this.instance;
 	}
 
@@ -134,8 +135,10 @@ export class StatsProvider extends BaseProvider {
 			if ( args.use_wp_permalink ) {
 				return post.link;
 			}
+
 			return post.parsely?.canonical_url ?? post.link;
 		} );
+
 		return this.getStats( { urls: postURLs, ...args } );
 	}
 }

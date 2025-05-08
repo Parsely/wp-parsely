@@ -211,7 +211,7 @@ export const PostsTable = ( {
 
 			setStats( ( prevStats ) => [ ...prevStats, fetchedStats[ 0 ] ] );
 		} catch ( error ) {
-			// Do nothing.
+			console.error( error ); // eslint-disable-line no-console
 		}
 	}, [] );
 
@@ -292,14 +292,11 @@ export const PostsTable = ( {
 						<tr>
 							<th scope="col" className="post-info-header">{ __( 'POST', 'wp-parsely' ) }</th>
 							{ ! compact && (
-								<>
-									<th scope="col" className="views-header">
-										{ __( 'VIEWS', 'wp-parsely' ) }
-										<span className="views-header-period">(30 days)</span>
-									</th>
-								</>
+								<th scope="col" className="views-header">
+									{ __( 'VIEWS', 'wp-parsely' ) }
+									<span className="views-header-period">(30 days)</span>
+								</th>
 							) }
-
 						</tr>
 					</thead>
 				) }

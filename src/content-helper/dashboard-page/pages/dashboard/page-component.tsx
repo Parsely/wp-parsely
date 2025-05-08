@@ -1,12 +1,12 @@
 /**
  * WordPress dependencies
  */
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { useState } from '@wordpress/element';
 import { SettingsProvider, TrafficBoostSettings } from '../../../common/settings';
 import { VerifyCredentials } from '../../../common/verify-credentials';
 import { PageBody, PageContainer, PostsTable } from '../../components';

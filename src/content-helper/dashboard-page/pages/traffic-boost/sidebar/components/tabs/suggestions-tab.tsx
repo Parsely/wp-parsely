@@ -270,7 +270,7 @@ const SuggestionsTab = ( {
 				<LoadingComponent
 					messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
 					typewriter={ true }
-					randomOrder={ true }
+					randomOrder={ false }
 				/>
 			</div>
 		);
@@ -291,7 +291,7 @@ const SuggestionsTab = ( {
 								<LoadingComponent
 									messages={ TRAFFIC_BOOST_LOADING_MESSAGES }
 									typewriter={ true }
-									randomOrder={ true }
+									randomOrder={ false }
 								/>
 							</div>
 						);
