@@ -127,13 +127,13 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			$post_id = $graphql_post->ID;
 
 			if ( ! is_int( $post_id ) ) {
-				return;
+				return null;
 			}
 
 			$post = WP_Post::get_instance( $post_id );
 
 			if ( false === $post ) {
-				return;
+				return null;
 			}
 
 			$object_types        = $this->parsely->get_all_track_types();
