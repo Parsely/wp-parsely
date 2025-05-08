@@ -17,7 +17,6 @@ import { moreVertical } from '@wordpress/icons';
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
 import { PostStats } from '../../../../common/providers/stats-provider';
 import { getPostEditUrl } from '../../../../common/utils/post';
-import { LinksOverview } from './links-overview';
 import { PostDetails } from './post-details';
 
 /**
@@ -110,11 +109,6 @@ export const SinglePostRow = ( {
 	const nonSmartLinkViews = views - smartLinkViews;
 	const trafficBoostPercentage = ( smartLinkViews / nonSmartLinkViews ) * 100;
 
-	const inboundLinks = post.parsely?.smart_links?.inbound ?? 0;
-	const outboundLinks = post.parsely?.smart_links?.outbound ?? 0;
-
-	const isPostBoosted = inboundLinks > 0;
-
 	/**
 	 * Handles when the stats have an error or are loading.
 	 *
@@ -154,11 +148,6 @@ export const SinglePostRow = ( {
 												+{ smartLinkViews.toLocaleString() }
 											</span>
 										) }
-										{ isPostBoosted && smartLinkViews === 0 && (
-											<span className="metric-change metric-change-neutral">
-												=
-											</span>
-										) }
 									</div>
 								) }
 								{ ! isLoadingStats && trafficBoostPercentage > 0 && (
@@ -185,12 +174,13 @@ export const SinglePostRow = ( {
 								>
 									{ __( 'Boost Traffic', 'wp-parsely' ) }
 								</Link>
-								{ ( inboundLinks > 0 || outboundLinks > 0 ) && (
+								{ /* Inbound/outbound link counts: Temporarily disabled for design */ }
+								{ /* ( inboundLinks > 0 || outboundLinks > 0 ) && (
 									<LinksOverview
 										inboundLinks={ inboundLinks }
 										outboundLinks={ outboundLinks }
 									/>
-								) }
+								) */ }
 							</div>
 							<ActionDropdown post={ post } />
 						</td>
