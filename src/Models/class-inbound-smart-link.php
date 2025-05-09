@@ -17,6 +17,8 @@ use ReflectionClass;
 use WP_Post;
 use WP_Error;
 
+use const Parsely\PARSELY_CACHE_GROUP;
+
 /**
  * Model for Inbound Smart Link.
  *
@@ -1064,8 +1066,8 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return int The number of pending inbound smart links.
 	 */
 	public static function get_suggestions_count( int $post_id ): int {
-		$cache_key = 'traffic_boost_suggestions_count_' . $post_id;
-		$count     = wp_cache_get( $cache_key, 'parsely' );
+		$cache_key = self::get_suggestions_count_cache_key( $post_id );
+		$count     = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 
 		if ( false !== $count ) {
 			/** @var int $count */
@@ -1096,7 +1098,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$query = new \WP_Query( $args );
 
-		wp_cache_set( $cache_key, $query->found_posts, 'parsely', MONTH_IN_SECONDS );
+		wp_cache_set( $cache_key, $query->found_posts, PARSELY_CACHE_GROUP, MONTH_IN_SECONDS );
 
 		return $query->found_posts;
 	}
@@ -1338,7 +1340,8 @@ class Inbound_Smart_Link extends Smart_Link {
 	protected static function flush_cache_by_post_id( int $post_id ): void {
 		parent::flush_cache_by_post_id( $post_id );
 
-		wp_cache_delete( 'traffic_boost_suggestions_count_' . $post_id, 'parsely' );
+		$cache_key = self::get_suggestions_count_cache_key( $post_id );
+		wp_cache_delete( $cache_key, PARSELY_CACHE_GROUP );
 	}
 
 	/**
@@ -1362,5 +1365,17 @@ class Inbound_Smart_Link extends Smart_Link {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Gets the cache key for the traffic boost suggestions count.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param int $post_id The post ID.
+	 * @return string The cache key.
+	 */
+	private static function get_suggestions_count_cache_key( int $post_id ): string {
+		return sprintf( 'traffic-boost-suggestions-count-%d', $post_id );
 	}
 }
