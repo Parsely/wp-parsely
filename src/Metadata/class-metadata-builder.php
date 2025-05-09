@@ -411,7 +411,7 @@ abstract class Metadata_Builder {
 	private function get_top_level_term( int $term_id, string $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 
-		while ( false !== $parent && isset( $parent->parent ) && 0 !== $parent->parent ) {
+		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
 
