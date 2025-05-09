@@ -70,7 +70,7 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 		$api_service = $this->service_endpoint->api_service;
 		$identifier  = sprintf( '%s-%s-%s', $api_service->get_api_url(), $this->get_endpoint(), (string) wp_json_encode( $args ) );
 
-		return sprintf( 'parsely-api-%s', hash( 'sha1', $identifier ) );
+		return sprintf( 'parsely-api-%s', hash( 'sha256', $identifier ) );
 	}
 
 	/**

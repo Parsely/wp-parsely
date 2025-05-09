@@ -427,7 +427,7 @@ class Utils {
 	 * @return int The post ID of the URL, 0 if not found.
 	 */
 	public static function get_post_id_by_url( string $url ): int {
-		$cache_key = sprintf( 'url-to-postid-%s', hash( 'sha1', $url ) );
+		$cache_key = sprintf( 'url-to-postid-%s', hash( 'sha256', $url ) );
 		$cache     = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 
 		if ( is_integer( $cache ) ) {
