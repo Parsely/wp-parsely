@@ -113,23 +113,6 @@
 					text-align: center;
 					width: 100%;
 
-					a {
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						padding: to_rem(4px) to_rem(8px);
-						border-radius: to_rem(6px);
-						font-size: var(--font-size--small);
-						line-height: var(--font-size--medium);
-						background: var(--parsely-green-10);
-						color: var(--sidebar-black);
-
-						&:hover {
-							background: var(--parsely-green);
-							color: var(--sidebar-white);
-						}
-					}
-
 					.boost-link-status {
 						display: flex;
 						justify-content: center;

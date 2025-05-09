@@ -312,7 +312,7 @@ class Endpoint_Posts extends Base_Endpoint {
 		}
 
 		// If we are using the WordPress permalink, generate a canonical URL for each URL.
-		if ( isset( $params['use_wp_permalink'] ) && $params['use_wp_permalink'] ) {
+		if ( isset( $params['use_wp_permalink'] ) && $params['use_wp_permalink'] && isset( $params['urls'] ) && is_array( $params['urls'] ) ) {
 			$new_urls = array();
 
 			foreach ( $params['urls'] as $url ) {
@@ -357,6 +357,10 @@ class Endpoint_Posts extends Base_Endpoint {
 		// If we are using campaign parameters, fetch the additional campaign data.
 		if ( $use_campaign_params ) {
 			$analytics_request = $this->fetch_campaign_data( $analytics_request, $params, $request_params );
+
+			if ( is_wp_error( $analytics_request ) ) {
+				return $analytics_request;
+			}
 		}
 
 		// Process the data.
@@ -453,6 +457,12 @@ class Endpoint_Posts extends Base_Endpoint {
 					return $item['link'] === $post['link'];
 				}
 			);
+
+			if ( array() === $campaign_post ) {
+				// If there are no campaign metrics available, skip this one.
+				$posts_with_campaign_data[] = $post;
+				continue;
+			}
 
 			/** @var array<string, array<string, mixed>> $campaign_post */
 			$campaign_post = $campaign_post[0];

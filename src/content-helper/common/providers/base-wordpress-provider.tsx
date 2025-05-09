@@ -82,6 +82,7 @@ export type HydratedPost = Omit<Post, 'author' | 'categories' | 'tags'> & {
 	categories: Taxonomy[];
 	tags: Taxonomy[];
 	thumbnail: string;
+	parsely_canonical_url?: string;
 };
 
 /**

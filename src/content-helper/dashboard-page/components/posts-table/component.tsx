@@ -27,7 +27,6 @@ import { SinglePostRow } from './components/single-post-row';
  * Represents the pagination controls for the PostsTable.
  *
  * @since 3.19.0
-  import { SinglePostRow } from './components/single-post-row';
  *
  * @param {Object}   props                The component props.
  * @param {boolean}  props.isLoading      Whether the posts are loading.
@@ -96,7 +95,6 @@ type PostsTableType = {
 	hideHeader?: boolean;
 	hidePagination?: boolean;
 	hideLoading?: boolean;
-	hideSuggestionBubble?: boolean;
 	hideStats?: boolean;
 	hideActions?: boolean;
 	compact?: boolean;
@@ -121,7 +119,6 @@ export const PostsTable = ( {
 	hideHeader = false,
 	hidePagination = false,
 	hideLoading = false,
-	hideSuggestionBubble = false,
 	hideStats = false,
 	hideActions = false,
 	compact = false,
@@ -310,7 +307,6 @@ export const PostsTable = ( {
 							index={ index }
 							onPostClick={ onPostClick }
 							compact={ compact }
-							showSuggestionBubble={ ! hideSuggestionBubble }
 							showStats={ ! hideStats }
 							showActions={ ! hideActions }
 							onErrorLoadingStats={ onErrorLoadingStats }

@@ -1,8 +1,6 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    reviewers:
-      - 'Parsely/wp-parsely'
     directory: '/'
     schedule:
       interval: 'daily'
@@ -12,8 +10,6 @@ updates:
       - 'Deps: JavaScript'
 
   - package-ecosystem: 'composer'
-    reviewers:
-      - 'Parsely/wp-parsely'
     directory: '/'
     schedule:
       interval: 'daily'
@@ -22,8 +18,6 @@ updates:
       - 'Deps: PHP'
 
   - package-ecosystem: 'github-actions'
-    reviewers:
-      - 'Parsely/wp-parsely'
     directory: '/'
     schedule:
       interval: 'daily'

@@ -17,7 +17,6 @@ import { moreVertical } from '@wordpress/icons';
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
 import { PostStats } from '../../../../common/providers/stats-provider';
 import { getPostEditUrl } from '../../../../common/utils/post';
-import { LinksOverview } from './links-overview';
 import { PostDetails } from './post-details';
 
 /**
@@ -75,7 +74,6 @@ type SinglePostRowProps = {
 	stats?: PostStats;
 	compact: boolean;
 	isLoadingStats: boolean;
-	showSuggestionBubble?: boolean;
 	showStats?: boolean;
 	showActions?: boolean;
 	onErrorLoadingStats?: ( post: HydratedPost ) => void;
@@ -97,23 +95,17 @@ export const SinglePostRow = ( {
 	stats,
 	compact,
 	isLoadingStats: initialIsLoadingStats,
-	showSuggestionBubble = true,
 	showStats = true,
 	showActions = true,
 	onErrorLoadingStats,
 }: SinglePostRowProps ): React.JSX.Element => {
 	const [ isLoadingStats, setIsLoadingStats ] = useState( initialIsLoadingStats );
 
-	const viewsWithoutCommas = stats?.views?.replace( ',', '' );
+	const viewsWithoutCommas = stats?.views?.replace( /,/g, '' );
 	const views = Number( viewsWithoutCommas ?? 0 );
 	const smartLinkViews = Number( stats?.campaign?.views ?? 0 );
 	const nonSmartLinkViews = views - smartLinkViews;
-	const trafficBoostPercentage = ( smartLinkViews / nonSmartLinkViews ) * 100;
-
-	const inboundLinks = post.parsely?.smart_links?.inbound ?? 0;
-	const outboundLinks = post.parsely?.smart_links?.outbound ?? 0;
-
-	const isPostBoosted = inboundLinks > 0;
+	const trafficBoostPercentage = nonSmartLinkViews > 0 ? ( smartLinkViews / nonSmartLinkViews ) * 100 : 0;
 
 	/**
 	 * Handles when the stats have an error or are loading.
@@ -136,7 +128,7 @@ export const SinglePostRow = ( {
 			onClick={ () => onPostClick?.( post ) }
 		>
 			<td className="post-info">
-				<PostDetails post={ post } showSuggestionBubble={ showSuggestionBubble } />
+				<PostDetails post={ post } />
 			</td>
 			{ ! compact && (
 				<>
@@ -152,11 +144,6 @@ export const SinglePostRow = ( {
 										{ smartLinkViews > 0 && (
 											<span className="metric-change metric-change-positive">
 												+{ smartLinkViews.toLocaleString() }
-											</span>
-										) }
-										{ isPostBoosted && smartLinkViews === 0 && (
-											<span className="metric-change metric-change-neutral">
-												=
 											</span>
 										) }
 									</div>
@@ -185,12 +172,13 @@ export const SinglePostRow = ( {
 								>
 									{ __( 'Boost Traffic', 'wp-parsely' ) }
 								</Link>
-								{ ( inboundLinks > 0 || outboundLinks > 0 ) && (
+								{ /* Inbound/outbound link counts: Temporarily disabled for design */ }
+								{ /* ( inboundLinks > 0 || outboundLinks > 0 ) && (
 									<LinksOverview
 										inboundLinks={ inboundLinks }
 										outboundLinks={ outboundLinks }
 									/>
-								) }
+								) */ }
 							</div>
 							<ActionDropdown post={ post } />
 						</td>

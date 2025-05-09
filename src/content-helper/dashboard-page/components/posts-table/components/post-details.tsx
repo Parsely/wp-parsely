@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { format } from '@wordpress/date';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -9,7 +8,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { Thumbnail } from '../../../../common/components/thumbnail';
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
-import { SuggestionBubble } from './suggestion-bubble';
+import { getSmartShortDate } from '../../../../common/utils/date';
 
 /**
  * Type definition for the PostDetails component.
@@ -18,7 +17,6 @@ import { SuggestionBubble } from './suggestion-bubble';
  */
 type PostDetailsProps = {
 	post: HydratedPost;
-	showSuggestionBubble?: boolean;
 };
 
 /**
@@ -30,9 +28,8 @@ type PostDetailsProps = {
  *
  * @param {PostDetailsProps} props The component props.
  */
-export const PostDetails = ( { post, showSuggestionBubble = true }: PostDetailsProps ): React.JSX.Element => {
-	const prettyDate = format( 'M j, o', post.date ?? '' );
-	const numberOfSuggestions = post.parsely?.traffic_boost_suggestions_count ?? 0;
+export const PostDetails = ( { post }: PostDetailsProps ): React.JSX.Element => {
+	const prettyDate = post.date ? getSmartShortDate( new Date( post.date ) ) : '';
 
 	let postTitle = post.title.rendered;
 
@@ -56,17 +53,20 @@ export const PostDetails = ( { post, showSuggestionBubble = true }: PostDetailsP
 						? <span title={ post.title.rendered } dangerouslySetInnerHTML={ { __html: postTitle } }	/>
 						: __( '(no title)', 'wp-parsely' )
 					}
-					{ showSuggestionBubble && numberOfSuggestions > 0 && (
+					{ /* Suggestion count bubble: Temporarily disabled for design */ }
+					{ /* showSuggestionBubble && numberOfSuggestions > 0 && (
 						<SuggestionBubble postId={ post.id } numberOfSuggestions={ numberOfSuggestions } />
-					) }
+					) } */ }
 				</div>
 				<div className="post-meta">
 					<span className="post-date">{ prettyDate }</span>
-					<span className="post-author">{ post.author?.name }</span>
+					{ post.author && <span className="post-author">{ post.author.name }</span> }
 					<div className="post-categories">
-						{ post.categories.map( ( category ) => (
-							<span key={ category.id }>{ category.name }</span>
-						) ) }
+						{ post.categories && post.categories.length > 0 &&
+							post.categories.map( ( category ) => (
+								<span key={ category.id }>{ category.name }</span>
+							) )
+						}
 					</div>
 				</div>
 			</div>

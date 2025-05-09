@@ -108,7 +108,6 @@ export const AddNewLinkButton = ( {
 							} }
 							hideHeader={ true }
 							hidePagination={ true }
-							hideSuggestionBubble={ true }
 							compact={ true }
 							noResultsMessage={ __( 'No posts found.', 'wp-parsely' ) }
 							onPostClick={ ( post ) => {

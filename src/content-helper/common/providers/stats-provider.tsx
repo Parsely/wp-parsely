@@ -139,7 +139,7 @@ export class StatsProvider extends BaseProvider {
 			return post.parsely?.canonical_url ?? post.link;
 		} );
 
-		return this.getStats( { urls: postURLs, ...args } );
+		return this.getStats( { ...args, urls: postURLs } );
 	}
 }
 

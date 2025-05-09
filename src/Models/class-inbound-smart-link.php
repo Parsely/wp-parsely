@@ -1065,7 +1065,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	 */
 	public static function get_suggestions_count( int $post_id ): int {
 		$cache_key = 'traffic_boost_suggestions_count_' . $post_id;
-		$count     = wp_cache_get( $cache_key );
+		$count     = wp_cache_get( $cache_key, 'parsely' );
 
 		if ( false !== $count ) {
 			/** @var int $count */
@@ -1096,7 +1096,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$query = new \WP_Query( $args );
 
-		wp_cache_set( $cache_key, $query->found_posts );
+		wp_cache_set( $cache_key, $query->found_posts, 'parsely', MONTH_IN_SECONDS );
 
 		return $query->found_posts;
 	}
@@ -1338,7 +1338,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	protected static function flush_cache_by_post_id( int $post_id ): void {
 		parent::flush_cache_by_post_id( $post_id );
 
-		wp_cache_delete( 'traffic_boost_suggestions_count_' . $post_id );
+		wp_cache_delete( 'traffic_boost_suggestions_count_' . $post_id, 'parsely' );
 	}
 
 	/**
