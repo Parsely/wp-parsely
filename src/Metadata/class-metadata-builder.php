@@ -13,7 +13,6 @@ namespace Parsely\Metadata;
 use Parsely\Parsely;
 use Parsely\Utils\Utils;
 use WP_Post;
-use WP_Term;
 use WP_User;
 
 /**
@@ -412,7 +411,7 @@ abstract class Metadata_Builder {
 	private function get_top_level_term( int $term_id, string $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 
-		while ( ( $parent instanceof WP_Term ) && 0 !== $parent->parent ) {
+		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
 

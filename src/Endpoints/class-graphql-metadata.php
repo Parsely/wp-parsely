@@ -126,7 +126,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
 			$post_id = $graphql_post->ID;
 
-			// @phpstan-ignore function.alreadyNarrowedType
 			if ( ! is_int( $post_id ) ) {
 				return null;
 			}
