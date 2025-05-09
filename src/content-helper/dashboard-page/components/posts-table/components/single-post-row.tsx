@@ -101,8 +101,8 @@ export const SinglePostRow = ( {
 }: SinglePostRowProps ): React.JSX.Element => {
 	const [ isLoadingStats, setIsLoadingStats ] = useState( initialIsLoadingStats );
 
-	const viewsWithoutCommas = stats?.views?.replace( /,/g, '' );
-	const views = Number( viewsWithoutCommas ?? 0 );
+	const viewsWithoutCommas = stats?.views?.replace( /\D/g, '' );
+	const views = parseInt( viewsWithoutCommas ?? '0', 10 );
 	const smartLinkViews = Number( stats?.campaign?.views ?? 0 );
 	const nonSmartLinkViews = views - smartLinkViews;
 	const trafficBoostPercentage = nonSmartLinkViews > 0 ? ( smartLinkViews / nonSmartLinkViews ) * 100 : 0;
