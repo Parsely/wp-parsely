@@ -52,6 +52,7 @@ if ( class_exists( Parsely::class ) ) {
 const PARSELY_VERSION             = '3.18.1';
 const PARSELY_FILE                = __FILE__;
 const PARSELY_DATA_SCHEMA_VERSION = '1';
+const PARSELY_CACHE_GROUP         = 'wp-parsely';
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';

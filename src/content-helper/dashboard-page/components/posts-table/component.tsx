@@ -291,7 +291,7 @@ export const PostsTable = ( {
 							{ ! compact && (
 								<th scope="col" className="views-header">
 									{ __( 'VIEWS', 'wp-parsely' ) }
-									<span className="views-header-period">(30 days)</span>
+									<span className="views-header-period">{ __( '(30 days)', 'wp-parsely' ) }</span>
 								</th>
 							) }
 						</tr>
