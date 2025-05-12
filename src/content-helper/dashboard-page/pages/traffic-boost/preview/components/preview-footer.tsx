@@ -205,4 +205,3 @@ export const PreviewFooter = ( {
 		</div>
 	);
 };
-

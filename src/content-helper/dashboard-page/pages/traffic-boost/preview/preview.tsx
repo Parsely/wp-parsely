@@ -19,6 +19,7 @@ import {
 	TrafficBoostProvider,
 } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
+import { PreviewActions } from './components/preview-actions';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
 import { PreviewIframe } from './components/preview-iframe';
@@ -641,6 +642,18 @@ export const TrafficBoostPreview = ( {
 						setSelectedLink( suggestion );
 					}
 				} }
+			/>
+
+			<PreviewActions
+				activeLink={ activeLink }
+				onAccept={ handleAccept }
+				onDiscard={ handleDiscard }
+				onUpdateLink={ handleUpdateLink }
+				onRemove={ handleRemove }
+				onRestoreOriginal={ () => {
+					setSelectedText( null );
+				} }
+				selectedText={ selectedText }
 			/>
 		</div>
 	);

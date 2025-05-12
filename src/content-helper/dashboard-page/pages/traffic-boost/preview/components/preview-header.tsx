@@ -156,7 +156,7 @@ export const PreviewHeader = ( {
 					selectedLinkType={ null }
 				/>
 			</div>
-			<div className="traffic-boost-preview-actions">
+			<div className="traffic-boost-preview-header-actions">
 				<Button
 					icon={ update }
 					iconSize={ 24 }
