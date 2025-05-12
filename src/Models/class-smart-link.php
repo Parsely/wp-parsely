@@ -1199,7 +1199,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Generates a cache key for the smart link.
 	 *
-	 * @since 3.18.1
+	 * @since 3.19.0
 	 *
 	 * @param string $uid The unique identifier for the cache key.
 	 * @return string The cache key.
@@ -1211,7 +1211,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets the cache key for all smart links in a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $type The type of smart links ('outbound', 'inbound', or 'all').
 	 * @param string $status The status of the smart links ('all', 'pending', or 'applied').
