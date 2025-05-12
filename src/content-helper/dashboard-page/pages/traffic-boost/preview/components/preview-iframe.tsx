@@ -22,7 +22,7 @@ import { TextSelectionTooltip } from './text-selection-tooltip';
 /**
  * Props structure for PreviewIframe.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface PreviewIframeProps {
 	activeLink?: TrafficBoostLink | null;
@@ -39,7 +39,7 @@ interface PreviewIframeProps {
  * Preview iframe component for the Traffic Boost feature.
  * Displays preview iframe for a selected post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PreviewIframeProps} props The component's props.
  */
@@ -69,7 +69,7 @@ export const PreviewIframe = ( {
 	 * Adds a random UUID to the iframe src. This triggers the WordPress Customizer to load
 	 * and prevents potential undesired scripts from being loaded.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const iFrameSrc = useMemo( () => {
 		if ( ! previewUrl ) {
@@ -85,7 +85,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Highlights the smart link in the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const {
 		injectHighlightStyles,
@@ -104,7 +104,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Hides the admin bar from the iframe if the preview is in frontend mode.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to hide the admin bar in.
 	 */
@@ -127,7 +127,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Disables all navigation within the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to disable navigation in.
 	 */
@@ -207,7 +207,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Jumps to the smart link text in the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element containing the smart link to scroll to.
 	 */
@@ -261,7 +261,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Handles the iframe load event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to handle the load event for.
 	 */
@@ -297,7 +297,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Handles iframe initialization and cleanup.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		// If we're generating placement, don't try to set up the iframe yet.
@@ -313,7 +313,7 @@ export const PreviewIframe = ( {
 		/**
 		 * Handles the iframe load event.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 */
 		const handleLoadCallback = () => {
 			handleIframeLoad( iframe );
@@ -334,7 +334,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Resets content area ref when active link changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		contentAreaRef.current = null;
@@ -343,7 +343,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Re-highlights smart link when selection changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;
@@ -359,7 +359,7 @@ export const PreviewIframe = ( {
 	/**
 	 * Highlights the link type in the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;

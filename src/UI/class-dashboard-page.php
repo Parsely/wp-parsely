@@ -20,13 +20,13 @@ use const Parsely\PARSELY_FILE;
 /**
  * Renders the plugin's dashboard page.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 final class Dashboard_Page {
 	/**
 	 * Instance of Parsely class.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 * @var Parsely
 	 */
 	private $parsely;
@@ -34,7 +34,7 @@ final class Dashboard_Page {
 	/**
 	 * Constructor.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
 	 */
@@ -45,7 +45,7 @@ final class Dashboard_Page {
 	/**
 	 * Registers the dashboard page.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_dashboard_page_to_menu' ) );
@@ -58,7 +58,7 @@ final class Dashboard_Page {
 	/**
 	 * Handles the preview template.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function handle_preview_template(): void {
 		// Verify user capabilities.
@@ -116,7 +116,7 @@ final class Dashboard_Page {
 	/**
 	 * Adds a wrapper div for Parse.ly preview functionality.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $content The post content.
 	 * @return string The modified content with wrapper div if needed.
@@ -139,7 +139,7 @@ final class Dashboard_Page {
 	/**
 	 * Adds the dashboard page to the admin menu.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function add_dashboard_page_to_menu(): void {
 		// Base64-encoded version of leaf-icon.tsx with size of 20 and fill of #1d2327.
@@ -185,7 +185,7 @@ final class Dashboard_Page {
 	/**
 	 * Adds a placeholder for the dashboard page to render into.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function add_dashboard_page_placeholder(): void {
 		echo '<div class="parsely-dashboard-container" id="parsely-dashboard-page"></div>';
@@ -197,7 +197,7 @@ final class Dashboard_Page {
 	 * This removes the highlighting from the submenu items when the dashboard page is active, so it can
 	 * later be added by the React app.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $parent_file The parent file.
 	 * @return string The parent file.
@@ -216,7 +216,7 @@ final class Dashboard_Page {
 	/**
 	 * Enqueues all needed scripts and styles for the dashboard page.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param ?string $hook_suffix The current page being loaded.
 	 */
@@ -258,7 +258,7 @@ final class Dashboard_Page {
 
 		if ( $this->parsely->site_id_is_set() ) {
 			wp_add_inline_script(
-				'parsely-dashboard-page', 
+				'parsely-dashboard-page',
 				'window.wpParselySiteId = ' . wp_json_encode( $this->parsely->get_site_id() ) . ';',
 				'before'
 			);
@@ -268,7 +268,7 @@ final class Dashboard_Page {
 	/**
 	 * Injects Content Helper permissions into the dashboard page.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	protected function inject_content_helper_permissions(): void {
 		$permissions_json = Permissions::get_pch_permissions_json(
@@ -285,7 +285,7 @@ final class Dashboard_Page {
 	/**
 	 * Injects Traffic Boost settings into the dashboard page.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	protected function inject_traffic_boost_settings(): void {
 		$settings = '';

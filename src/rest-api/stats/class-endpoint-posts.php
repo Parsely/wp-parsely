@@ -250,7 +250,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	/**
 	 * Validates if the provided array is a list of URLs.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<string> $urls The array to validate.
 	 * @return true|WP_Error
@@ -386,7 +386,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	/**
 	 * Fetches the campaign data for the posts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param array<int<0, max>, array<string, mixed>> $posts The posts.
 	 * @param array<string, mixed>                     $params The parameters.

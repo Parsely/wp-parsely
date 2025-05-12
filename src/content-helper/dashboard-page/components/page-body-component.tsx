@@ -1,7 +1,7 @@
 /**
  * Props for the PageBody component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type PageBodyProps = {
 	className?: string;
@@ -13,7 +13,7 @@ type PageBodyProps = {
  *
  * Used to wrap the main content of a dashboard page.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PageBodyProps} props The component's props.
  */

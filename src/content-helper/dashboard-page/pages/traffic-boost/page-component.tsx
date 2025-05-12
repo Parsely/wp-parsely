@@ -15,7 +15,7 @@ import './traffic-boost.scss';
 /**
  * Traffic Boost page component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const TrafficBoostPage = (): React.JSX.Element => {
 	const [ searchQuery, setSearchQuery ] = useState<string>( '' );

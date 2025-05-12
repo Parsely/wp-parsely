@@ -18,7 +18,7 @@ interface SnackbarNoticesProps {
  * Component that manages and displays snackbar notices from WordPress notices
  * store.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SnackbarNoticesProps} props The component's props.
  */

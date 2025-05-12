@@ -976,7 +976,7 @@ class Parsely {
 	/**
 	 * Gets the Parse.ly canonical URL for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_Post|int $post The post ID or post object.
 	 * @return string The Parse.ly canonical URL.
@@ -1004,7 +1004,7 @@ class Parsely {
 	 * If the current domain is different from the Parse.ly site ID, this function
 	 * will return the URL with the current domain.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $url The URL to get the canonical URL for.
 	 * @return string The canonical URL.
@@ -1033,7 +1033,7 @@ class Parsely {
 	/**
 	 * Sets the Parse.ly canonical URL for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_Post|int $post The post object or post ID.
 	 * @param string      $url The canonical URL.

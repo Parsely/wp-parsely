@@ -17,7 +17,7 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
 /**
  * The status of a smart link.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type SmartLinkStatus = 'applied' | 'pending';
 
@@ -257,7 +257,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * Returns a list of suggested links for the given content.
 	 *
 	 * @since 3.15.0
-	 * @since 3.18.0 Fetches the extra data for the outbound smart links.
+	 * @since 3.19.0 Fetches the extra data for the outbound smart links.
 	 *
 	 * @param {string}   content          The content to generate links for.
 	 * @param {number}   maxLinksPerPost  The maximum number of links to return.

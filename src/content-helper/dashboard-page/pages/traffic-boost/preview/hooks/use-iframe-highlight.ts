@@ -8,13 +8,13 @@ import { useCallback } from '@wordpress/element';
  */
 import { escapeRegExp } from '../../../../../common/utils/functions';
 import { TrafficBoostLink } from '../../provider';
-import { TextSelection } from '../preview';
 import { LinkType } from '../components/link-counter';
+import { TextSelection } from '../preview';
 
 /**
  * Props for the useIframeHighlight hook.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface UseIframeHighlightProps {
 	iframeRef: React.RefObject<HTMLIFrameElement>;
@@ -28,7 +28,7 @@ interface UseIframeHighlightProps {
 /**
  * Custom hook for handling iframe highlighting functionality.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {UseIframeHighlightProps} props The component's props.
  *
@@ -45,7 +45,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Injects highlight styles into the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to inject styles into.
 	 */
@@ -158,7 +158,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Finds all ranges containing the text.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {string}   searchText The text to search for.
 	 * @param {Node}     rootNode   The root node to search within.
@@ -245,7 +245,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Highlights a range with a specified class.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Range}   range      The range to highlight.
 	 * @param {string}  className  The class name to apply to the highlight span.
@@ -298,7 +298,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Removes highlight spans from the iframe content.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe        The iframe element to remove highlights from.
 	 * @param {string}            querySelector The query selector to find highlight elements.
@@ -314,7 +314,7 @@ export const useIframeHighlight = ( {
 			/**
 			 * Removes a highlight and cleans up the parent node.
 			 *
-			 * @since 3.18.0
+			 * @since 3.19.0
 			 *
 			 * @param {Element}    highlight The highlight element to remove.
 			 * @param {ParentNode} parent    The parent node of the highlight.
@@ -360,7 +360,7 @@ export const useIframeHighlight = ( {
 			/**
 			 * Recursively unwraps nested highlights.
 			 *
-			 * @since 3.18.0
+			 * @since 3.19.0
 			 *
 			 * @param {Element} highlight The highlight element to unwrap.
 			 */
@@ -402,7 +402,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Removes the smart link highlights from the iframe content.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to remove highlights from.
 	 */
@@ -413,7 +413,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Highlights the selection range and the original range.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Range}  selectionRange The range of the selected text.
 	 * @param {Range}  originalRange  The range of the original text.
@@ -462,7 +462,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Highlights a link suggestion in the iframe content.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Document} iframeDocument The iframe document.
 	 * @param {string}   suggestionText The suggestion text to highlight.
@@ -506,7 +506,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Highlights an inbound link in the iframe content.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Document} iframeDocument The iframe document.
 	 * @param {string}   smartLinkId    The smart link ID to highlight.
@@ -540,7 +540,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Highlights the smart link text in the iframe content.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to highlight the smart link in.
 	 */
@@ -566,7 +566,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Highlights the links of the selected link type in the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HTMLIFrameElement} iframe           The iframe element to highlight the links in.
 	 * @param {string}            selectedLinkType The selected link type to highlight.

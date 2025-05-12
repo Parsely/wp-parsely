@@ -35,7 +35,7 @@ domReady( () => {
 /**
  * Main component for the Parse.ly dashboard.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @class
  */
@@ -45,7 +45,7 @@ const ParselyDashboard = () => {
 	/**
 	 * Replaces the first link to have the hash router link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const firstLink = document.querySelector(
@@ -61,7 +61,7 @@ const ParselyDashboard = () => {
 	/**
 	 * Changes the submenus highlight based on the current page.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const submenuItems = document.querySelectorAll(

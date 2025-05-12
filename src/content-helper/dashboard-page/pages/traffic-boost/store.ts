@@ -14,7 +14,7 @@ import { TrafficBoostLink } from './provider';
 /**
  * Available tab names in the Traffic Boost sidebar.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export enum TrafficBoostSidebarTabs {
 	SUGGESTIONS = 'suggestions',
@@ -25,7 +25,7 @@ export enum TrafficBoostSidebarTabs {
 /**
  * The shape of the Traffic Boost settings.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type TrafficBoostSettings = {
 	maxItems: number;
@@ -34,7 +34,7 @@ type TrafficBoostSettings = {
 /**
  * The shape of the suggestions tab state.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type SuggestionsTabState = {
 	suggestions: TrafficBoostLink[];
@@ -44,7 +44,7 @@ type SuggestionsTabState = {
 /**
  * The shape of the boost links tab state.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type InboundLinksTabState = {
 	links: TrafficBoostLink[];
@@ -55,7 +55,7 @@ type InboundLinksTabState = {
 /**
  * The shape of the preview state.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type PreviewState = {
 	selectedLinkType: LinkType | null;
@@ -65,7 +65,7 @@ type PreviewState = {
 /**
  * The shape of the Traffic Boost store state.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type TrafficBoostState = {
 	loading: string[];
@@ -88,7 +88,7 @@ type TrafficBoostState = {
 /**
  * Interface for the SetLoadingAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetLoadingAction {
 	type: 'SET_LOADING';
@@ -99,7 +99,7 @@ interface SetLoadingAction {
 /**
  * Interface for the SetErrorAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetErrorAction {
 	type: 'SET_ERROR';
@@ -109,7 +109,7 @@ interface SetErrorAction {
 /**
  * Interface for the SetCurrentHydratedPostAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetCurrentHydratedPostAction {
 	type: 'SET_CURRENT_HYDRATED_POST';
@@ -119,7 +119,7 @@ interface SetCurrentHydratedPostAction {
 /**
  * Interface for the SetSelectedTabAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetSelectedTabAction {
 	type: 'SET_SELECTED_TAB';
@@ -129,7 +129,7 @@ interface SetSelectedTabAction {
 /**
  * Interface for the SetSuggestionsAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetSuggestionsAction {
 	type: 'SET_SUGGESTIONS';
@@ -140,7 +140,7 @@ interface SetSuggestionsAction {
 /**
  * Interface for the SetInboundLinksAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetInboundLinksAction {
 	type: 'SET_INBOUND_LINKS';
@@ -150,7 +150,7 @@ interface SetInboundLinksAction {
 /**
  * Interface for the SetInboundLinksPageAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetInboundLinksPageAction {
 	type: 'SET_INBOUND_LINKS_PAGE';
@@ -160,7 +160,7 @@ interface SetInboundLinksPageAction {
 /**
  * Interface for the SetInboundLinksItemsPerPageAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetInboundLinksItemsPerPageAction {
 	type: 'SET_INBOUND_LINKS_ITEMS_PER_PAGE';
@@ -170,7 +170,7 @@ interface SetInboundLinksItemsPerPageAction {
 /**
  * Interface for the SetSelectedLinkAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetSelectedLinkAction {
 	type: 'SET_SELECTED_LINK';
@@ -180,7 +180,7 @@ interface SetSelectedLinkAction {
 /**
  * Interface for the SetPreviewLinkTypeAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetPreviewLinkTypeAction {
 	type: 'SET_PREVIEW_LINK_TYPE';
@@ -190,7 +190,7 @@ interface SetPreviewLinkTypeAction {
 /**
  * Interface for the SetFrontendPreviewAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetFrontendPreviewAction {
 	type: 'SET_FRONTEND_PREVIEW';
@@ -200,7 +200,7 @@ interface SetFrontendPreviewAction {
 /**
  * Interface for the AddSuggestionAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface AddSuggestionAction {
 	type: 'ADD_SUGGESTION';
@@ -211,7 +211,7 @@ interface AddSuggestionAction {
 /**
  * Interface for the RemoveSuggestionAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface RemoveSuggestionAction {
 	type: 'REMOVE_SUGGESTION';
@@ -222,7 +222,7 @@ interface RemoveSuggestionAction {
 /**
  * Interface for the AddInboundLinkAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface AddInboundLinkAction {
 	type: 'ADD_INBOUND_LINK';
@@ -233,7 +233,7 @@ interface AddInboundLinkAction {
 /**
  * Interface for the RemoveInboundLinkAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface RemoveInboundLinkAction {
 	type: 'REMOVE_INBOUND_LINK';
@@ -244,7 +244,7 @@ interface RemoveInboundLinkAction {
 /**
  * Interface for the UpdateSuggestionAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface UpdateSuggestionAction {
 	type: 'UPDATE_SUGGESTION';
@@ -255,7 +255,7 @@ interface UpdateSuggestionAction {
 /**
  * Interface for the SetIsAcceptingAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetIsAcceptingAction {
 	type: 'SET_IS_ACCEPTING';
@@ -266,7 +266,7 @@ interface SetIsAcceptingAction {
 /**
  * Interface for the SetIsRemovingAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetIsRemovingAction {
 	type: 'SET_IS_REMOVING';
@@ -277,7 +277,7 @@ interface SetIsRemovingAction {
 /**
  * Interface for the SetIsGeneratingSuggestionsAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetIsGeneratingSuggestionsAction {
 	type: 'SET_IS_GENERATING_SUGGESTIONS';
@@ -287,7 +287,7 @@ interface SetIsGeneratingSuggestionsAction {
 /**
  * Interface for the SetIsGeneratingAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetIsGeneratingAction {
 	type: 'SET_IS_GENERATING';
@@ -298,7 +298,7 @@ interface SetIsGeneratingAction {
 /**
  * Interface for the UpdateInboundLinkAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface UpdateInboundLinkAction {
 	type: 'UPDATE_INBOUND_LINK';
@@ -309,7 +309,7 @@ interface UpdateInboundLinkAction {
 /**
  * Interface for the SetSettingsAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetSettingsAction {
 	type: 'SET_SETTINGS';
@@ -319,7 +319,7 @@ interface SetSettingsAction {
 /**
  * Interface for the SetSuggestionsToGenerateAction.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SetSuggestionsToGenerateAction {
 	type: 'SET_SUGGESTIONS_TO_GENERATE';
@@ -329,7 +329,7 @@ interface SetSuggestionsToGenerateAction {
 /**
  * Union type for all possible action types.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type ActionTypes =
 	| SetLoadingAction
@@ -359,7 +359,7 @@ type ActionTypes =
 /**
  * Default state for the Traffic Boost store.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 const defaultState: TrafficBoostState = {
 	loading: [],
@@ -392,7 +392,7 @@ const defaultState: TrafficBoostState = {
 /**
  * The Traffic Boost store.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 	initialState: defaultState,

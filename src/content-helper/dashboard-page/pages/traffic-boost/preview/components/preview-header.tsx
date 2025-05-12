@@ -18,7 +18,7 @@ import { LinkCounter } from './link-counter';
 /**
  * Props structure for VerticalMoreMenu.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface VerticalMoreMenuProps {
 	post: HydratedPost;
@@ -32,7 +32,7 @@ interface VerticalMoreMenuProps {
  *
  * This component is used to display a dropdown menu with actions for a post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {VerticalMoreMenuProps} props The component's props.
  */
@@ -45,7 +45,7 @@ const VerticalMoreMenu = ( {
 	/**
 	 * Handles the click event for the dropdown menu items.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {string}   type    The type of action to perform.
 	 * @param {Function} onClose The function to call when the action is performed.
@@ -87,7 +87,7 @@ const VerticalMoreMenu = ( {
 /**
  * Props structure for PreviewHeader.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface PreviewHeaderProps {
 	isLoading: boolean;
@@ -104,7 +104,7 @@ interface PreviewHeaderProps {
  * Preview header component for the Traffic Boost feature.
  * Displays preview header for a selected post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PreviewHeaderProps} props The component's props.
  */
@@ -121,7 +121,7 @@ export const PreviewHeader = ( {
 	/**
 	 * Toggles the frontend preview state.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const onToggleFrontendPreview = () => {
 		setIsFrontendPreview( ! isFrontendPreview );
@@ -133,7 +133,7 @@ export const PreviewHeader = ( {
 	 *
 	 * This prevents issues with cross-origin requests.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( activeLink && isExternalURL( activeLink ) ) {

@@ -26,7 +26,7 @@ import { SinglePostRow } from './components/single-post-row';
  *
  * Represents the pagination controls for the PostsTable.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {Object}   props                The component props.
  * @param {boolean}  props.isLoading      Whether the posts are loading.
@@ -86,7 +86,7 @@ const TablePagination = ( {
 /**
  * Type definition for the PostsTable component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type PostsTableType = {
 	query?: QueryParams;
@@ -108,7 +108,7 @@ type PostsTableType = {
  *
  * Represents a table of posts, that support custom queries and pagination.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PostsTableType} props The component props.
  */
@@ -140,7 +140,7 @@ export const PostsTable = ( {
 	/**
 	 * Fetches posts from the API, using the query and pagination.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const fetchPosts = async () => {
@@ -188,7 +188,7 @@ export const PostsTable = ( {
 	 *
 	 * It tries to fetch the stats again for this URL, but instead try with the WordPress permalink.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HydratedPost} post The post to fetch the stats for.
 	 */
@@ -215,7 +215,7 @@ export const PostsTable = ( {
 	/**
 	 * Handles the previous button click.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handlePrevious = () => {
 		setCurrentPage( ( prev ) => Math.max( prev - 1, 1 ) );
@@ -224,7 +224,7 @@ export const PostsTable = ( {
 	/**
 	 * Handles the next button click.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleNext = () => {
 		setCurrentPage( ( prev ) => prev + 1 );
@@ -233,7 +233,7 @@ export const PostsTable = ( {
 	/**
 	 * Gets the stats for a specific post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {HydratedPost} post The post to get the stats for.
 	 * @return {PostStats} The stats for the post.

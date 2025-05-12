@@ -186,7 +186,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 * This method is a wrapper around apiFetch() that automatically adds the
 	 * AbortController signal.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @template T The type of the data to fetch.
 	 *
@@ -291,7 +291,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	/**
 	 * Fetches a list of pages from the REST API and hydrates them with embedded data.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {QueryParams?} queryParams Optional query parameters.
 	 * @param {string?}      id          The (optional) ID of the request.

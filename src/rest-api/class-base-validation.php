@@ -3,7 +3,7 @@
  * Base Validation class for REST API parameters
  *
  * @package Parsely
- * @since 3.18.0
+ * @since 3.19.0
  */
 
 declare(strict_types=1);
@@ -16,13 +16,13 @@ use WP_Error;
 /**
  * Base class for validating REST API parameters.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 abstract class Base_Validation {
 	/**
 	 * Validates a parameter.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param mixed           $param   The parameter value.
 	 * @param WP_REST_Request $request The request object.
@@ -35,8 +35,8 @@ abstract class Base_Validation {
 	 *
 	 * If a sanitize method is not implemented, it will throw an exception.
 	 *
-	 * @since 3.18.0
-	 * 
+	 * @since 3.19.0
+	 *
 	 * @throws \Exception The sanitize method is not implemented.
 	 *
 	 * @param mixed           $value   The value to sanitize.

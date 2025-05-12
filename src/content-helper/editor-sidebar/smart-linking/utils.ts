@@ -754,7 +754,7 @@ export function getAllSmartLinksURLs( smartLinks: SmartLink[] ): string[] {
 /**
  * Adds ITM parameters to a smart link URL.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {string} url          The URL to add ITM parameters to.
  * @param {string} smartLinkUid The smart link UID to add ITM parameters for.

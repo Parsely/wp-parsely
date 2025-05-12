@@ -11,7 +11,7 @@ import { getContentArea } from '../utils';
 /**
  * Custom hook to inject styles into the iframe.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {Document} iframeDocument The iframe's document object.
  */
@@ -115,7 +115,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 /**
  * Props structure for TextSelectionPopover.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TextSelectionPopoverProps {
 	onSelect: () => void;
@@ -127,7 +127,7 @@ interface TextSelectionPopoverProps {
 /**
  * Component that renders the popover content for text selection.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TextSelectionPopoverProps} props The component's props.
  */
@@ -139,7 +139,7 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	/**
 	 * Checks if the given node or its children contain an anchor.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Node} node The node to check.
 	 *
@@ -159,7 +159,7 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	/**
 	 * Checks if the selection is the entire link text.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return {boolean} True if the selection is the entire link text, false otherwise.
 	 */
@@ -184,7 +184,7 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	/**
 	 * Checks if the selection is within a link and sets an error message if it is.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const range = selection.getRangeAt( 0 );
@@ -235,7 +235,7 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 /**
  * Props structure for TextSelectionTooltip.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TextSelectionTooltipProps {
 	iframeRef: React.RefObject<HTMLIFrameElement>;
@@ -246,7 +246,7 @@ interface TextSelectionTooltipProps {
  * A tooltip component that appears over selected text, offering to use that
  * text as link text.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TextSelectionTooltipProps} props The component's props.
  */
@@ -257,7 +257,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Expands the current selection to word boundaries.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Selection} docSelection The document's current selection.
 	 * @param {Range}     range        The current selection range.
@@ -297,7 +297,7 @@ export const TextSelectionTooltip = ( {
 	 * Expands the current selection to encompass the entire link node if
 	 * selection is within a link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Selection} docSelection The document's current selection.
 	 * @param {Range}     range        The current selection range.
@@ -333,7 +333,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Calculates the offset of the selected text by counting previous occurrences.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Document}  iframeDocument The iframe's document object.
 	 * @param {Selection} docSelection   The document's current selection.
@@ -367,7 +367,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Handles the selection of text in the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleSelection = useCallback( () => {
 		const iframeDocument = iframeRef.current?.contentDocument;
@@ -471,7 +471,7 @@ export const TextSelectionTooltip = ( {
 		/**
 		 * Updates the position of the highlight.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 */
 		const updatePosition = () => {
 			const rect = range.getBoundingClientRect();
@@ -497,7 +497,7 @@ export const TextSelectionTooltip = ( {
 		/**
 		 * Cleans up the highlight and event listeners.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 */
 		const cleanup = () => {
 			iframeDocument.removeEventListener( 'scroll', scrollHandler );
@@ -510,7 +510,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Injects styles and adds event listeners when the component mounts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const iframeDocument = iframeRef.current?.contentDocument;

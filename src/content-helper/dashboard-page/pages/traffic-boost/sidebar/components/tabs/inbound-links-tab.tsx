@@ -14,7 +14,7 @@ import { LinksList } from '../links-list/links-list';
 /**
  * Defines the props structure for InboundLinksTab.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface InboundLinksTabProps {
 	onInboundLinkClick?: ( inboundLink: TrafficBoostLink ) => void;
@@ -23,7 +23,7 @@ interface InboundLinksTabProps {
 /**
  * Component that renders the inbound links tab.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {InboundLinksTabProps} props The props for the InboundLinksTab component.
  */

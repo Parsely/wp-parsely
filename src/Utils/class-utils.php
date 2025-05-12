@@ -473,7 +473,7 @@ class Utils {
 	/**
 	 * Appends ITM parameters to a URL.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string    $url The URL to append the ITM parameters to.
 	 * @param ItmParams $params The ITM parameters to append.

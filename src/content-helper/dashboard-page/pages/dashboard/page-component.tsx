@@ -20,7 +20,7 @@ import { DashboardHeader } from './header-component';
  * If missing settings or invalid values are detected, they get set to their
  * defaults.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {string} settingsJson The JSON containing the settings.
  *
@@ -60,7 +60,7 @@ const getSettingsFromJson = ( settingsJson: string ): TrafficBoostSettings => {
 /**
  * The main dashboard page component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const DashboardPage = (): React.JSX.Element => {
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );

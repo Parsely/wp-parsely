@@ -1,7 +1,7 @@
 /**
  * Props for the PageContainerProps component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type PageContainerProps = {
 	className?: string;
@@ -17,7 +17,7 @@ type PageContainerProps = {
  * Used to wrap the main content of a dashboard page, including the
  * header and body.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PageContainerProps} props The component's props.
  */

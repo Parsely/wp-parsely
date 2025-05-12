@@ -18,7 +18,7 @@ import { TrafficBoostLink } from '../../../provider';
 /**
  * Defines the props structure for SingleLink.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type SingleLinkProps = {
     suggestion: TrafficBoostLink;
@@ -29,7 +29,7 @@ type SingleLinkProps = {
 /**
  * The SingleLink component, before being forwarded.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SingleLinkProps}              props The component's props.
  * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.
@@ -43,7 +43,7 @@ export const SingleLinkComponent = (
 	/**
 	 * Handles the click event for the single link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const onClickHandler = () => {
 		onClick?.( suggestion );
@@ -92,7 +92,7 @@ export const SingleLinkComponent = (
 /**
  * Displays a single Traffic Boost link.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SingleLinkProps}              props The component's props.
  * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.

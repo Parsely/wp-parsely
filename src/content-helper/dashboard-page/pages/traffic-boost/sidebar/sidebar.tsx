@@ -23,7 +23,7 @@ import './sidebar.scss';
 /**
  * Defines the props structure for TrafficBoostSidebar.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TrafficBoostSidebarProps {
     onLinkClick?: ( link: TrafficBoostLink ) => void;
@@ -33,7 +33,7 @@ interface TrafficBoostSidebarProps {
  * Sidebar component for the Traffic Boost feature.
  * Displays post details, stats, and manages boost links functionality.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TrafficBoostSidebarProps} props The component's props.
  */
@@ -61,7 +61,7 @@ export const TrafficBoostSidebar = ( {
 	/**
 	 * Handles tab counters updates in the UI.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const updateTabCount = (
@@ -98,7 +98,7 @@ export const TrafficBoostSidebar = ( {
 	/**
 	 * Whenever the selected tab changes, selects it by simulating a click.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const tab = document.querySelector( `.traffic-boost-sidebar-tabs .${ selectedTab }-tab` ) as HTMLElement;

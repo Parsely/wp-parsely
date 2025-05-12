@@ -14,7 +14,7 @@ import { PostDetailsSidebar } from './post-details';
 /**
  * Defines the props structure for SidebarHeader.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface SidebarHeaderProps {
 	onBackClick: () => void;
@@ -25,7 +25,7 @@ interface SidebarHeaderProps {
 /**
  * Header component for the Traffic Boost sidebar.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SidebarHeaderProps} props The component's props.
  */
