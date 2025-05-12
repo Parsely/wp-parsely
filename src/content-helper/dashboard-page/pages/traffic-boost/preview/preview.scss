@@ -255,6 +255,13 @@
 	backdrop-filter: blur(4px);
 	z-index: 10;
 	width: fit-content;
+	gap: var(--grid-unit-15);
+	border: 1px solid #1e1e1e;
+
+	.traffic-boost-preview-actions-drag-handle {
+		flex-shrink: 0;
+		margin-right: var(--grid-unit-5);
+	}
 
 	.traffic-boost-preview-actions-buttons {
 		display: flex;

@@ -67,85 +67,90 @@ export const PreviewActions = ( {
 		<>
 			<div className="traffic-boost-preview-actions">
 				{ ! isGenerating && (
-					<div className="traffic-boost-preview-actions-buttons">
-						{ ! isInboundLink && (
-							<>
-								<Button
-									variant="primary"
-									onClick={ () => onAccept( activeLink ) }
-									isBusy={ isAccepting }
-									disabled={ isAccepting }
-								>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
-								<Button
-									variant="tertiary"
-									onClick={ () => onDiscard( activeLink ) }
-								>{ __( 'Discard', 'wp-parsely' ) }</Button>
-								{ selectedText && (
-									<>
-										<VerticalDivider size={ 36 } />
-										<Button
-											variant="tertiary"
-											onClick={ onRestoreOriginal }
-										>
-											{ __( 'Clear changes', 'wp-parsely' ) }
-										</Button>
-									</>
-								) }
-							</>
-						) }
+					<>
+						<svg className="traffic-boost-preview-actions-drag-handle" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M8 7H10V5H8V7ZM8 13H10V11H8V13ZM8 19H10V17H8V19ZM14 5V7H16V5H14ZM14 13H16V11H14V13ZM14 19H16V17H14V19Z" fill="#1E1E1E" />
+						</svg>
+						<div className="traffic-boost-preview-actions-buttons">
+							{ ! isInboundLink && (
+								<>
+									<Button
+										variant="primary"
+										onClick={ () => onAccept( activeLink ) }
+										isBusy={ isAccepting }
+										disabled={ isAccepting }
+									>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
+									<Button
+										variant="tertiary"
+										onClick={ () => onDiscard( activeLink ) }
+									>{ __( 'Discard', 'wp-parsely' ) }</Button>
+									{ selectedText && (
+										<>
+											<VerticalDivider size={ 36 } />
+											<Button
+												variant="tertiary"
+												onClick={ onRestoreOriginal }
+											>
+												{ __( 'Clear changes', 'wp-parsely' ) }
+											</Button>
+										</>
+									) }
+								</>
+							) }
 
-						{ isInboundLink && (
-							<>
-								{ selectedText ? (
-									<>
-										<Button
-											variant="primary"
-											onClick={ () => onUpdateLink( activeLink, restoreOriginal ) }
-											isBusy={ isAccepting }
-											disabled={ isAccepting }
-										>{ __( 'Update Link', 'wp-parsely' ) }</Button>
-										{ activeLink.smartLink?.is_link_replacement && (
-											<CheckboxControl
-												__nextHasNoMarginBottom
-												label={ __( 'Restore original link?', 'wp-parsely' ) }
-												checked={ restoreOriginal }
-												onChange={ ( value ) => {
-													setRestoreOriginal( value );
-												} }
-											/>
-										) }
-										<VerticalDivider size={ 36 } />
-										<Button
-											variant="tertiary"
-											onClick={ onRestoreOriginal }
-										>
-											{ __( 'Clear changes', 'wp-parsely' ) }
-										</Button>
-									</>
-								) : (
-									<>
-										<Button
-											variant="tertiary"
-											onClick={ () => onRemove( activeLink, restoreOriginal ) }
-											isBusy={ isRemoving }
-											disabled={ isRemoving }
-											isDestructive
-										>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
-										{ activeLink.smartLink?.is_link_replacement && (
-											<CheckboxControl
-												__nextHasNoMarginBottom
-												label={ __( 'Restore original link?', 'wp-parsely' ) }
-												checked={ restoreOriginal }
-												onChange={ ( value ) => {
-													setRestoreOriginal( value );
-												} }
-											/>
-										) }
-									</>
-								) }
-							</>
-						) }
-					</div>
+							{ isInboundLink && (
+								<>
+									{ selectedText ? (
+										<>
+											<Button
+												variant="primary"
+												onClick={ () => onUpdateLink( activeLink, restoreOriginal ) }
+												isBusy={ isAccepting }
+												disabled={ isAccepting }
+											>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+											{ activeLink.smartLink?.is_link_replacement && (
+												<CheckboxControl
+													__nextHasNoMarginBottom
+													label={ __( 'Restore original link?', 'wp-parsely' ) }
+													checked={ restoreOriginal }
+													onChange={ ( value ) => {
+														setRestoreOriginal( value );
+													} }
+												/>
+											) }
+											<VerticalDivider size={ 36 } />
+											<Button
+												variant="tertiary"
+												onClick={ onRestoreOriginal }
+											>
+												{ __( 'Clear changes', 'wp-parsely' ) }
+											</Button>
+										</>
+									) : (
+										<>
+											<Button
+												variant="tertiary"
+												onClick={ () => onRemove( activeLink, restoreOriginal ) }
+												isBusy={ isRemoving }
+												disabled={ isRemoving }
+												isDestructive
+											>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
+											{ activeLink.smartLink?.is_link_replacement && (
+												<CheckboxControl
+													__nextHasNoMarginBottom
+													label={ __( 'Restore original link?', 'wp-parsely' ) }
+													checked={ restoreOriginal }
+													onChange={ ( value ) => {
+														setRestoreOriginal( value );
+													} }
+												/>
+											) }
+										</>
+									) }
+								</>
+							) }
+						</div>
+					</>
 				) }
 			</div>
 		</>
