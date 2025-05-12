@@ -12,9 +12,6 @@
 		border-spacing: 0;
 
 		tr {
-			padding: var(--grid-unit-15) 0;
-			display: flex;
-			gap: var(--grid-unit-20);
 			position: relative;
 
 			&::after {
@@ -30,35 +27,12 @@
 
 			th,
 			td {
-				text-align: left;
-				align-self: center;
+				padding: var(--grid-unit-15) 0;
 			}
 
 			td.post-info,
 			th.post-info-header {
-				width: 70%;
-			}
-
-			th.boost-perf-header {
-				position: relative;
-				overflow: visible;
-				white-space: nowrap;
-				z-index: 1;
-			}
-
-			td.actions {
-				display: flex;
-				flex: 1;
-				width: to_rem(180px);
-				min-height: to_rem(40px);
-				padding-right: var(--grid-unit-20);
-				justify-content: flex-end;
-				align-items: center;
-				gap: var(--grid-unit-10);
-
-				a {
-					text-decoration: none;
-				}
+				text-align: left;
 			}
 
 			th {
@@ -69,6 +43,105 @@
 				line-height: var(--font-size--large);
 				text-transform: uppercase;
 			}
+
+			th.views-header {
+				text-align: center;
+				min-width: to_rem(60px);
+
+				.views-header-period {
+					font-size: var(--font-size--smaller);
+					font-weight: 400;
+					color: var(--gray-500);
+					margin-left: var(--grid-unit-5);
+				}
+			}
+
+			td.metrics {
+				min-width: 100px;
+
+				.metrics-container {
+					display: flex;
+					flex-direction: column;
+					gap: var(--grid-unit-5);
+					align-items: center;
+
+					.metric-change {
+						font-size: var(--font-size--small);
+						font-weight: 600;
+						line-height: var(--font-size--large);
+						margin-left: var(--grid-unit-5);
+					}
+
+					.metric-change-positive {
+						color: var(--parsely-green);
+					}
+
+					.metric-change-negative {
+						color: #900000;
+					}
+
+					.metric-change-neutral {
+						color: var(--gray-500);
+					}
+
+					.metric-boost-percentage {
+						font-size: var(--font-size--small);
+						font-weight: 600;
+						color: var(--parsely-green);
+					}
+				}
+			}
+
+			td.actions {
+				display: flex;
+				max-width: to_rem(135px);
+				min-height: to_rem(40px);
+				justify-content: flex-end;
+				align-items: center;
+				gap: var(--grid-unit-10);
+				margin-left: var(--grid-unit-10);
+
+				a {
+					text-decoration: none;
+				}
+
+				.boost-link-container {
+					display: flex;
+					flex-direction: column;
+					height: 100%;
+					gap: to_rem(4px);
+					text-align: center;
+					width: 100%;
+
+					.boost-link-status {
+						display: flex;
+						justify-content: center;
+						gap: to_rem(4px);
+
+						.hidden {
+							opacity: 0;
+						}
+
+						.boost-inbound,
+						.boost-outbound {
+							flex-grow: 1;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							padding: to_rem(4px) to_rem(9px);
+							border-radius: to_rem(6px);
+							background-color: var(--gray-300);
+							font-size: var(--font-size--small);
+							line-height: var(--font-size--medium);
+							color: var(--sidebar-black);
+						}
+
+						.boost-link-status-icon-inbound {
+							transform: rotate(180deg);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -78,16 +151,30 @@
 		color: #757575;
 		font-style: italic;
 	}
-}
 
-.parsely-table-container.hide-pagination {
-	table tr:last-child::after {
-		display: none;
+	.suggestion-bubble {
+		background: var(--parsely-green);
+		border-radius: to_rem(20px);
+		display: inline-block;
+		text-align: center;
+		padding: 3px to_rem(6px);
+		color: var(--sidebar-white);
+		cursor: pointer;
+		margin-left: to_rem(6px);
+		box-shadow: none;
+		border: none;
+		line-height: to_rem(14px);
+		min-width: to_rem(28px);
+		font-size: to_rem(13px);
 	}
 }
 
 .parsely-table-container.compact {
 	table tr td.post-info {
+		max-width: 100px;
+	}
+
+	tr::after {
 		width: 100%;
 	}
 
@@ -97,6 +184,16 @@
 		-webkit-line-clamp: 2;
 		line-clamp: 2;
 		-webkit-box-orient: vertical;
+
+		> span {
+			white-space: normal !important;
+		}
+	}
+}
+
+.parsely-table-container.hide-pagination {
+	table tr:last-child::after {
+		display: none;
 	}
 }
 
@@ -114,6 +211,7 @@
 	.post-details {
 		display: flex;
 		min-height: var(--grid-unit-40);
+		min-width: 0;
 		flex-direction: column;
 		justify-content: center;
 		align-items: flex-start;
@@ -131,6 +229,12 @@
 			font-style: normal;
 			font-weight: 600;
 			line-height: to_rem(20px);
+
+			> span {
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
 		}
 
 		.post-meta {

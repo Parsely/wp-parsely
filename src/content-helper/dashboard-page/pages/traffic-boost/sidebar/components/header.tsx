@@ -8,7 +8,7 @@ import { chevronLeft } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { HydratedPost } from '../../../../../common/providers/base-wordpress-provider';
 import { PostDetailsSidebar } from './post-details';
 
 /**

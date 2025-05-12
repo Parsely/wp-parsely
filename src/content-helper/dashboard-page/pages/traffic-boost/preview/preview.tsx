@@ -11,8 +11,8 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
+import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
 import {
 	TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
 	TrafficBoostLink,

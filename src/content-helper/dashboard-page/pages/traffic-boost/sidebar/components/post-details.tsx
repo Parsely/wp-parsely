@@ -7,8 +7,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { Thumbnail } from '../../../../../common/components/thumbnail';
+import { HydratedPost } from '../../../../../common/providers/base-wordpress-provider';
 
 /**
  * Defines the props structure for PostDetailsSidebar.

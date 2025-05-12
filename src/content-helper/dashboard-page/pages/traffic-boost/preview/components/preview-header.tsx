@@ -9,8 +9,8 @@ import { desktop, edit, external, moreVertical, update } from '@wordpress/icons'
 /**
  * Internal imports
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { LeafIcon } from '../../../../../common/icons/leaf-icon';
+import { HydratedPost } from '../../../../../common/providers/base-wordpress-provider';
 import { TrafficBoostLink } from '../../provider';
 import { isExternalURL } from '../utils';
 import { LinkCounter } from './link-counter';

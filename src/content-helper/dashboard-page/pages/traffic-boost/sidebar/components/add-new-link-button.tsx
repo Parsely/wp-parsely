@@ -11,7 +11,7 @@ import { plus } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { HydratedPost } from '../../../../../common/providers/base-wordpress-provider';
 import { PostsTable } from '../../../../components/posts-table/component';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
@@ -95,6 +95,8 @@ export const AddNewLinkButton = ( {
 					</div>
 					{ searchInput && (
 						<PostsTable
+							currentPage={ 1 }
+							setCurrentPage={ () => {} }
 							className="traffic-boost-add-link-table"
 							query={ {
 								status: 'publish',
@@ -102,6 +104,7 @@ export const AddNewLinkButton = ( {
 								search: searchInput,
 								search_columns: [ 'post_title', 'post_excerpt' ],
 								exclude: suggestionsPostIds,
+								context: 'edit',
 							} }
 							hideHeader={ true }
 							hidePagination={ true }

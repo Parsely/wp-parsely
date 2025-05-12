@@ -16,6 +16,7 @@ namespace Parsely\Utils;
 use WP_Post;
 use WP_Error;
 
+use const Parsely\PARSELY_CACHE_GROUP;
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -426,7 +427,9 @@ class Utils {
 	 * @return int The post ID of the URL, 0 if not found.
 	 */
 	public static function get_post_id_by_url( string $url ): int {
-		$cache = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' );
+		$cache_key = sprintf( 'url-to-postid-%s', hash( 'sha256', $url ) );
+		$cache     = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
+
 		if ( is_integer( $cache ) ) {
 			return $cache;
 		}
@@ -436,7 +439,7 @@ class Utils {
 		} else {
 			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
 			$post_id = url_to_postid( $url );
-			wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
+			wp_cache_set( $cache_key, $post_id, PARSELY_CACHE_GROUP, WEEK_IN_SECONDS );
 		}
 
 		// A post ID was found, return it.
@@ -460,7 +463,7 @@ class Utils {
 		$post              = get_page_by_path( $post_slug, OBJECT, array_keys( $public_post_types ) );
 
 		if ( null !== $post ) {
-			wp_cache_set( $url, $post->ID, 'wp_parsely_smart_link_url_to_postid' );
+			wp_cache_set( $cache_key, $post->ID, PARSELY_CACHE_GROUP, WEEK_IN_SECONDS );
 			return $post->ID;
 		}
 

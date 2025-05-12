@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ContentHelperError, ContentHelperErrorCode } from './content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../content-helper-error';
 
 /**
  * The response structure of the API.

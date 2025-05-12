@@ -12,6 +12,9 @@ namespace Parsely\Endpoints;
 
 use Parsely\Metadata;
 use WP_Post;
+use Parsely\Models\Smart_Link;
+use Parsely\Models\Smart_Link_Status;
+use Parsely\Models\Inbound_Smart_Link;
 
 /**
  * Injects Parse.ly Metadata to WordPress REST API.
@@ -28,13 +31,6 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * @since 3.1.0
 	 */
 	public function run(): void {
-		/**
-		 * Filter whether REST API support is enabled or not.
-		 *
-		 * @since 3.1.0
-		 *
-		 * @param bool $enabled True if enabled, false if not.
-		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) && $this->parsely->site_id_is_set() ) {
 			$this->register_meta();
 		}
@@ -66,6 +62,9 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * Function to get hooked into the `get_callback` property of the `parsely`
 	 * REST API field. It generates the `parsely` object in the REST API.
 	 *
+	 * @since 3.1.0
+	 * @since 3.18.0 Added the `canonical_url` field.
+	 *
 	 * @param array<string, mixed> $object_data The data of the object to render the metadata for,
 	 *                                          usually a post or a page.
 	 * @return array<string, mixed> The `parsely` object to be rendered in the REST API. Contains a
@@ -73,25 +72,28 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 *                              containing the actual metadata.
 	 */
 	public function get_callback( array $object_data ): array {
-		/**
-		 * Variable.
-		 *
-		 * @var int
-		 */
+		/** @var int $post_id */
 		$post_id = $object_data['ID'] ?? $object_data['id'] ?? 0;
 		$post    = WP_Post::get_instance( $post_id );
+
 		$options = $this->parsely->get_options();
 
+		$response = array(
+			'version'                         => self::REST_VERSION,
+			'canonical_url'                   => \Parsely\Parsely::get_canonical_url_from_post( $post_id ),
+			'smart_links'                     => array(
+				'inbound'  => 0,
+				'outbound' => 0,
+			),
+			'traffic_boost_suggestions_count' => 0,
+		);
+
 		if ( false === $post ) {
-			$metadata = '';
-		} else {
-			$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $post );
+			return $response;
 		}
 
-		$response = array(
-			'version' => self::REST_VERSION,
-			'meta'    => $metadata,
-		);
+		$metadata         = ( new Metadata( $this->parsely ) )->construct_metadata( $post );
+		$response['meta'] = $metadata;
 
 		/**
 		 * Filter whether REST API support in rendered string format is enabled
@@ -117,6 +119,12 @@ class Rest_Metadata extends Metadata_Endpoint {
 		if ( apply_filters( 'wp_parsely_enable_tracker_url', true, $post ) ) {
 			$response['tracker_url'] = $this->parsely->get_tracker_url();
 		}
+
+		// Fetch Smart Link data.
+		$response['smart_links'] = Smart_Link::get_link_counts( $post_id, Smart_Link_Status::APPLIED );
+
+		// Fetch Traffic Boost data.
+		$response['traffic_boost_suggestions_count'] = Inbound_Smart_Link::get_suggestions_count( $post_id );
 
 		return $response;
 	}

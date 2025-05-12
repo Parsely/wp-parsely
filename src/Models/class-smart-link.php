@@ -15,6 +15,8 @@ use InvalidArgumentException;
 use Parsely\Parsely;
 use Parsely\Utils\Utils;
 
+use const Parsely\PARSELY_CACHE_GROUP;
+
 /**
  * Smart Link class.
  *
@@ -191,8 +193,8 @@ class Smart_Link extends Base_Model {
 	 * @return int The ID of the smart link post object.
 	 */
 	private function get_smart_link_object_by_uid( string $uid ): int {
-		$cache_key = 'smart-link-uid-map-' . $uid . '-' . $this->source_post_id;
-		$cached    = wp_cache_get( $cache_key, $this->get_cache_group() );
+		$cache_key = self::get_uid_to_smart_link_cache_key( $uid );
+		$cached    = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 		if ( is_int( $cached ) && 0 !== $cached ) {
 			return $cached;
 		}
@@ -208,7 +210,7 @@ class Smart_Link extends Base_Model {
 					array(
 						'taxonomy'         => 'smart_link_source',
 						'include_children' => false, // Performance optimization.
-						'field'            => 'name',
+						'field'            => 'slug',
 						'terms'            => (string) $this->source_post_id,
 					),
 				),
@@ -219,7 +221,8 @@ class Smart_Link extends Base_Model {
 			wp_cache_set(
 				$cache_key,
 				$smart_links->posts[0],
-				$this->get_cache_group()
+				PARSELY_CACHE_GROUP,
+				MONTH_IN_SECONDS
 			);
 			return $smart_links->posts[0];
 		}
@@ -355,9 +358,10 @@ class Smart_Link extends Base_Model {
 			$this->smart_link_id = $post_id;
 			$this->exists        = true;
 			wp_cache_set(
-				'smart-link-' . $this->uid . '-' . $this->source_post_id,
+				self::get_uid_to_smart_link_cache_key( $this->uid ),
 				$post_id,
-				$this->get_cache_group()
+				PARSELY_CACHE_GROUP,
+				MONTH_IN_SECONDS
 			);
 		}
 
@@ -893,73 +897,76 @@ class Smart_Link extends Base_Model {
 			$type = 'outbound';
 		}
 
-		$skip_cache = isset( $args['skip_cache'] ) && true === $args['skip_cache'];
-		$cache_key  = $type . '-' . $post_id . '-' . $status;
+		$skip_cache     = isset( $args['skip_cache'] ) && true === $args['skip_cache'];
+		$cache_key      = self::get_smart_links_for_post_cache_key( $type, $status );
+		$cache_group    = self::get_smart_links_post_cache_group( $post_id );
+		$smart_link_ids = false;
 
 		// If the cache is not being skipped, get the smart links from the cache.
 		if ( ! $skip_cache ) {
-			/** @var array<Smart_Link|Inbound_Smart_Link>|false $smart_links */
-			$smart_links = wp_cache_get( $cache_key, self::get_cache_group_for_post( $post_id ) );
+			/** @var array<int>|false $smart_link_ids */
+			$smart_link_ids = wp_cache_get( $cache_key, $cache_group );
+		}
 
-			if ( false !== $smart_links && count( $smart_links ) > 0 ) {
-				/** @var array<Smart_Link|Inbound_Smart_Link> $smart_links */
-				return $smart_links;
+		if ( false === $smart_link_ids ) {
+			$tax_query = array();
+
+			// Add the tax query for the type of smart links to get.
+			if ( 'outbound' === $type ) {
+				$tax_query[] = array(
+					'taxonomy'         => 'smart_link_source',
+					'include_children' => false, // Performance optimization.
+					'field'            => 'slug',
+					'terms'            => (string) $post_id,
+				);
+			} elseif ( 'inbound' === $type ) {
+				$tax_query[] = array(
+					'taxonomy'         => 'smart_link_destination',
+					'include_children' => false, // Performance optimization.
+					'field'            => 'slug',
+					'terms'            => (string) $post_id,
+				);
 			}
+
+			// Add the tax query for the status of the smart links to get.
+			if ( Smart_Link_Status::ALL === $status ) {
+				$tax_query[] = array(
+					'taxonomy'         => 'smart_link_status',
+					'include_children' => false,
+					'field'            => 'slug',
+					'terms'            => Smart_Link_Status::get_all_statuses(),
+				);
+			} else {
+				$tax_query[] = array(
+					'taxonomy'         => 'smart_link_status',
+					'include_children' => false,
+					'field'            => 'slug',
+					'terms'            => array( $status ),
+				);
+			}
+			// Build the query arguments.
+			$query_args = array(
+				'post_type'      => 'parsely_smart_link',
+				'posts_per_page' => -1,
+				'fields'         => 'ids', // Only get the post IDs to improve performance.
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				'tax_query'      => array_merge( array( 'relation' => 'AND' ), $tax_query ),
+			);
+
+			// Merge the query arguments with the additional arguments.
+			$query_args = array_merge( $query_args, $args );
+
+			// Get the smart links post objects.
+			$smart_links_query = new \WP_Query( $query_args );
+
+			// Cache the queried IDs.
+			$smart_link_ids = $smart_links_query->posts;
+			wp_cache_set( $cache_key, $smart_link_ids, $cache_group, MONTH_IN_SECONDS );
 		}
-
-		$tax_query = array();
-
-		// Add the tax query for the type of smart links to get.
-		if ( 'outbound' === $type ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_source',
-				'include_children' => false, // Performance optimization.
-				'field'            => 'name',
-				'terms'            => (string) $post_id,
-			);
-		} elseif ( 'inbound' === $type ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_destination',
-				'include_children' => false, // Performance optimization.
-				'field'            => 'name',
-				'terms'            => (string) $post_id,
-			);
-		}
-
-		// Add the tax query for the status of the smart links to get.
-		if ( Smart_Link_Status::ALL === $status ) {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_status',
-				'include_children' => false,
-				'field'            => 'name',
-				'terms'            => Smart_Link_Status::get_all_statuses(),
-			);
-		} else {
-			$tax_query[] = array(
-				'taxonomy'         => 'smart_link_status',
-				'include_children' => false,
-				'field'            => 'name',
-				'terms'            => array( $status ),
-			);
-		}
-		// Build the query arguments.
-		$query_args = array(
-			'post_type'      => 'parsely_smart_link',
-			'posts_per_page' => -1,
-			'fields'         => 'ids', // Only get the post IDs to improve performance.
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-			'tax_query'      => array_merge( array( 'relation' => 'AND' ), $tax_query ),
-		);
-
-		// Merge the query arguments with the additional arguments.
-		$query_args = array_merge( $query_args, $args );
-
-		// Get the smart links post objects.
-		$smart_links_query = new \WP_Query( $query_args );
 
 		// Create and process the smart links.
 		$smart_links = array();
-		foreach ( $smart_links_query->posts as $smart_link_id ) {
+		foreach ( $smart_link_ids as $smart_link_id ) {
 			/** @var int $smart_link_id */
 			$smart_link = self::get_smart_link_by_id( $smart_link_id );
 
@@ -987,10 +994,6 @@ class Smart_Link extends Base_Model {
 
 			$smart_links[] = $smart_link;
 		}
-
-		// Cache the smart links, even if the cache is being skipped, to ensure that
-		// the existing cache stays fresh.
-		wp_cache_set( $cache_key, $smart_links, self::get_cache_group_for_post( $post_id ) );
 
 		return $smart_links;
 	}
@@ -1034,7 +1037,7 @@ class Smart_Link extends Base_Model {
 	 */
 	public static function get_inbound_smart_links( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		/** @var array<Inbound_Smart_Link> */
-		return self::get_smart_links( 
+		return self::get_smart_links(
 			$post_id,
 			'inbound',
 			$status,
@@ -1074,14 +1077,95 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
-	 * Gets the cache group for a single smart link.
+	 * Gets the link counts for a post.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @return string The cache group.
+	 * @param int    $post_id The post ID to get the link counts for.
+	 * @param string $status The status of the smart links to get.
+	 * @return array<string,int> The link counts.
 	 */
-	protected function get_cache_group(): string {
-		return 'wp_parsely_smart_link_' . $this->smart_link_id;
+	public static function get_link_counts( int $post_id, string $status = Smart_Link_Status::ALL ): array {
+		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
+			$status = Smart_Link_Status::ALL;
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+		}
+
+		$cache_key   = self::get_smart_link_counts_cache_key( $status );
+		$cache_group = self::get_smart_links_post_cache_group( $post_id );
+		$link_counts = wp_cache_get( $cache_key, $cache_group );
+
+		if ( false !== $link_counts ) {
+			/** @var array<string,int> */
+			return $link_counts;
+		}
+
+		$base_query_args = array(
+			'post_type'      => 'parsely_smart_link',
+			'posts_per_page' => 0,
+			'fields'         => 'ids',
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			'tax_query'      => array(),
+		);
+
+		// Build the tax query for the status.
+		if ( Smart_Link_Status::ALL !== $status ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+			$base_query_args['tax_query'] = array(
+				array(
+					'taxonomy' => 'smart_link_status',
+					'field'    => 'slug',
+					'terms'    => array( $status ),
+				),
+			);
+		}
+
+		// Build the query arguments for the inbound links.
+		$inbound_query_args = $base_query_args;
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+		$inbound_query_args['tax_query'] = array_merge(
+			$inbound_query_args['tax_query'],
+			array(
+				array(
+					'taxonomy' => 'smart_link_destination',
+					'field'    => 'slug',
+					'terms'    => $post_id,
+				),
+			)
+		);
+
+		// Build the query arguments for the outbound links.
+		$outbound_query_args = array_merge(
+			$base_query_args,
+			array(
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				'tax_query' => array_merge(
+					$base_query_args['tax_query'],
+					array(
+						array(
+							'taxonomy' => 'smart_link_source',
+							'field'    => 'slug',
+							'terms'    => $post_id,
+						),
+					)
+				),
+			)
+		);
+
+		// Get the inbound links.
+		$inbound_links = new \WP_Query( $inbound_query_args );
+
+		// Get the outbound links.
+		$outbound_links = new \WP_Query( $outbound_query_args );
+
+		$link_counts = array(
+			'inbound'  => $inbound_links->found_posts,
+			'outbound' => $outbound_links->found_posts,
+		);
+
+		wp_cache_set( $cache_key, $link_counts, $cache_group, MONTH_IN_SECONDS );
+
+		return $link_counts;
 	}
 
 	/**
@@ -1091,7 +1175,8 @@ class Smart_Link extends Base_Model {
 	 */
 	protected function flush_cache(): void {
 		// Delete the cache for the smart link UID to post ID association.
-		wp_cache_delete( 'smart-link-uid-map-' . $this->uid . '-' . $this->source_post_id, self::get_cache_group() );
+		$cache_key = self::get_uid_to_smart_link_cache_key( $this->uid );
+		wp_cache_delete( $cache_key, PARSELY_CACHE_GROUP );
 	}
 
 	/**
@@ -1101,24 +1186,66 @@ class Smart_Link extends Base_Model {
 	 */
 	public function flush_all_cache(): void {
 		$this->flush_cache();
+
 		if ( $this->source_post_id > 0 ) {
-			self::flush_cache_by_post_id( $this->source_post_id );
+			static::flush_cache_by_post_id( $this->source_post_id );
 		}
+
 		if ( $this->destination_post_id > 0 ) {
-			self::flush_cache_by_post_id( $this->destination_post_id );
+			static::flush_cache_by_post_id( $this->destination_post_id );
 		}
 	}
 
 	/**
-	 * Gets the cache group for all smart links in a post.
+	 * Generates a cache key for the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
-	 * @param int $post_id The post ID to get the cache group for.
+	 * @param string $uid The unique identifier for the cache key.
+	 * @return string The cache key.
+	 */
+	protected static function get_uid_to_smart_link_cache_key( string $uid ): string {
+		return sprintf( 'smart-link-uid-map-%s', $uid );
+	}
+
+	/**
+	 * Gets the cache key for all smart links in a post.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param string $type The type of smart links ('outbound', 'inbound', or 'all').
+	 * @param string $status The status of the smart links ('all', 'pending', or 'applied').
+	 *
+	 * @return string The cache key.
+	 */
+	protected static function get_smart_links_for_post_cache_key( string $type, string $status ): string {
+		return sprintf( 'smart-links-post-id-map-%s-%s', $type, $status );
+	}
+
+	/**
+	 * Gets the cache key for all counts of smart links in a post.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param string $status The status of the smart links ('all', 'pending', or 'applied').
+	 *
+	 * @return string The cache key.
+	 */
+	protected static function get_smart_link_counts_cache_key( string $status ): string {
+		return sprintf( 'smart-link-counts-%s', $status );
+	}
+
+	/**
+	 * Generates a cache group for smart links on a post. Useful with wp_cache_flush_group()
+	 * to flush all smart link caches on a post.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param int $post_id The post ID.
 	 * @return string The cache group.
 	 */
-	protected static function get_cache_group_for_post( int $post_id ): string {
-		return 'wp_parsely_smart_links_' . $post_id;
+	protected static function get_smart_links_post_cache_group( int $post_id ): string {
+		return sprintf( '%s-smart-links-%d', PARSELY_CACHE_GROUP, $post_id );
 	}
 
 	/**
@@ -1129,19 +1256,24 @@ class Smart_Link extends Base_Model {
 	 * @param int $post_id The post ID to flush the cache for.
 	 */
 	protected static function flush_cache_by_post_id( int $post_id ): void {
-		if ( function_exists( 'wp_cache_flush_group' ) && wp_cache_supports( 'flush_group' ) ) {
-			wp_cache_flush_group( self::get_cache_group_for_post( $post_id ) );
+		$cache_group = self::get_smart_links_post_cache_group( $post_id );
+
+		if ( function_exists( 'wp_cache_flush_group' ) ) {
+			wp_cache_flush_group( $cache_group );
 		} else {
 			$statuses = Smart_Link_Status::get_all_statuses();
+			$types    = array( 'outbound', 'inbound', 'all' );
 
-			$cache_keys = array();
 			foreach ( $statuses as $status ) {
-				$cache_keys[] = 'outbound-' . $post_id . '-' . $status;
-				$cache_keys[] = 'inbound-' . $post_id . '-' . $status;
-			}
+				// Delete smart link count cache.
+				$smart_link_counts_cache_key = self::get_smart_link_counts_cache_key( $status );
+				wp_cache_delete( $smart_link_counts_cache_key, $cache_group );
 
-			foreach ( $cache_keys as $cache_key ) {
-				wp_cache_delete( $cache_key, self::get_cache_group_for_post( $post_id ) );
+				// Delete smart links caches.
+				foreach ( $types as $type ) {
+					$cache_key = self::get_smart_links_for_post_cache_key( $type, $status );
+					wp_cache_delete( $cache_key, $cache_group );
+				}
 			}
 		}
 	}

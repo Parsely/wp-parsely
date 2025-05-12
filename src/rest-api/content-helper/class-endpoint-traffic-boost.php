@@ -824,6 +824,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			);
 		}
 
+		// Clear the cache for the smart link.
+		$inbound_link->flush_all_cache();
+
 		return new WP_REST_Response(
 			array(
 				'data' => array(

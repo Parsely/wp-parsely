@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { BaseWordPressProvider } from '../common/base-wordpress-provider';
+import { BaseWordPressProvider } from '../common/providers/base-wordpress-provider';
 
 /**
  * DashboardProvider class for the plugin's dashboard.

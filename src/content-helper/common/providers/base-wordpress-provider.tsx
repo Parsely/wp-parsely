@@ -11,8 +11,8 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
+import { ContentHelperError, ContentHelperErrorCode } from '../content-helper-error';
 import { BaseProvider } from './base-provider';
-import { ContentHelperError, ContentHelperErrorCode } from './content-helper-error';
 
 /**
  * Type definition for a taxonomy term.
@@ -58,6 +58,15 @@ export interface Post extends CorePost {
 			},
 		}[];
 	};
+	parsely?: {
+		version: string;
+		canonical_url: string;
+		smart_links: {
+			inbound: number;
+			outbound: number;
+		};
+		traffic_boost_suggestions_count: number;
+	};
 }
 
 /**
@@ -73,6 +82,7 @@ export type HydratedPost = Omit<Post, 'author' | 'categories' | 'tags'> & {
 	categories: Taxonomy[];
 	tags: Taxonomy[];
 	thumbnail: string;
+	parsely_canonical_url?: string;
 };
 
 /**
@@ -98,7 +108,9 @@ export type FetchResponse<T> = {
  *
  * @since 3.18.0
  */
-export type QueryParams = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+export type QueryParams = Record<string, any> & { // eslint-disable-line @typescript-eslint/no-explicit-any
+	context?: 'view' | 'edit' | 'embed';
+};
 
 /**
  * Base class for all WordPress REST API providers.
@@ -215,12 +227,12 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 
 			// Extract categories and tags data from _embedded.
 			// The first element in the array is categories, the second is tags.
-			if ( post._embedded && post._embedded[ 'wp:term' ] ) {
+			if ( post?._embedded?.[ 'wp:term' ] ) {
 				[ categories, tags ] = post._embedded[ 'wp:term' ];
 			}
 
 			// Get the post thumbnail.
-			if ( post._embedded && post._embedded[ 'wp:featuredmedia' ] ) {
+			if ( post?._embedded?.[ 'wp:featuredmedia' ] ) {
 				const featuredMedia = post._embedded[ 'wp:featuredmedia' ]?.[ 0 ];
 				thumbnail = featuredMedia?.media_details?.sizes?.thumbnail?.source_url;
 
@@ -229,12 +241,16 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 				}
 			}
 
+			// Get the canonical URL.
+			const canonicalURL = post.parsely?.canonical_url;
+
 			return {
 				...post,
 				thumbnail,
 				author,
 				categories,
 				tags,
+				parsely_canonical_url: canonicalURL,
 			};
 		} );
 
@@ -256,9 +272,10 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		id?: string,
 	): Promise<FetchResponse<HydratedPost[]>> {
 		const restEndpoint = queryParams.rest_endpoint ?? '/wp/v2/posts';
+		const context = queryParams.context ?? 'view';
 
 		const posts = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( restEndpoint, { ...queryParams, _embed: true, context: 'edit' } ),
+			path: addQueryArgs( restEndpoint, { ...queryParams, _embed: true, context } ),
 			method: 'GET',
 		}, id );
 
@@ -281,9 +298,14 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 *
 	 * @return {Promise<FetchResponse<HydratedPost[]>>} The fetched and hydrated pages.
 	 */
-	public async getPages( queryParams: QueryParams = {}, id?: string ): Promise<FetchResponse<HydratedPost[]>> {
+	public async getPages(
+		queryParams: QueryParams = {},
+		id?: string,
+	): Promise<FetchResponse<HydratedPost[]>> {
+		const context = queryParams.context ?? 'view';
+
 		const pages = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( '/wp/v2/pages', { ...queryParams, _embed: true, context: 'edit' } ),
+			path: addQueryArgs( '/wp/v2/pages', { ...queryParams, _embed: true, context } ),
 			method: 'GET',
 		}, id );
 
@@ -306,9 +328,14 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 *
 	 * @return {Promise<HydratedPost>} The fetched and hydrated post.
 	 */
-	public async getPost( postId: number, id?: string ): Promise<HydratedPost> {
+	public async getPost(
+		postId: number,
+		id?: string,
+	): Promise<HydratedPost> {
+		const context = 'edit';
+
 		const post = await this.apiFetch<Post>( {
-			path: `/wp/v2/posts/${ postId }?_embed&context=edit`,
+			path: `/wp/v2/posts/${ postId }?_embed&context=${ context }`,
 			method: 'GET',
 		}, id );
 
