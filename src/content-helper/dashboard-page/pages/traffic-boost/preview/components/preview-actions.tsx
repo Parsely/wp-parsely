@@ -4,7 +4,7 @@
 import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 
 /**
  * Internal imports
@@ -13,7 +13,7 @@ import { VerticalDivider } from '../../../../../common/components/vertical-divid
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { TextSelection } from '../preview';
-import Draggable from 'react-draggable';
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 
 /**
  * Props structure for PreviewActions.
@@ -28,6 +28,7 @@ interface PreviewActionsProps {
 	onDiscard: ( link: TrafficBoostLink ) => void;
 	onRestoreOriginal: () => void;
 	selectedText: TextSelection | null;
+	highlightedRect: { top: number; left: number; width: number; height: number } | null;
 }
 
 /**
@@ -46,9 +47,12 @@ export const PreviewActions = ( {
 	onRemove,
 	onRestoreOriginal,
 	selectedText,
+	highlightedRect,
 }: PreviewActionsProps ): React.JSX.Element => {
 	const isInboundLink = ! activeLink?.isSuggestion;
 	const [ restoreOriginal, setRestoreOriginal ] = useState<boolean>( true );
+	const [ actionsPosition, setActionsPosition ] = useState<{ x: number; y: number }>( { x: 0, y: 0 } );
+	const actionsBarRef = useRef<HTMLDivElement>( null );
 
 	const {
 		isAccepting,
@@ -60,13 +64,35 @@ export const PreviewActions = ( {
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
 
+	useEffect( () => {
+		if ( highlightedRect && actionsBarRef.current ) {
+			console.log( 'Updating actions position with highlightedRect:', highlightedRect );
+
+			// Get actual dimensions of the actions bar
+			const actionsBarWidth = actionsBarRef.current.offsetWidth;
+			const actionsBarHeight = actionsBarRef.current.offsetHeight;
+
+			// Center the actions bar above the highlighted element
+			// Position the bar above the highlight with some space
+			setActionsPosition( {
+				x: highlightedRect.left + ( highlightedRect.width / 2 ) - ( actionsBarWidth / 2 ),
+				y: highlightedRect.top - actionsBarHeight - 15, // 10px space between highlight and bar
+			} );
+		}
+	}, [ highlightedRect ] );
+
+	const onControlledDrag = ( event: DraggableEvent, draggableData: DraggableData ) => {
+		const { x, y } = draggableData;
+		setActionsPosition( { x, y } );
+	};
+
 	if ( ! activeLink ) {
 		return <></>;
 	}
 
 	return (
-		<Draggable bounds="parent" handle=".traffic-boost-preview-actions-drag-handle">
-			<div className="traffic-boost-preview-actions">
+		<Draggable bounds="parent" handle=".traffic-boost-preview-actions-drag-handle" position={ actionsPosition } onDrag={ onControlledDrag }>
+			<div className="traffic-boost-preview-actions" ref={ actionsBarRef }>
 				{ ! isGenerating && (
 					<>
 						<div className="traffic-boost-preview-actions-drag-handle">

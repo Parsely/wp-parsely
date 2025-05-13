@@ -33,6 +33,7 @@ interface PreviewIframeProps {
 	isFrontendPreview: boolean;
 	onLoadingChange: ( isLoading: boolean ) => void;
 	onRestoreOriginal: () => void;
+	onScrollToHighlight?: ( rect: { top: number; left: number; width: number; height: number } ) => void;
 }
 
 /**
@@ -52,10 +53,12 @@ export const PreviewIframe = ( {
 	selectedText,
 	onLoadingChange,
 	onRestoreOriginal,
+	onScrollToHighlight,
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null );
-
 	const iframeRef = useRef<HTMLIFrameElement>( null );
+	const lastHighlightRectRef = useRef<{ top: number; left: number; width: number; height: number } | null>( null );
+
 	const isInboundLink = ! activeLink?.isSuggestion;
 
 	const { selectedLinkType, isGenerating } = useSelect( ( select ) => ( {
@@ -227,6 +230,30 @@ export const PreviewIframe = ( {
 					behavior: 'smooth',
 					block: 'center',
 				} );
+
+				// Call callback with bounding rect info for the highlighted element.
+				if ( onScrollToHighlight && highlightedElement ) {
+					// Wait 100ms to ensure the highlighted element is visible.
+					const highlightedRect = highlightedElement.getBoundingClientRect();
+
+					const absoluteRect = {
+						top: highlightedRect.top,
+						left: highlightedRect.left,
+						width: highlightedRect.width,
+						height: highlightedRect.height,
+					};
+
+					// Only call onScrollToHighlight if the rect has changed
+					const lastRect = lastHighlightRectRef.current;
+					if ( ! lastRect ||
+						lastRect.top !== absoluteRect.top ||
+						lastRect.left !== absoluteRect.left ||
+						lastRect.width !== absoluteRect.width ||
+						lastRect.height !== absoluteRect.height ) {
+						lastHighlightRectRef.current = absoluteRect;
+						onScrollToHighlight( absoluteRect );
+					}
+				}
 			}
 		};
 
@@ -256,7 +283,7 @@ export const PreviewIframe = ( {
 			// Disconnect the observer after a short delay to prevent infinite observation.
 			setTimeout( () => observer.disconnect(), 1000 );
 		}
-	}, [] );
+	}, [ onScrollToHighlight ] );
 
 	/**
 	 * Handles the iframe load event.

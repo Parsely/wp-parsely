@@ -76,6 +76,8 @@ export const TrafficBoostPreview = ( {
 
 	const [ ignoredKeywords, setIgnoredKeywords ] = useState<string[]>( [] );
 
+	const [ highlightedRect, setHighlightedRect ] = useState<{ top: number; left: number; width: number; height: number } | null>( null );
+
 	const {
 		createSuccessNotice,
 		createErrorNotice,
@@ -617,6 +619,7 @@ export const TrafficBoostPreview = ( {
 					} }
 					isFrontendPreview={ isFrontendPreview }
 					onLoadingChange={ setIsLoading }
+					onScrollToHighlight={ setHighlightedRect }
 				/>
 
 				<PreviewActions
@@ -629,6 +632,7 @@ export const TrafficBoostPreview = ( {
 						setSelectedText( null );
 					} }
 					selectedText={ selectedText }
+					highlightedRect={ highlightedRect }
 				/>
 			</div>
 
