@@ -145,14 +145,23 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	 *
 	 * @return {boolean} True if the node or its children contain an anchor, false otherwise.
 	 */
-	const containsAnchor = useCallback( ( node: Node ): boolean => {
-		if ( node.nodeType === Node.ELEMENT_NODE ) {
-			const element = node as Element;
-			if ( element.tagName === 'A' ) {
-				return true;
+	const containsAnchor = useCallback( ( range: Range ): boolean => {
+		let currentNode: Node | null = range.startContainer;
+		const endNode = range.endContainer;
+
+		while ( currentNode !== null ) {
+			if ( currentNode.nodeType === Node.ELEMENT_NODE ) {
+				const element = currentNode as Element;
+				if ( element.tagName === 'A' ) {
+					// There is an anchor present in the selection.
+					return true;
+				}
 			}
-			return Array.from( element.children ).some( containsAnchor );
+
+			currentNode = getNextNode( currentNode, false, endNode );
 		}
+
+		// No nodes matched, no anchor present in the selection.
 		return false;
 	}, [] );
 
@@ -187,15 +196,14 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	 * @since 3.19.0
 	 */
 	useEffect( () => {
-		const range = selection.getRangeAt( 0 );
-		const container = range.commonAncestorContainer;
-
 		if ( isAllLinkTextSelected() ) {
 			setIsReplacingLink( true );
 			return;
 		}
 
-		if ( containsAnchor( container ) ) {
+		const range = selection.getRangeAt( 0 );
+
+		if ( containsAnchor( range ) ) {
 			setError( __( 'Select text without existing links.', 'wp-parsely' ) );
 			return;
 		}
@@ -534,4 +542,32 @@ export const TextSelectionTooltip = ( {
 	}, [ handleSelection, iframeRef ] );
 
 	return null;
+};
+
+/**
+ * Traverses the DOM tree to find the next node in document order.
+ *
+ * @since 3.19.0
+ *
+ * @param {Node}    node         The current node to start traversal from.
+ * @param {boolean} skipChildren Whether to skip the current node's children and move to its next sibling.
+ * @param {Node}    endNode      The node at which to stop traversal. If reached, returns null.
+ *
+ * @return {Node|null} The next node in document order, or null if no next node exists
+ *                     or if the endNode is reached.
+ */
+const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node ): Node | null {
+	if ( endNode === node ) {
+		return null;
+	}
+
+	if ( node.firstChild && ! skipChildren ) {
+		return node.firstChild;
+	}
+
+	if ( ! node.parentNode ) {
+		return null;
+	}
+
+	return node.nextSibling ? node.nextSibling : getNextNode( node.parentNode, true, endNode );
 };
