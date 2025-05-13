@@ -3,7 +3,7 @@
  * UI: Dashboard page class
  *
  * @package Parsely
- * @since   3.18.0
+ * @since   3.19.0
  */
 
 declare(strict_types=1);

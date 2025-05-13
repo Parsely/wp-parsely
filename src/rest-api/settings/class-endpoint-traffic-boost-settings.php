@@ -3,7 +3,7 @@
  * API Endpoint: Traffic Boost Settings
  *
  * @package Parsely
- * @since   3.18.0
+ * @since   3.19.0
  */
 
 declare(strict_types=1);
@@ -48,11 +48,6 @@ class Endpoint_Traffic_Boost_Settings extends Base_Settings_Endpoint {
 	 * @return array<string, Subvalue_Spec>
 	 */
 	protected function get_subvalues_specs(): array {
-		return array(
-			'Setting1' => array(
-				'values'  => array(),
-				'default' => 'Hello World!',
-			),
-		);
+		return array();
 	}
 }

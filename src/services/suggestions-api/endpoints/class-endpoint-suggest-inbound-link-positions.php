@@ -3,7 +3,7 @@
  * Parse.ly Suggestions API Endpoint: Suggest Inbound Link Positions
  *
  * @package Parsely
- * @since   3.18.0
+ * @since   3.19.0
  */
 
 declare(strict_types=1);
