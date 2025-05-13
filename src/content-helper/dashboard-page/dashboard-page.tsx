@@ -13,6 +13,7 @@ import {
  */
 import domReady from '@wordpress/dom-ready';
 import { createRoot, useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -79,11 +80,28 @@ const ParselyDashboard = () => {
 			if ( currentBasePath === menuBasePath || hashPath === location.pathname ) {
 				item.classList.add( 'current' );
 				link?.blur();
+				updatePageTitle( hashPath ?? '' );
 			} else {
 				item.classList.remove( 'current' );
 			}
 		} );
 	}, [ location ] );
+
+	/**
+	 * Updates the page title based on the passed hash path.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param {string} hashPath The hash path.
+	 */
+	const updatePageTitle = ( hashPath: string ) => {
+		if ( '/traffic-boost' === hashPath ) {
+			document.title = document.title.replace(
+				__( 'Parse.ly Dashboard', 'wp-parsely' ),
+				__( 'Traffic Boost (beta)', 'wp-parsely' )
+			);
+		}
+	};
 
 	return (
 		<Routes>
