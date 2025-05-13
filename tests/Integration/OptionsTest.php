@@ -56,6 +56,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_default_options_are_returned_when_options_are_corrupted_or_not_set(): void {
 		add_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
@@ -80,6 +82,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_get_options_returns_correct_track_as_defaults(): void {
 		$options = self::$parsely->get_options();
@@ -101,6 +105,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_set_default_track_as_values_should_not_be_called_when_saved_options_exist(): void {
 		$options                     = self::$parsely->get_options();
@@ -128,6 +134,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_get_options_track_as_defaults_when_cpts_are_registered(): void {
 		$custom_post_types = array(
@@ -206,6 +214,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_get_options_returns_correct_full_metadata_in_non_posts_default_value(): void {
 		$options = self::$parsely->get_options();
@@ -226,6 +236,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_set_default_full_metadata_in_non_posts_values_should_not_be_called_when_saved_options_exist(): void {
 		$option_key             = 'full_metadata_in_non_posts';
@@ -258,6 +270,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_set_default_full_metadata_in_non_posts_returns_expected_values(): void {
 		$option_key      = 'full_metadata_in_non_posts';
@@ -295,6 +309,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_set_default_full_metadata_in_non_posts_returns_false_when_metadata_filters_are_used(): void {
 		$option_key = 'full_metadata_in_non_posts';
@@ -356,6 +372,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_full_metadata_in_non_posts_gets_set_to_true_when_it_does_not_exist_in_options_array(): void {
 		$option_key = 'full_metadata_in_non_posts';
@@ -379,6 +397,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_full_metadata_in_non_posts_gets_set_to_false_when_it_does_not_exist_in_options_array_and_a_metadata_filter_is_used(): void {
 		$option_key = 'full_metadata_in_non_posts';
@@ -404,6 +424,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
 	 */
 	public function test_set_managed_options_override_all_other_option_types(): void {
@@ -447,6 +469,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_null_managed_options_get_their_value_from_the_database_or_defaults(): void {
 		$default_options = self::$parsely->get_default_options();
@@ -490,6 +514,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_certain_options_cannot_be_set_as_managed(): void {
 		add_filter(
@@ -531,6 +557,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
 	 *
 	 * @expectedIncorrectUsage sanitize_managed_option
@@ -575,6 +603,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_content_helper_options_in_a_new_plugin_install(): void {
 		delete_option( Parsely::OPTIONS_KEY );
@@ -612,6 +642,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_content_helper_options_in_existing_plugin_install_first_run(): void {
 		$options = ( new Parsely() )->get_options();
@@ -647,6 +679,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
 	 */
 	public function test_content_helper_options_in_existing_plugin_install_subsequent_runs(): void {
 		$options  = ( new Parsely() )->get_options();
@@ -656,6 +690,45 @@ final class OptionsTest extends TestCase {
 		);
 
 		$options['content_helper'] = $expected;
+		add_option( Parsely::OPTIONS_KEY, $options );
+
+		self::assertSame(
+			$expected,
+			( new Parsely() )->get_options()['content_helper']
+		);
+	}
+
+	/**
+	 * Verifies that Content Helper options are as expected when we have an
+	 * existing plugin installation with a missing Content Helper feature
+	 * option.
+	 *
+	 * In this case, the feature option should be added from default options to
+	 * the current options array.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
+	 */
+	public function test_content_helper_options_in_existing_plugin_install_missing_feature_option(): void {
+		$options  = ( new Parsely() )->get_options();
+		$expected = Permissions::build_pch_permissions_settings_array(
+			true,
+			array( 'administrator' )
+		);
+
+		$options['content_helper'] = $expected;
+		unset( $options['content_helper']['traffic_boost'] );
 		add_option( Parsely::OPTIONS_KEY, $options );
 
 		self::assertSame(
