@@ -250,14 +250,12 @@
 	padding: var(--grid-unit-15) var(--grid-unit-20);
 	justify-content: center;
 	align-items: center;
-	background: rgba(255, 255, 255, 0.95);
-	border-radius: to_rem(8px);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-	backdrop-filter: blur(4px);
-	z-index: 1000;
+	background: rgba(255, 255, 255, 1);
 	width: fit-content;
-	gap: var(--grid-unit-15);
 	border: 1px solid #1e1e1e;
+	position: absolute;
+	top: 20px;
+	left: 20px;
 
 	.traffic-boost-preview-actions-drag-handle {
 		flex-shrink: 0;

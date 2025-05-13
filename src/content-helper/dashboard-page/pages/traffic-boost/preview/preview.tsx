@@ -631,6 +631,7 @@ export const TrafficBoostPreview = ( {
 					selectedText={ selectedText }
 				/>
 			</div>
+
 			<PreviewFooter
 				activeLink={ activeLink }
 				totalItems={ totalItems }
