@@ -12,7 +12,7 @@ import { VerifyCredentials } from '../../../common/verify-credentials';
 import { PageBody, PageContainer, PostsTable } from '../../components';
 import { DashboardHeading } from '../../components/typography-components';
 import './dashboard.scss';
-import { DashboardHeader } from './header-component';
+// import { DashboardHeader } from './header-component';
 
 /**
  * Gets the settings from the passed JSON.
@@ -71,7 +71,7 @@ export const DashboardPage = (): React.JSX.Element => {
 		>
 			<VerifyCredentials>
 				<PageContainer name="dashboard">
-					<DashboardHeader />
+					{ /* <DashboardHeader /> */ }
 					<PageBody>
 						<DashboardHeading>{ __( 'Recent Posts', 'wp-parsely' ) } </DashboardHeading>
 						<p>
