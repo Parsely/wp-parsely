@@ -240,12 +240,13 @@
 	}
 }
 
+.traffic-boost-preview-actions-wrapper {
+	height: 100%;
+	position: relative;
+}
+
 .traffic-boost-preview-actions {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	display: inline-flex;
+	display: flex;
 	padding: var(--grid-unit-15) var(--grid-unit-20);
 	justify-content: center;
 	align-items: center;
@@ -253,7 +254,7 @@
 	border-radius: to_rem(8px);
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	backdrop-filter: blur(4px);
-	z-index: 10;
+	z-index: 1000;
 	width: fit-content;
 	gap: var(--grid-unit-15);
 	border: 1px solid #1e1e1e;
@@ -261,6 +262,7 @@
 	.traffic-boost-preview-actions-drag-handle {
 		flex-shrink: 0;
 		margin-right: var(--grid-unit-5);
+		cursor: grab;
 	}
 
 	.traffic-boost-preview-actions-buttons {
@@ -275,5 +277,26 @@
 			padding: var(--grid-unit-10) var(--grid-unit-20);
 			white-space: nowrap;
 		}
+	}
+}
+
+/* Cover to allow smooth dragging over iframe with draggable actions bar. */
+.draggable-iframe-cover {
+	position: absolute;
+	display: none;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+/* Class added to <body> during dragging */
+.react-draggable-transparent-selection {
+	cursor: grabbing;
+
+	/* Turn on iframe cover during dragging */
+	.draggable-iframe-cover {
+		display: block;
+		z-index: 100;
 	}
 }

@@ -602,20 +602,35 @@ export const TrafficBoostPreview = ( {
 				setIsFrontendPreview={ setIsFrontendPreview }
 				onRegeneratePressed={ handleRegenerate }
 			/>
-			<PreviewIframe
-				activeLink={ activeLink }
-				previewUrl={ previewUrl }
-				isLoading={ isLoading }
-				selectedText={ selectedText }
-				onTextSelected={ ( text, offset ) => {
-					setSelectedText( { text, offset } );
-				} }
-				onRestoreOriginal={ () => {
-					setSelectedText( null );
-				} }
-				isFrontendPreview={ isFrontendPreview }
-				onLoadingChange={ setIsLoading }
-			/>
+
+			<div className="traffic-boost-preview-actions-wrapper">
+				<PreviewIframe
+					activeLink={ activeLink }
+					previewUrl={ previewUrl }
+					isLoading={ isLoading }
+					selectedText={ selectedText }
+					onTextSelected={ ( text, offset ) => {
+						setSelectedText( { text, offset } );
+					} }
+					onRestoreOriginal={ () => {
+						setSelectedText( null );
+					} }
+					isFrontendPreview={ isFrontendPreview }
+					onLoadingChange={ setIsLoading }
+				/>
+
+				<PreviewActions
+					activeLink={ activeLink }
+					onAccept={ handleAccept }
+					onDiscard={ handleDiscard }
+					onUpdateLink={ handleUpdateLink }
+					onRemove={ handleRemove }
+					onRestoreOriginal={ () => {
+						setSelectedText( null );
+					} }
+					selectedText={ selectedText }
+				/>
+			</div>
 			<PreviewFooter
 				activeLink={ activeLink }
 				totalItems={ totalItems }
@@ -642,18 +657,6 @@ export const TrafficBoostPreview = ( {
 						setSelectedLink( suggestion );
 					}
 				} }
-			/>
-
-			<PreviewActions
-				activeLink={ activeLink }
-				onAccept={ handleAccept }
-				onDiscard={ handleDiscard }
-				onUpdateLink={ handleUpdateLink }
-				onRemove={ handleRemove }
-				onRestoreOriginal={ () => {
-					setSelectedText( null );
-				} }
-				selectedText={ selectedText }
 			/>
 		</div>
 	);

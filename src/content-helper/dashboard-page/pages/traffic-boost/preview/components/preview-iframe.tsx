@@ -402,6 +402,9 @@ export const PreviewIframe = ( {
 
 				{ activeLink && ! isGenerating && ( ! isFrontendPreview || ! isExternalURL( activeLink ) ) && (
 					<>
+						{ /* Cover to allow smooth dragging over iframe with draggable actions bar. */ }
+						<div className="draggable-iframe-cover" />
+
 						<iframe
 							ref={ iframeRef }
 							src={ iFrameSrc }
@@ -416,7 +419,6 @@ export const PreviewIframe = ( {
 							} }
 						/>
 					</>
-
 				) }
 			</div>
 		</div>
