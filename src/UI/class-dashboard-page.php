@@ -182,34 +182,43 @@ final class Dashboard_Page {
 			'__return_null'
 		);
 
+		// Always make the menu display a submenu, even if it's only one item.
+		// This temporary submenu gets removed before displaying the final menu.
+		add_submenu_page(
+			'parsely-dashboard-page',
+			'Temporary',
+			'Temporary',
+			$capability, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
+			'parsely-dashboard-page-temporary',
+			'__return_null'
+		);
+
 		/**
 		 * Settings submenu is registered in add_settings_sub_menu() at src/UI/class-settings-page.php.
 		 *
 		 * @see Settings_Page::add_settings_sub_menu()
 		 */
 
-		// When adding a menu, WordPress automatically includes a submenu which
-		// can complicate things. Also, the Settings menu is getting added by
-		// another class. Thus removing the submenus is less error-prone than
-		// trying to handle them conditionally.
-		if ( ! $show_traffic_boost_submenu || ! $show_settings_submenu ) {
-			add_action(
-				'admin_head',
-				function () use ( $show_traffic_boost_submenu, $show_settings_submenu ) {
-					$dashboard_page_slug = 'parsely-dashboard-page';
+		// Remove the submenus that shouldn't be displayed.
+		add_action(
+			'admin_head',
+			function () use ( $show_traffic_boost_submenu, $show_settings_submenu ) {
+				$dashboard_page_slug = 'parsely-dashboard-page';
 
-					if ( ! $show_traffic_boost_submenu ) {
-						// Remove Traffic Boost submenu.
-						remove_submenu_page( $dashboard_page_slug, $dashboard_page_slug );
-					}
+				// Always remove the temporary submenu.
+				remove_submenu_page( $dashboard_page_slug, 'parsely-dashboard-page-temporary' );
 
-					if ( ! $show_settings_submenu ) {
-						// Remove Settings submenu.
-						remove_submenu_page( $dashboard_page_slug, Parsely::MENU_SLUG );
-					}
+				if ( ! $show_traffic_boost_submenu ) {
+					// Remove the Traffic Boost submenu.
+					remove_submenu_page( $dashboard_page_slug, $dashboard_page_slug );
 				}
-			);
-		}
+
+				if ( ! $show_settings_submenu ) {
+					// Remove the Settings submenu.
+					remove_submenu_page( $dashboard_page_slug, Parsely::MENU_SLUG );
+				}
+			}
+		);
 	}
 
 	/**
