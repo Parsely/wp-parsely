@@ -5,7 +5,7 @@ import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight } from '@wordpress/icons';
+import { arrowLeft, arrowRight, check, close } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -97,11 +97,13 @@ export const PreviewFooter = ( {
 								onClick={ () => onAccept( activeLink ) }
 								isBusy={ isAccepting }
 								disabled={ isAccepting }
+								icon={ isAccepting ? null : check }
 							>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
 							<Button
 								variant="tertiary"
 								onClick={ () => onDiscard( activeLink ) }
-							>{ __( 'Discard', 'wp-parsely' ) }</Button>
+								icon={ close }
+							>{ __( 'Reject', 'wp-parsely' ) }</Button>
 							{ selectedText && (
 								<>
 									<VerticalDivider size={ 36 } />
@@ -205,4 +207,3 @@ export const PreviewFooter = ( {
 		</div>
 	);
 };
-
