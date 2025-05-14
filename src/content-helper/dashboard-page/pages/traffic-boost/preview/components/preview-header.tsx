@@ -4,7 +4,7 @@
 import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { desktop, edit, external, moreVertical, update } from '@wordpress/icons';
+import { desktop, edit, external, moreVertical } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -95,7 +95,6 @@ interface PreviewHeaderProps {
 	onOpenPostInNewTab: () => void;
 	onOpenPostEditor: () => void;
 	onOpenParselyDashboard: () => void;
-	onRegeneratePressed: () => void;
 	isFrontendPreview: boolean;
 	setIsFrontendPreview: ( value: boolean ) => void;
 }
@@ -116,7 +115,6 @@ export const PreviewHeader = ( {
 	onOpenPostEditor,
 	onOpenPostInNewTab,
 	onOpenParselyDashboard,
-	onRegeneratePressed,
 }: PreviewHeaderProps ): React.JSX.Element => {
 	/**
 	 * Toggles the frontend preview state.
@@ -157,13 +155,6 @@ export const PreviewHeader = ( {
 				/>
 			</div>
 			<div className="traffic-boost-preview-actions">
-				<Button
-					icon={ update }
-					iconSize={ 24 }
-					onClick={ onRegeneratePressed }
-					disabled={ isLoading }
-					label={ __( 'Regenerate Suggested Link', 'wp-parsely' ) }
-				/>
 				{ ! isExternalURL( activeLink ) && false && (
 					<Button
 						icon={ desktop }

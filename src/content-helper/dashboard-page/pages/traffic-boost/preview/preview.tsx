@@ -599,7 +599,6 @@ export const TrafficBoostPreview = ( {
 				onOpenParselyDashboard={ openParselyDashboard }
 				isFrontendPreview={ isFrontendPreview }
 				setIsFrontendPreview={ setIsFrontendPreview }
-				onRegeneratePressed={ handleRegenerate }
 			/>
 			<PreviewIframe
 				activeLink={ activeLink }
@@ -625,6 +624,7 @@ export const TrafficBoostPreview = ( {
 				onDiscard={ handleDiscard }
 				onUpdateLink={ handleUpdateLink }
 				onRemove={ handleRemove }
+				onRegeneratePressed={ handleRegenerate }
 				onRestoreOriginal={ () => {
 					setSelectedText( null );
 				} }
