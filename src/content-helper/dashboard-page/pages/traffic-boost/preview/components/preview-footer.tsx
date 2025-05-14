@@ -5,7 +5,7 @@ import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight, check, close, reusableBlock } from '@wordpress/icons';
+import { arrowLeft, arrowRight, check, close, reusableBlock, undo } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -121,6 +121,7 @@ export const PreviewFooter = ( {
 									<Button
 										variant="tertiary"
 										onClick={ onRestoreOriginal }
+										icon={ undo }
 									>
 										{ __( 'Clear changes', 'wp-parsely' ) }
 									</Button>
@@ -155,6 +156,7 @@ export const PreviewFooter = ( {
 									<Button
 										variant="tertiary"
 										onClick={ onRestoreOriginal }
+										icon={ undo }
 									>
 										{ __( 'Clear changes', 'wp-parsely' ) }
 									</Button>
