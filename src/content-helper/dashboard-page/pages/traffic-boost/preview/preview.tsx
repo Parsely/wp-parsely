@@ -3,7 +3,7 @@
  */
 import { Icon } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { error, link as linkIcon, linkOff } from '@wordpress/icons';
 import { addQueryArgs } from '@wordpress/url';
@@ -173,6 +173,11 @@ export const TrafficBoostPreview = ( {
 			setPreviewUrl( newUrl );
 		}
 	}, [ activePost, isFrontendPreview, previewUrl ] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	// Use useCallback for onRestoreOriginal to maintain reference stability
+	const handleRestoreOriginal = useCallback( () => {
+		setSelectedText( null );
+	}, [] );
 
 	/**
 	 * Opens the post in a new tab.
@@ -614,9 +619,7 @@ export const TrafficBoostPreview = ( {
 					onTextSelected={ ( text, offset ) => {
 						setSelectedText( { text, offset } );
 					} }
-					onRestoreOriginal={ () => {
-						setSelectedText( null );
-					} }
+					onRestoreOriginal={ handleRestoreOriginal }
 					isFrontendPreview={ isFrontendPreview }
 					onLoadingChange={ setIsLoading }
 					onScrollToHighlight={ setHighlightedRect }
@@ -628,9 +631,7 @@ export const TrafficBoostPreview = ( {
 					onDiscard={ handleDiscard }
 					onUpdateLink={ handleUpdateLink }
 					onRemove={ handleRemove }
-					onRestoreOriginal={ () => {
-						setSelectedText( null );
-					} }
+					onRestoreOriginal={ handleRestoreOriginal }
 					selectedText={ selectedText }
 					highlightedRect={ highlightedRect }
 				/>
@@ -646,9 +647,7 @@ export const TrafficBoostPreview = ( {
 				onDiscard={ handleDiscard }
 				onUpdateLink={ handleUpdateLink }
 				onRemove={ handleRemove }
-				onRestoreOriginal={ () => {
-					setSelectedText( null );
-				} }
+				onRestoreOriginal={ handleRestoreOriginal }
 				selectedText={ selectedText }
 				onSelectIndex={ ( index ) => {
 					// If the link is inbound, do nothing.

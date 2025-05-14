@@ -66,18 +66,17 @@ export const PreviewActions = ( {
 
 	useEffect( () => {
 		if ( highlightedRect && actionsBarRef.current ) {
-			console.log( 'Updating actions position with highlightedRect:', highlightedRect );
-
 			// Get actual dimensions of the actions bar
 			const actionsBarWidth = actionsBarRef.current.offsetWidth;
 			const actionsBarHeight = actionsBarRef.current.offsetHeight;
 
-			// Center the actions bar above the highlighted element
-			// Position the bar above the highlight with some space
-			setActionsPosition( {
+			const newPosition = {
 				x: highlightedRect.left + ( highlightedRect.width / 2 ) - ( actionsBarWidth / 2 ),
 				y: highlightedRect.top - actionsBarHeight - 15, // 10px space between highlight and bar
-			} );
+			};
+
+			// Center the actions bar above the highlighted element
+			setActionsPosition( newPosition );
 		}
 	}, [ highlightedRect ] );
 

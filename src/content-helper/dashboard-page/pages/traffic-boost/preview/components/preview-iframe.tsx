@@ -233,26 +233,31 @@ export const PreviewIframe = ( {
 
 				// Call callback with bounding rect info for the highlighted element.
 				if ( onScrollToHighlight && highlightedElement ) {
-					// Wait 100ms to ensure the highlighted element is visible.
 					const highlightedRect = highlightedElement.getBoundingClientRect();
 
-					const absoluteRect = {
-						top: highlightedRect.top,
-						left: highlightedRect.left,
-						width: highlightedRect.width,
-						height: highlightedRect.height,
-					};
-
-					// Only call onScrollToHighlight if the rect has changed
-					const lastRect = lastHighlightRectRef.current;
-					if ( ! lastRect ||
-						lastRect.top !== absoluteRect.top ||
-						lastRect.left !== absoluteRect.left ||
-						lastRect.width !== absoluteRect.width ||
-						lastRect.height !== absoluteRect.height ) {
-						lastHighlightRectRef.current = absoluteRect;
-						onScrollToHighlight( absoluteRect );
+					// Check if all dimensions are 0
+					if ( highlightedRect.top === 0 &&
+						highlightedRect.left === 0 &&
+						highlightedRect.width === 0 &&
+						highlightedRect.height === 0 ) {
+						// This can happen briefly during load. To avoid improperly moving the actions bar,
+						// ignore this update.
+						return;
 					}
+
+					const lastRect = lastHighlightRectRef.current;
+
+					if ( lastRect &&
+						lastRect.top === highlightedRect.top &&
+						lastRect.left === highlightedRect.left &&
+						lastRect.width === highlightedRect.width &&
+						lastRect.height === highlightedRect.height ) {
+						// Avoid an update call if nothing has changed
+						return;
+					}
+
+					lastHighlightRectRef.current = highlightedRect;
+					onScrollToHighlight( highlightedRect );
 				}
 			}
 		};
