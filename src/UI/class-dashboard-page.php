@@ -156,22 +156,12 @@ final class Dashboard_Page {
 			30
 		);
 
-		// Register the subpages.
-		add_submenu_page(
-			'parsely-dashboard-page',
-			'Parse.ly Dashboard Page',
-			'Dashboard',
-			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
-			'parsely-dashboard-page',
-			'__return_null'
-		);
-
 		add_submenu_page(
 			'parsely-dashboard-page',
 			'Parse.ly Traffic Boost',
-			'Traffic Boost',
+			'Traffic Boost (beta)',
 			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
-			'parsely-dashboard-page#/traffic-boost',
+			'parsely-dashboard-page',
 			'__return_null'
 		);
 
