@@ -3,7 +3,7 @@
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef, createPortal } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -18,6 +18,7 @@ import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
 import { TextSelectionTooltip } from './text-selection-tooltip';
+import { PreviewActions } from './preview-actions';
 
 /**
  * Props structure for PreviewIframe.
@@ -34,6 +35,10 @@ interface PreviewIframeProps {
 	onLoadingChange: ( isLoading: boolean ) => void;
 	onRestoreOriginal: () => void;
 	onScrollToHighlight?: ( rect: { top: number; left: number; width: number; height: number } ) => void;
+	onAccept?: ( link: TrafficBoostLink ) => void;
+	onDiscard?: ( link: TrafficBoostLink ) => void;
+	onUpdateLink?: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
+	onRemove?: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 }
 
 /**
@@ -54,6 +59,10 @@ export const PreviewIframe = ( {
 	onLoadingChange,
 	onRestoreOriginal,
 	onScrollToHighlight,
+	onAccept,
+	onDiscard,
+	onUpdateLink,
+	onRemove,
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null );
 	const iframeRef = useRef<HTMLIFrameElement>( null );
@@ -257,7 +266,7 @@ export const PreviewIframe = ( {
 					}
 
 					lastHighlightRectRef.current = highlightedRect;
-					onScrollToHighlight( highlightedRect );
+					// onScrollToHighlight( highlightedRect );
 				}
 			}
 		};
@@ -308,6 +317,11 @@ export const PreviewIframe = ( {
 		const contentArea = getContentArea( iframe.contentDocument );
 		if ( contentArea ) {
 			contentAreaRef.current = contentArea;
+		}
+
+		const iframeDocument = iframeRef.current?.contentDocument;
+		if ( ! iframeDocument ) {
+			return;
 		}
 
 		hideAdminBar( iframe );
@@ -434,9 +448,6 @@ export const PreviewIframe = ( {
 
 				{ activeLink && ! isGenerating && ( ! isFrontendPreview || ! isExternalURL( activeLink ) ) && (
 					<>
-						{ /* Cover to allow smooth dragging over iframe with draggable actions bar. */ }
-						<div className="draggable-iframe-cover" />
-
 						<iframe
 							ref={ iframeRef }
 							src={ iFrameSrc }
@@ -444,6 +455,22 @@ export const PreviewIframe = ( {
 							className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
 							sandbox="allow-same-origin allow-scripts"
 						/>
+
+						{ iframeRef.current?.contentDocument?.body && activeLink && onAccept && onDiscard && onUpdateLink && onRemove &&
+							createPortal(
+								<PreviewActions
+									activeLink={ activeLink }
+									onAccept={ onAccept }
+									onDiscard={ onDiscard }
+									onUpdateLink={ onUpdateLink }
+									onRemove={ onRemove }
+									onRestoreOriginal={ onRestoreOriginal }
+									selectedText={ selectedText ?? null }
+								/>,
+								iframeRef.current.contentDocument.body
+							)
+						}
+
 						<TextSelectionTooltip
 							iframeRef={ iframeRef }
 							onTextSelected={ ( text, offset ) => {

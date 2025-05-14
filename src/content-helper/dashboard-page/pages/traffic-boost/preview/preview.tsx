@@ -19,7 +19,6 @@ import {
 	TrafficBoostProvider,
 } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
-import { PreviewActions } from './components/preview-actions';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
 import { PreviewIframe } from './components/preview-iframe';
@@ -75,8 +74,6 @@ export const TrafficBoostPreview = ( {
 	const [ itemIndex, setItemIndex ] = useState<number>( 0 );
 
 	const [ ignoredKeywords, setIgnoredKeywords ] = useState<string[]>( [] );
-
-	const [ highlightedRect, setHighlightedRect ] = useState<{ top: number; left: number; width: number; height: number } | null>( null );
 
 	const {
 		createSuccessNotice,
@@ -610,32 +607,22 @@ export const TrafficBoostPreview = ( {
 				onRegeneratePressed={ handleRegenerate }
 			/>
 
-			<div className="traffic-boost-preview-actions-wrapper">
-				<PreviewIframe
-					activeLink={ activeLink }
-					previewUrl={ previewUrl }
-					isLoading={ isLoading }
-					selectedText={ selectedText }
-					onTextSelected={ ( text, offset ) => {
-						setSelectedText( { text, offset } );
-					} }
-					onRestoreOriginal={ handleRestoreOriginal }
-					isFrontendPreview={ isFrontendPreview }
-					onLoadingChange={ setIsLoading }
-					onScrollToHighlight={ setHighlightedRect }
-				/>
-
-				<PreviewActions
-					activeLink={ activeLink }
-					onAccept={ handleAccept }
-					onDiscard={ handleDiscard }
-					onUpdateLink={ handleUpdateLink }
-					onRemove={ handleRemove }
-					onRestoreOriginal={ handleRestoreOriginal }
-					selectedText={ selectedText }
-					highlightedRect={ highlightedRect }
-				/>
-			</div>
+			<PreviewIframe
+				activeLink={ activeLink }
+				previewUrl={ previewUrl }
+				isLoading={ isLoading }
+				selectedText={ selectedText }
+				onTextSelected={ ( text, offset ) => {
+					setSelectedText( { text, offset } );
+				} }
+				onRestoreOriginal={ handleRestoreOriginal }
+				isFrontendPreview={ isFrontendPreview }
+				onLoadingChange={ setIsLoading }
+				onAccept={ handleAccept }
+				onDiscard={ handleDiscard }
+				onUpdateLink={ handleUpdateLink }
+				onRemove={ handleRemove }
+			/>
 
 			<PreviewFooter
 				activeLink={ activeLink }

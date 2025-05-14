@@ -474,6 +474,7 @@ export const TextSelectionTooltip = ( {
 		 * @since 3.18.0
 		 */
 		const updatePosition = () => {
+			console.log( '<TextSelectionTooltip> Updating position' );
 			const rect = range.getBoundingClientRect();
 			const scrollY = iframeDocument.defaultView?.scrollY ?? 0;
 
