@@ -194,7 +194,7 @@ export const LinkCounter = ( {
 					>
 						{ sprintf(
 							/* translators: %d: number of smart links */
-							__( '%d smart links', 'wp-parsely' ),
+							__( '%d Smart Links', 'wp-parsely' ),
 							links.smart
 						) }
 					</Button>

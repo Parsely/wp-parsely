@@ -583,7 +583,7 @@ class Inbound_Smart_Link extends Smart_Link {
 					strpos( $current->getAttribute( 'href' ), $this->get_link_href() ) !== false ) {
 					return new \WP_Error(
 						'traffic_boost_invalid_link_placement',
-						__( 'The current link is already linked to this smart link.', 'wp-parsely' )
+						__( 'The current link is already linked to this Smart Link.', 'wp-parsely' )
 					);
 				}
 
@@ -639,7 +639,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	public function apply() {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		if ( $this->is_applied() ) {
-			return new \WP_Error( 'traffic_boost_already_applied', __( 'Smart link already applied', 'wp-parsely' ) );
+			return new \WP_Error( 'traffic_boost_already_applied', __( 'Smart Link already applied', 'wp-parsely' ) );
 		}
 
 		if ( ! class_exists( 'DOMDocument' ) ) {
@@ -891,7 +891,7 @@ class Inbound_Smart_Link extends Smart_Link {
 		$smart_link_anchor = $this->find_smart_link_anchor( $content_dom );
 
 		if ( false === $smart_link_anchor ) {
-			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', __( 'Smart link anchor not found', 'wp-parsely' ) );
+			return new \WP_Error( 'traffic_boost_smart_link_anchor_not_found', __( 'Smart Link anchor not found', 'wp-parsely' ) );
 		}
 
 		$original_paragraph_html = $html_parser->saveHTML( $smart_link_anchor->parentNode );

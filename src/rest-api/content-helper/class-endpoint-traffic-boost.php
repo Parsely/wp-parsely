@@ -204,18 +204,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array(
 				'smart_link_id' => array(
 					'type'              => 'integer',
-					'description'       => __( 'The ID of the smart link to accept.', 'wp-parsely' ),
+					'description'       => __( 'The ID of the Smart Link to accept.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
 				),
 				'text'          => array(
 					'type'        => 'string',
-					'description' => __( 'The text of the smart link.', 'wp-parsely' ),
+					'description' => __( 'The text of the Smart Link.', 'wp-parsely' ),
 					'required'    => false,
 				),
 				'offset'        => array(
 					'type'        => 'integer',
-					'description' => __( 'The offset of the smart link.', 'wp-parsely' ),
+					'description' => __( 'The offset of the Smart Link.', 'wp-parsely' ),
 					'required'    => false,
 				),
 			)
@@ -242,7 +242,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array(
 				'smart_link_id' => array(
 					'type'              => 'integer',
-					'description'       => __( 'The ID of the smart link to discard.', 'wp-parsely' ),
+					'description'       => __( 'The ID of the Smart Link to discard.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
 				),
@@ -260,7 +260,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array(
 				'smart_link_id'    => array(
 					'type'              => 'integer',
-					'description'       => __( 'The ID of the smart link to delete.', 'wp-parsely' ),
+					'description'       => __( 'The ID of the Smart Link to delete.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
 				),
@@ -284,18 +284,18 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			array(
 				'smart_link_id'    => array(
 					'type'              => 'integer',
-					'description'       => __( 'The ID of the smart link to update.', 'wp-parsely' ),
+					'description'       => __( 'The ID of the Smart Link to update.', 'wp-parsely' ),
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_smart_link_id' ),
 				),
 				'text'             => array(
 					'type'        => 'string',
-					'description' => __( 'The text of the smart link.', 'wp-parsely' ),
+					'description' => __( 'The text of the Smart Link.', 'wp-parsely' ),
 					'required'    => false,
 				),
 				'offset'           => array(
 					'type'        => 'integer',
-					'description' => __( 'The offset of the smart link.', 'wp-parsely' ),
+					'description' => __( 'The offset of the Smart Link.', 'wp-parsely' ),
 					'required'    => false,
 				),
 				'restore_original' => array(
@@ -806,7 +806,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		if ( $inbound_link->is_applied() ) {
 			return new WP_Error(
 				'parsely_smart_link_already_applied',
-				__( 'Smart link already applied.', 'wp-parsely' )
+				__( 'Smart Link already applied.', 'wp-parsely' )
 			);
 		}
 
@@ -855,7 +855,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		if ( false === $inbound_link ) {
 			return new WP_Error(
 				'parsely_smart_link_not_found',
-				__( 'Smart link not found', 'wp-parsely' )
+				__( 'Smart Link not found', 'wp-parsely' )
 			);
 		}
 
@@ -873,7 +873,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		if ( $inbound_link->destination_post_id !== $post_id ) {
 			return new WP_Error(
 				'parsely_invalid_smart_link',
-				__( 'Smart link is not associated with this post', 'wp-parsely' )
+				__( 'Smart Link is not associated with this post', 'wp-parsely' )
 			);
 		}
 
