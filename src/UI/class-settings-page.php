@@ -515,11 +515,11 @@ final class Settings_Page {
 		$field_args = array(
 			'option_key' => $field_id,
 			'label_for'  => $field_id,
-			'legend'     => __( 'Traffic Boost', 'wp-parsely' ),
+			'legend'     => __( 'Traffic Boost (beta)', 'wp-parsely' ),
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Traffic Boost', 'wp-parsely' ),
+			__( 'Traffic Boost (beta)', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,
