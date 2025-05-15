@@ -5,7 +5,7 @@ import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight, check, close, reusableBlock, undo } from '@wordpress/icons';
+import { arrowLeft, arrowRight, check, close, undo } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -24,7 +24,6 @@ interface PreviewFooterProps {
 	activeLink: TrafficBoostLink | null;
 	onAccept: ( link: TrafficBoostLink ) => void;
 	onRemove: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
-	onRegeneratePressed: () => void;
 	onUpdateLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 	onDiscard: ( link: TrafficBoostLink ) => void;
 	onNext: () => void;
@@ -51,7 +50,6 @@ export const PreviewFooter = ( {
 	onNext,
 	onPrevious,
 	onRemove,
-	onRegeneratePressed,
 	totalItems,
 	itemIndex,
 	onRestoreOriginal,
@@ -71,14 +69,6 @@ export const PreviewFooter = ( {
 		isRemoving: activeLink ? select( TrafficBoostStore ).isRemoving( activeLink ) : false,
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
-
-	const regenerateButton = <Button
-		variant="tertiary"
-		icon={ reusableBlock }
-		iconSize={ 24 }
-		onClick={ onRegeneratePressed }
-		label={ __( 'Regenerate Suggested Link', 'wp-parsely' ) }
-	>{ __( 'Regenerate', 'wp-parsely' ) }</Button>;
 
 	if ( ! activeLink ) {
 		return <></>;
@@ -112,7 +102,6 @@ export const PreviewFooter = ( {
 								onClick={ () => onDiscard( activeLink ) }
 								icon={ close }
 							>{ __( 'Reject', 'wp-parsely' ) }</Button>
-							{ regenerateButton }
 							{ selectedText && (
 								<>
 									<VerticalDivider size={ 36 } />
@@ -149,7 +138,6 @@ export const PreviewFooter = ( {
 											} }
 										/>
 									) }
-									{ regenerateButton }
 									<VerticalDivider size={ 36 } />
 									<Button
 										variant="tertiary"
@@ -169,7 +157,6 @@ export const PreviewFooter = ( {
 										disabled={ isRemoving }
 										isDestructive
 									>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove Link', 'wp-parsely' ) }</Button>
-									{ regenerateButton }
 									{ activeLink.smartLink?.is_link_replacement && (
 										<CheckboxControl
 											__nextHasNoMarginBottom

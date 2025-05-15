@@ -13,11 +13,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
-import {
-	TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
-	TrafficBoostLink,
-	TrafficBoostProvider,
-} from '../provider';
+import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -73,8 +69,6 @@ export const TrafficBoostPreview = ( {
 	const [ totalItems, setTotalItems ] = useState<number>( 0 );
 	const [ itemIndex, setItemIndex ] = useState<number>( 0 );
 
-	const [ ignoredKeywords, setIgnoredKeywords ] = useState<string[]>( [] );
-
 	const {
 		createSuccessNotice,
 		createErrorNotice,
@@ -100,8 +94,6 @@ export const TrafficBoostPreview = ( {
 		setSelectedTab,
 		setIsAccepting,
 		setIsRemoving,
-		setIsGenerating,
-		updateSuggestion,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
@@ -123,7 +115,6 @@ export const TrafficBoostPreview = ( {
 		setActivePost( activeLink.targetPost );
 		setIsInboundLink( ! activeLink.isSuggestion );
 		setSelectedText( null );
-		setIgnoredKeywords( [] );
 	}, [ activeLink ] );
 
 	/**
@@ -470,121 +461,6 @@ export const TrafficBoostPreview = ( {
 		setSelectedText( null );
 	};
 
-	const handleRegenerate = () => {
-		if ( activeLink.isSuggestion ) {
-			handleRegenerateSuggestion();
-		} else {
-			handleRegenerateInboundLink();
-		}
-	};
-
-	/**
-	 * Handles the regenerate suggestion event.
-	 *
-	 * @since 3.19.0
-	 */
-	const handleRegenerateSuggestion = async () => {
-		if ( ! post ) {
-			return;
-		}
-
-		setIsGenerating( activeLink, true );
-		setSelectedText( null );
-
-		// Remove the smart link from the active link.
-		const oldSmartLink = activeLink.smartLink;
-		activeLink.smartLink = undefined;
-
-		// Update the active link.
-		updateSuggestion( activeLink );
-		setIsLoading( true );
-
-		// Add the current keyword to the ignored keywords.
-		setIgnoredKeywords( [ ...ignoredKeywords, oldSmartLink?.text ?? '' ] );
-
-		try {
-			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
-				post,
-				activeLink.targetPost,
-				activeLink,
-				{
-					ignoreKeywords: [ ...ignoredKeywords, oldSmartLink?.text ?? '' ],
-					performanceBlendingWeight: TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
-				},
-			);
-
-			updateSuggestion( updatedLink );
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-		} catch ( err ) {
-			// eslint-disable-next-line no-console
-			console.error( err );
-
-			// Restore the old smart link.
-			activeLink.smartLink = oldSmartLink;
-			updateSuggestion( activeLink );
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-
-			// Show a snackbar error message.
-			createErrorNotice(
-				__( 'Failed to regenerate suggested link.', 'wp-parsely' ),
-				{
-					type: 'snackbar',
-					icon: <Icon icon={ error } />,
-				}
-			);
-		} finally {
-			// Refresh the iframe.
-			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
-		}
-	};
-
-	/**
-	 * Handles the regenerate inbound link event.
-	 *
-	 * @since 3.19.0
-	 */
-	const handleRegenerateInboundLink = async () => {
-		if ( ! post ) {
-			return;
-		}
-
-		setIsGenerating( activeLink, true );
-		setSelectedText( null );
-		setIsLoading( true );
-
-		// Add the current keyword to the ignored keywords.
-		setIgnoredKeywords( [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ] );
-
-		try {
-			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
-				post,
-				activeLink.targetPost,
-				activeLink,
-				{
-					ignoreKeywords: [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ],
-					allowDuplicateLinks: true,
-					save: false,
-					performanceBlendingWeight: TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
-				},
-			);
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-			setSelectedText( { text: updatedLink.smartLink?.text ?? '', offset: updatedLink.smartLink?.offset ?? 0 } );
-		} catch ( err ) {
-			// eslint-disable-next-line no-console
-			console.error( err );
-
-			setSelectedText( null );
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-		} finally {
-			// Refresh the iframe.
-			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
-		}
-	};
-
 	if ( ! activePost || ! post ) {
 		return <></>;
 	}
@@ -624,7 +500,6 @@ export const TrafficBoostPreview = ( {
 				onDiscard={ handleDiscard }
 				onUpdateLink={ handleUpdateLink }
 				onRemove={ handleRemove }
-				onRegeneratePressed={ handleRegenerate }
 				onRestoreOriginal={ () => {
 					setSelectedText( null );
 				} }
