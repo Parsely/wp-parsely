@@ -31,7 +31,7 @@ export const PostDetailsSidebar = ( { post, isLoading }: PostDetailsSidebarProps
 	return (
 		<div className="traffic-boost-post-details">
 			<div className="traffic-boost-post-details-label">
-				{ __( 'Current Post:', 'wp-parsely' ) }
+				{ __( 'Target Post:', 'wp-parsely' ) }
 			</div>
 			<div className="traffic-boost-post-details-content">
 				<Thumbnail
@@ -47,9 +47,8 @@ export const PostDetailsSidebar = ( { post, isLoading }: PostDetailsSidebarProps
 			<div className="traffic-boost-post-details-divider"></div>
 			<div className="traffic-boost-post-details-description">
 				{ __( 'Use Parse.ly data to increase your post\'s traffic. ' +
-					'Plant links to this post in high-performing related content.', 'wp-parsely' ) }
+					'Plant links to this post in high-performing related source posts.', 'wp-parsely' ) }
 			</div>
 		</div>
 	);
 };
-

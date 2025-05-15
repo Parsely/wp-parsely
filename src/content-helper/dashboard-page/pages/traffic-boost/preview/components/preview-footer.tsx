@@ -29,7 +29,6 @@ interface PreviewFooterProps {
 	onDiscard: ( link: TrafficBoostLink ) => void;
 	onNext: () => void;
 	onPrevious: () => void;
-	onSelectIndex: ( index: number ) => void;
 	totalItems: number;
 	itemIndex: number;
 	onRestoreOriginal: () => void;
@@ -52,7 +51,6 @@ export const PreviewFooter = ( {
 	onNext,
 	onPrevious,
 	onRemove,
-	onSelectIndex,
 	onRegeneratePressed,
 	totalItems,
 	itemIndex,
@@ -185,28 +183,6 @@ export const PreviewFooter = ( {
 								</>
 							) }
 						</>
-					) }
-
-					{ ! isInboundLink && (
-						<div className="traffic-boost-preview-footer-navigation">
-							{ __( 'Suggestion', 'wp-parsely' ) }
-							<select
-								className="traffic-boost-preview-footer-navigation-number"
-								value={ itemIndex }
-								onChange={ ( e ) => {
-									const newIndex = parseInt( e.target.value, 10 );
-									onSelectIndex( newIndex );
-								} }
-							>
-								{ Array.from( { length: totalItems }, ( _, i ) => (
-									<option key={ i + 1 } value={ i + 1 }>{ i + 1 }</option>
-								) ) }
-							</select>
-							{ __( 'of', 'wp-parsely' ) }
-							<span className="traffic-boost-preview-footer-navigation-number">
-								{ totalItems }
-							</span>
-						</div>
 					) }
 				</div>
 			) }

@@ -629,18 +629,6 @@ export const TrafficBoostPreview = ( {
 					setSelectedText( null );
 				} }
 				selectedText={ selectedText }
-				onSelectIndex={ ( index ) => {
-					// If the link is inbound, do nothing.
-					if ( isInboundLink ) {
-						return;
-					}
-
-					const suggestion = suggestions?.[ index - 1 ];
-					if ( suggestion ) {
-						setItemIndex( index );
-						setSelectedLink( suggestion );
-					}
-				} }
 			/>
 		</div>
 	);

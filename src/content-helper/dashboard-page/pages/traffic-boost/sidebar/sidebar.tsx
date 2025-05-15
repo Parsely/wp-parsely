@@ -121,7 +121,7 @@ export const TrafficBoostSidebar = ( {
 					tabs={ [
 						{
 							name: TrafficBoostSidebarTabs.SUGGESTIONS,
-							title: __( 'Link Suggestions', 'wp-parsely' ),
+							title: __( 'Suggested Sources', 'wp-parsely' ),
 							className: 'traffic-boost-tab suggestions-tab',
 						},
 						{
