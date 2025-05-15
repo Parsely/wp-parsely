@@ -82,6 +82,8 @@ export const PreviewFooter = ( {
 						variant="tertiary"
 						onClick={ onPrevious }
 						icon={ arrowLeft }
+						showTooltip={ true }
+						label={ __( 'Previous Suggested Source', 'wp-parsely' ) }
 					/>
 				) }
 			</div>
@@ -180,6 +182,8 @@ export const PreviewFooter = ( {
 						variant="tertiary"
 						onClick={ onNext }
 						icon={ arrowRight }
+						showTooltip={ true }
+						label={ __( 'Next Suggested Source', 'wp-parsely' ) }
 					/>
 				) }
 			</div>
