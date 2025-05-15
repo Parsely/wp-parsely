@@ -213,6 +213,8 @@
 		display: flex;
 		gap: var(--grid-unit-10);
 		align-items: center;
+		flex-wrap: wrap;
+		justify-content: center;
 
 		.components-button {
 			height: to_rem(36px);
