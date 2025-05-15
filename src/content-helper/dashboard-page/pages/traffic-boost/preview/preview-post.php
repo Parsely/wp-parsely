@@ -13,8 +13,13 @@
 declare(strict_types=1);
 
 // Define constants to prevent unwanted scripts and styles from being loaded.
-define( 'IFRAME_REQUEST', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-define( 'WP_ADMIN', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+
+if ( ! defined( 'IFRAME_REQUEST' ) ) {
+	define( 'IFRAME_REQUEST', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+}
+if ( ! defined( 'WP_ADMIN' ) ) {
+	define( 'WP_ADMIN', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+}
 
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>

@@ -301,7 +301,7 @@ export const TrafficBoostPreview = ( {
 
 		// Show a snackbar success message.
 		createSuccessNotice(
-			__( 'Link planted on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			__( 'Link planted', 'wp-parsely' ),
 			{
 				type: 'snackbar',
 				icon: <Icon icon={ linkIcon } />,
@@ -391,7 +391,7 @@ export const TrafficBoostPreview = ( {
 
 		// Show a snackbar success message.
 		createSuccessNotice(
-			__( 'Link removed from', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			__( 'Link removed', 'wp-parsely' ),
 			{
 				type: 'snackbar',
 				icon: <Icon icon={ linkOff } />,
@@ -456,7 +456,7 @@ export const TrafficBoostPreview = ( {
 
 		// Show a snackbar success message.
 		createSuccessNotice(
-			__( 'Link updated on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			__( 'Link updated', 'wp-parsely' ),
 			{
 				type: 'snackbar',
 				icon: <Icon icon={ linkIcon } />,
@@ -599,7 +599,6 @@ export const TrafficBoostPreview = ( {
 				onOpenParselyDashboard={ openParselyDashboard }
 				isFrontendPreview={ isFrontendPreview }
 				setIsFrontendPreview={ setIsFrontendPreview }
-				onRegeneratePressed={ handleRegenerate }
 			/>
 			<PreviewIframe
 				activeLink={ activeLink }
@@ -625,6 +624,7 @@ export const TrafficBoostPreview = ( {
 				onDiscard={ handleDiscard }
 				onUpdateLink={ handleUpdateLink }
 				onRemove={ handleRemove }
+				onRegeneratePressed={ handleRegenerate }
 				onRestoreOriginal={ () => {
 					setSelectedText( null );
 				} }

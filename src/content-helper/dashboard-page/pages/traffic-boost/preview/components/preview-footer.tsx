@@ -5,7 +5,7 @@ import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight } from '@wordpress/icons';
+import { arrowLeft, arrowRight, check, close, reusableBlock, undo } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -24,6 +24,7 @@ interface PreviewFooterProps {
 	activeLink: TrafficBoostLink | null;
 	onAccept: ( link: TrafficBoostLink ) => void;
 	onRemove: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
+	onRegeneratePressed: () => void;
 	onUpdateLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 	onDiscard: ( link: TrafficBoostLink ) => void;
 	onNext: () => void;
@@ -52,6 +53,7 @@ export const PreviewFooter = ( {
 	onPrevious,
 	onRemove,
 	onSelectIndex,
+	onRegeneratePressed,
 	totalItems,
 	itemIndex,
 	onRestoreOriginal,
@@ -71,6 +73,14 @@ export const PreviewFooter = ( {
 		isRemoving: activeLink ? select( TrafficBoostStore ).isRemoving( activeLink ) : false,
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
+
+	const regenerateButton = <Button
+		variant="tertiary"
+		icon={ reusableBlock }
+		iconSize={ 24 }
+		onClick={ onRegeneratePressed }
+		label={ __( 'Regenerate Suggested Link', 'wp-parsely' ) }
+	>{ __( 'Regenerate', 'wp-parsely' ) }</Button>;
 
 	if ( ! activeLink ) {
 		return <></>;
@@ -97,17 +107,21 @@ export const PreviewFooter = ( {
 								onClick={ () => onAccept( activeLink ) }
 								isBusy={ isAccepting }
 								disabled={ isAccepting }
+								icon={ isAccepting ? null : check }
 							>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
 							<Button
 								variant="tertiary"
 								onClick={ () => onDiscard( activeLink ) }
-							>{ __( 'Discard', 'wp-parsely' ) }</Button>
+								icon={ close }
+							>{ __( 'Reject', 'wp-parsely' ) }</Button>
+							{ regenerateButton }
 							{ selectedText && (
 								<>
 									<VerticalDivider size={ 36 } />
 									<Button
 										variant="tertiary"
 										onClick={ onRestoreOriginal }
+										icon={ undo }
 									>
 										{ __( 'Clear changes', 'wp-parsely' ) }
 									</Button>
@@ -125,7 +139,8 @@ export const PreviewFooter = ( {
 										onClick={ () => onUpdateLink( activeLink, restoreOriginal ) }
 										isBusy={ isAccepting }
 										disabled={ isAccepting }
-									>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+										icon={ isAccepting ? null : check }
+									>{ isAccepting ? __( 'Updating…', 'wp-parsely' ) : __( 'Update Link', 'wp-parsely' ) }</Button>
 									{ activeLink.smartLink?.is_link_replacement && (
 										<CheckboxControl
 											__nextHasNoMarginBottom
@@ -136,10 +151,12 @@ export const PreviewFooter = ( {
 											} }
 										/>
 									) }
+									{ regenerateButton }
 									<VerticalDivider size={ 36 } />
 									<Button
 										variant="tertiary"
 										onClick={ onRestoreOriginal }
+										icon={ undo }
 									>
 										{ __( 'Clear changes', 'wp-parsely' ) }
 									</Button>
@@ -147,12 +164,14 @@ export const PreviewFooter = ( {
 							) : (
 								<>
 									<Button
-										variant="tertiary"
+										variant={ isRemoving ? 'primary' : 'tertiary' }
+										icon={ isRemoving ? null : close }
 										onClick={ () => onRemove( activeLink, restoreOriginal ) }
 										isBusy={ isRemoving }
 										disabled={ isRemoving }
 										isDestructive
-									>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
+									>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove Link', 'wp-parsely' ) }</Button>
+									{ regenerateButton }
 									{ activeLink.smartLink?.is_link_replacement && (
 										<CheckboxControl
 											__nextHasNoMarginBottom
@@ -205,4 +224,3 @@ export const PreviewFooter = ( {
 		</div>
 	);
 };
-

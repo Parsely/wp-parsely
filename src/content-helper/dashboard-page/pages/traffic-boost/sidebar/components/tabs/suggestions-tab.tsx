@@ -4,7 +4,7 @@
 import { Button, Icon, PanelBody, PanelRow, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { error, update } from '@wordpress/icons';
+import { error, reusableBlock } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -80,7 +80,7 @@ const GenerateButton = ( {
 	handleGenerateSuggestions,
 }: GenerateButtonProps ): React.JSX.Element => (
 	<Button
-		icon={ update }
+		icon={ reusableBlock }
 		variant={ variant }
 		isBusy={ isGeneratingSuggestions }
 		disabled={ isGeneratingSuggestions }
@@ -243,7 +243,7 @@ const SuggestionsTab = ( {
 				__( 'Finished generating suggestions.', 'wp-parsely' ),
 				{
 					type: 'snackbar',
-					icon: <Icon icon={ update } />,
+					icon: <Icon icon={ reusableBlock } />,
 				}
 			);
 
