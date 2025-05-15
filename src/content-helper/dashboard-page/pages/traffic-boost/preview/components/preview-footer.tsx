@@ -164,7 +164,7 @@ export const PreviewFooter = ( {
 							) : (
 								<>
 									<Button
-										variant="tertiary"
+										variant={ isRemoving ? 'primary' : 'tertiary' }
 										icon={ isRemoving ? null : close }
 										onClick={ () => onRemove( activeLink, restoreOriginal ) }
 										isBusy={ isRemoving }
