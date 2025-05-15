@@ -76,7 +76,7 @@ export const AddNewLinkButton = ( {
 					isPressed={ isOpen }
 					disabled={ disabled }
 				>
-					{ __( 'Add', 'wp-parsely' ) }
+					{ __( 'Add Source Post', 'wp-parsely' ) }
 				</Button>
 			) }
 			popoverProps={ { placement: 'bottom-start' } }
