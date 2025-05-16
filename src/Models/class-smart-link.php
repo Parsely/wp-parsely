@@ -1258,7 +1258,7 @@ class Smart_Link extends Base_Model {
 	protected static function flush_cache_by_post_id( int $post_id ): void {
 		$cache_group = self::get_smart_links_post_cache_group( $post_id );
 
-		if ( function_exists( 'wp_cache_flush_group' ) ) {
+		if ( function_exists( 'wp_cache_flush_group' ) && wp_cache_supports( 'flush_group' ) ) {
 			wp_cache_flush_group( $cache_group );
 		} else {
 			$statuses = Smart_Link_Status::get_all_statuses();
