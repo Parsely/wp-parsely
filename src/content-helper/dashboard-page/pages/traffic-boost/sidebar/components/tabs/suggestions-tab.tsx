@@ -310,18 +310,11 @@ const SuggestionsTab = ( {
 				} }
 			>
 				{ ! isLoadingSuggestions && ! isGeneratingSuggestions && (
-					<>
-						<GenerateButton
-							variant="secondary"
-							isGeneratingSuggestions={ isGeneratingSuggestions }
-							handleGenerateSuggestions={ handleGenerateSuggestions }
-						/>
-						<AddNewLinkButton
-							disabled={ isGeneratingSuggestions }
-							suggestions={ suggestions }
-							onPostClick={ addTrafficBoostLink }
-						/>
-					</>
+					<AddNewLinkButton
+						disabled={ isGeneratingSuggestions }
+						suggestions={ suggestions }
+						onPostClick={ addTrafficBoostLink }
+					/>
 				) }
 				{ isGeneratingSuggestions && suggestions.length > 0 && (
 					<div className="traffic-boost-suggestions-generating-footer">

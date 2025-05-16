@@ -559,7 +559,7 @@ export const useIframeHighlight = ( {
 			}
 		} catch ( error ) {
 			// eslint-disable-next-line no-console
-			console.error( 'WP Parsely: Error highlighting smart link text', error );
+			console.error( 'WP Parsely: Error highlighting Smart Link text', error );
 		}
 	}, [ activeLink, highlightInboundLink, highlightLinkSuggestion, isInboundLink ] );
 

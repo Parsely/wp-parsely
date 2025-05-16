@@ -508,7 +508,7 @@ const SmartLinkingReviewModalComponent = ( {
 					className="wp-parsely-smart-linking-close-dialog"
 				>
 					{ __(
-						'Are you sure you want to close? All un-accepted smart links will not be added.',
+						'Are you sure you want to close? All un-accepted Smart Links will not be added.',
 						'wp-parsely',
 					) }
 					<div className="smart-linking-close-dialog-actions">
