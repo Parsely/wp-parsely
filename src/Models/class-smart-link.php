@@ -14,6 +14,7 @@ namespace Parsely\Models;
 use InvalidArgumentException;
 use Parsely\Parsely;
 use Parsely\Utils\Utils;
+use WP_Post;
 
 use const Parsely\PARSELY_CACHE_GROUP;
 
@@ -56,7 +57,7 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.19.0
 	 *
-	 * @var \WP_Post|null The source post.
+	 * @var WP_Post|null The source post.
 	 */
 	protected $source_post;
 
@@ -419,11 +420,12 @@ class Smart_Link extends Base_Model {
 		// Delete the post object.
 		$deleted = wp_delete_post( $this->smart_link_id, true );
 
-		if ( false !== $deleted && null !== $deleted && is_a( $deleted, 'WP_Post' ) ) {
+		if ( $deleted instanceof WP_Post ) {
 			$this->smart_link_id = 0;
 			$this->exists        = false;
 			$this->status        = null;
 			$this->flush_all_cache();
+
 			return true;
 		}
 
@@ -625,10 +627,10 @@ class Smart_Link extends Base_Model {
 	 * @since 3.19.0
 	 *
 	 * @see Smart_Link::set_source_post_id()
-	 * @param \WP_Post    $post The source post.
+	 * @param WP_Post     $post The source post.
 	 * @param string|null $canonical_url The canonical URL for the source post, to be set if it is not already set.
 	 */
-	public function set_source_post( \WP_Post $post, $canonical_url = null ): void {
+	public function set_source_post( WP_Post $post, $canonical_url = null ): void {
 		$this->source_post = $post;
 		$this->set_source_post_id( $post->ID, $canonical_url );
 	}
@@ -673,10 +675,10 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.19.0
 	 *
-	 * @param \WP_Post    $post The destination post.
+	 * @param WP_Post     $post The destination post.
 	 * @param string|null $canonical_url The canonical URL for the destination post, to be set if it is not already set.
 	 */
-	public function set_destination_post( \WP_Post $post, $canonical_url = null ): void {
+	public function set_destination_post( WP_Post $post, $canonical_url = null ): void {
 		$this->destination_post_id = $post->ID;
 		$this->href                = get_permalink( $post );
 
