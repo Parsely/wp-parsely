@@ -222,7 +222,7 @@ class Smart_Link extends Base_Model {
 				$cache_key,
 				$smart_links->posts[0],
 				PARSELY_CACHE_GROUP,
-				MONTH_IN_SECONDS
+				WEEK_IN_SECONDS
 			);
 			return $smart_links->posts[0];
 		}
@@ -361,7 +361,7 @@ class Smart_Link extends Base_Model {
 				self::get_uid_to_smart_link_cache_key( $this->uid ),
 				$post_id,
 				PARSELY_CACHE_GROUP,
-				MONTH_IN_SECONDS
+				WEEK_IN_SECONDS
 			);
 		}
 
@@ -961,7 +961,7 @@ class Smart_Link extends Base_Model {
 
 			// Cache the queried IDs.
 			$smart_link_ids = $smart_links_query->posts;
-			wp_cache_set( $cache_key, $smart_link_ids, $cache_group, MONTH_IN_SECONDS );
+			wp_cache_set( $cache_key, $smart_link_ids, $cache_group, DAY_IN_SECONDS );
 		}
 
 		// Create and process the smart links.
@@ -1163,7 +1163,7 @@ class Smart_Link extends Base_Model {
 			'outbound' => $outbound_links->found_posts,
 		);
 
-		wp_cache_set( $cache_key, $link_counts, $cache_group, MONTH_IN_SECONDS );
+		wp_cache_set( $cache_key, $link_counts, $cache_group, WEEK_IN_SECONDS );
 
 		return $link_counts;
 	}
