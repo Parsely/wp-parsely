@@ -71,6 +71,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	} = useDispatch( TrafficBoostStore );
 
 	const { createSuccessNotice, createErrorNotice } = useDispatch( 'core/notices' );
+	const isHardError = error instanceof ContentHelperError && ! error.retryFetch;
 
 	/**
 	 * Sets the background color of the page container to the background color of the admin menu.
@@ -221,12 +222,12 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	};
 
 	/**
-	 * Handles the error states and clears the error after the error is handled.
+	 * Displays a snackbar for any occurring soft errors.
 	 *
 	 * @since 3.19.0
 	 */
 	useEffect( () => {
-		if ( ! error ) {
+		if ( ! error || isHardError ) {
 			return;
 		}
 
@@ -240,7 +241,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		} );
 
 		setError( null );
-	}, [ error, createErrorNotice, setError ] );
+	}, [ error, createErrorNotice, setError, isHardError ] );
 
 	/**
 	 * Handles the accept event on a suggestion.
@@ -490,6 +491,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			</style>
 			<TrafficBoostSidebar
 				onLinkClick={ handleLinkClick }
+				hardError={ isHardError ? error : undefined }
 			/>
 			{ selectedLink && (
 				<TrafficBoostPreview

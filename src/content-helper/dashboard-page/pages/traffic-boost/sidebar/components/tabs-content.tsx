@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { ContentHelperError } from '../../../../../common/content-helper-error';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 import InboundLinksTab from './tabs/inbound-links-tab';
@@ -22,6 +23,7 @@ interface TabsContentProps {
 	activeTab: { name: string };
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 	onInboundLinkClick?: ( inboundLink: TrafficBoostLink ) => void;
+	hardError?: ContentHelperError;
 }
 
 /**
@@ -39,6 +41,7 @@ export const TabsContent = ( {
 	activeTab,
 	onSuggestionClick,
 	onInboundLinkClick,
+	hardError,
 }: TabsContentProps ): JSX.Element => {
 	const { selectedLink, selectedTab } = useSelect( ( select ) => ( {
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
@@ -68,6 +71,14 @@ export const TabsContent = ( {
 			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
 		}
 	}, [ selectedLink, setSelectedTab ] );
+
+	if ( hardError ) {
+		return (
+			<div className="traffic-boost-suggestions-empty-state">
+				{ hardError.Message() }
+			</div>
+		);
+	}
 
 	switch ( selectedTab ) {
 		case TrafficBoostSidebarTabs.SUGGESTIONS:

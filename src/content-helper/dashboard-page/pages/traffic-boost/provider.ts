@@ -271,7 +271,8 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				// If the error is an AbortError, we need to throw it.
 				if (
 					( error instanceof DOMException && error.name === 'AbortError' ) ||
-					( error instanceof ContentHelperError && error.code === ContentHelperErrorCode.ParselyAborted )
+					( error instanceof ContentHelperError && error.code === ContentHelperErrorCode.ParselyAborted ) ||
+					( error instanceof ContentHelperError && ! error.retryFetch )
 				) {
 					throw error;
 				}
