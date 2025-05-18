@@ -142,7 +142,8 @@ final class Dashboard_Page {
 	 * @since 3.19.0
 	 */
 	public function add_dashboard_page_to_menu(): void {
-		$show_traffic_boost_submenu = Permissions::current_user_can_use_pch_feature(
+		$show_traffic_boost_submenu = $this->parsely->api_secret_is_set() &&
+		Permissions::current_user_can_use_pch_feature(
 			'traffic_boost',
 			$this->parsely->get_options()['content_helper']
 		);
@@ -194,7 +195,8 @@ final class Dashboard_Page {
 		);
 
 		/**
-		 * Settings submenu is registered in add_settings_sub_menu() at src/UI/class-settings-page.php.
+		 * Settings submenu is registered in add_settings_sub_menu() at
+		 * src/UI/class-settings-page.php.
 		 *
 		 * @see Settings_Page::add_settings_sub_menu()
 		 */
