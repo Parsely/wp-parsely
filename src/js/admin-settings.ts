@@ -1,4 +1,19 @@
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import {
+	ContentHelperError,
+	ContentHelperErrorCode,
+} from '../content-helper/common/content-helper-error';
+import { CheckAuthProvider } from '../content-helper/common/providers/check-auth-provider';
+
 document.addEventListener( 'DOMContentLoaded', (): void => {
+	displayContentHelperSectionMessages();
 	addContentHelperTabEventHandlers();
 	setActiveTab();
 	window.addEventListener( 'hashchange', setActiveTab );
@@ -223,5 +238,56 @@ function addContentHelperTabEventHandlers(): void {
 						fieldset.removeAttribute( 'disabled' );
 					} );
 			} );
+	}
+}
+
+/**
+ * Displays any messages needed under the Content Helper section.
+ *
+ * @since 3.19.0
+ */
+async function displayContentHelperSectionMessages(): Promise<void> {
+	let message = null;
+	let authResponse = null;
+
+	try {
+		const [ apiAuth, trafficBoostAuth ] = await Promise.all( [
+			CheckAuthProvider.getInstance().getAuthorizationResponse(
+				{ auth_scope: 'suggestions_api' }
+			),
+			CheckAuthProvider.getInstance().getAuthorizationResponse(
+				{ auth_scope: 'traffic_boost' }
+			),
+		] );
+
+		authResponse = {
+			api: apiAuth,
+			traffic_boost: trafficBoostAuth,
+		};
+	} catch ( err: unknown ) {
+		console.error( err ); // eslint-disable-line no-console
+		if ( err instanceof ContentHelperError ) {
+			if ( ContentHelperErrorCode.PluginSettingsApiSecretNotSet === err.code ) {
+				message = __( '<p>All Content Helper AI functionality is disabled because An API Secret has not been set.</p>', 'wp-parsely' );
+			}
+		}
+	} finally {
+		if ( authResponse ) {
+			if ( 200 !== authResponse.api.code ) {
+				message = __( '<p>All Content Helper AI functionality is disabled for this website. To request access, see here.</p>', 'wp-parsely' );
+			} else if ( 200 === authResponse.api.code && 200 !== authResponse.traffic_boost.code ) {
+				message = __( '<p>Traffic Boost functionality is disabled for this website. To request access, see here</p>', 'wp-parsely' );
+			}
+		}
+
+		if ( message ) {
+			const div = document.createElement( 'div' );
+			div.className = 'content-helper-message';
+			div.innerHTML = message;
+			const contentHelperSection = document.querySelector( '.content-helper-section' );
+			if ( contentHelperSection ) {
+				contentHelperSection.insertBefore( div, contentHelperSection.firstChild );
+			}
+		}
 	}
 }
