@@ -1098,7 +1098,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		$query = new \WP_Query( $args );
 
-		wp_cache_set( $cache_key, $query->found_posts, PARSELY_CACHE_GROUP, MONTH_IN_SECONDS );
+		wp_cache_set( $cache_key, $query->found_posts, PARSELY_CACHE_GROUP, DAY_IN_SECONDS );
 
 		return $query->found_posts;
 	}
