@@ -168,7 +168,7 @@ final class Settings_Page {
 		wp_enqueue_media();
 
 		$admin_settings_asset = Utils::get_asset_info( 'build/admin-settings.asset.php' );
-		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
+		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
 			'parsely-admin-settings',
@@ -181,7 +181,7 @@ final class Settings_Page {
 		wp_enqueue_style(
 			'parsely-admin-settings',
 			$built_assets_url . 'admin-settings.css',
-			$admin_settings_asset['dependencies'],
+			array(),
 			$admin_settings_asset['version']
 		);
 	}
