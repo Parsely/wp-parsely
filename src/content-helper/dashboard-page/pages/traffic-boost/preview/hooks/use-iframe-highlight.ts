@@ -269,7 +269,7 @@ export const useIframeHighlight = ( {
 					? `${ className } previous-suggestion`
 					: className;
 
-				// Add ARIA attributes for accessibility
+				// Add ARIA attributes for accessibility.
 				highlightSpan.setAttribute( 'aria-label', highlightLabel );
 				highlightSpan.setAttribute( 'role', 'mark' );
 
