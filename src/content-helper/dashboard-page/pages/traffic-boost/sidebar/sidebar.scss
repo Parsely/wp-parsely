@@ -225,5 +225,9 @@
 		&.no-results {
 			text-align: left;
 		}
+
+		tr {
+			cursor: pointer;
+		}
 	}
 }
