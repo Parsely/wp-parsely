@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-
+import { __, sprintf } from '@wordpress/i18n';
+import { escapeHTML } from '@wordpress/escape-html';
 /**
  * Internal dependencies
  */
@@ -268,21 +268,27 @@ async function displayContentHelperSectionMessages(): Promise<void> {
 		console.error( err ); // eslint-disable-line no-console
 		if ( err instanceof ContentHelperError ) {
 			if ( ContentHelperErrorCode.PluginSettingsApiSecretNotSet === err.code ) {
-				message = __( '<p>All Content Helper AI functionality is disabled because An API Secret has not been set.</p>', 'wp-parsely' );
+				message = sprintf( '<p><strong>%s</strong></p>', escapeHTML( __( 'All Content Helper AI functionality is disabled because an API Secret has not been set.', 'wp-parsely' ) ) );
 			}
 		}
 	} finally {
 		if ( authResponse ) {
 			if ( 200 !== authResponse.api.code ) {
-				message = __( '<p>All Content Helper AI functionality is disabled for this website. To request access, see here.</p>', 'wp-parsely' );
+				const requestAccessLink = sprintf( '<a href="%1$s">%2$s</a>', 'https://wpvip.com/content-helper/#content-helper-form', __( 'Request access here', 'wp-parsely' ) );
+				/* translators: %s: Link to request access to Content Helper AI functionality. */
+				const messageWithAccessLink = sprintf( escapeHTML( __( 'All Content Helper AI functionality is disabled for this website. %s.', 'wp-parsely' ) ), requestAccessLink );
+				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
 			} else if ( 200 === authResponse.api.code && 200 !== authResponse.traffic_boost.code ) {
-				message = __( '<p>Traffic Boost functionality is disabled for this website. To request access, see here</p>', 'wp-parsely' );
+				const contactSupportLink = sprintf( '<a href="%1$s">%2$s</a>', 'mailto:support@parsely.com', 'support@parsely.com' );
+				/* translators: %s: Link to request access to Content Helper AI functionality. */
+				const messageWithAccessLink = sprintf( escapeHTML( __( 'Traffic Boost functionality is disabled for this website. To enable it, contact %s.', 'wp-parsely' ) ), contactSupportLink );
+				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
 			}
 		}
 
 		if ( message ) {
 			const div = document.createElement( 'div' );
-			div.className = 'content-helper-message';
+			div.className = 'content-helper-message notice notice-error';
 			div.innerHTML = message;
 			const contentHelperSection = document.querySelector( '.content-helper-section' );
 			if ( contentHelperSection ) {
