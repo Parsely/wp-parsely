@@ -541,7 +541,7 @@ export const useIframeHighlight = ( {
 			}
 
 			// If no selected text or selection range not found, just highlight the link.
-			highlightRange( originalRange, 'smart-link-highlight', __( 'Inbound link', 'wp-parsely' ) );
+			highlightRange( originalRange, 'smart-link-highlight', __( 'Inbound link', 'wp-parsely' ), !! selectedText );
 		} else if ( activeLink?.smartLink?.text ) {
 			// If we can't find the link with the smart link id, highlight the link with the smart link text.
 			highlightLinkSuggestion( iframeDocument, activeLink.smartLink.text, activeLink.smartLink.offset ?? 0 );
