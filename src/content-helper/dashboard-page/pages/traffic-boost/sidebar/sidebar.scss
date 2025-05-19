@@ -195,6 +195,14 @@
 						color: var(--gray-900);
 					}
 				}
+
+				.suggestions-tab {
+					order: 1;
+				}
+
+				.inbound-links-tab {
+					order: 2;
+				}
 			}
 		}
 	}
