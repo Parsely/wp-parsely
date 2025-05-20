@@ -276,7 +276,7 @@ async function displayContentHelperSectionMessages(): Promise<void> {
 	} finally {
 		if ( authResponse ) {
 			if ( 200 !== authResponse.api.code ) {
-				const requestAccessLink = sprintf( '<a href="%1$s">%2$s</a>', 'https://wpvip.com/content-helper/#content-helper-form', __( 'Request access here', 'wp-parsely' ) );
+				const requestAccessLink = sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', 'https://wpvip.com/content-helper/#content-helper-form', __( 'Request access here', 'wp-parsely' ) );
 				/* translators: %s: Link to request access to Content Helper AI functionality. */
 				const messageWithAccessLink = sprintf( escapeHTML( __( 'All Content Helper AI functionality is disabled for this website. %s.', 'wp-parsely' ) ), requestAccessLink );
 				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
