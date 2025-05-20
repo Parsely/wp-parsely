@@ -3,7 +3,8 @@
  */
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { escapeHTML } from '@wordpress/escape-html';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -77,12 +78,31 @@ export const TabsContent = ( {
 		let errorMessage = hardError.Message();
 
 		if ( ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization === hardError.code ) {
-			errorMessage =
-				<ContentHelperErrorMessage>
-					{ __(
-						'<p><a href="https://lobby.vip.wordpress.com/2025/05/19/introducing-traffic-boost-a-smarter-way-to-recirculate-your-content/" target="_blank" rel="noopener">Traffic Boost</a> is currently not enabled for your Site ID.</p><p>Information about requesting access to Traffic Boost can be found <a href="https://docs.wpvip.com/parse-ly/wp-parsely-features/traffic-boost/#Access" target="_blank" rel="noopener">here</a>.</p>', 'wp-parsely'
-					) }
-				</ContentHelperErrorMessage>;
+			const lobbyLink = sprintf(
+				'<a href="%1$s" target="_blank" rel="noopener">%2$s</a>',
+				'https://lobby.vip.wordpress.com/2025/05/19/introducing-traffic-boost-a-smarter-way-to-recirculate-your-content/',
+				__( 'Traffic Boost', 'wp-parsely' )
+			);
+
+			const docsLink = sprintf(
+				'<a href="%1$s" target="_blank" rel="noopener">%2$s</a>',
+				'https://docs.wpvip.com/parse-ly/wp-parsely-features/traffic-boost/#Access',
+				__( 'here', 'wp-parsely' )
+			);
+
+			const message = sprintf(
+				escapeHTML(
+					/* translators: %1$s: Lobby Post link, %2$s: VIP Documentation link */
+					__(
+						'%1$s is currently not enabled for your Site ID. Information about requesting access to Traffic Boost can be found %2$s.',
+						'wp-parsely'
+					)
+				),
+				lobbyLink,
+				docsLink
+			);
+
+			errorMessage = <ContentHelperErrorMessage children={ message } />;
 		}
 
 		return (
