@@ -8,7 +8,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ContentHelperError } from '../../../../../common/content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../../common/content-helper-error';
+import { ContentHelperErrorMessage } from '../../../../../common/content-helper-error-message';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 import InboundLinksTab from './tabs/inbound-links-tab';
@@ -73,9 +74,20 @@ export const TabsContent = ( {
 	}, [ selectedLink, setSelectedTab ] );
 
 	if ( hardError ) {
+		let errorMessage = hardError.Message();
+
+		if ( ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization === hardError.code ) {
+			errorMessage =
+				<ContentHelperErrorMessage>
+					{ __(
+						'<p><a href="https://lobby.vip.wordpress.com/2025/05/19/introducing-traffic-boost-a-smarter-way-to-recirculate-your-content/" target="_blank" rel="noopener">Traffic Boost</a> is currently not enabled for your Site ID.</p><p>Information about requesting access to Traffic Boost can be found <a href="https://docs.wpvip.com/parse-ly/wp-parsely-features/traffic-boost/#Access" target="_blank" rel="noopener">here</a>.</p>', 'wp-parsely'
+					) }
+				</ContentHelperErrorMessage>;
+		}
+
 		return (
 			<div className="traffic-boost-suggestions-empty-state">
-				{ hardError.Message() }
+				{ errorMessage }
 			</div>
 		);
 	}
