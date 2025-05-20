@@ -72,6 +72,7 @@ use const Parsely\PARSELY_FILE;
  *   smart_linking?: Parsely_Settings_Options_Content_Helper_Feature,
  *   title_suggestions?: Parsely_Settings_Options_Content_Helper_Feature,
  *   excerpt_suggestions?: Parsely_Settings_Options_Content_Helper_Feature,
+ *   traffic_boost?: Parsely_Settings_Options_Content_Helper_Feature,
  * }
  *
  * @phpstan-type Parsely_Settings_Options_Content_Helper_Feature array{
@@ -118,6 +119,7 @@ final class Settings_Page {
 		'smart_linking',
 		'title_suggestions',
 		'excerpt_suggestions',
+		'traffic_boost',
 	);
 
 	/**
@@ -158,7 +160,7 @@ final class Settings_Page {
 	 * @param string|null $hook_suffix The current page being loaded.
 	 */
 	public function enqueue_settings_assets( ?string $hook_suffix ): void {
-		if ( ! is_string( $hook_suffix ) || 'settings_page_parsely' !== $hook_suffix ) {
+		if ( ! is_string( $hook_suffix ) || $this->hook_suffix !== $hook_suffix ) {
 			return;
 		}
 
@@ -166,7 +168,7 @@ final class Settings_Page {
 		wp_enqueue_media();
 
 		$admin_settings_asset = Utils::get_asset_info( 'build/admin-settings.asset.php' );
-		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
+		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
 			'parsely-admin-settings',
@@ -179,7 +181,7 @@ final class Settings_Page {
 		wp_enqueue_style(
 			'parsely-admin-settings',
 			$built_assets_url . 'admin-settings.css',
-			$admin_settings_asset['dependencies'],
+			array(),
 			$admin_settings_asset['version']
 		);
 	}
@@ -188,9 +190,10 @@ final class Settings_Page {
 	 * Adds the Parse.ly settings page in WordPress settings menu.
 	 */
 	public function add_settings_sub_menu(): void {
-		$suffix = add_options_page(
+		$suffix = add_submenu_page(
+			'parsely-dashboard-page',
 			__( 'Parse.ly Settings', 'wp-parsely' ),
-			__( 'Parse.ly', 'wp-parsely' ),
+			__( 'Settings', 'wp-parsely' ),
 			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			Parsely::MENU_SLUG,
 			array( $this, 'display_settings' )
@@ -226,7 +229,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Displays the Parse.ly settings screen (options-general.php?page=[SLUG]).
+	 * Displays the Parse.ly settings screen (admin.php?page=[SLUG]).
 	 */
 	public function display_settings(): void {
 		// phpcs:ignore WordPress.WP.Capabilities.Undetermined
@@ -501,6 +504,22 @@ final class Settings_Page {
 		add_settings_field(
 			$field_id,
 			__( 'Excerpt Suggestions', 'wp-parsely' ),
+			array( $this, 'print_content_helper_ai_feature_section' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
+
+		// Traffic Boost.
+		$field_id   = 'content_helper[traffic_boost]';
+		$field_args = array(
+			'option_key' => $field_id,
+			'label_for'  => $field_id,
+			'legend'     => __( 'Traffic Boost (beta)', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Traffic Boost (beta)', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,

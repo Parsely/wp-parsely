@@ -85,8 +85,6 @@ type DataPointProps = {
  * @since 3.14.0
  *
  * @param {DataPointProps} props The component's props.
- *
- * @return {JSX.Element | null} The DataPoint JSX Element, or null if it's not visible.
  */
 const DataPoint = (
 	{ title, value, icon, smallText, isVisible = true }: Readonly<DataPointProps>

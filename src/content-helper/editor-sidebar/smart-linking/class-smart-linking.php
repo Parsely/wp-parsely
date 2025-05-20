@@ -65,16 +65,13 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 	 * @since 3.16.0
 	 */
 	public function run(): void {
-		if ( ! $this->can_enable_feature() ) {
-			return;
-		}
-
 		// Register private custom post type for the Smart Links.
 		$this->register_post_type();
 
 		// Register the taxonomies for the Smart Links.
 		$this->register_taxonomy( 'smart_link_source', __( 'Smart Link Source', 'wp-parsely' ) );
 		$this->register_taxonomy( 'smart_link_destination', __( 'Smart Link Destination', 'wp-parsely' ) );
+		$this->register_taxonomy( 'smart_link_status', __( 'Smart Link Status', 'wp-parsely' ) );
 	}
 
 	/**
@@ -91,7 +88,7 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 					'singular_name' => __( 'Smart Link', 'wp-parsely' ),
 				),
 				'supports'        => array( 'title', 'custom-fields' ),
-				'taxonomies'      => array( 'smart_link_source', 'smart_link_destination' ),
+				'taxonomies'      => array( 'smart_link_source', 'smart_link_destination', 'smart_link_status' ),
 				'hierarchical'    => false,
 				'public'          => false,
 				'show_ui'         => false,
@@ -136,6 +133,7 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 				),
 			)
 		);
+		register_taxonomy_for_object_type( $taxonomy, 'parsely_smart_link' );
 	}
 
 	/**
@@ -204,5 +202,6 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 		// Remove any source and destination terms that have the post ID.
 		wp_delete_term( $post_id, 'smart_link_source' );
 		wp_delete_term( $post_id, 'smart_link_destination' );
+		wp_delete_term( $post_id, 'smart_link_status' );
 	}
 }

@@ -53,6 +53,7 @@ use WP_Post;
  *   smart_linking: Parsely_Options_Content_Helper_Feature,
  *   title_suggestions: Parsely_Options_Content_Helper_Feature,
  *   excerpt_suggestions: Parsely_Options_Content_Helper_Feature,
+ *   traffic_boost: Parsely_Options_Content_Helper_Feature,
  * }
  *
  * @phpstan-type Parsely_Options_Content_Helper_Feature array{
@@ -76,10 +77,12 @@ class Parsely {
 	 * Declare our constants
 	 */
 	public const VERSION            = PARSELY_VERSION;
-	public const MENU_SLUG          = 'parsely'; // The page param passed to options-general.php.
+	public const MENU_SLUG          = 'parsely-settings'; // The page param passed to admin.php.
 	public const OPTIONS_KEY        = 'parsely'; // The key used to store options in the WP database.
 	public const CAPABILITY         = 'manage_options'; // The capability required to administer settings.
 	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
+
+	private const PARSELY_CANONICAL_URL_META_KEY = '_parsely_canonical_url';
 
 	/**
 	 * The Content API service.
@@ -125,6 +128,10 @@ class Parsely {
 				'allowed_user_roles' => array( 'administrator' ),
 			),
 			'excerpt_suggestions' => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array( 'administrator' ),
+			),
+			'traffic_boost'       => array(
 				'enabled'            => true,
 				'allowed_user_roles' => array( 'administrator' ),
 			),
@@ -548,16 +555,37 @@ class Parsely {
 		 */
 		$options = get_option( self::OPTIONS_KEY, null );
 
-		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
+		// Existing plugin installation without full metadata option.
+		/* @phpstan-ignore isset.offset, booleanAnd.alwaysFalse */
 		if ( is_array( $options ) && ! isset( $options['full_metadata_in_non_posts'] ) ) {
-			// Existing plugin installation without full metadata option.
 			$this->set_default_full_metadata_in_non_posts();
 		}
 
-		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
+		// Existing plugin installation without Content Helper options.
+		/* @phpstan-ignore isset.offset, booleanAnd.alwaysFalse */
 		if ( is_array( $options ) && ! isset( $options['content_helper'] ) ) {
-			// Existing plugin installation without Content Helper options.
 			$this->set_default_content_helper_settings_values();
+		}
+
+		// Existing plugin installation that's missing a Content Helper feature option.
+		/* @phpstan-ignore isset.offset */
+		if ( is_array( $options ) && isset( $options['content_helper'] ) ) {
+			/** @var array<string,Parsely_Options_Content_Helper_Feature> $pch_options */
+			$pch_options = $options['content_helper'];
+
+			/** @var array<string,Parsely_Options_Content_Helper_Feature> $pch_options_defaults */
+			$pch_options_defaults = $this->option_defaults['content_helper'];
+
+			if ( count( $pch_options ) !== count( $pch_options_defaults ) ) {
+				$new_keys = array_diff(
+					array_keys( $pch_options_defaults ),
+					array_keys( $pch_options )
+				);
+
+				foreach ( $new_keys as $key ) {
+					$options['content_helper'][ $key ] = $pch_options_defaults[ $key ];
+				}
+			}
 		}
 
 		// New plugin installation that hasn't saved its options yet.
@@ -680,7 +708,7 @@ class Parsely {
 	 * @return string
 	 */
 	public static function get_settings_url( ?int $_blog_id = null ): string {
-		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
+		return get_admin_url( $_blog_id, 'admin.php?page=' . self::MENU_SLUG );
 	}
 
 	/**
@@ -967,6 +995,77 @@ class Parsely {
 	}
 
 	/**
+	 * Gets the Parse.ly canonical URL for a given post.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param WP_Post|int $post The post ID or post object.
+	 * @return string The Parse.ly canonical URL.
+	 */
+	public static function get_canonical_url_from_post( $post ): string {
+		$post_id       = is_int( $post ) ? $post : $post->ID;
+		$canonical_url = get_post_meta( $post_id, self::PARSELY_CANONICAL_URL_META_KEY, true );
+
+		if ( null !== $canonical_url && is_string( $canonical_url ) && '' !== $canonical_url ) {
+			return $canonical_url;
+		}
+
+		$permalink = get_permalink( $post );
+
+		if ( false === $permalink ) {
+			return 'no permalink';
+		}
+
+		return self::get_canonical_url( $permalink );
+	}
+
+	/**
+	 * Gets the canonical URL for a given URL.
+	 *
+	 * If the current domain is different from the Parse.ly site ID, this function
+	 * will return the URL with the current domain.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param string $url The URL to get the canonical URL for.
+	 * @return string The canonical URL.
+	 */
+	public static function get_canonical_url( string $url ): string {
+		$parsely = \Parsely\get_parsely();
+		$site_id = $parsely->get_site_id();
+
+		if ( wp_parse_url( $url, PHP_URL_HOST ) === $site_id ) {
+			return $url;
+		}
+
+		$home_url = home_url();
+
+		// Strip the protocol from the home URL.
+		$home_url = preg_replace( '/^https?:\/\//', '', $home_url );
+
+		if ( null === $home_url ) {
+			return $url;
+		}
+
+		// Replace the current domain with the Parse.ly site ID.
+		return str_replace( $home_url, $site_id, $url );
+	}
+
+	/**
+	 * Sets the Parse.ly canonical URL for a post.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param WP_Post|int $post The post object or post ID.
+	 * @param string      $url The canonical URL.
+	 * @return bool True if the canonical URL was set, false otherwise.
+	 */
+	public static function set_canonical_url( $post, string $url ): bool {
+		$post_id = is_int( $post ) ? $post : $post->ID;
+		return false !== update_post_meta( $post_id, self::PARSELY_CANONICAL_URL_META_KEY, $url );
+	}
+
+	/**
 	 * Sanitizes the value of the passed managed option.
 	 *
 	 * @since 3.9.0
@@ -1058,7 +1157,7 @@ class Parsely {
 
 		add_filter(
 			'http_request_host_is_external',
-			function ( $external, $host, $url ) use ( $allowed_urls ) {
+			function ( bool $external, string $host, string $url ) use ( $allowed_urls ) {
 				// Check if the URL matches any URLs on the allowed list.
 				foreach ( $allowed_urls as $allowed_url ) {
 					if ( Utils::str_starts_with( $url, $allowed_url ) ) {

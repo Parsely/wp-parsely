@@ -27,7 +27,7 @@ export const VALID_API_SECRET = 'valid_api_secret';
 export const setSiteKeys = async (
 	page: Page, siteId: string, apiSecret: string, bypassAPIValidation: boolean = true
 ): Promise<void> => {
-	await page.goto( 'wp-admin/options-general.php?page=parsely' + ( bypassAPIValidation ? '&e2e_parsely_skip_api_validate=y' : '' ) );
+	await page.goto( 'wp-admin/admin.php?page=parsely-settings' + ( bypassAPIValidation ? '&e2e_parsely_skip_api_validate=y' : '' ) );
 
 	await page.getByLabel( 'Site ID (required)' ).fill( siteId );
 	await page.getByLabel( 'API Secret' ).fill( apiSecret );

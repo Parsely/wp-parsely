@@ -183,7 +183,7 @@ final class Recommended_Widget extends WP_Widget {
 	 */
 	public function form( $current_settings ): string {
 		if ( ! $this->site_id_and_secret_are_populated() ) {
-			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
+			$settings_page_url = add_query_arg( 'page', 'parsely-settings', get_admin_url() . 'admin.php' );
 
 			$message = sprintf(
 				/* translators: %s: Plugin settings page URL */

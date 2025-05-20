@@ -51,7 +51,7 @@ add_action(
 			),
 			// Setting events.
 			array(
-				'action_hook' => 'load-settings_page_parsely',
+				'action_hook' => 'load-parse-ly_page_parsely-settings',
 				'callable'    => 'Parsely\Telemetry\record_settings_page_loaded',
 			),
 			array(
@@ -67,10 +67,10 @@ add_action(
 
 // Attempt to enable the Pendo JavaScript library. It's up to the Pendo class to
 // decide whether the library will be enabled.
-if ( class_exists( 'Automattic\VIP\Telemetry\Pendo' ) ) {
+if ( class_exists( '\Automattic\VIP\Telemetry\Pendo' ) ) {
 	add_action(
 		'admin_init',
 		// @phpstan-ignore argument.type
-		array( Automattic\VIP\Telemetry\Pendo::class, 'enable_javascript_library' )
+		array( \Automattic\VIP\Telemetry\Pendo::class, 'enable_javascript_library' )
 	);
 }
