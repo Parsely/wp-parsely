@@ -6,7 +6,7 @@ import { ContentHelperError, ContentHelperErrorCode } from '../content-helper-er
 import { BaseProvider } from './base-provider';
 
 /**
- * Type definition for the Authorization request parameters.
+ * Type definition for the authorization request parameters.
  *
  * @since 3.19.0
  */
@@ -15,7 +15,7 @@ interface AuthRequestParams {
 }
 
 /**
- * Type definition for the Authorization request parameters.
+ * Type definition for the authorization request's response.
  *
  * @since 3.19.0
  */

@@ -267,6 +267,7 @@ async function displayContentHelperSectionMessages(): Promise<void> {
 		};
 	} catch ( err: unknown ) {
 		console.error( err ); // eslint-disable-line no-console
+
 		if ( err instanceof ContentHelperError ) {
 			if ( ContentHelperErrorCode.PluginSettingsApiSecretNotSet === err.code ) {
 				message = sprintf( '<p><strong>%s</strong></p>', escapeHTML( __( 'All Content Helper AI functionality is disabled because an API Secret has not been set.', 'wp-parsely' ) ) );
