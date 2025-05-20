@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import type { ForwardedRef } from 'react';
+import type { ForwardedRef, KeyboardEvent } from 'react';
 
 /**
  * WordPress Dependencies
@@ -49,6 +49,20 @@ export const SingleLinkComponent = (
 		onClick?.( suggestion );
 	};
 
+	/**
+	 * Handles the keydown event for the single link.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param {KeyboardEvent<HTMLDivElement>} e The keyboard event.
+	 */
+	const handleKeyDown = ( e: KeyboardEvent<HTMLDivElement> ) => {
+		if ( e.key === 'Enter' || e.key === ' ' ) {
+			e.preventDefault();
+			onClickHandler();
+		}
+	};
+
 	return (
 		<div
 			className={ `traffic-boost-single-link ${ isActive ? 'active' : '' }` }
@@ -57,12 +71,7 @@ export const SingleLinkComponent = (
 				e.preventDefault();
 				onClickHandler();
 			} }
-			onKeyDown={ ( e ) => {
-				e.preventDefault();
-				if ( e.key === 'Enter' || e.key === ' ' ) {
-					onClickHandler();
-				}
-			} }
+			onKeyDown={ handleKeyDown }
 			role="button"
 			tabIndex={ 0 }
 			aria-label={ sprintf(

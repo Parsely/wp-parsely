@@ -86,8 +86,7 @@ export class ContentHelperError extends Error {
 			ContentHelperErrorCode.PostIsNotPublished,
 			ContentHelperErrorCode.UnknownError,
 
-			// Don't perform any fetch retries for the Suggestions API due to
-			// its time-consuming operations.
+			// Suggestions API errors.
 			ContentHelperErrorCode.ParselySuggestionsApiAuthUnavailable,
 			ContentHelperErrorCode.ParselySuggestionsApiNoAuthentication,
 			ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization,

@@ -2,6 +2,7 @@
  * WordPress imports
  */
 import { useCallback } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal imports
@@ -247,14 +248,15 @@ export const useIframeHighlight = ( {
 	 *
 	 * @since 3.19.0
 	 *
-	 * @param {Range}   range      The range to highlight.
-	 * @param {string}  className  The class name to apply to the highlight span.
-	 * @param {boolean} isPrevious Whether this is a previous suggestion (optional).
+	 * @param {Range}   range          The range to highlight.
+	 * @param {string}  className      The class name to apply to the highlight span.
+	 * @param {string}  highlightLabel The label to display with the highlight for screen readers.
+	 * @param {boolean} isPrevious     Whether this is a previous suggestion (optional).
 	 *
 	 * @return {Element|undefined} The highlight span element.
 	 */
 	const highlightRange = useCallback(
-		( range: Range, className: string, isPrevious: boolean = false ): Element | undefined => {
+		( range: Range, className: string, highlightLabel: string, isPrevious: boolean = false ): Element | undefined => {
 			try {
 				const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
 				if ( ! iframeDocument ) {
@@ -266,6 +268,14 @@ export const useIframeHighlight = ( {
 				highlightSpan.className = isPrevious
 					? `${ className } previous-suggestion`
 					: className;
+
+				// Add ARIA attributes for accessibility.
+				highlightSpan.setAttribute( 'aria-label', highlightLabel );
+				highlightSpan.setAttribute( 'role', 'mark' );
+
+				if ( isPrevious ) {
+					highlightSpan.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
+				}
 
 				// Find if the range is within a link and if it encompasses the entire link text.
 				const container = range.commonAncestorContainer as Element;
@@ -427,6 +437,7 @@ export const useIframeHighlight = ( {
 		);
 
 		let selectionHighlight: Element | undefined;
+		const highlightLabel = __( 'Suggested link', 'wp-parsely' );
 
 		// If the ranges overlap, highlight the original suggestion text before
 		// and/or after the selected text.
@@ -435,7 +446,7 @@ export const useIframeHighlight = ( {
 			if ( originalRange.compareBoundaryPoints( Range.START_TO_START, selectionRange ) < 0 ) {
 				const beforeRange = originalRange.cloneRange();
 				beforeRange.setEnd( selectionRange.startContainer, selectionRange.startOffset );
-				highlightRange( beforeRange, className, true );
+				highlightRange( beforeRange, className, highlightLabel, true );
 
 				// Adjust the selection range to start after the before range.
 				selectionRange.setStart( beforeRange.endContainer, beforeRange.endOffset );
@@ -445,15 +456,15 @@ export const useIframeHighlight = ( {
 			if ( originalRange.compareBoundaryPoints( Range.END_TO_END, selectionRange ) > 0 ) {
 				const afterRange = originalRange.cloneRange();
 				afterRange.setStart( selectionRange.endContainer, selectionRange.endOffset );
-				highlightRange( afterRange, className, true );
+				highlightRange( afterRange, className, highlightLabel, true );
 			}
 
 			// Highlight the selection range.
-			selectionHighlight = highlightRange( selectionRange, className );
+			selectionHighlight = highlightRange( selectionRange, className, highlightLabel );
 		} else {
 			// Handle non-overlapping ranges.
-			highlightRange( originalRange, className, true );
-			selectionHighlight = highlightRange( selectionRange, className );
+			highlightRange( originalRange, className, highlightLabel, true );
+			selectionHighlight = highlightRange( selectionRange, className, highlightLabel );
 		}
 
 		return selectionHighlight;
@@ -482,7 +493,7 @@ export const useIframeHighlight = ( {
 
 		// If there's no selected text, highlight the original suggestion text.
 		if ( ! selectedText?.text ) {
-			highlightRange( originalRange, 'smart-link-highlight' );
+			highlightRange( originalRange, 'smart-link-highlight', __( 'Suggested link', 'wp-parsely' ) );
 			return;
 		}
 
@@ -530,7 +541,7 @@ export const useIframeHighlight = ( {
 			}
 
 			// If no selected text or selection range not found, just highlight the link.
-			highlightRange( originalRange, 'smart-link-highlight', !! selectedText );
+			highlightRange( originalRange, 'smart-link-highlight', __( 'Inbound link', 'wp-parsely' ), !! selectedText );
 		} else if ( activeLink?.smartLink?.text ) {
 			// If we can't find the link with the smart link id, highlight the link with the smart link text.
 			highlightLinkSuggestion( iframeDocument, activeLink.smartLink.text, activeLink.smartLink.offset ?? 0 );
@@ -590,16 +601,20 @@ export const useIframeHighlight = ( {
 
 		// Filter out links that don't have text.
 		links = links.filter( ( link ) => link.textContent?.trim() !== '' );
+		let linkLabel = __( 'Highlighted link', 'wp-parsely' );
 
 		switch ( selectedLinkType ) {
 			case 'external':
 				links = links.filter( ( link ) => ! link.href.includes( siteUrl ) );
+				linkLabel = __( 'External link', 'wp-parsely' );
 				break;
 			case 'internal':
 				links = links.filter( ( link ) => link.href.includes( siteUrl ) );
+				linkLabel = __( 'Internal link', 'wp-parsely' );
 				break;
 			case 'smart':
 				links = links.filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
+				linkLabel = __( 'Smart Link', 'wp-parsely' );
 				break;
 		}
 
@@ -610,7 +625,7 @@ export const useIframeHighlight = ( {
 		links.forEach( ( link ) => {
 			const selectionRange = iframeDocument.createRange();
 			selectionRange.selectNode( link );
-			highlightRange( selectionRange, 'link-type-highlight' );
+			highlightRange( selectionRange, 'link-type-highlight', linkLabel );
 		} );
 	}, [ activeLink, contentAreaRef, highlightRange, removeHighlights ] );
 

@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { ContentHelperError } from '../../../../common/content-helper-error';
 import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { SidebarHeader } from './components/header';
@@ -27,6 +28,7 @@ import './sidebar.scss';
  */
 interface TrafficBoostSidebarProps {
     onLinkClick?: ( link: TrafficBoostLink ) => void;
+	hardError?: ContentHelperError;
 }
 
 /**
@@ -38,7 +40,7 @@ interface TrafficBoostSidebarProps {
  * @param {TrafficBoostSidebarProps} props The component's props.
  */
 export const TrafficBoostSidebar = ( {
-	onLinkClick,
+	onLinkClick, hardError,
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
@@ -136,6 +138,7 @@ export const TrafficBoostSidebar = ( {
 						activeTab={ tab }
 						onSuggestionClick={ onLinkClick }
 						onInboundLinkClick={ onLinkClick }
+						hardError={ hardError }
 					/> }
 				</TabPanel>
 			</div>
