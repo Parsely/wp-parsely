@@ -64,8 +64,9 @@ class Endpoint_Check_Auth extends Suggestions_API_Base_Endpoint {
 		$request_url = $this->get_endpoint_url( $query_args );
 
 		// Build the request options.
-		$request_options         = $this->get_request_options( $method );
-		$request_options['body'] = array(); // Set to '{}' in the parent class.
+		$request_options = $this->get_request_options( $method );
+		// Set the body to an empty array, as leaving it to '{}' causes errors.
+		$request_options['body'] = array();
 
 		/** @var WP_HTTP_Response|WP_Error $response */
 		$response = wp_safe_remote_request( $request_url, $request_options );
