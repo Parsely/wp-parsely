@@ -16,6 +16,9 @@ import {
 /**
  * Internal dependencies
  */
+import {
+	ContentHelperError, ContentHelperErrorCode,
+} from '../../../common/content-helper-error';
 import { HydratedPost, QueryParams } from '../../../common/providers/base-wordpress-provider';
 import { PostStats, StatsProvider } from '../../../common/providers/stats-provider';
 import { DashboardProvider } from '../../provider';
@@ -135,6 +138,9 @@ export const PostsTable = ( {
 
 	const [ isLoading, setIsLoading ] = useState<boolean>( true );
 	const [ isLoadingStats, setIsLoadingStats ] = useState<boolean>( true );
+
+	const [ error, setError ] = useState<ContentHelperError>();
+
 	const didFirstSearch = useRef( false );
 
 	/**
@@ -169,8 +175,19 @@ export const PostsTable = ( {
 				setPosts( fetchedPosts.data );
 				setTotalPages( fetchedPosts.total_pages );
 				didFirstSearch.current = true;
-			} catch ( error ) {
-				console.error( error ); // eslint-disable-line no-console
+			} catch ( fetchError: unknown ) {
+				console.error( fetchError ); // eslint-disable-line no-console
+
+				if ( fetchError instanceof ContentHelperError ) {
+					setError( fetchError );
+				}
+
+				if ( fetchError instanceof Error ) {
+					setError( new ContentHelperError(
+						fetchError.message,
+						ContentHelperErrorCode.UnknownError )
+					);
+				}
 			} finally {
 				setIsLoading( false );
 				setIsLoadingStats( false );
@@ -207,8 +224,8 @@ export const PostsTable = ( {
 			} );
 
 			setStats( ( prevStats ) => [ ...prevStats, fetchedStats[ 0 ] ] );
-		} catch ( error ) {
-			console.error( error ); // eslint-disable-line no-console
+		} catch ( fetchError ) {
+			console.error( fetchError ); // eslint-disable-line no-console
 		}
 	}, [] );
 
@@ -258,6 +275,14 @@ export const PostsTable = ( {
 		return (
 			<div className={ tableClasses.join( ' ' ) }>
 				<Spinner />
+			</div>
+		);
+	}
+
+	if ( error && error.code !== ContentHelperErrorCode.ParselyApiReturnedNoData ) {
+		return (
+			<div className="parsely-table-container no-results">
+				{ error.Message() }
 			</div>
 		);
 	}
