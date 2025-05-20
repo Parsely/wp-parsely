@@ -104,13 +104,28 @@ export class StatsProvider extends BaseProvider {
 	 * @return {PostStats[]} The stats for the post.
 	 */
 	public async getStats( args: StatsRequestParams ): Promise<PostStats[]> {
-		const response = await this.fetch<PostStats[]>( {
-			path: addQueryArgs( '/wp-parsely/v2/stats/posts', {
-				...args,
-			} ),
-		} );
+		let response: PostStats[] = [];
 
-		if ( ! response || response.length === 0 ) {
+		try {
+			response = await this.fetch<PostStats[]>( {
+				path: addQueryArgs( '/wp-parsely/v2/stats/posts', {
+					...args,
+				} ),
+			} );
+		} catch ( error: unknown ) {
+			if ( error instanceof ContentHelperError ) {
+				throw error;
+			}
+
+			if ( error instanceof Error ) {
+				throw new ContentHelperError(
+					error.message,
+					ContentHelperErrorCode.UnknownError
+				);
+			}
+		}
+
+		if ( 0 === response.length ) {
 			throw new ContentHelperError(
 				__( 'No data was returned by the Parse.ly API.', 'wp-parsely' ),
 				ContentHelperErrorCode.ParselyApiReturnedNoData
