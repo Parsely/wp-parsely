@@ -1,12 +1,20 @@
 @import "../content-helper/common/css/variables";
 @import "../content-helper/common/css/functions";
 
-.settings_page_parsely {
+.parse-ly_page_parsely-settings {
 	--padding-default: 15px;
 
 	fieldset.user-role-permissions {
 		label {
 			margin-right: to_rem(16px) !important;
+		}
+	}
+
+	.content-helper-message {
+		margin-top: 1.5rem;
+
+		p {
+			padding: 0.5rem;
 		}
 	}
 

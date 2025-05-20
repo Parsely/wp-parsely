@@ -6,7 +6,7 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
-import { BaseProvider } from '../../common/base-provider';
+import { BaseProvider } from '../../common/providers/base-provider';
 import { getApiPeriodParams } from '../../common/utils/api';
 import {
 	Metric,

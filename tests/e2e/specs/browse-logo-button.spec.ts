@@ -44,7 +44,7 @@ test.describe( 'Browse for logo button', () => {
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
 	test.beforeEach( async ( { admin } ) => {
-		await admin.visitAdminPage( '/options-general.php?page=parsely' );
+		await admin.visitAdminPage( '/admin.php?page=parsely-settings' );
 
 		await admin.page.getByRole( 'button', { name: 'Browse' } ).click();
 	} );

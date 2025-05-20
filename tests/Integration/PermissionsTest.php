@@ -45,6 +45,7 @@ final class PermissionsTest extends TestCase {
 		'excerpt_suggestions',
 		'smart_linking',
 		'title_suggestions',
+		'traffic_boost',
 	);
 
 	/**

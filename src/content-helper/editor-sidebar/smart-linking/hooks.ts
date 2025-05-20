@@ -136,7 +136,7 @@ export const useSaveSmartLinksOnPostSave = (
 		if ( isSavingPost && ! isAutosavingPost && postId && validationCompleted ) {
 			SmartLinkingProvider.getInstance().setSmartLinks( postId, getSmartLinks() ).catch( () => {
 				// eslint-disable-next-line no-console
-				console.error( 'WP Parse.ly: Failed to save smart links on post save.' );
+				console.error( 'WP Parse.ly: Failed to save Smart Links on post save.' );
 			} );
 		}
 	}, [ getSmartLinks, isAutosavingPost, isSavingPost, postId, validationCompleted ] );

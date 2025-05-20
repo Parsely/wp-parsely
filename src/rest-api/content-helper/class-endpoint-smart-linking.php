@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Content_Helper;
 
 use Parsely\Models\Smart_Link;
+use Parsely\Models\Smart_Link_Status;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
@@ -93,17 +94,18 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				'text'               => array(
 					'required'    => true,
 					'type'        => 'string',
-					'description' => __( 'The text to generate smart links for.', 'wp-parsely' ),
+					'description' => __( 'The text to generate Smart Links for.', 'wp-parsely' ),
 				),
 				'max_links'          => array(
 					'type'        => 'integer',
-					'description' => __( 'The maximum number of smart links to generate.', 'wp-parsely' ),
+					'description' => __( 'The maximum number of Smart Links to generate.', 'wp-parsely' ),
 					'default'     => 10,
 				),
 				'url_exclusion_list' => array(
 					'type'              => 'array',
-					'description'       => __( 'The list of URLs to exclude from the smart links.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'validate_url_exclusion_list' ),
+					'description'       => __( 'The list of URLs to exclude from the Smart Links.', 'wp-parsely' ),
+					'validate_callback' => array( Validations\Validate_Url_Exclusion_List::class, 'validate' ),
+					'sanitize_callback' => array( Validations\Validate_Url_Exclusion_List::class, 'sanitize' ),
 					'default'           => array(),
 				),
 			)
@@ -131,12 +133,12 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				'link'   => array(
 					'required'          => true,
 					'type'              => 'object',
-					'description'       => __( 'The smart link data to add.', 'wp-parsely' ),
+					'description'       => __( 'The Smart Link data to add.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'validate_smart_link_params' ),
 				),
 				'update' => array(
 					'type'        => 'boolean',
-					'description' => __( 'Whether to update the existing smart link.', 'wp-parsely' ),
+					'description' => __( 'Whether to update the existing Smart Link.', 'wp-parsely' ),
 					'default'     => false,
 				),
 			)
@@ -154,12 +156,12 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				'links'  => array(
 					'required'          => true,
 					'type'              => 'array',
-					'description'       => __( 'The multiple smart links data to add.', 'wp-parsely' ),
+					'description'       => __( 'The multiple Smart Links data to add.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'validate_multiple_smart_links' ),
 				),
 				'update' => array(
 					'type'        => 'boolean',
-					'description' => __( 'Whether to update the existing smart links.', 'wp-parsely' ),
+					'description' => __( 'Whether to update the existing Smart Links.', 'wp-parsely' ),
 					'default'     => false,
 				),
 			)
@@ -177,7 +179,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				'links' => array(
 					'required'          => true,
 					'type'              => 'array',
-					'description'       => __( 'The smart links data to set.', 'wp-parsely' ),
+					'description'       => __( 'The Smart Links data to set.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'validate_multiple_smart_links' ),
 				),
 			)
@@ -236,9 +238,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$response = $this->suggestions_api->get_smart_links(
 			$post_content,
 			array(
-				'max_items' => $max_links,
-			),
-			$url_exclusion_list
+				'max_items'          => $max_links,
+				'url_exclusion_list' => $url_exclusion_list,
+			)
 		);
 
 		if ( is_wp_error( $response ) ) {
@@ -247,6 +249,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 		$smart_links = array_map(
 			function ( Smart_Link $link ) {
+				// Set the context to Smart Linking.
+				$link->set_context( $this->get_pch_feature_name() );
+
 				return $link->to_array();
 			},
 			$response
@@ -273,8 +278,8 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 */
 		$post = $request->get_param( 'post' );
 
-		$outbound_links = Smart_Link::get_outbound_smart_links( $post->ID );
-		$inbound_links  = Smart_Link::get_inbound_smart_links( $post->ID );
+		$outbound_links = Smart_Link::get_outbound_smart_links( $post->ID, Smart_Link_Status::APPLIED );
+		$inbound_links  = Smart_Link::get_inbound_smart_links( $post->ID, Smart_Link_Status::APPLIED );
 
 		$response = array(
 			'outbound' => $this->serialize_smart_links( $outbound_links ),
@@ -309,11 +314,19 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				array(
 					'error' => array(
 						'name'    => 'smart_link_exists',
-						'message' => __( 'Smart link already exists.', 'wp-parsely' ),
+						'message' => __( 'Smart Link already exists.', 'wp-parsely' ),
 					),
 				),
 				409 // HTTP Conflict.
 			);
+		}
+
+		// Mark as applied.
+		$smart_link->set_status( Smart_Link_Status::APPLIED );
+
+		// If the context is not set, set it to Smart Linking.
+		if ( null === $smart_link->get_context() ) {
+			$smart_link->set_context( $this->get_pch_feature_name() );
 		}
 
 		// The smart link properties are set in the validate callback.
@@ -323,12 +336,15 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				array(
 					'error' => array(
 						'name'    => 'add_smart_link_failed',
-						'message' => __( 'Failed to add the smart link.', 'wp-parsely' ),
+						'message' => __( 'Failed to add the Smart Link.', 'wp-parsely' ),
 					),
 				),
 				500
 			);
 		}
+
+		// Clear the cache for the smart link.
+		$smart_link->flush_all_cache();
 
 		return new WP_REST_Response(
 			array(
@@ -369,6 +385,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 			$updated_link = $smart_link->exists() && $should_update;
 
+			// Mark as applied.
+			$smart_link->set_status( Smart_Link_Status::APPLIED );
+
 			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
 
@@ -382,6 +401,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			} else {
 				$added_links[] = $smart_link;
 			}
+
+			// Clear the cache for the smart link.
+			$smart_link->flush_all_cache();
 		}
 
 		// If no link was added, return an error response.
@@ -390,7 +412,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				array(
 					'error' => array(
 						'name'    => 'add_smart_link_failed',
-						'message' => __( 'Failed to add all the smart links.', 'wp-parsely' ),
+						'message' => __( 'Failed to add all the Smart Links.', 'wp-parsely' ),
 					),
 				),
 				500
@@ -437,7 +459,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$smart_links = $request->get_param( 'smart_links' );
 
 		// Get the current stored smart links.
-		$existing_links = Smart_Link::get_outbound_smart_links( $post->ID );
+		$existing_links = Smart_Link::get_outbound_smart_links( $post->ID, Smart_Link_Status::APPLIED );
 		$removed_links  = array();
 
 		foreach ( $existing_links as $existing_link ) {
@@ -452,6 +474,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			if ( ! $found ) {
 				$removed_links[] = $existing_link;
 				$existing_link->delete();
+
+				// Clear the cache for the smart link.
+				$existing_link->flush_all_cache();
 			}
 		}
 
@@ -459,6 +484,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$failed_links = array();
 
 		foreach ( $smart_links as $smart_link ) {
+			// Mark as applied.
+			$smart_link->set_status( Smart_Link_Status::APPLIED );
+
 			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
 
@@ -468,6 +496,9 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			}
 
 			$saved_links[] = $smart_link;
+
+			// Clear the cache for the smart link.
+			$smart_link->flush_all_cache();
 		}
 
 		$response = array(
@@ -523,35 +554,6 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	}
 
 	/**
-	 * Validates the URL exclusion list parameter.
-	 *
-	 * The callback sets the URL exclusion list in the request object if the parameter is valid.
-	 *
-	 * @since 3.17.0
-	 * @access private
-	 *
-	 * @param mixed           $param   The parameter value.
-	 * @param WP_REST_Request $request The request object.
-	 * @return true|WP_Error Whether the parameter is valid.
-	 */
-	public function validate_url_exclusion_list( $param, WP_REST_Request $request ) {
-		if ( ! is_array( $param ) ) {
-			return new WP_Error( 'invalid_url_exclusion_list', __( 'The URL exclusion list must be an array.', 'wp-parsely' ) );
-		}
-
-		$valid_urls = array_filter(
-			$param,
-			function ( $url ) {
-				return is_string( $url ) && false !== filter_var( $url, FILTER_VALIDATE_URL );
-			}
-		);
-
-		$request->set_param( 'url_exclusion_list', $valid_urls );
-
-		return true;
-	}
-
-	/**
 	 * Validates the smart link parameters.
 	 *
 	 * The callback sets the smart link object in the request object if the parameters are valid.
@@ -586,11 +588,19 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			return false;
 		}
 
+		if ( ! is_array( $params['href'] ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $params['href']['raw'] ) ) {
+			return false;
+		}
+
 		// Try to get the smart link from the UID.
 		$smart_link = Smart_Link::get_smart_link( $params['uid'], intval( $post_id ) );
 		if ( $smart_link->exists() ) {
 			// Update the smart link with the new data.
-			$smart_link->set_href( $params['href'] );
+			$smart_link->set_href( $params['href']['raw'] );
 			$smart_link->title  = $params['title'];
 			$smart_link->text   = $params['text'];
 			$smart_link->offset = $params['offset'];
@@ -602,6 +612,11 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			 */
 			$smart_link = Smart_Link::deserialize( $encoded_data );
 			$smart_link->set_source_post_id( intval( $post_id ) );
+		}
+
+		// If the context is not set, set it to Smart Linking.
+		if ( null === $smart_link->get_context() ) {
+			$smart_link->set_context( $this->get_pch_feature_name() );
 		}
 
 		// Set the smart link attribute in the request.

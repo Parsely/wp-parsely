@@ -109,7 +109,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 */
 	const applyLinkToBlock = async ( blockId: string, linkSuggestion: SmartLink ) => {
 		const anchor = document.createElement( 'a' );
-		anchor.href = linkSuggestion.href;
+		anchor.href = linkSuggestion.href.itm;
 		anchor.title = linkSuggestion.title;
 		// Add data-smartlink attribute to the anchor tag.
 		anchor.setAttribute( 'data-smartlink', linkSuggestion.uid );
@@ -293,7 +293,7 @@ const SmartLinkingReviewModalComponent = ( {
 		await applyLinkToBlock( selectedLink.match.blockId, selectedLink );
 
 		Telemetry.trackEvent( 'smart_linking_link_accepted', {
-			link: selectedLink.href,
+			link: selectedLink.href.raw,
 			title: selectedLink.title,
 			text: selectedLink.text,
 			uid: selectedLink.uid,
@@ -341,7 +341,7 @@ const SmartLinkingReviewModalComponent = ( {
 		await removeSmartLink( selectedLink.uid );
 
 		Telemetry.trackEvent( 'smart_linking_link_rejected', {
-			link: selectedLink.href,
+			link: selectedLink.href.raw,
 			title: selectedLink.title,
 			text: selectedLink.text,
 			uid: selectedLink.uid,
@@ -369,7 +369,7 @@ const SmartLinkingReviewModalComponent = ( {
 			await removeLinkFromBlock( block, selectedLink );
 
 			Telemetry.trackEvent( 'smart_linking_link_removed', {
-				link: selectedLink.href,
+				link: selectedLink.href.raw,
 				title: selectedLink.title,
 				text: selectedLink.text,
 				uid: selectedLink.uid,
@@ -508,7 +508,7 @@ const SmartLinkingReviewModalComponent = ( {
 					className="wp-parsely-smart-linking-close-dialog"
 				>
 					{ __(
-						'Are you sure you want to close? All un-accepted smart links will not be added.',
+						'Are you sure you want to close? All un-accepted Smart Links will not be added.',
 						'wp-parsely',
 					) }
 					<div className="smart-linking-close-dialog-actions">
