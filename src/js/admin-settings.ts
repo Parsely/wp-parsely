@@ -1,4 +1,20 @@
+/**
+ * WordPress dependencies
+ */
+import { escapeHTML } from '@wordpress/escape-html';
+import { __, sprintf } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import {
+	ContentHelperError,
+	ContentHelperErrorCode,
+} from '../content-helper/common/content-helper-error';
+import { CheckAuthProvider } from '../content-helper/common/providers/check-auth-provider';
+
 document.addEventListener( 'DOMContentLoaded', (): void => {
+	displayContentHelperSectionMessages();
 	addContentHelperTabEventHandlers();
 	setActiveTab();
 	window.addEventListener( 'hashchange', setActiveTab );
@@ -223,5 +239,63 @@ function addContentHelperTabEventHandlers(): void {
 						fieldset.removeAttribute( 'disabled' );
 					} );
 			} );
+	}
+}
+
+/**
+ * Displays any messages needed under the Content Helper section.
+ *
+ * @since 3.19.0
+ */
+async function displayContentHelperSectionMessages(): Promise<void> {
+	let message = null;
+	let authResponse = null;
+
+	try {
+		const [ apiAuth, trafficBoostAuth ] = await Promise.all( [
+			CheckAuthProvider.getInstance().getAuthorizationResponse(
+				{ auth_scope: 'suggestions_api' }
+			),
+			CheckAuthProvider.getInstance().getAuthorizationResponse(
+				{ auth_scope: 'traffic_boost' }
+			),
+		] );
+
+		authResponse = {
+			api: apiAuth,
+			traffic_boost: trafficBoostAuth,
+		};
+	} catch ( err: unknown ) {
+		console.error( err ); // eslint-disable-line no-console
+
+		if ( err instanceof ContentHelperError ) {
+			if ( ContentHelperErrorCode.PluginSettingsApiSecretNotSet === err.code ) {
+				message = sprintf( '<p><strong>%s</strong></p>', escapeHTML( __( 'All Content Helper AI functionality is disabled because an API Secret has not been set.', 'wp-parsely' ) ) );
+			}
+		}
+	} finally {
+		if ( authResponse ) {
+			if ( 200 !== authResponse.api.code ) {
+				const requestAccessLink = sprintf( '<a href="%1$s">%2$s</a>', 'https://wpvip.com/content-helper/#content-helper-form', __( 'Request access here', 'wp-parsely' ) );
+				/* translators: %s: Link to request access to Content Helper AI functionality. */
+				const messageWithAccessLink = sprintf( escapeHTML( __( 'All Content Helper AI functionality is disabled for this website. %s.', 'wp-parsely' ) ), requestAccessLink );
+				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
+			} else if ( 200 === authResponse.api.code && 200 !== authResponse.traffic_boost.code ) {
+				const contactSupportLink = sprintf( '<a href="%1$s">%2$s</a>', 'mailto:support@parsely.com', 'support@parsely.com' );
+				/* translators: %s: Link to request access to Content Helper AI functionality. */
+				const messageWithAccessLink = sprintf( escapeHTML( __( 'Traffic Boost functionality is disabled for this website. To enable it, contact %s.', 'wp-parsely' ) ), contactSupportLink );
+				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
+			}
+		}
+
+		if ( message ) {
+			const div = document.createElement( 'div' );
+			div.className = 'content-helper-message notice notice-error';
+			div.innerHTML = message;
+			const contentHelperSection = document.querySelector( '.content-helper-section' );
+			if ( contentHelperSection ) {
+				contentHelperSection.insertBefore( div, contentHelperSection.firstChild );
+			}
+		}
 	}
 }

@@ -46,6 +46,7 @@ class Suggestions_API_Service extends Base_API_Service {
 	 */
 	protected function register_endpoints(): void {
 		$endpoints = array(
+			new Endpoints\Endpoint_Check_Auth( $this ),
 			new Endpoints\Endpoint_Suggest_Brief( $this ),
 			new Endpoints\Endpoint_Suggest_Headline( $this ),
 			new Endpoints\Endpoint_Suggest_Linked_Reference( $this ),
@@ -95,6 +96,23 @@ class Suggestions_API_Service extends Base_API_Service {
 		$endpoint = $this->get_endpoint( '/suggest-headline' );
 
 		return $endpoint->get_headlines( $content, $options );
+	}
+
+	/**
+	 * Gets the Site ID's authorization status for the Suggestions API or
+	 * Suggestions API feature.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param array<mixed> $options The options to pass to the API request.
+	 * @return array<mixed>|WP_Error The response from the remote API, or a WP_Error
+	 *                         object if the response is an error.
+	 */
+	public function get_check_auth( array $options ) {
+		/** @var Endpoints\Endpoint_Check_Auth $endpoint */
+		$endpoint = $this->get_endpoint( '/check-auth' );
+
+		return $endpoint->get_check_auth_result( $options );
 	}
 
 	/**
