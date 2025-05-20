@@ -2,6 +2,7 @@
  * Internal dependencies
  */
 import { addQueryArgs } from '@wordpress/url';
+import { ContentHelperError, ContentHelperErrorCode } from '../content-helper-error';
 import { BaseProvider } from './base-provider';
 
 /**
@@ -57,13 +58,28 @@ export class CheckAuthProvider extends BaseProvider {
 	 * @return {Promise<AuthResponse>} Whether the Site ID is authorized.
 	 */
 	public async getAuthorizationResponse( args: AuthRequestParams ): Promise<AuthResponse> {
-		const response = this.fetch<AuthResponse>( {
-			method: 'POST',
-			path: addQueryArgs(
-				'/wp-parsely/v2/content-helper/check-auth', {
-					...args,
-				} ),
-		} );
+		let response: AuthResponse = { code: 0, message: '' };
+
+		try {
+			response = await this.fetch<AuthResponse>( {
+				method: 'POST',
+				path: addQueryArgs(
+					'/wp-parsely/v2/content-helper/check-auth', {
+						...args,
+					} ),
+			} );
+		} catch ( error: unknown ) {
+			if ( error instanceof ContentHelperError ) {
+				throw error;
+			}
+
+			if ( error instanceof Error ) {
+				throw new ContentHelperError(
+					error.message,
+					ContentHelperErrorCode.UnknownError
+				);
+			}
+		}
 
 		return response;
 	}
