@@ -4,9 +4,10 @@
  * @since 3.16.0
  */
 export interface ContentHelperPermissions {
+	ExcerptSuggestions: boolean;
 	SmartLinking: boolean;
 	TitleSuggestions: boolean;
-	ExcerptSuggestions: boolean;
+	TrafficBoost: boolean;
 }
 
 /**
@@ -18,9 +19,10 @@ export interface ContentHelperPermissions {
  */
 export function getContentHelperPermissions(): ContentHelperPermissions {
 	const defaultPermissions: ContentHelperPermissions = {
+		ExcerptSuggestions: false,
 		SmartLinking: false,
 		TitleSuggestions: false,
-		ExcerptSuggestions: false,
+		TrafficBoost: false,
 	};
 
 	try {

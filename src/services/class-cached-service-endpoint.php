@@ -12,6 +12,8 @@ namespace Parsely\Services;
 
 use WP_Error;
 
+use const Parsely\PARSELY_CACHE_GROUP;
+
 /**
  * Cached Service Endpoint class.
  *
@@ -23,15 +25,6 @@ use WP_Error;
  * @phpstan-import-type WP_HTTP_Request_Args from Base_Service_Endpoint
  */
 class Cached_Service_Endpoint extends Base_Service_Endpoint {
-	/**
-	 * The cache group for the API requests.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string
-	 */
-	private const CACHE_GROUP = 'wp-parsely';
-
 	/**
 	 * The service endpoint object.
 	 *
@@ -75,13 +68,9 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	 */
 	private function get_cache_key( array $args ): string {
 		$api_service = $this->service_endpoint->api_service;
+		$identifier  = sprintf( '%s-%s-%s', $api_service->get_api_url(), $this->get_endpoint(), (string) wp_json_encode( $args ) );
 
-		$cache_key = 'parsely_api_' .
-					wp_hash( $api_service->get_api_url() ) . '_' .
-					wp_hash( $this->get_endpoint() ) . '_' .
-					wp_hash( (string) wp_json_encode( $args ) );
-
-		return $cache_key;
+		return sprintf( 'parsely-api-%s', hash( 'sha256', $identifier ) );
 	}
 
 	/**
@@ -97,7 +86,7 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	 */
 	public function call( array $args = array() ) {
 		$cache_key = $this->get_cache_key( $args );
-		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
+		$cache     = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 
 		if ( false !== $cache ) {
 			// @phpstan-ignore-next-line
@@ -107,7 +96,7 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 		$response = $this->service_endpoint->call( $args );
 
 		if ( ! is_wp_error( $response ) ) {
-			wp_cache_set( $cache_key, $response, self::CACHE_GROUP, $this->cache_ttl ); // phpcs:ignore
+			wp_cache_set( $cache_key, $response, PARSELY_CACHE_GROUP, $this->cache_ttl ); // phpcs:ignore
 		}
 
 		return $response;

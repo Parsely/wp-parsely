@@ -43,6 +43,9 @@ export enum ContentHelperErrorCode {
 	ParselySuggestionsApiOpenAiSchema = 'OPENAI_SCHEMA', // HTTP Code 507.
 	ParselySuggestionsApiOpenAiUnavailable = 'OPENAI_UNAVAILABLE', // HTTP Code 500.
 	ParselySuggestionsApiSchemaError = 'SCHEMA_ERROR', // HTTP Code 422.
+
+	// Traffic Boost API.
+	TrafficBoostInboundLinkNotFound = 'tb_inbound_link_not_found',
 }
 
 /**
@@ -51,7 +54,7 @@ export enum ContentHelperErrorCode {
  * @see https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
  */
 export class ContentHelperError extends Error {
-	protected code: ContentHelperErrorCode;
+	public code: ContentHelperErrorCode;
 	protected hint: string | null = null;
 	public retryFetch: boolean;
 
@@ -83,8 +86,7 @@ export class ContentHelperError extends Error {
 			ContentHelperErrorCode.PostIsNotPublished,
 			ContentHelperErrorCode.UnknownError,
 
-			// Don't perform any fetch retries for the Suggestions API due to
-			// its time-consuming operations.
+			// Suggestions API errors.
 			ContentHelperErrorCode.ParselySuggestionsApiAuthUnavailable,
 			ContentHelperErrorCode.ParselySuggestionsApiNoAuthentication,
 			ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization,
@@ -106,7 +108,7 @@ export class ContentHelperError extends Error {
 		} else if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization ) {
 			this.message = __(
 				'This AI-powered feature is opt-in. To gain access, please submit a request ' +
-				'<a href="https://wpvip.com/parsely-content-helper/" target="_blank" rel="noreferrer">here</a>.',
+				'<a href="https://wpvip.com/content-helper/#content-helper-form" target="_blank" rel="noopener">here</a>.',
 				'wp-parsely'
 			);
 		} else if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiOpenAiError ||

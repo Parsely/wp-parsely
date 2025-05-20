@@ -24,6 +24,8 @@ use WP_Error;
  * @phpstan-import-type Endpoint_Suggest_Brief_Options from Endpoints\Endpoint_Suggest_Brief
  * @phpstan-import-type Endpoint_Suggest_Headline_Options from Endpoints\Endpoint_Suggest_Headline
  * @phpstan-import-type Endpoint_Suggest_Linked_Reference_Options from Endpoints\Endpoint_Suggest_Linked_Reference
+ * @phpstan-import-type Endpoint_Suggest_Inbound_Links_Options from Endpoints\Endpoint_Suggest_Inbound_Links
+ * @phpstan-import-type Endpoint_Suggest_Inbound_Link_Positions_Options from Endpoints\Endpoint_Suggest_Inbound_Link_Positions
  */
 class Suggestions_API_Service extends Base_API_Service {
 	/**
@@ -44,9 +46,12 @@ class Suggestions_API_Service extends Base_API_Service {
 	 */
 	protected function register_endpoints(): void {
 		$endpoints = array(
+			new Endpoints\Endpoint_Check_Auth( $this ),
 			new Endpoints\Endpoint_Suggest_Brief( $this ),
 			new Endpoints\Endpoint_Suggest_Headline( $this ),
 			new Endpoints\Endpoint_Suggest_Linked_Reference( $this ),
+			new Endpoints\Endpoint_Suggest_Inbound_Links( $this ),
+			new Endpoints\Endpoint_Suggest_Inbound_Link_Positions( $this ),
 		);
 
 		foreach ( $endpoints as $endpoint ) {
@@ -94,6 +99,23 @@ class Suggestions_API_Service extends Base_API_Service {
 	}
 
 	/**
+	 * Gets the Site ID's authorization status for the Suggestions API or
+	 * Suggestions API feature.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param array<mixed> $options The options to pass to the API request.
+	 * @return array<mixed>|WP_Error The response from the remote API, or a WP_Error
+	 *                         object if the response is an error.
+	 */
+	public function get_check_auth( array $options ) {
+		/** @var Endpoints\Endpoint_Check_Auth $endpoint */
+		$endpoint = $this->get_endpoint( '/check-auth' );
+
+		return $endpoint->get_check_auth_result( $options );
+	}
+
+	/**
 	 * Gets suggested smart links for the given content.
 	 *
 	 * @since 3.14.0
@@ -101,15 +123,49 @@ class Suggestions_API_Service extends Base_API_Service {
 	 *
 	 * @param string                                    $content             The content to generate links for.
 	 * @param Endpoint_Suggest_Linked_Reference_Options $options             The options to pass to the API request.
-	 * @param array<string>                             $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 *
 	 * @return array<Smart_Link>|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
-	public function get_smart_links( string $content, $options = array(), array $url_exclusion_list = array() ) {
+	public function get_smart_links( string $content, $options = array() ) {
 		/** @var Endpoints\Endpoint_Suggest_Linked_Reference $endpoint */
 		$endpoint = $this->get_endpoint( '/suggest-linked-reference' );
 
-		return $endpoint->get_links( $content, $options, $url_exclusion_list );
+		return $endpoint->get_links( $content, $options );
+	}
+
+	/**
+	 * Gets suggested inbound links for the given URL.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param \WP_Post                               $post    The post to get inbound link suggestions for.
+	 * @param Endpoint_Suggest_Inbound_Links_Options $options The options to pass to the API request.
+	 * @return array<\Parsely\Models\Inbound_Smart_Link>|WP_Error The response from the remote API, or a WP_Error
+	 *                                                            object if the response is an error.
+	 */
+	public function get_inbound_links( \WP_Post $post, $options = array() ) {
+		/** @var Endpoints\Endpoint_Suggest_Inbound_Links $endpoint */
+		$endpoint = $this->get_endpoint( '/suggest-inbound-links' );
+
+		return $endpoint->get_inbound_links( $post, $options );
+	}
+
+	/**
+	 * Gets suggested inbound link positions for the given source and destination posts.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param \WP_Post                                        $source_post    The source post to get inbound link positions for.
+	 * @param \WP_Post                                        $destination_post The destination post to get inbound link positions for.
+	 * @param Endpoint_Suggest_Inbound_Link_Positions_Options $options The options to pass to the API request.
+	 * @return \Parsely\Models\Inbound_Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
+	 *                                                            object if the response is an error.
+	 */
+	public function get_inbound_link_positions( \WP_Post $source_post, \WP_Post $destination_post, $options = array() ) {
+		/** @var Endpoints\Endpoint_Suggest_Inbound_Link_Positions $endpoint */
+		$endpoint = $this->get_endpoint( '/suggest-inbound-link-positions' );
+
+		return $endpoint->get_inbound_link_positions( $source_post, $destination_post, $options );
 	}
 }

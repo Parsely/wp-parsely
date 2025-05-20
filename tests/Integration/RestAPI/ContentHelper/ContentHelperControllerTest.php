@@ -12,9 +12,11 @@ namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 
 use Parsely\Parsely;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
+use Parsely\REST_API\Content_Helper\Endpoint_Check_Auth;
 use Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking;
 use Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator;
 use Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions;
+use Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost;
 use Parsely\Tests\Integration\RestAPI\RestAPIControllerTest;
 use Parsely\Tests\Integration\TestCase;
 
@@ -97,10 +99,12 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 		$this->content_helper_controller->init();
 		$endpoints = $this->content_helper_controller->get_endpoints();
 
-		self::assertCount( 3, $endpoints );
+		self::assertCount( 5, $endpoints );
 
-		self::assertInstanceOf( Endpoint_Smart_Linking::class, $endpoints['content-helper/smart-linking'] );
+		self::assertInstanceOf( Endpoint_Check_Auth::class, $endpoints['content-helper/check-auth'] );
 		self::assertInstanceOf( Endpoint_Excerpt_Generator::class, $endpoints['content-helper/excerpt-generator'] );
+		self::assertInstanceOf( Endpoint_Smart_Linking::class, $endpoints['content-helper/smart-linking'] );
 		self::assertInstanceOf( Endpoint_Title_Suggestions::class, $endpoints['content-helper/title-suggestions'] );
+		self::assertInstanceOf( Endpoint_Traffic_Boost::class, $endpoints['content-helper/traffic-boost'] );
 	}
 }

@@ -7,7 +7,7 @@ import { page } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../base-wordpress-provider';
+import { HydratedPost } from '../../providers/base-wordpress-provider';
 
 /**
  * Defines the props structure for Thumbnail.
@@ -27,7 +27,7 @@ interface ThumbnailProps {
  *
  * @since 3.18.0
  *
- * @param {ThumbnailProps} props Component props.
+ * @param {ThumbnailProps} props The component's props.
  */
 export const Thumbnail = ( {
 	post,
@@ -47,6 +47,8 @@ export const Thumbnail = ( {
 					alt={ altText }
 					width={ size }
 					height={ size }
+					loading="lazy"
+					aria-hidden={ altText === '' }
 				/>
 			) : (
 				<div className="parsely-thumbnail-icon-container">

@@ -6,9 +6,9 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
-import { BaseProvider } from '../../common/base-provider';
-import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
 import { getPersonaLabel, PersonaProp } from '../../common/components/persona-selector';
+import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
+import { BaseProvider } from '../../common/providers/base-provider';
 
 /**
  * Returns data from the `content-suggestions/suggest-headline` WordPress REST API

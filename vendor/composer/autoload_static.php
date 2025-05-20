@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit713dd5c7b2bf6e4b45c0e3cf26247561
 {
     public static $prefixLengthsPsr4 = array (
+        'M' => 
+        array (
+            'Masterminds\\' => 12,
+        ),
         'C' => 
         array (
             'Composer\\Installers\\' => 20,
@@ -14,6 +18,10 @@ class ComposerStaticInit713dd5c7b2bf6e4b45c0e3cf26247561
     );
 
     public static $prefixDirsPsr4 = array (
+        'Masterminds\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/masterminds/html5/src',
+        ),
         'Composer\\Installers\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
@@ -121,6 +129,26 @@ class ComposerStaticInit713dd5c7b2bf6e4b45c0e3cf26247561
         'Composer\\Installers\\YawikInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/YawikInstaller.php',
         'Composer\\Installers\\ZendInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZendInstaller.php',
         'Composer\\Installers\\ZikulaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZikulaInstaller.php',
+        'Masterminds\\HTML5' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5.php',
+        'Masterminds\\HTML5\\Elements' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Elements.php',
+        'Masterminds\\HTML5\\Entities' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Entities.php',
+        'Masterminds\\HTML5\\Exception' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Exception.php',
+        'Masterminds\\HTML5\\InstructionProcessor' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/InstructionProcessor.php',
+        'Masterminds\\HTML5\\Parser\\CharacterReference' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/CharacterReference.php',
+        'Masterminds\\HTML5\\Parser\\DOMTreeBuilder' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/DOMTreeBuilder.php',
+        'Masterminds\\HTML5\\Parser\\EventHandler' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/EventHandler.php',
+        'Masterminds\\HTML5\\Parser\\FileInputStream' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/FileInputStream.php',
+        'Masterminds\\HTML5\\Parser\\InputStream' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/InputStream.php',
+        'Masterminds\\HTML5\\Parser\\ParseError' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/ParseError.php',
+        'Masterminds\\HTML5\\Parser\\Scanner' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/Scanner.php',
+        'Masterminds\\HTML5\\Parser\\StringInputStream' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/StringInputStream.php',
+        'Masterminds\\HTML5\\Parser\\Tokenizer' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/Tokenizer.php',
+        'Masterminds\\HTML5\\Parser\\TreeBuildingRules' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/TreeBuildingRules.php',
+        'Masterminds\\HTML5\\Parser\\UTF8Utils' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Parser/UTF8Utils.php',
+        'Masterminds\\HTML5\\Serializer\\HTML5Entities' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Serializer/HTML5Entities.php',
+        'Masterminds\\HTML5\\Serializer\\OutputRules' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Serializer/OutputRules.php',
+        'Masterminds\\HTML5\\Serializer\\RulesInterface' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Serializer/RulesInterface.php',
+        'Masterminds\\HTML5\\Serializer\\Traverser' => __DIR__ . '/..' . '/masterminds/html5/src/HTML5/Serializer/Traverser.php',
         'Parsely\\Content_Helper\\Content_Helper_Feature' => __DIR__ . '/../..' . '/src/content-helper/common/class-content-helper-feature.php',
         'Parsely\\Content_Helper\\Dashboard_Widget' => __DIR__ . '/../..' . '/src/content-helper/dashboard-widget/class-dashboard-widget.php',
         'Parsely\\Content_Helper\\Editor_Sidebar' => __DIR__ . '/../..' . '/src/content-helper/editor-sidebar/class-editor-sidebar.php',
@@ -150,20 +178,27 @@ class ComposerStaticInit713dd5c7b2bf6e4b45c0e3cf26247561
         'Parsely\\Models\\Base_Model' => __DIR__ . '/../..' . '/src/Models/class-base-model.php',
         'Parsely\\Models\\Inbound_Smart_Link' => __DIR__ . '/../..' . '/src/Models/class-inbound-smart-link.php',
         'Parsely\\Models\\Smart_Link' => __DIR__ . '/../..' . '/src/Models/class-smart-link.php',
+        'Parsely\\Models\\Smart_Link_Status' => __DIR__ . '/../..' . '/src/Models/class-smart-link-status.php',
         'Parsely\\Parsely' => __DIR__ . '/../..' . '/src/class-parsely.php',
         'Parsely\\Permissions' => __DIR__ . '/../..' . '/src/class-permissions.php',
         'Parsely\\REST_API\\Base_API_Controller' => __DIR__ . '/../..' . '/src/rest-api/class-base-api-controller.php',
         'Parsely\\REST_API\\Base_Endpoint' => __DIR__ . '/../..' . '/src/rest-api/class-base-endpoint.php',
+        'Parsely\\REST_API\\Base_Validation' => __DIR__ . '/../..' . '/src/rest-api/class-base-validation.php',
         'Parsely\\REST_API\\Content_Helper\\Content_Helper_Controller' => __DIR__ . '/../..' . '/src/rest-api/content-helper/class-content-helper-controller.php',
         'Parsely\\REST_API\\Content_Helper\\Content_Helper_Feature' => __DIR__ . '/../..' . '/src/rest-api/content-helper/trait-content-helper-feature.php',
+        'Parsely\\REST_API\\Content_Helper\\Endpoint_Check_Auth' => __DIR__ . '/../..' . '/src/rest-api/content-helper/class-endpoint-check-auth.php',
         'Parsely\\REST_API\\Content_Helper\\Endpoint_Excerpt_Generator' => __DIR__ . '/../..' . '/src/rest-api/content-helper/class-endpoint-excerpt-generator.php',
         'Parsely\\REST_API\\Content_Helper\\Endpoint_Smart_Linking' => __DIR__ . '/../..' . '/src/rest-api/content-helper/class-endpoint-smart-linking.php',
         'Parsely\\REST_API\\Content_Helper\\Endpoint_Title_Suggestions' => __DIR__ . '/../..' . '/src/rest-api/content-helper/class-endpoint-title-suggestions.php',
+        'Parsely\\REST_API\\Content_Helper\\Endpoint_Traffic_Boost' => __DIR__ . '/../..' . '/src/rest-api/content-helper/class-endpoint-traffic-boost.php',
+        'Parsely\\REST_API\\Content_Helper\\Validations\\Validate_Blending_Weight' => __DIR__ . '/../..' . '/src/rest-api/content-helper/validations/class-validate-blending-weight.php',
+        'Parsely\\REST_API\\Content_Helper\\Validations\\Validate_Url_Exclusion_List' => __DIR__ . '/../..' . '/src/rest-api/content-helper/validations/class-validate-url-exclusion-list.php',
         'Parsely\\REST_API\\REST_API_Controller' => __DIR__ . '/../..' . '/src/rest-api/class-rest-api-controller.php',
         'Parsely\\REST_API\\Settings\\Base_Settings_Endpoint' => __DIR__ . '/../..' . '/src/rest-api/settings/class-base-settings-endpoint.php',
         'Parsely\\REST_API\\Settings\\Endpoint_Dashboard_Widget_Settings' => __DIR__ . '/../..' . '/src/rest-api/settings/class-endpoint-dashboard-widget-settings.php',
         'Parsely\\REST_API\\Settings\\Endpoint_Editor_Sidebar_Settings' => __DIR__ . '/../..' . '/src/rest-api/settings/class-endpoint-editor-sidebar-settings.php',
         'Parsely\\REST_API\\Settings\\Endpoint_Excerpt_Suggestions_Settings' => __DIR__ . '/../..' . '/src/rest-api/settings/class-endpoint-excerpt-suggestions-settings.php',
+        'Parsely\\REST_API\\Settings\\Endpoint_Traffic_Boost_Settings' => __DIR__ . '/../..' . '/src/rest-api/settings/class-endpoint-traffic-boost-settings.php',
         'Parsely\\REST_API\\Settings\\Settings_Controller' => __DIR__ . '/../..' . '/src/rest-api/settings/class-settings-controller.php',
         'Parsely\\REST_API\\Stats\\Endpoint_Post' => __DIR__ . '/../..' . '/src/rest-api/stats/class-endpoint-post.php',
         'Parsely\\REST_API\\Stats\\Endpoint_Posts' => __DIR__ . '/../..' . '/src/rest-api/stats/class-endpoint-posts.php',
@@ -184,8 +219,11 @@ class ComposerStaticInit713dd5c7b2bf6e4b45c0e3cf26247561
         'Parsely\\Services\\Content_API\\Endpoints\\Endpoint_Referrers_Post_Detail' => __DIR__ . '/../..' . '/src/services/content-api/endpoints/class-endpoint-referrers-post-detail.php',
         'Parsely\\Services\\Content_API\\Endpoints\\Endpoint_Related' => __DIR__ . '/../..' . '/src/services/content-api/endpoints/class-endpoint-related.php',
         'Parsely\\Services\\Content_API\\Endpoints\\Endpoint_Validate' => __DIR__ . '/../..' . '/src/services/content-api/endpoints/class-endpoint-validate.php',
+        'Parsely\\Services\\Suggestions_API\\Endpoints\\Endpoint_Check_Auth' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-endpoint-check-auth.php',
         'Parsely\\Services\\Suggestions_API\\Endpoints\\Endpoint_Suggest_Brief' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-endpoint-suggest-brief.php',
         'Parsely\\Services\\Suggestions_API\\Endpoints\\Endpoint_Suggest_Headline' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-endpoint-suggest-headline.php',
+        'Parsely\\Services\\Suggestions_API\\Endpoints\\Endpoint_Suggest_Inbound_Link_Positions' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-endpoint-suggest-inbound-link-positions.php',
+        'Parsely\\Services\\Suggestions_API\\Endpoints\\Endpoint_Suggest_Inbound_Links' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-endpoint-suggest-inbound-links.php',
         'Parsely\\Services\\Suggestions_API\\Endpoints\\Endpoint_Suggest_Linked_Reference' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-endpoint-suggest-linked-reference.php',
         'Parsely\\Services\\Suggestions_API\\Endpoints\\Suggestions_API_Base_Endpoint' => __DIR__ . '/../..' . '/src/services/suggestions-api/endpoints/class-suggestions-api-base-endpoint.php',
         'Parsely\\Services\\Suggestions_API\\Suggestions_API_Service' => __DIR__ . '/../..' . '/src/services/suggestions-api/class-suggestions-api-service.php',
@@ -195,6 +233,7 @@ class ComposerStaticInit713dd5c7b2bf6e4b45c0e3cf26247561
         'Parsely\\Telemetry\\Tracks_Pixel' => __DIR__ . '/../..' . '/src/Telemetry/Tracks/class-tracks-pixel.php',
         'Parsely\\UI\\Admin_Bar' => __DIR__ . '/../..' . '/src/UI/class-admin-bar.php',
         'Parsely\\UI\\Admin_Warning' => __DIR__ . '/../..' . '/src/UI/class-admin-warning.php',
+        'Parsely\\UI\\Dashboard_Page' => __DIR__ . '/../..' . '/src/UI/class-dashboard-page.php',
         'Parsely\\UI\\Metadata_Renderer' => __DIR__ . '/../..' . '/src/Metadata/class-metadata-renderer.php',
         'Parsely\\UI\\Network_Admin_Sites_List' => __DIR__ . '/../..' . '/src/UI/class-network-admin-sites-list.php',
         'Parsely\\UI\\Plugins_Actions' => __DIR__ . '/../..' . '/src/UI/class-plugins-actions.php',

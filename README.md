@@ -1,7 +1,7 @@
 # Parse.ly
 
-Stable tag: 3.18.1  
-Requires at least: 5.2  
+Stable tag: 3.19.0  
+Requires at least: 6.0  
 Tested up to: 6.8  
 Requires PHP: 7.2  
 License: GPLv2 or later  
@@ -39,6 +39,7 @@ The plugin automatically inserts the Parse.ly metadata and JavaScript in all pub
 The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of content insight tools including:
 - The [Parse.ly Dashboard Widget](https://docs.parse.ly/plugin-content-helper/#h-dashboard) - Displays the site's top posts in the WordPress Dashboard.
 - The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-helper/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
+- The [Traffic Boost](https://docs.wpvip.com/parse-ly/wp-parsely-features/traffic-boost/) feature - Helps you increase page views and engagement by strategically placing links to key content within high-performing articles on your site.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Title Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
   - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
@@ -116,17 +117,19 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![Parse.ly Dashboard Widget](.wordpress-org/screenshot-1.png)
 2. The Parse.ly Stats Column (on the right), showing information about content that is being tracked as Posts.  
    ![Parse.ly List Column](.wordpress-org/screenshot-2.png)
-3. The Parse.ly Editor Sidebar, featuring the Title Suggestions panel.  
-   ![Parse.ly Editor Sidebar - Title Suggestions](.wordpress-org/screenshot-3.png)
-4. The Parse.ly Editor Sidebar, featuring the Smart Linking panel.  
-   ![Parse.ly Editor Sidebar - Smart Linking](.wordpress-org/screenshot-4.png)
-5. The Parse.ly Editor Sidebar, featuring the Related Posts panel.  
-   ![Parse.ly Editor Sidebar - Related Posts](.wordpress-org/screenshot-5.png)
-6. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.  
-   ![Parse.ly Editor Sidebar - Performance Stats](.wordpress-org/screenshot-6.png)
-7. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.  
-   ![Parse.ly Excerpt Suggestions](.wordpress-org/screenshot-7.png)
-8. The Recommendations Block, showcasing links to related content on your site.  
-   ![Parse.ly Recommendations Block](.wordpress-org/screenshot-8.png)
-9. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  
-   ![Parse.ly Dashboard Overview](.wordpress-org/screenshot-9.png)
+3. The Parse.ly Traffic Boost feature.  
+   ![Parse.ly Traffic Boost](.wordpress-org/screenshot-3.png)
+4. The Parse.ly Editor Sidebar, featuring the Title Suggestions panel.  
+   ![Parse.ly Editor Sidebar - Title Suggestions](.wordpress-org/screenshot-4.png)
+5. The Parse.ly Editor Sidebar, featuring the Smart Linking panel.  
+   ![Parse.ly Editor Sidebar - Smart Linking](.wordpress-org/screenshot-5.png)
+6. The Parse.ly Editor Sidebar, featuring the Related Posts panel.  
+   ![Parse.ly Editor Sidebar - Related Posts](.wordpress-org/screenshot-6.png)
+7. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.  
+   ![Parse.ly Editor Sidebar - Performance Stats](.wordpress-org/screenshot-7.png)
+8. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.  
+   ![Parse.ly Excerpt Suggestions](.wordpress-org/screenshot-8.png)
+9. The Recommendations Block, showcasing links to related content on your site.  
+   ![Parse.ly Recommendations Block](.wordpress-org/screenshot-9.png)
+10. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  
+   ![Parse.ly Dashboard Overview](.wordpress-org/screenshot-10.png)

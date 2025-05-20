@@ -8,7 +8,7 @@ import { type Page } from '@playwright/test';
  */
 import { Admin } from '@wordpress/e2e-test-utils-playwright';
 
-export const PLUGIN_VERSION = '3.18.1';
+export const PLUGIN_VERSION = '3.19.0';
 export const VALID_SITE_ID = 'demoaccount.parsely.com';
 export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
@@ -27,7 +27,7 @@ export const VALID_API_SECRET = 'valid_api_secret';
 export const setSiteKeys = async (
 	page: Page, siteId: string, apiSecret: string, bypassAPIValidation: boolean = true
 ): Promise<void> => {
-	await page.goto( 'wp-admin/options-general.php?page=parsely' + ( bypassAPIValidation ? '&e2e_parsely_skip_api_validate=y' : '' ) );
+	await page.goto( 'wp-admin/admin.php?page=parsely-settings' + ( bypassAPIValidation ? '&e2e_parsely_skip_api_validate=y' : '' ) );
 
 	await page.getByLabel( 'Site ID (required)' ).fill( siteId );
 	await page.getByLabel( 'API Secret' ).fill( apiSecret );

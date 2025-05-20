@@ -109,76 +109,109 @@ class Endpoint_Posts extends Base_Endpoint {
 			array( $this, 'get_posts' ),
 			array_merge(
 				array(
-					'period_start'   => array(
+					'use_wp_permalink' => array(
+						'description' => 'Whether to use the WordPress permalink.',
+						'type'        => 'boolean',
+						'required'    => false,
+						'default'     => false,
+					),
+					'period_start'     => array(
 						'description' => 'The start of the period to query.',
 						'type'        => 'string',
 						'required'    => false,
 					),
-					'period_end'     => array(
+					'period_end'       => array(
 						'description' => 'The end of the period to query.',
 						'type'        => 'string',
 						'required'    => false,
 					),
-					'pub_date_start' => array(
+					'pub_date_start'   => array(
 						'description' => 'The start of the publication date range to query.',
 						'type'        => 'string',
 						'required'    => false,
 					),
-					'pub_date_end'   => array(
+					'pub_date_end'     => array(
 						'description' => 'The end of the publication date range to query.',
 						'type'        => 'string',
 						'required'    => false,
 					),
-					'limit'          => array(
+					'limit'            => array(
 						'description' => 'The number of posts to return.',
 						'type'        => 'integer',
 						'required'    => false,
 						'default'     => self::TOP_POSTS_DEFAULT_LIMIT,
 					),
-					'sort'           => array(
+					'sort'             => array(
 						'description' => 'The sort order of the posts.',
 						'type'        => 'string',
 						'enum'        => self::SORT_METRICS,
 						'default'     => self::SORT_DEFAULT,
 						'required'    => false,
 					),
-					'page'           => array(
+					'page'             => array(
 						'description' => 'The page to fetch.',
 						'type'        => 'integer',
 						'required'    => false,
 						'default'     => 1,
 					),
-					'author'         => array(
+					'author'           => array(
 						'description'       => 'Comma-separated list of authors to filter by.',
 						'type'              => 'string',
 						'required'          => false,
 						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
 						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
-					'section'        => array(
+					'section'          => array(
 						'description'       => 'Comma-separated list of sections to filter by.',
 						'type'              => 'string',
 						'required'          => false,
 						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
 						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
-					'tag'            => array(
+					'tag'              => array(
 						'description'       => 'Comma-separated list of tags to filter by.',
 						'type'              => 'string',
 						'required'          => false,
 						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
 						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
-					'segment'        => array(
+					'segment'          => array(
 						'description' => 'The segment to filter by.',
 						'type'        => 'string',
 						'required'    => false,
 					),
-					'urls'           => array(
+					'urls'             => array(
 						'description'       => 'The URLs to fetch data for.',
 						'type'              => 'array',
 						'sanitize_callback' => array( $this, 'sanitize_urls' ),
+						'validate_callback' => array( $this, 'validate_urls' ),
 						'required'          => false,
+					),
+					// Optional Campaign Parameters.
+					'campaign_id'      => array(
+						'description' => 'The campaign to filter by.',
+						'type'        => 'string',
+						'required'    => false,
+					),
+					'campaign_medium'  => array(
+						'description' => 'The medium to filter by.',
+						'type'        => 'string',
+						'required'    => false,
+					),
+					'campaign_source'  => array(
+						'description' => 'The source to filter by.',
+						'type'        => 'string',
+						'required'    => false,
+					),
+					'campaign_content' => array(
+						'description' => 'The content to filter by.',
+						'type'        => 'string',
+						'required'    => false,
+					),
+					'campaign_term'    => array(
+						'description' => 'The term to filter by.',
+						'type'        => 'string',
+						'required'    => false,
 					),
 				),
 				$this->get_itm_source_param_args()
@@ -212,6 +245,24 @@ class Endpoint_Posts extends Base_Endpoint {
 	 */
 	public function sanitize_urls( array $urls ): array {
 		return array_map( 'sanitize_url', $urls );
+	}
+
+	/**
+	 * Validates if the provided array is a list of URLs.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param array<string> $urls The array to validate.
+	 * @return true|WP_Error
+	 */
+	public function validate_urls( array $urls ) {
+		foreach ( $urls as $url ) {
+			if ( false === filter_var( $url, FILTER_VALIDATE_URL ) ) {
+				return new WP_Error( 'invalid_param', __( 'The parameter must be a list of URLs.', 'wp-parsely' ) );
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -250,31 +301,66 @@ class Endpoint_Posts extends Base_Endpoint {
 		// Setup the itm_source if it is provided.
 		$this->set_itm_source_from_request( $request );
 
+		// Determine if we should use the campaign parameters.
+		$use_campaign_params = false;
+		if ( isset( $params['campaign_id'] ) ||
+			isset( $params['campaign_medium'] ) ||
+			isset( $params['campaign_source'] ) ||
+			isset( $params['campaign_content'] ) ||
+			isset( $params['campaign_term'] ) ) {
+			$use_campaign_params = true;
+		}
+
+		// If we are using the WordPress permalink, generate a canonical URL for each URL.
+		if ( isset( $params['use_wp_permalink'] ) && $params['use_wp_permalink'] && isset( $params['urls'] ) && is_array( $params['urls'] ) ) {
+			$new_urls = array();
+
+			foreach ( $params['urls'] as $url ) {
+				// Generate a canonical URL for the WordPress permalink.
+				$new_urls[] = \Parsely\Parsely::get_canonical_url( $url );
+
+				// Also append the WordPress permalink to the new URLs as a fallback.
+				$new_urls[] = $url;
+			}
+
+			$params['urls'] = $new_urls;
+		}
+
+		// Build the request params.
+		$request_params = array(
+			'period_start'   => $params['period_start'] ?? null,
+			'period_end'     => $params['period_end'] ?? null,
+			'pub_date_start' => $params['pub_date_start'] ?? null,
+			'pub_date_end'   => $params['pub_date_end'] ?? null,
+			'limit'          => $params['limit'] ?? self::TOP_POSTS_DEFAULT_LIMIT,
+			'sort'           => $params['sort'] ?? self::SORT_DEFAULT,
+			'page'           => $params['page'] ?? 1,
+			'author'         => $params['author'] ?? null,
+			'section'        => $params['section'] ?? null,
+			'tag'            => $params['tag'] ?? null,
+			'segment'        => $params['segment'] ?? null,
+			'itm_source'     => $params['itm_source'] ?? null,
+			'urls'           => $params['urls'] ?? null,
+		);
+
 		/**
 		 * The raw analytics data, received by the API.
 		 *
-		 * @var array<stdClass>|WP_Error $analytics_request
+		 * @var array<array<string, mixed>>|WP_Error $analytics_request
 		 */
-		$analytics_request = $this->content_api->get_posts(
-			array(
-				'period_start'   => $params['period_start'] ?? null,
-				'period_end'     => $params['period_end'] ?? null,
-				'pub_date_start' => $params['pub_date_start'] ?? null,
-				'pub_date_end'   => $params['pub_date_end'] ?? null,
-				'limit'          => $params['limit'] ?? self::TOP_POSTS_DEFAULT_LIMIT,
-				'sort'           => $params['sort'] ?? self::SORT_DEFAULT,
-				'page'           => $params['page'] ?? 1,
-				'author'         => $params['author'] ?? null,
-				'section'        => $params['section'] ?? null,
-				'tag'            => $params['tag'] ?? null,
-				'segment'        => $params['segment'] ?? null,
-				'itm_source'     => $params['itm_source'] ?? null,
-				'urls'           => $params['urls'] ?? null,
-			)
-		);
+		$analytics_request = $this->content_api->get_posts( $request_params );
 
 		if ( is_wp_error( $analytics_request ) ) {
 			return $analytics_request;
+		}
+
+		// If we are using campaign parameters, fetch the additional campaign data.
+		if ( $use_campaign_params ) {
+			$analytics_request = $this->fetch_campaign_data( $analytics_request, $params, $request_params );
+
+			if ( is_wp_error( $analytics_request ) ) {
+				return $analytics_request;
+			}
 		}
 
 		// Process the data.
@@ -295,5 +381,102 @@ class Endpoint_Posts extends Base_Endpoint {
 		);
 
 		return new WP_REST_Response( $response_data, 200 );
+	}
+
+	/**
+	 * Fetches the campaign data for the posts.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param array<int<0, max>, array<string, mixed>> $posts The posts.
+	 * @param array<string, mixed>                     $params The parameters.
+	 * @param array<string, mixed>                     $request_params The request parameters.
+	 * @return array<int<0, max>, array<string, mixed>>|WP_Error The posts with the campaign parameters added.
+	 */
+	public function fetch_campaign_data( array $posts, array $params, array $request_params = array() ) {
+		$campaign_params = array();
+
+		// Build the campaign params for the request.
+		if ( isset( $params['campaign_id'] ) ) {
+			$campaign_params['campaign_id'] = $params['campaign_id'];
+		}
+		if ( isset( $params['campaign_medium'] ) ) {
+			$campaign_params['campaign_medium'] = $params['campaign_medium'];
+		}
+		if ( isset( $params['campaign_source'] ) ) {
+			$campaign_params['campaign_source'] = $params['campaign_source'];
+		}
+		if ( isset( $params['campaign_content'] ) ) {
+			$campaign_params['campaign_content'] = $params['campaign_content'];
+		}
+		if ( isset( $params['campaign_term'] ) ) {
+			$campaign_params['campaign_term'] = $params['campaign_term'];
+		}
+
+		// Merge the campaign params with the request params.
+		/** @var array<string, array<string, mixed>> $request_params_with_campaign */
+		$request_params_with_campaign = array_merge( $campaign_params, $request_params );
+
+		$post_urls = array();
+		foreach ( $posts as $post ) {
+			if ( ! is_string( $post['link'] ) ) {
+				continue;
+			}
+
+			/**
+			 * Post URL without ITM parameters.
+			 *
+			 * @var string $post_url
+			 */
+			$post_url    = \Parsely\Parsely::get_url_with_itm_source( $post['link'], null );
+			$post_urls[] = $post_url;
+		}
+
+		// Fill the URLs with the campaign params.
+		/** @var array<string, array<string, mixed>> $request_params_with_campaign */
+		$request_params_with_campaign['urls'] = $post_urls;
+
+		/**
+		 * The raw analytics data, received by the API.
+		 *
+		 * @var array<array<string, mixed>>|WP_Error $campaign_request
+		 */
+		$campaign_request = $this->content_api->get_posts( $request_params_with_campaign );
+
+		if ( is_wp_error( $campaign_request ) ) {
+			/** @var WP_Error $campaign_request */
+			return $campaign_request;
+		}
+
+		$posts_with_campaign_data = array();
+		foreach ( $posts as $post ) {
+			// Find the post by URL in the campaign request.
+			$campaign_post = array_filter(
+				$campaign_request,
+				function ( array $item ) use ( $post ) {
+					return $item['link'] === $post['link'];
+				}
+			);
+
+			if ( array() === $campaign_post ) {
+				// If there are no campaign metrics available, skip this one.
+				$posts_with_campaign_data[] = $post;
+				continue;
+			}
+
+			/** @var array<string, array<string, mixed>> $campaign_post */
+			$campaign_post = $campaign_post[0];
+
+			$post['campaign_metrics'] = array(
+				'views'              => $campaign_post['metrics']['views'],
+				'visitors'           => $campaign_post['metrics']['visitors'],
+				'recirculation_rate' => $campaign_post['metrics']['recirculation_rate'],
+				'avg_engaged'        => $campaign_post['metrics']['avg_engaged'],
+			);
+
+			$posts_with_campaign_data[] = $post;
+		}
+
+		return $posts_with_campaign_data;
 	}
 }

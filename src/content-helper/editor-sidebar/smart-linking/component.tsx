@@ -265,7 +265,7 @@ export const SmartLinkingPanel = ( {
 			createNotice(
 				'success',
 				/* translators: %d: number of smart links applied */
-				sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numAddedLinks ),
+				sprintf( __( '%s Smart Links successfully applied.', 'wp-parsely' ), numAddedLinks ),
 				{
 					type: 'snackbar',
 				},
@@ -374,7 +374,7 @@ export const SmartLinkingPanel = ( {
 
 		// Filter out self-referencing links.
 		links = links.filter( ( link ) => {
-			if ( link.href.includes( strippedPermalink ) ) {
+			if ( link.href.raw.includes( strippedPermalink ) ) {
 				// eslint-disable-next-line no-console
 				console.warn( `PCH Smart Linking: Skipping self-reference link: ${ link.href }` );
 				return false;
@@ -482,7 +482,7 @@ export const SmartLinkingPanel = ( {
 			// If after processing the smart links there are no links to suggest, show an error message.
 			if ( processedSmartLinks.length === 0 ) {
 				throw new ContentHelperError(
-					__( 'No smart links were generated.', 'wp-parsely' ),
+					__( 'No Smart Links were generated.', 'wp-parsely' ),
 					ContentHelperErrorCode.ParselySuggestionsApiNoData,
 					''
 				);
@@ -695,7 +695,7 @@ export const SmartLinkingPanel = ( {
 					>
 						{ sprintf(
 							/* translators: 1 - number of smart links generated */
-							__( 'Successfully added %s smart links.', 'wp-parsely' ),
+							__( 'Successfully added %s Smart Links.', 'wp-parsely' ),
 							numAddedLinks > 0 ? numAddedLinks : suggestedLinks.length,
 						) }
 					</Notice>
