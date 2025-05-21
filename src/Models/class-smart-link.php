@@ -197,7 +197,7 @@ class Smart_Link extends Base_Model {
 		$cache_key = self::get_uid_to_smart_link_cache_key( $uid );
 		$cached    = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 
-		if ( is_numeric( $cached ) && 0 !== (int) $cached ) {
+		if ( false !== $cached && is_numeric( $cached ) ) {
 			return (int) $cached;
 		}
 
@@ -1098,7 +1098,7 @@ class Smart_Link extends Base_Model {
 		$cache_group = self::get_smart_links_post_cache_group( $post_id );
 		$link_counts = wp_cache_get( $cache_key, $cache_group );
 
-		if ( is_array( $link_counts ) ) {
+		if ( false !== $link_counts && is_array( $link_counts ) ) {
 			return $link_counts;
 		}
 

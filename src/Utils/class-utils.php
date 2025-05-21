@@ -430,7 +430,7 @@ class Utils {
 		$cache_key = sprintf( 'url-to-postid-%s', hash( 'sha256', $url ) );
 		$cache     = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 
-		if ( is_numeric( $cache ) ) {
+		if ( false !== $cache && is_numeric( $cache ) ) {
 			return (int) $cache;
 		}
 
