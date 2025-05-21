@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Make some caching checks more flexible ([#3351](https://github.com/Parsely/wp-parsely/pull/3351))
 
-
 ## [3.19.0](https://github.com/Parsely/wp-parsely/compare/3.18.1...3.19.0) - 2025-05-20
 
 ### Added
