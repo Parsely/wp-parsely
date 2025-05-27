@@ -54,7 +54,7 @@ export async function isEditorReady(): Promise<void> {
 /**
  * Adds ITM parameters to a URL.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {string} url                The URL to add ITM parameters to.
  * @param {Object} itmParams          The ITM parameters to add to the URL.
@@ -95,7 +95,7 @@ export function addITMParamsToURL( url: string, itmParams: {
 /**
  * Removes ITM parameters from a URL.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {string} url The URL to remove ITM parameters from.
  *

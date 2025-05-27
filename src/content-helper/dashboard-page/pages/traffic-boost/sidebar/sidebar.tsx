@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { ContentHelperError } from '../../../../common/content-helper-error';
 import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { SidebarHeader } from './components/header';
@@ -23,22 +24,23 @@ import './sidebar.scss';
 /**
  * Defines the props structure for TrafficBoostSidebar.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TrafficBoostSidebarProps {
     onLinkClick?: ( link: TrafficBoostLink ) => void;
+	hardError?: ContentHelperError;
 }
 
 /**
  * Sidebar component for the Traffic Boost feature.
  * Displays post details, stats, and manages boost links functionality.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TrafficBoostSidebarProps} props The component's props.
  */
 export const TrafficBoostSidebar = ( {
-	onLinkClick,
+	onLinkClick, hardError,
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
@@ -61,7 +63,7 @@ export const TrafficBoostSidebar = ( {
 	/**
 	 * Handles tab counters updates in the UI.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const updateTabCount = (
@@ -98,7 +100,7 @@ export const TrafficBoostSidebar = ( {
 	/**
 	 * Whenever the selected tab changes, selects it by simulating a click.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const tab = document.querySelector( `.traffic-boost-sidebar-tabs .${ selectedTab }-tab` ) as HTMLElement;
@@ -121,7 +123,7 @@ export const TrafficBoostSidebar = ( {
 					tabs={ [
 						{
 							name: TrafficBoostSidebarTabs.SUGGESTIONS,
-							title: __( 'Link Suggestions', 'wp-parsely' ),
+							title: __( 'Suggested Sources', 'wp-parsely' ),
 							className: 'traffic-boost-tab suggestions-tab',
 						},
 						{
@@ -136,6 +138,7 @@ export const TrafficBoostSidebar = ( {
 						activeTab={ tab }
 						onSuggestionClick={ onLinkClick }
 						onInboundLinkClick={ onLinkClick }
+						hardError={ hardError }
 					/> }
 				</TabPanel>
 			</div>

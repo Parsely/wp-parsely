@@ -3,7 +3,7 @@
  * Class for validating the blending weight parameter
  *
  * @package Parsely
- * @since 3.18.0
+ * @since 3.19.0
  */
 
 declare(strict_types=1);
@@ -17,13 +17,13 @@ use WP_Error;
 /**
  * Class for validating the blending weight parameter.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 class Validate_Blending_Weight extends Base_Validation {
 	/**
 	 * Validates the blending weight parameter.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param mixed           $param   The parameter value.
 	 * @param WP_REST_Request $request The request object.
@@ -47,4 +47,4 @@ class Validate_Blending_Weight extends Base_Validation {
 
 		return true;
 	}
-} 
+}

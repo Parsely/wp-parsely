@@ -10,6 +10,14 @@
 		}
 	}
 
+	.content-helper-message {
+		margin-top: 1.5rem;
+
+		p {
+			padding: 0.5rem;
+		}
+	}
+
 	.disabled-before-posting,
 	fieldset:disabled,
 	tr:has(fieldset:disabled) {

@@ -11,7 +11,7 @@ import { getContentArea } from '../utils';
 /**
  * Custom hook to inject styles into the iframe.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {Document} iframeDocument The iframe's document object.
  */
@@ -115,7 +115,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 /**
  * Props structure for TextSelectionPopover.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TextSelectionPopoverProps {
 	onSelect: () => void;
@@ -127,7 +127,7 @@ interface TextSelectionPopoverProps {
 /**
  * Component that renders the popover content for text selection.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TextSelectionPopoverProps} props The component's props.
  */
@@ -139,27 +139,36 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	/**
 	 * Checks if the given node or its children contain an anchor.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Node} node The node to check.
 	 *
 	 * @return {boolean} True if the node or its children contain an anchor, false otherwise.
 	 */
-	const containsAnchor = useCallback( ( node: Node ): boolean => {
-		if ( node.nodeType === Node.ELEMENT_NODE ) {
-			const element = node as Element;
-			if ( element.tagName === 'A' ) {
-				return true;
+	const containsAnchor = useCallback( ( range: Range ): boolean => {
+		let currentNode: Node | null = range.startContainer;
+		const endNode = range.endContainer;
+
+		while ( currentNode !== null ) {
+			if ( currentNode.nodeType === Node.ELEMENT_NODE ) {
+				const element = currentNode as Element;
+				if ( element.tagName === 'A' ) {
+					// There is an anchor present in the selection.
+					return true;
+				}
 			}
-			return Array.from( element.children ).some( containsAnchor );
+
+			currentNode = getNextNode( currentNode, false, endNode );
 		}
+
+		// No nodes matched, no anchor present in the selection.
 		return false;
 	}, [] );
 
 	/**
 	 * Checks if the selection is the entire link text.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return {boolean} True if the selection is the entire link text, false otherwise.
 	 */
@@ -184,18 +193,17 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	/**
 	 * Checks if the selection is within a link and sets an error message if it is.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
-		const range = selection.getRangeAt( 0 );
-		const container = range.commonAncestorContainer;
-
 		if ( isAllLinkTextSelected() ) {
 			setIsReplacingLink( true );
 			return;
 		}
 
-		if ( containsAnchor( container ) ) {
+		const range = selection.getRangeAt( 0 );
+
+		if ( containsAnchor( range ) ) {
 			setError( __( 'Select text without existing links.', 'wp-parsely' ) );
 			return;
 		}
@@ -235,7 +243,7 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 /**
  * Props structure for TextSelectionTooltip.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TextSelectionTooltipProps {
 	iframeRef: React.RefObject<HTMLIFrameElement>;
@@ -246,7 +254,7 @@ interface TextSelectionTooltipProps {
  * A tooltip component that appears over selected text, offering to use that
  * text as link text.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TextSelectionTooltipProps} props The component's props.
  */
@@ -257,7 +265,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Expands the current selection to word boundaries.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Selection} docSelection The document's current selection.
 	 * @param {Range}     range        The current selection range.
@@ -297,7 +305,7 @@ export const TextSelectionTooltip = ( {
 	 * Expands the current selection to encompass the entire link node if
 	 * selection is within a link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Selection} docSelection The document's current selection.
 	 * @param {Range}     range        The current selection range.
@@ -333,7 +341,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Calculates the offset of the selected text by counting previous occurrences.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {Document}  iframeDocument The iframe's document object.
 	 * @param {Selection} docSelection   The document's current selection.
@@ -367,7 +375,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Handles the selection of text in the iframe.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleSelection = useCallback( () => {
 		const iframeDocument = iframeRef.current?.contentDocument;
@@ -471,7 +479,7 @@ export const TextSelectionTooltip = ( {
 		/**
 		 * Updates the position of the highlight.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 */
 		const updatePosition = () => {
 			console.log( '<TextSelectionTooltip> Updating position' );
@@ -498,7 +506,7 @@ export const TextSelectionTooltip = ( {
 		/**
 		 * Cleans up the highlight and event listeners.
 		 *
-		 * @since 3.18.0
+		 * @since 3.19.0
 		 */
 		const cleanup = () => {
 			iframeDocument.removeEventListener( 'scroll', scrollHandler );
@@ -511,7 +519,7 @@ export const TextSelectionTooltip = ( {
 	/**
 	 * Injects styles and adds event listeners when the component mounts.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		const iframeDocument = iframeRef.current?.contentDocument;
@@ -535,4 +543,32 @@ export const TextSelectionTooltip = ( {
 	}, [ handleSelection, iframeRef ] );
 
 	return null;
+};
+
+/**
+ * Traverses the DOM tree to find the next node in document order.
+ *
+ * @since 3.19.0
+ *
+ * @param {Node}    node         The current node to start traversal from.
+ * @param {boolean} skipChildren Whether to skip the current node's children and move to its next sibling.
+ * @param {Node}    endNode      The node at which to stop traversal. If reached, returns null.
+ *
+ * @return {Node|null} The next node in document order, or null if no next node exists
+ *                     or if the endNode is reached.
+ */
+const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node ): Node | null {
+	if ( endNode === node ) {
+		return null;
+	}
+
+	if ( node.firstChild && ! skipChildren ) {
+		return node.firstChild;
+	}
+
+	if ( ! node.parentNode ) {
+		return null;
+	}
+
+	return node.nextSibling ? node.nextSibling : getNextNode( node.parentNode, true, endNode );
 };

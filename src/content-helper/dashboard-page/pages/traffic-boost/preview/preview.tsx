@@ -13,11 +13,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../common/content-helper-error';
 import { HydratedPost } from '../../../../common/providers/base-wordpress-provider';
-import {
-	TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
-	TrafficBoostLink,
-	TrafficBoostProvider,
-} from '../provider';
+import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
@@ -27,7 +23,7 @@ import './preview.scss';
 /**
  * Structure of a text selection.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export interface TextSelection {
 	text: string;
@@ -37,7 +33,7 @@ export interface TextSelection {
 /**
  * Props for the TrafficBoostPreview component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
@@ -50,7 +46,7 @@ interface TrafficBoostPreviewProps {
 /**
  * Component that renders the Traffic Boost preview.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {TrafficBoostPreviewProps} props The component's props.
  */
@@ -72,8 +68,6 @@ export const TrafficBoostPreview = ( {
 	const [ previewUrl, setPreviewUrl ] = useState<string>( '' );
 	const [ totalItems, setTotalItems ] = useState<number>( 0 );
 	const [ itemIndex, setItemIndex ] = useState<number>( 0 );
-
-	const [ ignoredKeywords, setIgnoredKeywords ] = useState<string[]>( [] );
 
 	const {
 		createSuccessNotice,
@@ -100,14 +94,12 @@ export const TrafficBoostPreview = ( {
 		setSelectedTab,
 		setIsAccepting,
 		setIsRemoving,
-		setIsGenerating,
-		updateSuggestion,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
 	 * Sets the active link to the provided active link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setActiveLink( providedActiveLink );
@@ -117,19 +109,18 @@ export const TrafficBoostPreview = ( {
 	 * Sets the active post to the target post of the active link,
 	 * and unsets the text selection when the active link changes.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		setActivePost( activeLink.targetPost );
 		setIsInboundLink( ! activeLink.isSuggestion );
 		setSelectedText( null );
-		setIgnoredKeywords( [] );
 	}, [ activeLink ] );
 
 	/**
 	 * Sets the total items and item index based on the active link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( activeLink.isSuggestion ) {
@@ -144,7 +135,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Sets the preview URL based on the active post and frontend preview setting.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( ! activePost ) {
@@ -179,7 +170,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Opens the post in a new tab.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const openPostInNewTab = () => {
 		if ( ! activePost?.link ) {
@@ -192,7 +183,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Opens the post editor in a new tab.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const openPostEditor = () => {
 		if ( ! activePost?.id ) {
@@ -205,7 +196,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Opens the Parse.ly dashboard for this post in a new tab.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const openParselyDashboard = () => {
 		if ( ! activePost?.link ) {
@@ -219,7 +210,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the next item event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleNext = () => {
 		let nextItem: TrafficBoostLink | undefined;
@@ -238,7 +229,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the previous item event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handlePrevious = () => {
 		let previousItem: TrafficBoostLink | undefined;
@@ -258,7 +249,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the accept event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link The link to accept.
 	 */
@@ -306,7 +297,7 @@ export const TrafficBoostPreview = ( {
 
 		// Show a snackbar success message.
 		createSuccessNotice(
-			__( 'Link planted on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			__( 'Link planted', 'wp-parsely' ),
 			{
 				type: 'snackbar',
 				icon: <Icon icon={ linkIcon } />,
@@ -331,7 +322,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Discards a suggestion.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link The link to discard.
 	 */
@@ -356,7 +347,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Removes an inbound link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link            The link to remove.
 	 * @param {boolean}          restoreOriginal Whether to restore the original link.
@@ -396,7 +387,7 @@ export const TrafficBoostPreview = ( {
 
 		// Show a snackbar success message.
 		createSuccessNotice(
-			__( 'Link removed from', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			__( 'Link removed', 'wp-parsely' ),
 			{
 				type: 'snackbar',
 				icon: <Icon icon={ linkOff } />,
@@ -418,7 +409,7 @@ export const TrafficBoostPreview = ( {
 	/**
 	 * Handles the update link event.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param {TrafficBoostLink} link            The link to update.
 	 * @param {boolean}          restoreOriginal Whether to restore the original link.
@@ -461,7 +452,7 @@ export const TrafficBoostPreview = ( {
 
 		// Show a snackbar success message.
 		createSuccessNotice(
-			__( 'Link updated on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			__( 'Link updated', 'wp-parsely' ),
 			{
 				type: 'snackbar',
 				icon: <Icon icon={ linkIcon } />,
@@ -473,121 +464,6 @@ export const TrafficBoostPreview = ( {
 
 		// Clear the selected text.
 		setSelectedText( null );
-	};
-
-	const handleRegenerate = () => {
-		if ( activeLink.isSuggestion ) {
-			handleRegenerateSuggestion();
-		} else {
-			handleRegenerateInboundLink();
-		}
-	};
-
-	/**
-	 * Handles the regenerate suggestion event.
-	 *
-	 * @since 3.18.0
-	 */
-	const handleRegenerateSuggestion = async () => {
-		if ( ! post ) {
-			return;
-		}
-
-		setIsGenerating( activeLink, true );
-		setSelectedText( null );
-
-		// Remove the smart link from the active link.
-		const oldSmartLink = activeLink.smartLink;
-		activeLink.smartLink = undefined;
-
-		// Update the active link.
-		updateSuggestion( activeLink );
-		setIsLoading( true );
-
-		// Add the current keyword to the ignored keywords.
-		setIgnoredKeywords( [ ...ignoredKeywords, oldSmartLink?.text ?? '' ] );
-
-		try {
-			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
-				post,
-				activeLink.targetPost,
-				activeLink,
-				{
-					ignoreKeywords: [ ...ignoredKeywords, oldSmartLink?.text ?? '' ],
-					performanceBlendingWeight: TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
-				},
-			);
-
-			updateSuggestion( updatedLink );
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-		} catch ( err ) {
-			// eslint-disable-next-line no-console
-			console.error( err );
-
-			// Restore the old smart link.
-			activeLink.smartLink = oldSmartLink;
-			updateSuggestion( activeLink );
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-
-			// Show a snackbar error message.
-			createErrorNotice(
-				__( 'Failed to regenerate suggested link.', 'wp-parsely' ),
-				{
-					type: 'snackbar',
-					icon: <Icon icon={ error } />,
-				}
-			);
-		} finally {
-			// Refresh the iframe.
-			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
-		}
-	};
-
-	/**
-	 * Handles the regenerate inbound link event.
-	 *
-	 * @since 3.18.0
-	 */
-	const handleRegenerateInboundLink = async () => {
-		if ( ! post ) {
-			return;
-		}
-
-		setIsGenerating( activeLink, true );
-		setSelectedText( null );
-		setIsLoading( true );
-
-		// Add the current keyword to the ignored keywords.
-		setIgnoredKeywords( [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ] );
-
-		try {
-			const updatedLink = await TrafficBoostProvider.getInstance().generateSuggestionForPost(
-				post,
-				activeLink.targetPost,
-				activeLink,
-				{
-					ignoreKeywords: [ ...ignoredKeywords, activeLink.smartLink?.text ?? '' ],
-					allowDuplicateLinks: true,
-					save: false,
-					performanceBlendingWeight: TRAFFIC_BOOST_DEFAULT_PERFORMANCE_BLENDING_WEIGHT,
-				},
-			);
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-			setSelectedText( { text: updatedLink.smartLink?.text ?? '', offset: updatedLink.smartLink?.offset ?? 0 } );
-		} catch ( err ) {
-			// eslint-disable-next-line no-console
-			console.error( err );
-
-			setSelectedText( null );
-			setIsGenerating( activeLink, false );
-			setIsLoading( false );
-		} finally {
-			// Refresh the iframe.
-			setPreviewUrl( previewUrl + '?cache-bust=' + Date.now() );
-		}
 	};
 
 	if ( ! activePost || ! post ) {
@@ -604,7 +480,6 @@ export const TrafficBoostPreview = ( {
 				onOpenParselyDashboard={ openParselyDashboard }
 				isFrontendPreview={ isFrontendPreview }
 				setIsFrontendPreview={ setIsFrontendPreview }
-				onRegeneratePressed={ handleRegenerate }
 			/>
 
 			<PreviewIframe
@@ -636,18 +511,6 @@ export const TrafficBoostPreview = ( {
 				onRemove={ handleRemove }
 				onRestoreOriginal={ handleRestoreOriginal }
 				selectedText={ selectedText }
-				onSelectIndex={ ( index ) => {
-					// If the link is inbound, do nothing.
-					if ( isInboundLink ) {
-						return;
-					}
-
-					const suggestion = suggestions?.[ index - 1 ];
-					if ( suggestion ) {
-						setItemIndex( index );
-						setSelectedLink( suggestion );
-					}
-				} }
 			/>
 		</div>
 	);

@@ -12,7 +12,7 @@ import { _n, sprintf } from '@wordpress/i18n';
 /**
  * Type definition for the SuggestionBubble component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type SuggestionBubbleProps = {
 	postId: number;
@@ -24,7 +24,7 @@ type SuggestionBubbleProps = {
  *
  * Used to display the number of pending suggestions for a post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SuggestionBubbleProps} props The props for the SuggestionBubble component.
  */
@@ -34,7 +34,7 @@ export const SuggestionBubble = ( { postId, numberOfSuggestions }: SuggestionBub
 	/**
 	 * Handles the click event on the suggestion bubble.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const handleClick = () => {
 		navigate( `/traffic-boost/${ postId }` );

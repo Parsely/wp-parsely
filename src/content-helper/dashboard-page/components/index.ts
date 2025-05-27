@@ -4,7 +4,7 @@
  * These are common components that are used to build dashboard pages, such as
  * the main dashboard page, the Traffic Boost page, and the Settings page.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 
 /**

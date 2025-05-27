@@ -1,6 +1,6 @@
 <?php
 /**
- * Telemetry: Telemetry activation and event registration for PHP events
+ * Telemetry: Telemetry activation and event registration
  *
  * @package Parsely\Telemetry
  * @since   3.12.0
@@ -13,8 +13,7 @@ use Parsely\Telemetry\Tracks;
 
 require_once __DIR__ . '/class-telemetry-system.php';
 
-// If in a VIP environment, disable the existing Telemetry implementation.
-// This avoids duplicate events being sent to Tracks.
+// If in a VIP environment, prevent logging duplicate Tracks events.
 if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
 	add_filter( 'wp_parsely_enable_telemetry_backend', '__return_false' );
 }
@@ -65,3 +64,13 @@ add_action(
 		$tracks->run();
 	}
 );
+
+// Attempt to enable the Pendo JavaScript library. It's up to the Pendo class to
+// decide whether the library will be enabled.
+if ( class_exists( '\Automattic\VIP\Telemetry\Pendo' ) ) {
+	add_action(
+		'admin_init',
+		// @phpstan-ignore argument.type
+		array( \Automattic\VIP\Telemetry\Pendo::class, 'enable_javascript_library' )
+	);
+}

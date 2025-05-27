@@ -430,8 +430,8 @@ class Utils {
 		$cache_key = sprintf( 'url-to-postid-%s', hash( 'sha256', $url ) );
 		$cache     = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
 
-		if ( is_integer( $cache ) ) {
-			return $cache;
+		if ( false !== $cache && is_numeric( $cache ) ) {
+			return (int) $cache;
 		}
 
 		if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
@@ -473,7 +473,7 @@ class Utils {
 	/**
 	 * Appends ITM parameters to a URL.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string    $url The URL to append the ITM parameters to.
 	 * @param ItmParams $params The ITM parameters to append.

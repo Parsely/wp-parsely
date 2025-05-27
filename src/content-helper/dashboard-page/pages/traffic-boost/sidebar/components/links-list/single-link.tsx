@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import type { ForwardedRef } from 'react';
+import type { ForwardedRef, KeyboardEvent } from 'react';
 
 /**
  * WordPress Dependencies
@@ -18,7 +18,7 @@ import { TrafficBoostLink } from '../../../provider';
 /**
  * Defines the props structure for SingleLink.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type SingleLinkProps = {
     suggestion: TrafficBoostLink;
@@ -29,7 +29,7 @@ type SingleLinkProps = {
 /**
  * The SingleLink component, before being forwarded.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SingleLinkProps}              props The component's props.
  * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.
@@ -43,10 +43,24 @@ export const SingleLinkComponent = (
 	/**
 	 * Handles the click event for the single link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	const onClickHandler = () => {
 		onClick?.( suggestion );
+	};
+
+	/**
+	 * Handles the keydown event for the single link.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param {KeyboardEvent<HTMLDivElement>} e The keyboard event.
+	 */
+	const handleKeyDown = ( e: KeyboardEvent<HTMLDivElement> ) => {
+		if ( e.key === 'Enter' || e.key === ' ' ) {
+			e.preventDefault();
+			onClickHandler();
+		}
 	};
 
 	return (
@@ -57,12 +71,7 @@ export const SingleLinkComponent = (
 				e.preventDefault();
 				onClickHandler();
 			} }
-			onKeyDown={ ( e ) => {
-				e.preventDefault();
-				if ( e.key === 'Enter' || e.key === ' ' ) {
-					onClickHandler();
-				}
-			} }
+			onKeyDown={ handleKeyDown }
 			role="button"
 			tabIndex={ 0 }
 			aria-label={ sprintf(
@@ -92,7 +101,7 @@ export const SingleLinkComponent = (
 /**
  * Displays a single Traffic Boost link.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SingleLinkProps}              props The component's props.
  * @param {ForwardedRef<HTMLDivElement>} ref   The forwarded ref.

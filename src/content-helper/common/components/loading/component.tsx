@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * TypewriterText component that animates text with a typewriter effect.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {Object} props         The component's props.
  * @param {string} props.message The message to display with typewriter effect.
@@ -51,7 +51,7 @@ const TypewriterText = ( { message }: { message: string } ): JSX.Element => {
 /**
  * Defines the props structure for Loading.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type LoadingProps = {
 	className?: string;
@@ -66,7 +66,7 @@ type LoadingProps = {
 /**
  * Loading component that displays a spinner and a message.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {LoadingProps} props The component's props.
  */

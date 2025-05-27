@@ -3,8 +3,9 @@
  */
 import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight } from '@wordpress/icons';
+import { arrowLeft, arrowRight, check, close, undo } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -13,12 +14,11 @@ import { VerticalDivider } from '../../../../../common/components/vertical-divid
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { TextSelection } from '../preview';
-import { useState } from '@wordpress/element';
 
 /**
  * Props structure for PreviewFooter.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface PreviewFooterProps {
 	activeLink: TrafficBoostLink | null;
@@ -28,7 +28,6 @@ interface PreviewFooterProps {
 	onDiscard: ( link: TrafficBoostLink ) => void;
 	onNext: () => void;
 	onPrevious: () => void;
-	onSelectIndex: ( index: number ) => void;
 	totalItems: number;
 	itemIndex: number;
 	onRestoreOriginal: () => void;
@@ -39,7 +38,7 @@ interface PreviewFooterProps {
  * Preview footer component for the Traffic Boost feature.
  * Displays link options for a selected post.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PreviewFooterProps} props The component's props.
  */
@@ -51,7 +50,6 @@ export const PreviewFooter = ( {
 	onNext,
 	onPrevious,
 	onRemove,
-	onSelectIndex,
 	totalItems,
 	itemIndex,
 	onRestoreOriginal,
@@ -84,6 +82,8 @@ export const PreviewFooter = ( {
 						variant="tertiary"
 						onClick={ onPrevious }
 						icon={ arrowLeft }
+						showTooltip={ true }
+						label={ __( 'Previous Suggested Source', 'wp-parsely' ) }
 					/>
 				) }
 			</div>
@@ -97,17 +97,20 @@ export const PreviewFooter = ( {
 								onClick={ () => onAccept( activeLink ) }
 								isBusy={ isAccepting }
 								disabled={ isAccepting }
+								icon={ isAccepting ? null : check }
 							>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
 							<Button
 								variant="tertiary"
 								onClick={ () => onDiscard( activeLink ) }
-							>{ __( 'Discard', 'wp-parsely' ) }</Button>
+								icon={ close }
+							>{ __( 'Reject', 'wp-parsely' ) }</Button>
 							{ selectedText && (
 								<>
 									<VerticalDivider size={ 36 } />
 									<Button
 										variant="tertiary"
 										onClick={ onRestoreOriginal }
+										icon={ undo }
 									>
 										{ __( 'Clear changes', 'wp-parsely' ) }
 									</Button>
@@ -125,7 +128,8 @@ export const PreviewFooter = ( {
 										onClick={ () => onUpdateLink( activeLink, restoreOriginal ) }
 										isBusy={ isAccepting }
 										disabled={ isAccepting }
-									>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+										icon={ isAccepting ? null : check }
+									>{ isAccepting ? __( 'Updating…', 'wp-parsely' ) : __( 'Update Link', 'wp-parsely' ) }</Button>
 									{ activeLink.smartLink?.is_link_replacement && (
 										<CheckboxControl
 											__nextHasNoMarginBottom
@@ -140,6 +144,7 @@ export const PreviewFooter = ( {
 									<Button
 										variant="tertiary"
 										onClick={ onRestoreOriginal }
+										icon={ undo }
 									>
 										{ __( 'Clear changes', 'wp-parsely' ) }
 									</Button>
@@ -147,12 +152,13 @@ export const PreviewFooter = ( {
 							) : (
 								<>
 									<Button
-										variant="tertiary"
+										variant={ isRemoving ? 'primary' : 'tertiary' }
+										icon={ isRemoving ? null : close }
 										onClick={ () => onRemove( activeLink, restoreOriginal ) }
 										isBusy={ isRemoving }
 										disabled={ isRemoving }
 										isDestructive
-									>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
+									>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove Link', 'wp-parsely' ) }</Button>
 									{ activeLink.smartLink?.is_link_replacement && (
 										<CheckboxControl
 											__nextHasNoMarginBottom
@@ -167,28 +173,6 @@ export const PreviewFooter = ( {
 							) }
 						</>
 					) }
-
-					{ ! isInboundLink && (
-						<div className="traffic-boost-preview-footer-navigation">
-							{ __( 'Suggestion', 'wp-parsely' ) }
-							<select
-								className="traffic-boost-preview-footer-navigation-number"
-								value={ itemIndex }
-								onChange={ ( e ) => {
-									const newIndex = parseInt( e.target.value, 10 );
-									onSelectIndex( newIndex );
-								} }
-							>
-								{ Array.from( { length: totalItems }, ( _, i ) => (
-									<option key={ i + 1 } value={ i + 1 }>{ i + 1 }</option>
-								) ) }
-							</select>
-							{ __( 'of', 'wp-parsely' ) }
-							<span className="traffic-boost-preview-footer-navigation-number">
-								{ totalItems }
-							</span>
-						</div>
-					) }
 				</div>
 			) }
 
@@ -198,6 +182,8 @@ export const PreviewFooter = ( {
 						variant="tertiary"
 						onClick={ onNext }
 						icon={ arrowRight }
+						showTooltip={ true }
+						label={ __( 'Next Suggested Source', 'wp-parsely' ) }
 					/>
 				) }
 			</div>

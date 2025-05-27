@@ -19,7 +19,7 @@ import { TrafficBoostStore } from '../../store';
 /**
  * Props for the AddNewLinkButton component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface AddNewLinkButtonProps {
 	onPostClick: ( post: HydratedPost ) => void;
@@ -30,7 +30,7 @@ interface AddNewLinkButtonProps {
 /**
  * A button that opens a dropdown to allow the user to add a new link to the suggestions list.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {AddNewLinkButtonProps} props The component's props.
  */
@@ -49,7 +49,7 @@ export const AddNewLinkButton = ( {
 	/**
 	 * Sets the post IDs of the suggestions so they can be excluded from the search.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		let postIds = [ currentPost?.id ?? 0 ];
@@ -76,7 +76,7 @@ export const AddNewLinkButton = ( {
 					isPressed={ isOpen }
 					disabled={ disabled }
 				>
-					{ __( 'Add', 'wp-parsely' ) }
+					{ __( 'Add Source Post', 'wp-parsely' ) }
 				</Button>
 			) }
 			popoverProps={ { placement: 'bottom-start' } }

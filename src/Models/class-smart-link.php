@@ -14,6 +14,7 @@ namespace Parsely\Models;
 use InvalidArgumentException;
 use Parsely\Parsely;
 use Parsely\Utils\Utils;
+use WP_Post;
 
 use const Parsely\PARSELY_CACHE_GROUP;
 
@@ -46,7 +47,7 @@ class Smart_Link extends Base_Model {
 	 *
 	 * For example, 'traffic_boost' or 'smart_linking'.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 * @var string|null The context of the smart link.
 	 */
 	protected $context = null;
@@ -54,9 +55,9 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The source post object.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
-	 * @var \WP_Post|null The source post.
+	 * @var WP_Post|null The source post.
 	 */
 	protected $source_post;
 
@@ -79,7 +80,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The post type of the source post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 * @var string The post type of the source post.
 	 */
 	public $source_post_type = 'unknown';
@@ -127,7 +128,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The status of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 * @var string|null The status of the smart link.
 	 */
 	protected $status = null;
@@ -143,7 +144,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The post meta of the smart link object.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 * @var array<string,array<int,mixed>> The post meta of the smart link.
 	 */
 	private $smart_link_post_meta = array();
@@ -195,8 +196,9 @@ class Smart_Link extends Base_Model {
 	private function get_smart_link_object_by_uid( string $uid ): int {
 		$cache_key = self::get_uid_to_smart_link_cache_key( $uid );
 		$cached    = wp_cache_get( $cache_key, PARSELY_CACHE_GROUP );
-		if ( is_int( $cached ) && 0 !== $cached ) {
-			return $cached;
+
+		if ( false !== $cached && is_numeric( $cached ) ) {
+			return (int) $cached;
 		}
 
 		$smart_links = new \WP_Query(
@@ -222,7 +224,7 @@ class Smart_Link extends Base_Model {
 				$cache_key,
 				$smart_links->posts[0],
 				PARSELY_CACHE_GROUP,
-				MONTH_IN_SECONDS
+				WEEK_IN_SECONDS
 			);
 			return $smart_links->posts[0];
 		}
@@ -361,7 +363,7 @@ class Smart_Link extends Base_Model {
 				self::get_uid_to_smart_link_cache_key( $this->uid ),
 				$post_id,
 				PARSELY_CACHE_GROUP,
-				MONTH_IN_SECONDS
+				WEEK_IN_SECONDS
 			);
 		}
 
@@ -407,7 +409,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Removes the smart link from the database.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return bool True if the smart link was removed successfully, false otherwise.
 	 */
@@ -419,11 +421,12 @@ class Smart_Link extends Base_Model {
 		// Delete the post object.
 		$deleted = wp_delete_post( $this->smart_link_id, true );
 
-		if ( false !== $deleted && null !== $deleted && is_a( $deleted, 'WP_Post' ) ) {
+		if ( $deleted instanceof WP_Post ) {
 			$this->smart_link_id = 0;
 			$this->exists        = false;
 			$this->status        = null;
 			$this->flush_all_cache();
+
 			return true;
 		}
 
@@ -459,7 +462,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Updates the UID of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function update_uid(): void {
 		$this->uid = $this->generate_uid();
@@ -468,7 +471,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Returns the href of the smart link with ITM parameters appended.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param bool $skip_utm_params Whether to skip the ITM parameters.
 	 * @return string The href of the smart link with ITM parameters appended.
@@ -496,7 +499,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Returns the context of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return string|null The context of the smart link.
 	 */
@@ -509,7 +512,7 @@ class Smart_Link extends Base_Model {
 	 *
 	 * If the smart link does not have a valid status, it is pending.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return string The status of the smart link.
 	 */
@@ -537,7 +540,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Checks if the smart link is applied.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @return bool True if the smart link is applied, false otherwise.
 	 */
@@ -548,7 +551,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Sets the status of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $status The status to set.
 	 * @param bool   $save Whether to save the status to the database.
@@ -569,7 +572,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Loads the post meta of the smart link object.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	private function load_post_meta(): void {
 		$post_meta = get_post_meta( $this->smart_link_id );
@@ -622,13 +625,13 @@ class Smart_Link extends Base_Model {
 	 *
 	 * This method is an alias for Smart_Link::set_source_post_id().
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @see Smart_Link::set_source_post_id()
-	 * @param \WP_Post    $post The source post.
+	 * @param WP_Post     $post The source post.
 	 * @param string|null $canonical_url The canonical URL for the source post, to be set if it is not already set.
 	 */
-	public function set_source_post( \WP_Post $post, $canonical_url = null ): void {
+	public function set_source_post( WP_Post $post, $canonical_url = null ): void {
 		$this->source_post = $post;
 		$this->set_source_post_id( $post->ID, $canonical_url );
 	}
@@ -671,12 +674,12 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Sets the destination post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
-	 * @param \WP_Post    $post The destination post.
+	 * @param WP_Post     $post The destination post.
 	 * @param string|null $canonical_url The canonical URL for the destination post, to be set if it is not already set.
 	 */
-	public function set_destination_post( \WP_Post $post, $canonical_url = null ): void {
+	public function set_destination_post( WP_Post $post, $canonical_url = null ): void {
 		$this->destination_post_id = $post->ID;
 		$this->href                = get_permalink( $post );
 
@@ -700,7 +703,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Sets the destination post ID.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @see Smart_Link::set_destination_post()
 	 * @param int         $destination_post_id The destination post ID.
@@ -718,7 +721,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Sets the UID of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $uid The UID of the smart link.
 	 */
@@ -746,7 +749,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Sets the context of the smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $context The context of the smart link.
 	 */
@@ -877,7 +880,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets smart links based on the specified parameters.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int                                                                  $post_id The post ID to get the smart links for.
 	 * @param string                                                               $type The type of smart links to get (outbound or inbound or all).
@@ -889,11 +892,11 @@ class Smart_Link extends Base_Model {
 	public static function get_smart_links( int $post_id, string $type, string $status, array $args = array(), $process_smart_link_callback = null ): array {
 		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
 			$status = 'all';
-			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.19.0' );
 		}
 
 		if ( ! in_array( $type, array( 'outbound', 'inbound', 'all' ), true ) ) {
-			_doing_it_wrong( __METHOD__, 'Invalid type, defaulting to outbound.', '3.18.0' );
+			_doing_it_wrong( __METHOD__, 'Invalid type, defaulting to outbound.', '3.19.0' );
 			$type = 'outbound';
 		}
 
@@ -961,7 +964,7 @@ class Smart_Link extends Base_Model {
 
 			// Cache the queried IDs.
 			$smart_link_ids = $smart_links_query->posts;
-			wp_cache_set( $cache_key, $smart_link_ids, $cache_group, MONTH_IN_SECONDS );
+			wp_cache_set( $cache_key, $smart_link_ids, $cache_group, DAY_IN_SECONDS );
 		}
 
 		// Create and process the smart links.
@@ -981,7 +984,7 @@ class Smart_Link extends Base_Model {
 				 * This callback is used to modify the smart link before it is added to the array,
 				 * or false if the smart link should be skipped.
 				 *
-				 * @since 3.18.0
+				 * @since 3.19.0
 				 *
 				 * @var Smart_Link|Inbound_Smart_Link|false|null $smart_link
 				 */
@@ -1004,7 +1007,7 @@ class Smart_Link extends Base_Model {
 	 * Outbound smart links are smart links that link to other posts.
 	 *
 	 * @since 3.16.0
-	 * @since 3.18.0 Added status parameter.
+	 * @since 3.19.0 Added status parameter.
 	 *
 	 * @param int    $post_id The post ID to get the smart links for.
 	 * @param string $status The status of the smart links to get.
@@ -1029,7 +1032,7 @@ class Smart_Link extends Base_Model {
 	 * Inbound smart links are links on other posts that link to the post.
 	 *
 	 * @since 3.16.0
-	 * @since 3.18.0 Added status parameter.
+	 * @since 3.19.0 Added status parameter.
 	 *
 	 * @param int    $post_id The post ID to get the smart links for.
 	 * @param string $status The status of the smart links to get.
@@ -1079,7 +1082,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets the link counts for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int    $post_id The post ID to get the link counts for.
 	 * @param string $status The status of the smart links to get.
@@ -1088,15 +1091,14 @@ class Smart_Link extends Base_Model {
 	public static function get_link_counts( int $post_id, string $status = Smart_Link_Status::ALL ): array {
 		if ( ! Smart_Link_Status::is_valid_status( $status ) ) {
 			$status = Smart_Link_Status::ALL;
-			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.18.0' );
+			_doing_it_wrong( __METHOD__, 'Invalid status, defaulting to all.', '3.19.0' );
 		}
 
 		$cache_key   = self::get_smart_link_counts_cache_key( $status );
 		$cache_group = self::get_smart_links_post_cache_group( $post_id );
 		$link_counts = wp_cache_get( $cache_key, $cache_group );
 
-		if ( false !== $link_counts ) {
-			/** @var array<string,int> */
+		if ( false !== $link_counts && is_array( $link_counts ) ) {
 			return $link_counts;
 		}
 
@@ -1163,7 +1165,7 @@ class Smart_Link extends Base_Model {
 			'outbound' => $outbound_links->found_posts,
 		);
 
-		wp_cache_set( $cache_key, $link_counts, $cache_group, MONTH_IN_SECONDS );
+		wp_cache_set( $cache_key, $link_counts, $cache_group, WEEK_IN_SECONDS );
 
 		return $link_counts;
 	}
@@ -1171,7 +1173,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Flushes the cache for a single smart link.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	protected function flush_cache(): void {
 		// Delete the cache for the smart link UID to post ID association.
@@ -1182,7 +1184,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Flushes the cache for all smart links in a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	public function flush_all_cache(): void {
 		$this->flush_cache();
@@ -1251,14 +1253,14 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Flushes the cache for all smart links associated with a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param int $post_id The post ID to flush the cache for.
 	 */
 	protected static function flush_cache_by_post_id( int $post_id ): void {
 		$cache_group = self::get_smart_links_post_cache_group( $post_id );
 
-		if ( function_exists( 'wp_cache_flush_group' ) ) {
+		if ( function_exists( 'wp_cache_flush_group' ) && wp_cache_supports( 'flush_group' ) ) {
 			wp_cache_flush_group( $cache_group );
 		} else {
 			$statuses = Smart_Link_Status::get_all_statuses();

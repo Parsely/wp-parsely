@@ -33,7 +33,7 @@ type ActionDropdownProps = {
  *
  * Represents the action dropdown for each post in the PostsTable.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {ActionDropdownProps} props The props for the ActionDropdown component.
  */
@@ -65,7 +65,7 @@ const ActionDropdown = ( { post }: ActionDropdownProps ): React.JSX.Element => (
 /**
  * SinglePostRowProps type.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type SinglePostRowProps = {
 	post: HydratedPost;
@@ -84,7 +84,7 @@ type SinglePostRowProps = {
  *
  * Represents a single post row in the PostsTable.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {SinglePostRowProps} props The props for the SinglePostRow component.
  */
@@ -110,7 +110,7 @@ export const SinglePostRow = ( {
 	/**
 	 * Handles when the stats have an error or are loading.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	useEffect( () => {
 		if ( undefined === stats && ! initialIsLoadingStats ) {

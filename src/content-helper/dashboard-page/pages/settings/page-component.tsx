@@ -3,7 +3,7 @@ import { PageBody, PageContainer, PageHeader } from '../../components';
 /**
  * Settings page component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const SettingsPage = (): React.JSX.Element => {
 	return (

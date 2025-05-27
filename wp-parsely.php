@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.18.1
+ * Version:           3.19.1
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -19,7 +19,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
  * Requires PHP:      7.2
- * Requires WP:       5.0.0
+ * Requires WP:       6.0.0
  */
 
 declare(strict_types=1);
@@ -49,7 +49,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION             = '3.18.1';
+const PARSELY_VERSION             = '3.19.1';
 const PARSELY_FILE                = __FILE__;
 const PARSELY_DATA_SCHEMA_VERSION = '1';
 const PARSELY_CACHE_GROUP         = 'wp-parsely';
@@ -64,7 +64,7 @@ require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
 /**
  * Gets the Parsely object.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @return Parsely The Parsely object.
  */
@@ -234,7 +234,7 @@ add_action( 'admin_init', __NAMESPACE__ . '\\parsely_check_data_schema_updates',
 /**
  * Checks and performs any data schema updates.
  *
- * @since 3.18.0 Handles the update from schema version 0 to 1.
+ * @since 3.19.0 Handles the update from schema version 0 to 1.
  */
 function parsely_check_data_schema_updates(): void {
 	$current_data_schema_version = get_option( 'parsely_data_schema_version' );
@@ -253,7 +253,7 @@ function parsely_check_data_schema_updates(): void {
 	 *
 	 * Schema version 1.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 */
 	if ( 0 === $current_data_schema_version ) {
 		// Get all the smart links that do not have any Smart Link Status terms.

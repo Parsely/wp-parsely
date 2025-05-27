@@ -15,7 +15,7 @@ import './traffic-boost.scss';
 /**
  * Traffic Boost page component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const TrafficBoostPage = (): React.JSX.Element => {
 	const [ searchQuery, setSearchQuery ] = useState<string>( '' );
@@ -29,7 +29,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	return (
 		<PageContainer name="traffic-boost">
 			<PageHeader>
-				<h1>{ __( 'Manage Traffic Boost', 'wp-parsely' ) }</h1>
+				<h1>{ __( 'Manage Traffic Boost (beta)', 'wp-parsely' ) }</h1>
 			</PageHeader>
 			<PageBody>
 				<div className="traffic-boost-search-container">

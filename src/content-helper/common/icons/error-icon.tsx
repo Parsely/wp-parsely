@@ -1,12 +1,12 @@
 /**
  * WordPress imports
  */
-import { SVG, Path } from '@wordpress/primitives';
+import { Path, SVG } from '@wordpress/primitives';
 
 /**
  * Error icon component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 export const ErrorIcon = (): JSX.Element => (
 	<SVG viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48" aria-hidden="true" focusable="false">

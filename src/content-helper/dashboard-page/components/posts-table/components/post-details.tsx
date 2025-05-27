@@ -13,7 +13,7 @@ import { getSmartShortDate } from '../../../../common/utils/date';
 /**
  * Type definition for the PostDetails component.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 type PostDetailsProps = {
 	post: HydratedPost;
@@ -24,7 +24,7 @@ type PostDetailsProps = {
  *
  * Represents the post details, the first column in the PostsTable.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @param {PostDetailsProps} props The component props.
  */

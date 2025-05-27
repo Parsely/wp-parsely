@@ -65,10 +65,6 @@ class Smart_Linking extends Editor_Sidebar_Feature {
 	 * @since 3.16.0
 	 */
 	public function run(): void {
-		if ( ! $this->can_enable_feature() ) {
-			return;
-		}
-
 		// Register private custom post type for the Smart Links.
 		$this->register_post_type();
 

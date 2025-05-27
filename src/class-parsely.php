@@ -555,16 +555,37 @@ class Parsely {
 		 */
 		$options = get_option( self::OPTIONS_KEY, null );
 
-		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
+		// Existing plugin installation without full metadata option.
+		/* @phpstan-ignore isset.offset, booleanAnd.alwaysFalse */
 		if ( is_array( $options ) && ! isset( $options['full_metadata_in_non_posts'] ) ) {
-			// Existing plugin installation without full metadata option.
 			$this->set_default_full_metadata_in_non_posts();
 		}
 
-		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
+		// Existing plugin installation without Content Helper options.
+		/* @phpstan-ignore isset.offset, booleanAnd.alwaysFalse */
 		if ( is_array( $options ) && ! isset( $options['content_helper'] ) ) {
-			// Existing plugin installation without Content Helper options.
 			$this->set_default_content_helper_settings_values();
+		}
+
+		// Existing plugin installation that's missing a Content Helper feature option.
+		/* @phpstan-ignore isset.offset */
+		if ( is_array( $options ) && isset( $options['content_helper'] ) ) {
+			/** @var array<string,Parsely_Options_Content_Helper_Feature> $pch_options */
+			$pch_options = $options['content_helper'];
+
+			/** @var array<string,Parsely_Options_Content_Helper_Feature> $pch_options_defaults */
+			$pch_options_defaults = $this->option_defaults['content_helper'];
+
+			if ( count( $pch_options ) !== count( $pch_options_defaults ) ) {
+				$new_keys = array_diff(
+					array_keys( $pch_options_defaults ),
+					array_keys( $pch_options )
+				);
+
+				foreach ( $new_keys as $key ) {
+					$options['content_helper'][ $key ] = $pch_options_defaults[ $key ];
+				}
+			}
 		}
 
 		// New plugin installation that hasn't saved its options yet.
@@ -976,7 +997,7 @@ class Parsely {
 	/**
 	 * Gets the Parse.ly canonical URL for a given post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_Post|int $post The post ID or post object.
 	 * @return string The Parse.ly canonical URL.
@@ -1004,7 +1025,7 @@ class Parsely {
 	 * If the current domain is different from the Parse.ly site ID, this function
 	 * will return the URL with the current domain.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param string $url The URL to get the canonical URL for.
 	 * @return string The canonical URL.
@@ -1033,7 +1054,7 @@ class Parsely {
 	/**
 	 * Sets the Parse.ly canonical URL for a post.
 	 *
-	 * @since 3.18.0
+	 * @since 3.19.0
 	 *
 	 * @param WP_Post|int $post The post object or post ID.
 	 * @param string      $url The canonical URL.

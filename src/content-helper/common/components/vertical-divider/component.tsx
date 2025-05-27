@@ -6,7 +6,7 @@ import { Rect, SVG } from '@wordpress/components';
 /**
  * Props structure for VerticalDivider.
  *
- * @since 3.18.0
+ * @since 3.19.0
  */
 interface VerticalDividerProps {
 	size?: number;
@@ -17,7 +17,7 @@ interface VerticalDividerProps {
  *
  * @since 3.14.0
  * @since 3.16.0 Moved from `RelatedPostItem` and `TitleSuggestion`.
- * @since 3.18.0 Added size prop.
+ * @since 3.19.0 Added size prop.
  *
  * @param {VerticalDividerProps} props The component's props.
  *

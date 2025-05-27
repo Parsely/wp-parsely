@@ -2,25 +2,30 @@
  * External dependencies
  */
 import {
+	Navigate,
 	Route,
 	HashRouter as Router,
 	Routes,
-	useLocation,
 } from 'react-router';
 
 /**
  * WordPress dependencies
  */
 import domReady from '@wordpress/dom-ready';
-import { createRoot, useEffect } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import { DashboardPage, SettingsPage, TrafficBoostPage } from './pages';
+import { SettingsPage, TrafficBoostPage } from './pages';
 import { TrafficBoostPostPage } from './pages/traffic-boost/single-post-component';
 
 domReady( () => {
+	// Highlight the Traffic Boost menu item under the Parse.ly menu.
+	document.querySelector(
+		'#toplevel_page_parsely-dashboard-page .wp-submenu li.wp-first-item'
+	)?.classList.add( 'current' );
+
 	const root = createRoot(
 		document.getElementById( 'parsely-dashboard-page' ) as Element
 	);
@@ -35,59 +40,14 @@ domReady( () => {
 /**
  * Main component for the Parse.ly dashboard.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @class
  */
 const ParselyDashboard = () => {
-	const location = useLocation();
-
-	/**
-	 * Replaces the first link to have the hash router link.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		const firstLink = document.querySelector(
-			'#toplevel_page_parsely-dashboard-page .wp-submenu li a.wp-first-item'
-		);
-		if ( firstLink ) {
-			firstLink.setAttribute(
-				'href', window.location.pathname + window.location.search + '#/'
-			);
-		}
-	}, [] );
-
-	/**
-	 * Changes the submenus highlight based on the current page.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		const submenuItems = document.querySelectorAll(
-			'#toplevel_page_parsely-dashboard-page .wp-submenu li'
-		);
-
-		submenuItems.forEach( ( item ) => {
-			const link = item.querySelector( 'a' );
-			const hashPath = link?.getAttribute( 'href' )?.split( '#' )[ 1 ];
-
-			// Get the base paths for comparison (first segment of the path).
-			const currentBasePath = location.pathname.split( '/' )[ 1 ];
-			const menuBasePath = hashPath?.split( '/' )[ 1 ];
-
-			if ( currentBasePath === menuBasePath || hashPath === location.pathname ) {
-				item.classList.add( 'current' );
-				link?.blur();
-			} else {
-				item.classList.remove( 'current' );
-			}
-		} );
-	}, [ location ] );
-
 	return (
 		<Routes>
-			<Route path="/" element={ <DashboardPage /> } />
+			<Route path="/" element={ <Navigate to="/traffic-boost" replace /> } />
 			<Route path="/traffic-boost" element={ <TrafficBoostPage /> } />
 			<Route path="/traffic-boost/:postId" element={ <TrafficBoostPostPage /> } />
 			<Route path="/settings" element={ <SettingsPage /> } />

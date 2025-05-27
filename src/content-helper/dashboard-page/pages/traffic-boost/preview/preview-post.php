@@ -2,7 +2,7 @@
 /**
  * Template for the preview frame.
  *
- * @since 3.18.0
+ * @since 3.19.0
  *
  * @global string $post_title The title of the post being previewed
  * @global string $block_content The rendered content of the post being previewed
@@ -13,8 +13,13 @@
 declare(strict_types=1);
 
 // Define constants to prevent unwanted scripts and styles from being loaded.
-define( 'IFRAME_REQUEST', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-define( 'WP_ADMIN', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+
+if ( ! defined( 'IFRAME_REQUEST' ) ) {
+	define( 'IFRAME_REQUEST', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+}
+if ( ! defined( 'WP_ADMIN' ) ) {
+	define( 'WP_ADMIN', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+}
 
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
