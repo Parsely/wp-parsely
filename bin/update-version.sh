@@ -11,8 +11,8 @@ set -e
 export LC_ALL=C
 
 if [ -z "$1" ]; then
- echo "Error: You must specify a version number."
- exit 1
+    echo "Error: You must specify a version number."
+    exit 1
 fi
 
 VERSION=$1
