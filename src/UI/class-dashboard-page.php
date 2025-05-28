@@ -118,10 +118,16 @@ final class Dashboard_Page {
 	 *
 	 * @since 3.19.0
 	 *
-	 * @param string $content The post content.
-	 * @return string The modified content with wrapper div if needed.
+	 * @param mixed $content The post content.
+	 * @return mixed The modified content with wrapper div if needed.
 	 */
-	public function add_parsely_preview_wrapper( string $content ): string {
+	public function add_parsely_preview_wrapper( mixed $content ): mixed {
+		if ( ! is_string( $content ) ) {
+			// Workaround for possible `the_content` filter issues that can cause fatal type errors
+			// if a prior filter returns a non-string value like `null`. In this case, ignore the filter.
+			return $content;
+		}
+
 		if ( ! isset( $_GET['parsely_preview'] ) || 'true' !== $_GET['parsely_preview'] ) {
 			return $content;
 		}
