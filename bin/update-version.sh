@@ -11,8 +11,8 @@ set -e
 export LC_ALL=C
 
 if [ -z "$1" ]; then
-    echo "Error: You must specify a version number."
-    exit 1
+	echo "Error: You must specify a version number."
+	exit 1
 fi
 
 VERSION=$1
@@ -21,16 +21,16 @@ git checkout -b update/wp-parsely-version-to-$VERSION
 
 # Function to perform in-place sed substitution.
 sed_inplace() {
-    local expression="$1"
-    local file="$2"
+	local expression="$1"
+	local file="$2"
 
-    if [[ "$(uname)" == "Darwin" ]]; then
-        # MacOS/BSD sed.
-        sed -i '' -e "$expression" "$file"
-    else
-        # GNU sed (Linux).
-        sed -i -e "$expression" "$file"
-    fi
+	if [[ "$(uname)" == "Darwin" ]]; then
+		# MacOS/BSD sed.
+		sed -i '' -e "$expression" "$file"
+	else
+		# GNU sed (Linux).
+		sed -i -e "$expression" "$file"
+	fi
 }
 
 # Update version in files.
