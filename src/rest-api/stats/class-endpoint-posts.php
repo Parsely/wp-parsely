@@ -333,7 +333,7 @@ class Endpoint_Posts extends Base_Endpoint {
 		 *
 		 * @param array<string>|null $urls The URLs to be used in the request.
 		 */
-		$params['urls'] = apply_filters( 'wp_parsely_stats_posts_urls', $params['urls'] );
+		$params['urls'] = apply_filters( 'wp_parsely_stats_posts_urls', $params['urls'] ?? null );
 
 		// Build the request params.
 		$request_params = array(
