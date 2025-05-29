@@ -244,11 +244,11 @@ class BaseAPIControllerTest extends TestCase {
 		// Create a mocked endpoint.
 		$endpoint = new class( $this->test_controller ) extends Base_Endpoint {
 			/**
-			 * Get the endpoint name.
+			 * Get the endpoint's name.
 			 *
 			 * @since 3.17.0
 			 *
-			 * @return string The endpoint name.
+			 * @return string The endpoint's name.
 			 */
 			public static function get_endpoint_name(): string {
 				return 'test-endpoint';

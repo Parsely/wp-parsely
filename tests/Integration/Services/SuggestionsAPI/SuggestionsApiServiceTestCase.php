@@ -59,7 +59,7 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	/**
 	 * Provides data for test_endpoint_is_registered().
 	 *
-	 * Should return an array of arrays, each containing the endpoint name and
+	 * Should return an array of arrays, each containing the endpoint's name and
 	 * class.
 	 *
 	 * @since 3.17.0
@@ -103,8 +103,8 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	 * @dataProvider data_registered_endpoints
 	 * @covers \Parsely\Services\Base_API_Service::get_endpoint
 	 *
-	 * @param string       $endpoint The endpoint name to check.
-	 * @param class-string $class_name The endpoint class to check.
+	 * @param string       $endpoint The endpoint's name to check.
+	 * @param class-string $class_name The endpoint's expected class.
 	 */
 	public function test_endpoint_is_registered( string $endpoint, string $class_name ): void {
 		// Check that the endpoint exists and is an instance of the expected class.
