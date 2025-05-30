@@ -94,6 +94,10 @@ export const PreviewIframe = ( {
 		return url.toString();
 	}, [ previewUrl ] );
 
+	const actionsBar = <div style={ { backgroundColor: 'white', border: '5px solid red', padding: '1rem', color: 'black' } }>
+		<button onClick={ () => console.log( 'Action Button Clicked' ) }>Action Button</button>
+	</div>;
+
 	/**
 	 * Highlights the smart link in the iframe.
 	 *
@@ -111,6 +115,7 @@ export const PreviewIframe = ( {
 		selectedText,
 		isInboundLink,
 		onRestoreOriginal,
+		actionsBar,
 	} );
 
 	/**
@@ -455,21 +460,6 @@ export const PreviewIframe = ( {
 							className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
 							sandbox="allow-same-origin allow-scripts"
 						/>
-
-						{ iframeRef.current?.contentDocument?.body && activeLink && onAccept && onDiscard && onUpdateLink && onRemove &&
-							createPortal(
-								<PreviewActions
-									activeLink={ activeLink }
-									onAccept={ onAccept }
-									onDiscard={ onDiscard }
-									onUpdateLink={ onUpdateLink }
-									onRemove={ onRemove }
-									onRestoreOriginal={ onRestoreOriginal }
-									selectedText={ selectedText ?? null }
-								/>,
-								iframeRef.current.contentDocument.body
-							)
-						}
 
 						<TextSelectionTooltip
 							iframeRef={ iframeRef }

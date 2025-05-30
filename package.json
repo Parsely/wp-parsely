@@ -39,8 +39,7 @@
 		"@types/js-cookie": "^3.0.6",
 		"@wordpress/dom-ready": "^4.24.0",
 		"js-cookie": "^3.0.5",
-		"lodash.debounce": "^4.0.8",
-		"react-draggable": "^4.4.6"
+		"lodash.debounce": "^4.0.8"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.52.0",

@@ -154,7 +154,7 @@ export const PreviewHeader = ( {
 					selectedLinkType={ null }
 				/>
 			</div>
-			<div className="traffic-boost-preview-actions">
+			<div className="traffic-boost-preview-header-actions">
 				{ ! isExternalURL( activeLink ) && false && (
 					<Button
 						icon={ desktop }

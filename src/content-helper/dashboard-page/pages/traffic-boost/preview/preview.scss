@@ -273,24 +273,3 @@
 		}
 	}
 }
-
-/* Cover to allow smooth dragging over iframe with draggable actions bar. */
-.draggable-iframe-cover {
-	position: absolute;
-	display: none;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-}
-
-/* Class added to <body> during dragging */
-.react-draggable-transparent-selection {
-	cursor: grabbing;
-
-	/* Turn on iframe cover during dragging */
-	.draggable-iframe-cover {
-		display: block;
-		z-index: 100;
-	}
-}

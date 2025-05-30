@@ -1,7 +1,7 @@
 /**
  * WordPress imports
  */
-import { useCallback } from '@wordpress/element';
+import { createRoot, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -24,6 +24,7 @@ interface UseIframeHighlightProps {
 	selectedText?: TextSelection | null;
 	isInboundLink: boolean;
 	onRestoreOriginal: () => void;
+	actionsBar: React.ReactNode;
 }
 
 /**
@@ -42,6 +43,7 @@ export const useIframeHighlight = ( {
 	selectedText,
 	isInboundLink,
 	onRestoreOriginal,
+	actionsBar,
 }: UseIframeHighlightProps ) => {
 	/**
 	 * Injects highlight styles into the iframe.
@@ -58,6 +60,12 @@ export const useIframeHighlight = ( {
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
+			/* Highlight container styles. */
+			.parsely-traffic-boost-highlight-container {
+				position: relative;
+				display: inline-block;
+			}
+
 			/** Smart link highlight styles. */
 			.smart-link-highlight {
 				outline: 2px solid #3858E9;
@@ -151,6 +159,18 @@ export const useIframeHighlight = ( {
 					background-color: transparent;
 					color: inherit;
 				}
+			}
+
+			/* Action bar styles. */
+			.parsely-traffic-boost-popover-actions {
+				position: absolute;
+				bottom: 2rem;
+				width: 100%;
+				text-align: center;
+			}
+
+			.parsely-traffic-boost-popover-actions button {
+				color: black;
 			}
 		`;
 		iframeDocument.head.appendChild( style );
@@ -263,19 +283,29 @@ export const useIframeHighlight = ( {
 					return;
 				}
 
+				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
+				if ( existingActions ) {
+					existingActions.remove();
+				}
+
+				const highlightContainerDiv = iframeDocument.createElement( 'div' );
+				highlightContainerDiv.className = 'parsely-traffic-boost-highlight-container';
+
 				const fragment = range.cloneContents();
-				const highlightSpan = iframeDocument.createElement( 'span' );
-				highlightSpan.className = isPrevious
+				const highlightDiv = iframeDocument.createElement( 'div' );
+				highlightDiv.className = isPrevious
 					? `${ className } previous-suggestion`
 					: className;
 
 				// Add ARIA attributes for accessibility.
-				highlightSpan.setAttribute( 'aria-label', highlightLabel );
-				highlightSpan.setAttribute( 'role', 'mark' );
+				highlightDiv.setAttribute( 'aria-label', highlightLabel );
+				highlightDiv.setAttribute( 'role', 'mark' );
 
 				if ( isPrevious ) {
-					highlightSpan.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
+					highlightDiv.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
 				}
+
+				highlightContainerDiv.appendChild( highlightDiv );
 
 				// Find if the range is within a link and if it encompasses the entire link text.
 				const container = range.commonAncestorContainer as Element;
@@ -287,23 +317,32 @@ export const useIframeHighlight = ( {
 
 				if ( isFullLinkSelected && linkNode ) {
 					// Create a new span and insert it before the link.
-					linkNode.parentNode?.insertBefore( highlightSpan, linkNode );
+					linkNode.parentNode?.insertBefore( highlightContainerDiv, linkNode );
 
 					// Move the link into the span.
-					highlightSpan.appendChild( linkNode );
+					highlightDiv.appendChild( linkNode );
 				} else {
 					// Normal case - no links or partial link selection.
 					range.deleteContents();
-					highlightSpan.appendChild( fragment );
-					range.insertNode( highlightSpan );
+					highlightDiv.appendChild( fragment );
+					range.insertNode( highlightContainerDiv );
 				}
 
-				return highlightSpan;
+				// Create popover container.
+				const actionsContainer = iframeDocument.createElement( 'div' );
+				actionsContainer.className = 'parsely-traffic-boost-popover-actions';
+				highlightContainerDiv.appendChild( actionsContainer );
+
+				// Create popover content.
+				const root = createRoot( actionsContainer );
+				root.render( actionsBar );
+
+				return highlightDiv;
 			} catch ( e ) {
 				// eslint-disable-next-line no-console
 				console.error( 'WP Parsely: Error highlighting range', e );
 			}
-		}, [ iframeRef ] );
+		}, [ iframeRef, actionsBar ] );
 
 	/**
 	 * Removes highlight spans from the iframe content.
