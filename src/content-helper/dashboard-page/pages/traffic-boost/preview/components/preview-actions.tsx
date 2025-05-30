@@ -20,7 +20,7 @@ import { TextSelection } from '../preview';
  * @since 3.19.0
  */
 interface PreviewActionsProps {
-	activeLink: TrafficBoostLink | null;
+	activeLink?: TrafficBoostLink | null;
 	onAccept: ( link: TrafficBoostLink ) => void;
 	onRemove: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 	onUpdateLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;

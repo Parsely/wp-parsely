@@ -240,36 +240,3 @@
 		}
 	}
 }
-
-.traffic-boost-preview-actions {
-	display: flex;
-	padding: var(--grid-unit-15) var(--grid-unit-20);
-	justify-content: center;
-	align-items: center;
-	background: rgba(255, 255, 255, 1);
-	width: fit-content;
-	border: 1px solid #1e1e1e;
-	position: absolute;
-	top: 0;
-	left: 0;
-
-	.traffic-boost-preview-actions-drag-handle {
-		flex-shrink: 0;
-		margin-right: var(--grid-unit-5);
-		cursor: grab;
-	}
-
-	.traffic-boost-preview-actions-buttons {
-		display: flex;
-		gap: var(--grid-unit-10);
-		align-items: center;
-		flex-wrap: nowrap;
-		justify-content: center;
-
-		.components-button {
-			height: to_rem(36px);
-			padding: var(--grid-unit-10) var(--grid-unit-20);
-			white-space: nowrap;
-		}
-	}
-}

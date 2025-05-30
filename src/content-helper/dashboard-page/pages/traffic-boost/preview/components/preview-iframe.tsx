@@ -3,7 +3,7 @@
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useMemo, useRef, createPortal } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -34,11 +34,10 @@ interface PreviewIframeProps {
 	isFrontendPreview: boolean;
 	onLoadingChange: ( isLoading: boolean ) => void;
 	onRestoreOriginal: () => void;
-	onScrollToHighlight?: ( rect: { top: number; left: number; width: number; height: number } ) => void;
-	onAccept?: ( link: TrafficBoostLink ) => void;
-	onDiscard?: ( link: TrafficBoostLink ) => void;
-	onUpdateLink?: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
-	onRemove?: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
+	onAccept: ( link: TrafficBoostLink ) => void;
+	onDiscard: ( link: TrafficBoostLink ) => void;
+	onUpdateLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
+	onRemove: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 }
 
 /**
@@ -58,7 +57,6 @@ export const PreviewIframe = ( {
 	selectedText,
 	onLoadingChange,
 	onRestoreOriginal,
-	onScrollToHighlight,
 	onAccept,
 	onDiscard,
 	onUpdateLink,
@@ -66,7 +64,6 @@ export const PreviewIframe = ( {
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null );
 	const iframeRef = useRef<HTMLIFrameElement>( null );
-	const lastHighlightRectRef = useRef<{ top: number; left: number; width: number; height: number } | null>( null );
 
 	const isInboundLink = ! activeLink?.isSuggestion;
 
@@ -94,9 +91,15 @@ export const PreviewIframe = ( {
 		return url.toString();
 	}, [ previewUrl ] );
 
-	const actionsBar = <div style={ { backgroundColor: 'white', border: '5px solid red', padding: '1rem', color: 'black' } }>
-		<button onClick={ () => console.log( 'Action Button Clicked' ) }>Action Button</button>
-	</div>;
+	const actionsBar = <PreviewActions
+		activeLink={ activeLink }
+		onAccept={ onAccept }
+		onDiscard={ onDiscard }
+		onUpdateLink={ onUpdateLink }
+		onRemove={ onRemove }
+		onRestoreOriginal={ onRestoreOriginal }
+		selectedText={ selectedText ?? null }
+	/>;
 
 	/**
 	 * Highlights the smart link in the iframe.
@@ -244,35 +247,6 @@ export const PreviewIframe = ( {
 					behavior: 'smooth',
 					block: 'center',
 				} );
-
-				// Call callback with bounding rect info for the highlighted element.
-				if ( onScrollToHighlight && highlightedElement ) {
-					const highlightedRect = highlightedElement.getBoundingClientRect();
-
-					// Check if all dimensions are 0
-					if ( highlightedRect.top === 0 &&
-						highlightedRect.left === 0 &&
-						highlightedRect.width === 0 &&
-						highlightedRect.height === 0 ) {
-						// This can happen briefly during load. To avoid improperly moving the actions bar,
-						// ignore this update.
-						return;
-					}
-
-					const lastRect = lastHighlightRectRef.current;
-
-					if ( lastRect &&
-						lastRect.top === highlightedRect.top &&
-						lastRect.left === highlightedRect.left &&
-						lastRect.width === highlightedRect.width &&
-						lastRect.height === highlightedRect.height ) {
-						// Avoid an update call if nothing has changed
-						return;
-					}
-
-					lastHighlightRectRef.current = highlightedRect;
-					// onScrollToHighlight( highlightedRect );
-				}
 			}
 		};
 
@@ -302,7 +276,7 @@ export const PreviewIframe = ( {
 			// Disconnect the observer after a short delay to prevent infinite observation.
 			setTimeout( () => observer.disconnect(), 1000 );
 		}
-	}, [ onScrollToHighlight ] );
+	}, [] );
 
 	/**
 	 * Handles the iframe load event.

@@ -165,12 +165,38 @@ export const useIframeHighlight = ( {
 			.parsely-traffic-boost-popover-actions {
 				position: absolute;
 				bottom: 2rem;
-				width: 100%;
-				text-align: center;
 			}
 
-			.parsely-traffic-boost-popover-actions button {
-				color: black;
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
+				height: 48px;
+				display: flex;
+				padding: 0 8px;
+				justify-content: center;
+				align-items: center;
+				background: rgba(255, 255, 255, 1);
+				border: 1px solid #1e1e1e;
+				border-radius: 2px;
+				gap: 8px;
+			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle {
+				flex-shrink: 0;
+				margin-right: 4px;
+				cursor: grab;
+			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+				flex-wrap: nowrap;
+				justify-content: center;
+			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons .components-button {
+				height: 36px;
+				padding: 8px 16px;
+				white-space: nowrap;
 			}
 		`;
 		iframeDocument.head.appendChild( style );
