@@ -505,12 +505,6 @@ export const TrafficBoostPreview = ( {
 				itemIndex={ itemIndex }
 				onNext={ handleNext }
 				onPrevious={ handlePrevious }
-				onAccept={ handleAccept }
-				onDiscard={ handleDiscard }
-				onUpdateLink={ handleUpdateLink }
-				onRemove={ handleRemove }
-				onRestoreOriginal={ handleRestoreOriginal }
-				selectedText={ selectedText }
 			/>
 		</div>
 	);
