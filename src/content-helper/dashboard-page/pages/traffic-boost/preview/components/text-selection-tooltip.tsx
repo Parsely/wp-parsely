@@ -21,11 +21,16 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 		const adminColor = window.getComputedStyle( document.documentElement )
 			.getPropertyValue( '--wp-admin-theme-color' ).trim();
 
-		// Inject WordPress components styles.
-		const wpComponentsLink = iframeDocument.createElement( 'link' );
-		wpComponentsLink.rel = 'stylesheet';
-		wpComponentsLink.href = '/wp-includes/css/dist/components/style.css';
-		iframeDocument.head.appendChild( wpComponentsLink );
+		let wordpressComponentStyling: HTMLLinkElement | null = iframeDocument.querySelector( 'link[data-wp-parsely-component-styles]' );
+
+		if ( wordpressComponentStyling === null ) {
+			// Inject WordPress components styles.
+			wordpressComponentStyling = iframeDocument.createElement( 'link' );
+			wordpressComponentStyling.rel = 'stylesheet';
+			wordpressComponentStyling.href = '/wp-includes/css/dist/components/style.css';
+			wordpressComponentStyling.setAttribute( 'data-wp-parsely-component-styles', 'true' );
+			iframeDocument.head.appendChild( wordpressComponentStyling );
+		}
 
 		// Create and inject custom styles into the iframe.
 		const style = iframeDocument.createElement( 'style' );
@@ -106,7 +111,6 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 
 		// Cleanup function to remove styles when component unmounts.
 		return () => {
-			wpComponentsLink.remove();
 			style.remove();
 		};
 	}, [ iframeDocument ] );

@@ -5,6 +5,7 @@ import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { useState, useRef } from '@wordpress/element';
+import { check, close, undo } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -81,17 +82,20 @@ export const PreviewActions = ( {
 									onClick={ () => onAccept( activeLink ) }
 									isBusy={ isAccepting }
 									disabled={ isAccepting }
+									icon={ isAccepting ? null : check }
 								>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
 								<Button
 									variant="tertiary"
 									onClick={ () => onDiscard( activeLink ) }
-								>{ __( 'Discard', 'wp-parsely' ) }</Button>
+									icon={ close }
+								>{ __( 'Reject', 'wp-parsely' ) }</Button>
 								{ selectedText && (
 									<>
-										<VerticalDivider size={ 36 } />
+										<VerticalDivider size={ 48 } color="#1e1e1e" />
 										<Button
 											variant="tertiary"
 											onClick={ onRestoreOriginal }
+											icon={ undo }
 										>
 											{ __( 'Clear changes', 'wp-parsely' ) }
 										</Button>
@@ -109,7 +113,8 @@ export const PreviewActions = ( {
 											onClick={ () => onUpdateLink( activeLink, restoreOriginal ) }
 											isBusy={ isAccepting }
 											disabled={ isAccepting }
-										>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+											icon={ isAccepting ? null : check }
+										>{ isAccepting ? __( 'Updating…', 'wp-parsely' ) : __( 'Update Link', 'wp-parsely' ) }</Button>
 										{ activeLink.smartLink?.is_link_replacement && (
 											<CheckboxControl
 												__nextHasNoMarginBottom
@@ -120,10 +125,11 @@ export const PreviewActions = ( {
 												} }
 											/>
 										) }
-										<VerticalDivider size={ 36 } />
+										<VerticalDivider size={ 48 } color="#1e1e1e" />
 										<Button
 											variant="tertiary"
 											onClick={ onRestoreOriginal }
+											icon={ undo }
 										>
 											{ __( 'Clear changes', 'wp-parsely' ) }
 										</Button>
@@ -131,12 +137,13 @@ export const PreviewActions = ( {
 								) : (
 									<>
 										<Button
-											variant="tertiary"
+											variant={ isRemoving ? 'primary' : 'tertiary' }
+											icon={ isRemoving ? null : close }
 											onClick={ () => onRemove( activeLink, restoreOriginal ) }
 											isBusy={ isRemoving }
 											disabled={ isRemoving }
 											isDestructive
-										>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
+										>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove Link', 'wp-parsely' ) }</Button>
 										{ activeLink.smartLink?.is_link_replacement && (
 											<CheckboxControl
 												__nextHasNoMarginBottom

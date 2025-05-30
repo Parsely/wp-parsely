@@ -58,6 +58,17 @@ export const useIframeHighlight = ( {
 			return;
 		}
 
+		let wordpressComponentStyling: HTMLLinkElement | null = iframeDocument.querySelector( 'link[data-wp-parsely-component-styles]' );
+
+		if ( wordpressComponentStyling === null ) {
+			// Inject WordPress components styles.
+			wordpressComponentStyling = iframeDocument.createElement( 'link' );
+			wordpressComponentStyling.rel = 'stylesheet';
+			wordpressComponentStyling.href = '/wp-includes/css/dist/components/style.css';
+			wordpressComponentStyling.setAttribute( 'data-wp-parsely-component-styles', 'true' );
+			iframeDocument.head.appendChild( wordpressComponentStyling );
+		}
+
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
 			/* Highlight container styles. */
@@ -170,7 +181,6 @@ export const useIframeHighlight = ( {
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
 				height: 48px;
 				display: flex;
-				padding: 0 8px;
 				justify-content: center;
 				align-items: center;
 				background: rgba(255, 255, 255, 1);
@@ -183,6 +193,11 @@ export const useIframeHighlight = ( {
 				flex-shrink: 0;
 				margin-right: 4px;
 				cursor: grab;
+				border-right: 1px solid #1e1e1e;
+				padding: 0 8px;
+				height: 100%;
+				display: flex;
+				align-items: center;
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
@@ -191,11 +206,11 @@ export const useIframeHighlight = ( {
 				align-items: center;
 				flex-wrap: nowrap;
 				justify-content: center;
+				padding: 0 8px;
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons .components-button {
 				height: 36px;
-				padding: 8px 16px;
 				white-space: nowrap;
 			}
 		`;
