@@ -74,7 +74,7 @@ export const useIframeHighlight = ( {
 			/* Highlight container styles. */
 			.parsely-traffic-boost-highlight-container {
 				position: relative;
-				display: inline-block;
+				display: inline;
 			}
 
 			/** Smart link highlight styles. */
@@ -176,6 +176,7 @@ export const useIframeHighlight = ( {
 			.parsely-traffic-boost-popover-actions {
 				position: absolute;
 				bottom: 2rem;
+				z-index: 1000;
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
@@ -333,20 +334,20 @@ export const useIframeHighlight = ( {
 				highlightContainerDiv.className = 'parsely-traffic-boost-highlight-container';
 
 				const fragment = range.cloneContents();
-				const highlightDiv = iframeDocument.createElement( 'div' );
-				highlightDiv.className = isPrevious
+				const highlightSpan = iframeDocument.createElement( 'span' );
+				highlightSpan.className = isPrevious
 					? `${ className } previous-suggestion`
 					: className;
 
 				// Add ARIA attributes for accessibility.
-				highlightDiv.setAttribute( 'aria-label', highlightLabel );
-				highlightDiv.setAttribute( 'role', 'mark' );
+				highlightSpan.setAttribute( 'aria-label', highlightLabel );
+				highlightSpan.setAttribute( 'role', 'mark' );
 
 				if ( isPrevious ) {
-					highlightDiv.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
+					highlightSpan.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
 				}
 
-				highlightContainerDiv.appendChild( highlightDiv );
+				highlightContainerDiv.appendChild( highlightSpan );
 
 				// Find if the range is within a link and if it encompasses the entire link text.
 				const container = range.commonAncestorContainer as Element;
@@ -361,11 +362,11 @@ export const useIframeHighlight = ( {
 					linkNode.parentNode?.insertBefore( highlightContainerDiv, linkNode );
 
 					// Move the link into the span.
-					highlightDiv.appendChild( linkNode );
+					highlightSpan.appendChild( linkNode );
 				} else {
 					// Normal case - no links or partial link selection.
 					range.deleteContents();
-					highlightDiv.appendChild( fragment );
+					highlightSpan.appendChild( fragment );
 					range.insertNode( highlightContainerDiv );
 				}
 
@@ -378,7 +379,7 @@ export const useIframeHighlight = ( {
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
 
-				return highlightDiv;
+				return highlightSpan;
 			} catch ( e ) {
 				// eslint-disable-next-line no-console
 				console.error( 'WP Parsely: Error highlighting range', e );
