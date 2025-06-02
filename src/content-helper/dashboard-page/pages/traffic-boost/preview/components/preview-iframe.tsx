@@ -99,6 +99,7 @@ export const PreviewIframe = ( {
 		onRemove={ onRemove }
 		onRestoreOriginal={ onRestoreOriginal }
 		selectedText={ selectedText ?? null }
+		iframeRef={ iframeRef }
 	/>;
 
 	/**
