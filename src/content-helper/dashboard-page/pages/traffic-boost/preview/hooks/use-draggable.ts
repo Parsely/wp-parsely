@@ -5,9 +5,18 @@ import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
 
 export const DRAG_MARGIN_PX = 8;
 
+// Use ItemRect (a subset of DOMRect) to have consistency when calculating the position of the item
+// when accounting for existing transformations.
+interface ItemRect {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
 export interface OnDragProps {
 	totalDelta: { x: number; y: number };
-	originalItemRect: DOMRect;
+	originalItemRect: ItemRect;
 	iframeRect: DOMRect;
 }
 
@@ -20,10 +29,10 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 	const [ pressed, setPressed ] = useState( false );
 
 	// Avoid storing positions in useState, as it will cause the component to re-render on every state change
-	const translateOffset = useRef( { x: 0, y: 0 } );
 	const totalDelta = useRef( { x: 0, y: 0 } );
+	const positionDelta = useRef( { x: 0, y: 0 } );
 	const iframeRect = useRef<DOMRect | null>( null );
-	const originalItemRect = useRef<DOMRect | null>( null );
+	const originalItemRect = useRef<ItemRect | null>( null );
 	const ref = useRef<HTMLElement | null>( null );
 
 	const unsubscribe = useRef<( () => void ) | null>( null );
@@ -38,14 +47,29 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 		const handleMouseDown = ( e: MouseEvent ) => {
 			e.preventDefault();
 
-			setPressed( true );
-
 			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
 			if ( iframeDocument ) {
 				iframeRect.current = iframeDocument.documentElement.getBoundingClientRect();
 			}
 
 			originalItemRect.current = ref.current?.getBoundingClientRect() ?? null;
+
+			// If the item already has a transform, it'll mess up our calculations, which assume
+			// that originalItemRect is the item's position without any transformations.
+			// In this case, undo the transformations that already exist on the item and store
+			// the result as originalItemRect.
+			const transform = ref.current?.style.transform;
+			if ( transform && originalItemRect.current ) {
+				const matrix = new DOMMatrix( transform );
+				originalItemRect.current = {
+					x: originalItemRect.current.x - matrix.e,
+					y: originalItemRect.current.y - matrix.f,
+					width: originalItemRect.current.width,
+					height: originalItemRect.current.height,
+				};
+			}
+
+			setPressed( true );
 		};
 
 		elem.addEventListener( 'mousedown', handleMouseDown );
@@ -66,7 +90,7 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 		}
 
 		const handleMouseMove = throttleToAnimationFrames( ( event: MouseEvent ) => {
-			if ( ! ref.current || ! translateOffset.current || ! iframeRect.current || ! originalItemRect.current ) {
+			if ( ! ref.current || ! iframeRect.current || ! originalItemRect.current ) {
 				return;
 			}
 
@@ -75,18 +99,18 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 				y: totalDelta.current.y + event.movementY,
 			};
 
-			const elem = ref.current;
-
-			translateOffset.current = onDrag( {
+			positionDelta.current = onDrag( {
 				totalDelta: { x: totalDelta.current.x, y: totalDelta.current.y },
 				originalItemRect: originalItemRect.current,
 				iframeRect: iframeRect.current,
 			} );
 
-			elem.style.transform = `translate(${ translateOffset.current.x }px, ${ translateOffset.current.y }px)`;
+			ref.current.style.transform = `translate(${ positionDelta.current.x }px, ${ positionDelta.current.y }px)`;
 		} );
 
 		const handleMouseUp = () => {
+			// After the drag ends, reset total delta to match the current position.
+			totalDelta.current = positionDelta.current;
 			setPressed( false );
 		};
 
