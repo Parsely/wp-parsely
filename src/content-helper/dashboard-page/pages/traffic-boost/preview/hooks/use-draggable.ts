@@ -6,10 +6,9 @@ import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
 export const DRAG_MARGIN_PX = 8;
 
 export interface OnDragProps {
-	currentPosition: { x: number; y: number };
-	movementDelta: { x: number; y: number };
-	itemBounds: DOMRect;
-	iframeBounds: DOMRect;
+	totalDelta: { x: number; y: number };
+	originalItemRect: DOMRect;
+	iframeRect: DOMRect;
 }
 
 export interface UseDraggableProps {
@@ -20,9 +19,11 @@ export interface UseDraggableProps {
 export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 	const [ pressed, setPressed ] = useState( false );
 
-	// Avoid storing position in useState, as it will cause the component to re-render on every state change
+	// Avoid storing positions in useState, as it will cause the component to re-render on every state change
 	const translateOffset = useRef( { x: 0, y: 0 } );
-	const iframeBounds = useRef<DOMRect | null>( null );
+	const totalDelta = useRef( { x: 0, y: 0 } );
+	const iframeRect = useRef<DOMRect | null>( null );
+	const originalItemRect = useRef<DOMRect | null>( null );
 	const ref = useRef<HTMLElement | null>( null );
 
 	const unsubscribe = useRef<( () => void ) | null>( null );
@@ -41,8 +42,10 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 
 			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
 			if ( iframeDocument ) {
-				iframeBounds.current = iframeDocument.documentElement.getBoundingClientRect();
+				iframeRect.current = iframeDocument.documentElement.getBoundingClientRect();
 			}
+
+			originalItemRect.current = ref.current?.getBoundingClientRect() ?? null;
 		};
 
 		elem.addEventListener( 'mousedown', handleMouseDown );
@@ -63,18 +66,21 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 		}
 
 		const handleMouseMove = throttleToAnimationFrames( ( event: MouseEvent ) => {
-			if ( ! ref.current || ! translateOffset.current || ! iframeBounds.current ) {
+			if ( ! ref.current || ! translateOffset.current || ! iframeRect.current || ! originalItemRect.current ) {
 				return;
 			}
 
-			const pos = translateOffset.current;
+			totalDelta.current = {
+				x: totalDelta.current.x + event.movementX,
+				y: totalDelta.current.y + event.movementY,
+			};
+
 			const elem = ref.current;
 
 			translateOffset.current = onDrag( {
-				currentPosition: pos,
-				movementDelta: { x: event.movementX, y: event.movementY },
-				itemBounds: elem.getBoundingClientRect(),
-				iframeBounds: iframeBounds.current,
+				totalDelta: { x: totalDelta.current.x, y: totalDelta.current.y },
+				originalItemRect: originalItemRect.current,
+				iframeRect: iframeRect.current,
 			} );
 
 			elem.style.transform = `translate(${ translateOffset.current.x }px, ${ translateOffset.current.y }px)`;

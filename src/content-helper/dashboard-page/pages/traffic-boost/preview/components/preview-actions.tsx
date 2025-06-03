@@ -64,31 +64,33 @@ export const PreviewActions = ( {
 	} ), [ activeLink ] );
 
 	const handleDrag = useCallback(
-		( { currentPosition, movementDelta, itemBounds, iframeBounds }: OnDragProps ) => {
-			if ( ( itemBounds.x + movementDelta.x ) < DRAG_MARGIN_PX ) {
-				// If movementDelta.x would move past the left margin,
-				// move it to exactly the margin distance from the left edge.
-				movementDelta.x = DRAG_MARGIN_PX - itemBounds.x;
-			} else if ( ( itemBounds.x + movementDelta.x + itemBounds.width ) > ( iframeBounds.width - DRAG_MARGIN_PX ) ) {
-				// If movementDelta.x would move past the right margin,
-				// move it to exactly the margin distance from the right edge.
-				movementDelta.x = iframeBounds.width - itemBounds.width - itemBounds.x - DRAG_MARGIN_PX;
-			}
-
-			if ( ( itemBounds.y + movementDelta.y ) < DRAG_MARGIN_PX ) {
-				// If movementDelta.y would move past the top margin,
-				// move it to exactly the margin distance from the top edge.
-				movementDelta.y = DRAG_MARGIN_PX - itemBounds.y;
-			} else if ( ( itemBounds.y + movementDelta.y + itemBounds.height ) > ( iframeBounds.height - DRAG_MARGIN_PX ) ) {
-				// If movementDelta.y would move past the bottom margin,
-				// move it to exactly the margin distance from the bottom edge.
-				movementDelta.y = iframeBounds.height - itemBounds.height - itemBounds.y - DRAG_MARGIN_PX;
-			}
-
-			return {
-				x: currentPosition.x + movementDelta.x,
-				y: currentPosition.y + movementDelta.y,
+		( { totalDelta, originalItemRect, iframeRect }: OnDragProps ) => {
+			const resultDelta = {
+				x: totalDelta.x,
+				y: totalDelta.y,
 			};
+
+			if ( originalItemRect.x + totalDelta.x < DRAG_MARGIN_PX ) {
+				// If the resulting x position is before the left margin on the page, set it to exactly the
+				// margin distance from the left edge.
+				resultDelta.x = DRAG_MARGIN_PX - originalItemRect.x;
+			} else if ( originalItemRect.x + totalDelta.x + originalItemRect.width + DRAG_MARGIN_PX > iframeRect.width ) {
+				// If the resulting x position is after the right margin on the page, set it to exactly the
+				// margin distance from the right edge.
+				resultDelta.x = iframeRect.width - originalItemRect.width - originalItemRect.x - DRAG_MARGIN_PX;
+			}
+
+			if ( originalItemRect.y + totalDelta.y < DRAG_MARGIN_PX ) {
+				// If the resulting y position is above the top margin on the page, set it to exactly the
+				// margin distance from the top edge.
+				resultDelta.y = DRAG_MARGIN_PX - originalItemRect.y;
+			} else if ( originalItemRect.y + totalDelta.y + originalItemRect.height + DRAG_MARGIN_PX > iframeRect.height ) {
+				// If the resulting y position is below the bottom margin on the page, set it to exactly the
+				// margin distance from the bottom edge.
+				resultDelta.y = iframeRect.height - originalItemRect.height - originalItemRect.y - DRAG_MARGIN_PX;
+			}
+
+			return resultDelta;
 		}, []
 	);
 
