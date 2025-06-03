@@ -62,14 +62,38 @@ export const PreviewActions = ( {
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
 
+	const DRAG_MARGIN_PX = 8;
+
 	const handleDrag = useCallback(
-		( { x, y }: { x: number; y: number } ) => {
-			console.log( 'Dragging to', x, y );
-			return { x, y };
+		( { currentPosition, movementDelta, itemBounds, iframeBounds }: OnDragProps ) => {
+			if ( ( itemBounds.x + movementDelta.x ) < DRAG_MARGIN_PX ) {
+				// If movementDelta.x would move past the left margin,
+				// move it to exactly the margin distance from the left edge.
+				movementDelta.x = DRAG_MARGIN_PX - itemBounds.x;
+			} else if ( ( itemBounds.x + movementDelta.x + itemBounds.width ) > ( iframeBounds.width - DRAG_MARGIN_PX ) ) {
+				// If movementDelta.x would move past the right margin,
+				// move it to exactly the margin distance from the right edge.
+				movementDelta.x = iframeBounds.width - itemBounds.width - itemBounds.x - DRAG_MARGIN_PX;
+			}
+
+			if ( ( itemBounds.y + movementDelta.y ) < DRAG_MARGIN_PX ) {
+				// If movementDelta.y would move past the top margin,
+				// move it to exactly the margin distance from the top edge.
+				movementDelta.y = DRAG_MARGIN_PX - itemBounds.y;
+			} else if ( ( itemBounds.y + movementDelta.y + itemBounds.height ) > ( iframeBounds.height - DRAG_MARGIN_PX ) ) {
+				// If movementDelta.y would move past the bottom margin,
+				// move it to exactly the margin distance from the bottom edge.
+				movementDelta.y = iframeBounds.height - itemBounds.height - itemBounds.y - DRAG_MARGIN_PX;
+			}
+
+			return {
+				x: currentPosition.x + movementDelta.x,
+				y: currentPosition.y + movementDelta.y,
+			};
 		}, []
 	);
 
-	const [ actionsBarRef, pressed ] = useDraggable( {
+	const [ actionsBarRef ] = useDraggable( {
 		onDrag: handleDrag,
 		iframeRef,
 	} );
@@ -178,6 +202,18 @@ export const PreviewActions = ( {
 	);
 };
 
+interface OnDragProps {
+	currentPosition: { x: number; y: number };
+	movementDelta: { x: number; y: number };
+	itemBounds: DOMRect;
+	iframeBounds: DOMRect;
+}
+
+interface UseDraggableProps {
+	onDrag: ( props: OnDragProps ) => { x: number; y: number };
+	iframeRef: React.RefObject<HTMLIFrameElement>;
+}
+
 const throttle = <Args extends readonly unknown[], Return>(
 	f: ( ...args: Args ) => Return
 ) => {
@@ -201,11 +237,12 @@ const throttle = <Args extends readonly unknown[], Return>(
 	return result;
 };
 
-const useDraggable = ( { onDrag, iframeRef }: { onDrag: ( { x, y }: { x: number; y: number } ) => { x: number; y: number }, iframeRef: React.RefObject<HTMLIFrameElement> } ) => {
+const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 	const [ pressed, setPressed ] = useState( false );
 
 	// Avoid storing position in useState, as it will cause the component to re-render on every state change
-	const position = useRef( { x: 0, y: 0 } );
+	const translateOffset = useRef( { x: 0, y: 0 } );
+	const iframeBounds = useRef<DOMRect | null>( null );
 	const ref = useRef<HTMLElement | null>( null );
 
 	const unsubscribe = useRef<( () => void ) | null>( null );
@@ -220,13 +257,12 @@ const useDraggable = ( { onDrag, iframeRef }: { onDrag: ( { x, y }: { x: number;
 		const handleMouseDown = ( e: MouseEvent ) => {
 			e.preventDefault();
 
-			// don't forget to disable text selection during drag and drop
-			// operations
-			if ( e.target instanceof HTMLElement ) {
-				e.target.style.userSelect = 'none';
-			}
-
 			setPressed( true );
+
+			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
+			if ( iframeDocument ) {
+				iframeBounds.current = iframeDocument.documentElement.getBoundingClientRect();
+			}
 		};
 
 		elem.addEventListener( 'mousedown', handleMouseDown );
@@ -234,7 +270,7 @@ const useDraggable = ( { onDrag, iframeRef }: { onDrag: ( { x, y }: { x: number;
 		unsubscribe.current = () => {
 			elem.removeEventListener( 'mousedown', handleMouseDown );
 		};
-	}, [] );
+	}, [ iframeRef ] );
 
 	useEffect( () => {
 		if ( ! pressed ) {
@@ -247,26 +283,24 @@ const useDraggable = ( { onDrag, iframeRef }: { onDrag: ( { x, y }: { x: number;
 		}
 
 		const handleMouseMove = throttle( ( event: MouseEvent ) => {
-			// needed for TypeScript anyway
-			if ( ! ref.current || ! position.current ) {
+			if ( ! ref.current || ! translateOffset.current || ! iframeBounds.current ) {
 				return;
 			}
 
-			const pos = position.current;
-
+			const pos = translateOffset.current;
 			const elem = ref.current;
-			position.current = onDrag( {
-				x: pos.x + event.movementX,
-				y: pos.y + event.movementY,
-			} ) as { x: number; y: number };
 
-			elem.style.transform = `translate(${ pos.x }px, ${ pos.y }px)`;
+			translateOffset.current = onDrag( {
+				currentPosition: pos,
+				movementDelta: { x: event.movementX, y: event.movementY },
+				itemBounds: elem.getBoundingClientRect(),
+				iframeBounds: iframeBounds.current,
+			} );
+
+			elem.style.transform = `translate(${ translateOffset.current.x }px, ${ translateOffset.current.y }px)`;
 		} );
 
-		const handleMouseUp = ( e: MouseEvent ) => {
-			if ( e.target instanceof HTMLElement ) {
-				e.target.style.userSelect = 'auto';
-			}
+		const handleMouseUp = () => {
 			setPressed( false );
 		};
 
