@@ -25,7 +25,7 @@ export interface UseDraggableProps {
 	iframeRef: React.RefObject<HTMLIFrameElement>;
 }
 
-export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
+export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ): [ React.LegacyRef<HTMLDivElement>, boolean ] => {
 	const [ pressed, setPressed ] = useState( false );
 
 	// Avoid storing positions in useState, as it will cause the component to re-render on every state change
@@ -33,10 +33,10 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 	const positionDelta = useRef( { x: 0, y: 0 } );
 	const iframeRect = useRef<DOMRect | null>( null );
 	const originalItemRect = useRef<ItemRect | null>( null );
-	const ref = useRef<HTMLElement | null>( null );
+	const ref = useRef<HTMLDivElement | null>( null );
 
 	const unsubscribe = useRef<( () => void ) | null>( null );
-	const legacyRef = useCallback( ( elem: HTMLDivElement | null ) => {
+	const externalRef = useCallback( ( elem: HTMLDivElement | null ) => {
 		ref.current = elem;
 		if ( unsubscribe.current ) {
 			unsubscribe.current();
@@ -54,10 +54,10 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 
 			originalItemRect.current = ref.current?.getBoundingClientRect() ?? null;
 
-			// If the item already has a transform, it'll mess up our calculations, which assume
-			// that originalItemRect is the item's position without any transformations.
-			// In this case, undo the transformations that already exist on the item and store
-			// the result as originalItemRect.
+			// If the item already has a transform from being dragged, we need to adjust
+			// the originalItemRect to the item's position without any transformations to
+			// avoid an offset on drag. Undo the transformations that already exist on the
+			// item and store the result in originalItemRect.
 			const transform = ref.current?.style.transform;
 			if ( transform && originalItemRect.current ) {
 				const matrix = new DOMMatrix( transform );
@@ -124,7 +124,7 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
 		};
 	}, [ pressed, onDrag, iframeRef ] );
 
-	return [ legacyRef, pressed ] as const;
+	return [ externalRef, pressed ];
 };
 
 const throttleToAnimationFrames = <Args extends readonly unknown[], Return>(
