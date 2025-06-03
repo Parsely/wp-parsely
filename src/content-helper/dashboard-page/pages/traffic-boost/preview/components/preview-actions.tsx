@@ -4,7 +4,7 @@
 import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
+import { useState, useCallback } from '@wordpress/element';
 import { check, close, undo } from '@wordpress/icons';
 
 /**
@@ -14,6 +14,7 @@ import { VerticalDivider } from '../../../../../common/components/vertical-divid
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { TextSelection } from '../preview';
+import { useDraggable, OnDragProps } from '../hooks/use-draggable';
 
 /**
  * Props structure for PreviewActions.
@@ -200,119 +201,4 @@ export const PreviewActions = ( {
 			) }
 		</div>
 	);
-};
-
-interface OnDragProps {
-	currentPosition: { x: number; y: number };
-	movementDelta: { x: number; y: number };
-	itemBounds: DOMRect;
-	iframeBounds: DOMRect;
-}
-
-interface UseDraggableProps {
-	onDrag: ( props: OnDragProps ) => { x: number; y: number };
-	iframeRef: React.RefObject<HTMLIFrameElement>;
-}
-
-const throttle = <Args extends readonly unknown[], Return>(
-	f: ( ...args: Args ) => Return
-) => {
-	let token: number|null = null;
-	let lastArgs: Args|null = null;
-
-	const invoke = () => {
-		if ( lastArgs !== null ) {
-			f( ...lastArgs );
-		}
-
-		token = null;
-	};
-	const result = ( ...args: Args ) => {
-		lastArgs = args;
-		if ( ! token ) {
-			token = requestAnimationFrame( invoke );
-		}
-	};
-	result.cancel = () => token && cancelAnimationFrame( token );
-	return result;
-};
-
-const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ) => {
-	const [ pressed, setPressed ] = useState( false );
-
-	// Avoid storing position in useState, as it will cause the component to re-render on every state change
-	const translateOffset = useRef( { x: 0, y: 0 } );
-	const iframeBounds = useRef<DOMRect | null>( null );
-	const ref = useRef<HTMLElement | null>( null );
-
-	const unsubscribe = useRef<( () => void ) | null>( null );
-	const legacyRef = useCallback( ( elem: HTMLDivElement | null ) => {
-		ref.current = elem;
-		if ( unsubscribe.current ) {
-			unsubscribe.current();
-		}
-		if ( ! elem ) {
-			return;
-		}
-		const handleMouseDown = ( e: MouseEvent ) => {
-			e.preventDefault();
-
-			setPressed( true );
-
-			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
-			if ( iframeDocument ) {
-				iframeBounds.current = iframeDocument.documentElement.getBoundingClientRect();
-			}
-		};
-
-		elem.addEventListener( 'mousedown', handleMouseDown );
-
-		unsubscribe.current = () => {
-			elem.removeEventListener( 'mousedown', handleMouseDown );
-		};
-	}, [ iframeRef ] );
-
-	useEffect( () => {
-		if ( ! pressed ) {
-			return;
-		}
-
-		const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
-		if ( ! iframeDocument ) {
-			return;
-		}
-
-		const handleMouseMove = throttle( ( event: MouseEvent ) => {
-			if ( ! ref.current || ! translateOffset.current || ! iframeBounds.current ) {
-				return;
-			}
-
-			const pos = translateOffset.current;
-			const elem = ref.current;
-
-			translateOffset.current = onDrag( {
-				currentPosition: pos,
-				movementDelta: { x: event.movementX, y: event.movementY },
-				itemBounds: elem.getBoundingClientRect(),
-				iframeBounds: iframeBounds.current,
-			} );
-
-			elem.style.transform = `translate(${ translateOffset.current.x }px, ${ translateOffset.current.y }px)`;
-		} );
-
-		const handleMouseUp = () => {
-			setPressed( false );
-		};
-
-		iframeDocument.addEventListener( 'mousemove', handleMouseMove );
-		iframeDocument.addEventListener( 'mouseup', handleMouseUp );
-
-		return () => {
-			handleMouseMove.cancel();
-			iframeDocument.removeEventListener( 'mousemove', handleMouseMove );
-			iframeDocument.removeEventListener( 'mouseup', handleMouseUp );
-		};
-	}, [ pressed, onDrag, iframeRef ] );
-
-	return [ legacyRef, pressed ] as const;
 };
