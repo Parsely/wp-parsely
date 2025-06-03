@@ -3,6 +3,8 @@
  */
 import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
 
+export const DRAG_MARGIN_PX = 8;
+
 export interface OnDragProps {
 	currentPosition: { x: number; y: number };
 	movementDelta: { x: number; y: number };

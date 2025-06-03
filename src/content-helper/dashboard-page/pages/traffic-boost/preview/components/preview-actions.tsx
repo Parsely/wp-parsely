@@ -14,7 +14,7 @@ import { VerticalDivider } from '../../../../../common/components/vertical-divid
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { TextSelection } from '../preview';
-import { useDraggable, OnDragProps } from '../hooks/use-draggable';
+import { useDraggable, OnDragProps, DRAG_MARGIN_PX } from '../hooks/use-draggable';
 
 /**
  * Props structure for PreviewActions.
@@ -62,8 +62,6 @@ export const PreviewActions = ( {
 		isRemoving: activeLink ? select( TrafficBoostStore ).isRemoving( activeLink ) : false,
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
-
-	const DRAG_MARGIN_PX = 8;
 
 	const handleDrag = useCallback(
 		( { currentPosition, movementDelta, itemBounds, iframeBounds }: OnDragProps ) => {

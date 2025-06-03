@@ -11,6 +11,7 @@ import { escapeRegExp } from '../../../../../common/utils/functions';
 import { TrafficBoostLink } from '../../provider';
 import { LinkType } from '../components/link-counter';
 import { TextSelection } from '../preview';
+import { DRAG_MARGIN_PX } from './use-draggable';
 
 /**
  * Props for the useIframeHighlight hook.
@@ -175,8 +176,21 @@ export const useIframeHighlight = ( {
 			/* Action bar styles. */
 			.parsely-traffic-boost-popover-actions {
 				position: absolute;
+				left: 50%;
+				transform: translateX(-50%);
 				bottom: 2rem;
 				z-index: 1000;
+			}
+
+			.parsely-traffic-boost-popover-actions.align-left {
+				left: 0;
+				transform: none;
+			}
+
+			.parsely-traffic-boost-popover-actions.align-right {
+				left: auto;
+				right: 0;
+				transform: none;
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
@@ -378,6 +392,18 @@ export const useIframeHighlight = ( {
 				// Create popover content.
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
+
+				// Adjust alignment to prevent overflow if original positioning is outside the iframe.
+				setTimeout( () => {
+					const iframeBounds = iframeDocument.documentElement.getBoundingClientRect();
+					const actionsRect = actionsContainer.getBoundingClientRect();
+
+					if ( actionsRect.width + actionsRect.x + DRAG_MARGIN_PX > iframeBounds.width ) {
+						actionsContainer.classList.add( 'align-right' );
+					} else if ( actionsRect.x - DRAG_MARGIN_PX < 0 ) {
+						actionsContainer.classList.add( 'align-left' );
+					}
+				}, 0 );
 
 				return highlightSpan;
 			} catch ( e ) {
