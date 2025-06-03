@@ -38,7 +38,8 @@ abstract class BaseAPIServiceTestCase extends TestCase {
 	/**
 	 * Provides data for test_endpoint_is_registered().
 	 *
-	 * Should return an array of arrays, each containing the endpoint name and class.
+	 * Should return an array of arrays, each containing the endpoint's name and
+	 * class.
 	 *
 	 * @since 3.17.0
 	 *
