@@ -114,7 +114,7 @@ class BaseEndpointTest extends TestCase {
 		$this->test_endpoint = new class($this->api_controller) extends Base_Endpoint {
 
 			/**
-			 * Gets the endpoint name.
+			 * Gets the endpoint's name.
 			 *
 			 * @since 3.17.0
 			 *
