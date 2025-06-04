@@ -4,12 +4,12 @@
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
+import { throttle, usePrevious } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal imports
  */
-import { usePrevious } from '@wordpress/compose';
 import { Loading } from '../../../../../common/components/loading';
 import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
@@ -19,6 +19,7 @@ import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
 import { TextSelectionTooltip } from './text-selection-tooltip';
 import { PreviewActions } from './preview-actions';
+import useResize from '../hooks/use-resize';
 
 /**
  * Props structure for PreviewIframe.
@@ -112,6 +113,7 @@ export const PreviewIframe = ( {
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
+		adjustActionsBarPosition,
 	} = useIframeHighlight( {
 		iframeRef,
 		contentAreaRef,
@@ -121,6 +123,20 @@ export const PreviewIframe = ( {
 		onRestoreOriginal,
 		actionsBar,
 	} );
+
+	useResize( iframeRef, throttle(
+		// At most every 250ms on resize events, check that the actions bar is fully visible
+		// and adjust its position if needed.
+		useCallback(
+			() => {
+				if ( iframeRef.current !== null ) {
+					adjustActionsBarPosition( iframeRef.current );
+				}
+			},
+			[ adjustActionsBarPosition ]
+		),
+		250
+	) );
 
 	/**
 	 * Hides the admin bar from the iframe if the preview is in frontend mode.

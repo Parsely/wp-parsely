@@ -393,18 +393,6 @@ export const useIframeHighlight = ( {
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
 
-				// Adjust alignment to prevent overflow if original positioning is outside the iframe.
-				setTimeout( () => {
-					const iframeBounds = iframeDocument.documentElement.getBoundingClientRect();
-					const actionsRect = actionsContainer.getBoundingClientRect();
-
-					if ( actionsRect.width + actionsRect.x + DRAG_MARGIN_PX > iframeBounds.width ) {
-						actionsContainer.classList.add( 'align-right' );
-					} else if ( actionsRect.x - DRAG_MARGIN_PX < 0 ) {
-						actionsContainer.classList.add( 'align-left' );
-					}
-				}, 0 );
-
 				return highlightSpan;
 			} catch ( e ) {
 				// eslint-disable-next-line no-console
@@ -736,11 +724,45 @@ export const useIframeHighlight = ( {
 		} );
 	}, [ activeLink, contentAreaRef, highlightRange, removeHighlights ] );
 
+	/**
+	 * Readjusts the position of the actions bar. Call during resize events.
+	 *
+	 * @since 3.19.0
+	 *
+	 * @param {HTMLIFrameElement} iframe The iframe element to highlight the links in.
+	 */
+	const adjustActionsBarPosition = useCallback( ( iframe: HTMLIFrameElement ) => {
+		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
+		if ( ! iframeDocument ) {
+			return;
+		}
+
+		const actionsContainer = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
+		if ( ! actionsContainer ) {
+			return;
+		}
+
+		actionsContainer.classList.remove( 'align-right', 'align-left' );
+
+		setTimeout( () => {
+			// After layout finishes, see if we need to adjust left or right.
+			const iframeBounds = iframeDocument.documentElement.getBoundingClientRect();
+			const actionsRect = actionsContainer.getBoundingClientRect();
+
+			if ( actionsRect.width + actionsRect.x + DRAG_MARGIN_PX > iframeBounds.width ) {
+				actionsContainer.classList.add( 'align-right' );
+			} else if ( actionsRect.x - DRAG_MARGIN_PX < 0 ) {
+				actionsContainer.classList.add( 'align-left' );
+			}
+		}, 0 );
+	}, [] );
+
 	return {
 		injectHighlightStyles,
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
 		removeHighlights,
+		adjustActionsBarPosition,
 	};
 };
