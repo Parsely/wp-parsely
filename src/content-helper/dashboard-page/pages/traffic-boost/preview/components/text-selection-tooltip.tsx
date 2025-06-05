@@ -420,6 +420,21 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
+		if ( docSelection.rangeCount > 1 ) {
+			// If docSelection has multiple ranges, it can be because they've selected over an existing
+			// suggestion (valid), or they've selected a range over multiple paragraphs (invalid).
+			// Verify that the first and last ranges have the same start and end containers.
+			const firstRange = docSelection.getRangeAt( 0 );
+			const lastRange = docSelection.getRangeAt( docSelection.rangeCount - 1 );
+
+			const startParagraph = firstRange.startContainer.parentElement?.closest( 'p, li' );
+			const endParagraph = lastRange.endContainer.parentElement?.closest( 'p, li' );
+
+			if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
+				return;
+			}
+		}
+
 		const range = docSelection.getRangeAt( 0 );
 
 		// Check if selection is within content area.
@@ -469,9 +484,23 @@ export const TextSelectionTooltip = ( {
 					popoverContainer.classList.add( 'closing' );
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
+					let docSelectionText = docSelection.toString().trim();
+
+					if ( docSelection.rangeCount > 1 ) {
+						// If docSelection has multiple ranges, it can be because they've selected over an existing suggestion.
+						// Because the suggestion actions are a child of the highlight, we need to ignore the inner HTML content
+						// (described by the range) and return the text content of the selection.
+						const selectionContainer = iframeDocument.createElement( 'div' );
+						for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
+							const currentRange = docSelection.getRangeAt( rangeIndex );
+							const rangeContents = currentRange.cloneContents();
+							selectionContainer.appendChild( rangeContents );
+						}
+
+						docSelectionText = selectionContainer.textContent ?? '';
+					}
 
 					// Remove newlines that can be present from prior toolbar HTML injection.
-					const docSelectionText = docSelection.toString().trim().replace( /\n/g, ' ' );
 					onTextSelected( docSelectionText, offset );
 
 					docSelection.removeAllRanges();
