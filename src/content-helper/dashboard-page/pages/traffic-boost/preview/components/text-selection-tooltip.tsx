@@ -469,7 +469,11 @@ export const TextSelectionTooltip = ( {
 					popoverContainer.classList.add( 'closing' );
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
-					onTextSelected( docSelection.toString().trim(), offset );
+
+					// Remove newlines that can be present from prior toolbar HTML injection.
+					const docSelectionText = docSelection.toString().trim().replace( /\n/g, ' ' );
+					onTextSelected( docSelectionText, offset );
+
 					docSelection.removeAllRanges();
 
 					// Wait for animation to complete before cleanup.

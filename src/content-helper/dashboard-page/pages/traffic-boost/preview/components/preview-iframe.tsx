@@ -383,7 +383,7 @@ export const PreviewIframe = ( {
 	}, [ activeLink, contentAreaRef ] );
 
 	/**
-	 * Re-highlights smart link when selection changes.
+	 * Highlights smart link on initial load or when manually selected text is chosen.
 	 *
 	 * @since 3.19.0
 	 */

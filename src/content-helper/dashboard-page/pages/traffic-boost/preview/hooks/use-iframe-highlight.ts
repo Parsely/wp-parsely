@@ -420,11 +420,13 @@ export const useIframeHighlight = ( {
 			 * Removes a highlight and cleans up the parent node.
 			 *
 			 * @since 3.19.0
+			 * @since 3.19.3 Removed `parent`, added `container` and `rootParent` parameters.
 			 *
-			 * @param {Element}    highlight The highlight element to remove.
-			 * @param {ParentNode} parent    The parent node of the highlight.
+			 * @param {Element}    highlight  The highlight element to remove.
+			 * @param {ParentNode} container  The parent container node of the highlight.
+			 * @param {ParentNode} rootParent The parent node of the container, e.g. a <p> tag.
 			 */
-			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
+			const removeAndClean = ( highlight: Element, container: ParentNode, rootParent: ParentNode ) => {
 				// Create a document fragment to temporarily hold the children.
 				const fragment = iframeDocument.createDocumentFragment();
 
@@ -434,15 +436,16 @@ export const useIframeHighlight = ( {
 				}
 
 				// Insert the fragment before the highlight span.
-				parent.insertBefore( fragment, highlight );
-				parent.removeChild( highlight );
-				parent.normalize();
+
+				rootParent.insertBefore( fragment, container );
+				rootParent.removeChild( container );
+				rootParent.normalize();
 
 				// Remove any anchors without text in the parent node.
-				const anchors = Array.from( parent.querySelectorAll( 'a' ) );
+				const anchors = Array.from( rootParent.querySelectorAll( 'a' ) );
 				anchors.forEach( ( anchor ) => {
 					if ( ! anchor.textContent?.trim() ) {
-						parent.removeChild( anchor );
+						rootParent.removeChild( anchor );
 						return;
 					}
 
@@ -474,8 +477,13 @@ export const useIframeHighlight = ( {
 				const nestedHighlights = highlight.querySelectorAll( querySelector );
 				nestedHighlights.forEach( ( nested ) => unwrapHighlight( nested ) );
 
-				const parent = highlight.parentNode;
-				if ( ! parent ) {
+				const container = highlight.parentNode;
+				if ( ! container ) {
+					return;
+				}
+
+				const rootParent = container.parentNode;
+				if ( ! rootParent ) {
 					return;
 				}
 
@@ -483,10 +491,10 @@ export const useIframeHighlight = ( {
 					highlight.classList.add( 'removing' );
 
 					setTimeout( () => {
-						removeAndClean( highlight, parent );
+						removeAndClean( highlight, container, rootParent );
 					}, 200 );
 				} else {
-					removeAndClean( highlight, parent );
+					removeAndClean( highlight, container, rootParent );
 				}
 			};
 
@@ -500,7 +508,7 @@ export const useIframeHighlight = ( {
 				}
 			} );
 		} catch ( error ) {
-			// Silently fail if there's an error removing highlights.
+			console.error( 'WP Parsely: Error removing highlights:', error ); // eslint-disable-line no-console
 		}
 	}, [] );
 
