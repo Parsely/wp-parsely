@@ -17,7 +17,7 @@ use WP_Error;
  *
  * @since 3.17.0
  *
- * @link https://content-suggestions-api.parsely.net/prod/docs#/default/suggest_headline_suggest_headline_post
+ * @link https://suggestions-api.parsely.com/docs#/default/suggest_headline_suggest_headline_post
  *
  * @phpstan-type Traffic_Source = array{
  *     source: string,

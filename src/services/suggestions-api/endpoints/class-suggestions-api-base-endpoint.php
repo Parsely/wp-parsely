@@ -18,7 +18,7 @@ use WP_Error;
  *
  * @since 3.17.0
  *
- * @link https://content-suggestions-api.parsely.net/prod/docs
+ * @link https://suggestions-api.parsely.com/docs
  *
  * @phpstan-import-type WP_HTTP_Response from Base_Service_Endpoint
  * @phpstan-import-type WP_HTTP_Request_Args from Base_Service_Endpoint
