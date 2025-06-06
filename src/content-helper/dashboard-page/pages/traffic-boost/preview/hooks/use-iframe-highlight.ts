@@ -236,6 +236,21 @@ export const useIframeHighlight = ( {
 				height: 36px;
 				white-space: nowrap;
 			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint {
+				display: flex;
+				cursor: pointer;
+				user-select: none;
+			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint-text {
+				font-size: 13px;
+				font-family: inherit;
+				white-space: nowrap;
+				margin-right: 4px;
+				padding-left: 8px;
+				color: #2F2F2F;
+			}
 		`;
 		iframeDocument.head.appendChild( style );
 	}, [] );

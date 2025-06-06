@@ -1,11 +1,11 @@
 /**
  * WordPress imports
  */
-import { Button, CheckboxControl } from '@wordpress/components';
+import { Button, CheckboxControl, Icon, Tooltip } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { useState, useCallback } from '@wordpress/element';
-import { check, close, undo } from '@wordpress/icons';
+import { check, close, info, undo } from '@wordpress/icons';
 
 /**
  * Internal imports
@@ -128,17 +128,36 @@ export const PreviewActions = ( {
 									onClick={ () => onDiscard( activeLink ) }
 									icon={ close }
 								>{ __( 'Reject', 'wp-parsely' ) }</Button>
+								<VerticalDivider size={ 48 } color="#1e1e1e" />
+								{ ! selectedText &&
+									<div className="traffic-boost-preview-actions-hint">
+										<Tooltip text={ __( 'Highlight text on the page to customize suggestion', 'wp-parsely' ) }>
+											<div className="traffic-boost-preview-actions-hint">
+												<div className="traffic-boost-preview-actions-hint-text">
+													{ __( 'Highlight to customize', 'wp-parsely' ) }
+												</div>
+												<Icon icon={ info } />
+											</div>
+											{ /* <Button
+												variant="tertiary"
+												icon={ info }
+												showTooltip={ true }
+												label={ __( 'Highlight text on the page to customize suggestion', 'wp-parsely' ) }
+												iconPosition="right"
+											>
+												{ __( 'Highlight to customize', 'wp-parsely' ) }
+											</Button> */ }
+										</Tooltip>
+									</div>
+								}
 								{ selectedText && (
-									<>
-										<VerticalDivider size={ 48 } color="#1e1e1e" />
-										<Button
-											variant="tertiary"
-											onClick={ onRestoreOriginal }
-											icon={ undo }
-										>
-											{ __( 'Clear changes', 'wp-parsely' ) }
-										</Button>
-									</>
+									<Button
+										variant="tertiary"
+										onClick={ onRestoreOriginal }
+										icon={ undo }
+									>
+										{ __( 'Clear changes', 'wp-parsely' ) }
+									</Button>
 								) }
 							</>
 						) }
