@@ -286,13 +286,13 @@ export const TextSelectionTooltip = ( {
 
 		// Find word boundary at start.
 		let startOffset = range.startOffset;
-		while ( startOffset > 0 && /[^\s.,!?;:'")\]}]/g.test( startText[ startOffset - 1 ] ) ) {
+		while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
 			startOffset--;
 		}
 
 		// Find word boundary at end.
 		let endOffset = range.endOffset;
-		while ( endOffset < endText.length && /[^\s.,!?;:'"([{]/g.test( endText[ endOffset ] ) ) {
+		while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
 			endOffset++;
 		}
 
@@ -484,12 +484,13 @@ export const TextSelectionTooltip = ( {
 					popoverContainer.classList.add( 'closing' );
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
+
 					let docSelectionText = docSelection.toString().trim();
 
-					if ( docSelection.rangeCount > 1 ) {
-						// If docSelection has multiple ranges, it can be because they've selected over an existing suggestion.
-						// Because the suggestion actions are a child of the highlight, we need to ignore the inner HTML content
-						// (described by the range) and return the text content of the selection.
+					if ( docSelection.rangeCount > 1 || docSelection.toString().includes( '\n' ) ) {
+						// If docSelection has multiple ranges or contains a newline character, it can be because a selection
+						// has been made on top of an existing suggestion. Existing selections contain HTML as children,
+						// so we need to ignore the inner HTML content and return the text content of the selection.
 						const selectionContainer = iframeDocument.createElement( 'div' );
 						for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
 							const currentRange = docSelection.getRangeAt( rangeIndex );

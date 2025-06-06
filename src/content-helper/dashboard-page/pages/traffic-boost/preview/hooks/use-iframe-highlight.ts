@@ -225,7 +225,7 @@ export const useIframeHighlight = ( {
 				align-items: center;
 				flex-wrap: nowrap;
 				justify-content: center;
-				padding: 0 8px;
+				padding-right: 8px;
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons .components-button {
