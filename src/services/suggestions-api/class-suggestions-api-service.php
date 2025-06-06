@@ -19,8 +19,6 @@ use WP_Error;
  *
  * @since 3.17.0
  *
- * @link https://suggestions-api.parsely.com/docs
- *
  * @phpstan-import-type Endpoint_Suggest_Brief_Options from Endpoints\Endpoint_Suggest_Brief
  * @phpstan-import-type Endpoint_Suggest_Headline_Options from Endpoints\Endpoint_Suggest_Headline
  * @phpstan-import-type Endpoint_Suggest_Linked_Reference_Options from Endpoints\Endpoint_Suggest_Linked_Reference
