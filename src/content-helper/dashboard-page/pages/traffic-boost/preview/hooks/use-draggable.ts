@@ -84,7 +84,7 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 		unsubscribe.current = () => {
 			elem.removeEventListener( 'mousedown', handleMouseDown );
 		};
-	}, [ iframeRef ] );
+	}, [ iframeRef, dragHandleSelector ] );
 
 	useEffect( () => {
 		if ( ! pressed ) {

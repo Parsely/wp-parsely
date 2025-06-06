@@ -33,10 +33,10 @@ interface PreviewActionsProps {
 }
 
 /**
- * Preview footer component for the Traffic Boost feature.
- * Displays link options for a selected post.
+ * Preview actions component for the Traffic Boost feature.
+ * Displays a draggable floating actions bar with link management controls.
  *
- * @since 3.19.0
+ * @since 3.19.3
  *
  * @param {PreviewActionsProps} props The component's props.
  */
