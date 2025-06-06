@@ -27,7 +27,7 @@ interface VerticalDividerProps {
  */
 export const VerticalDivider = ( { size = 40, color = '#cccccc' }: VerticalDividerProps ): JSX.Element => {
 	return (
-		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height={ size } viewBox={ `0 0 1 ${ size }` } fill="none">
+		<SVG xmlns="http://www.w3.org/2000/svg" width="3" height={ size } viewBox={ `0 0 1 ${ size }` } fill="none">
 			<Rect width="1" height={ size } fill={ color } />
 		</SVG>
 	);
