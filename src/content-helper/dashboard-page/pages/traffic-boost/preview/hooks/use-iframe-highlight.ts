@@ -219,6 +219,10 @@ export const useIframeHighlight = ( {
 				align-items: center;
 			}
 
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle.dragging {
+				cursor: grabbing;
+			}
+
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
 				display: flex;
 				gap: 8px;

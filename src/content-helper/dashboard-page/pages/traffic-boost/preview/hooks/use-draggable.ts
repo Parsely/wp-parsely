@@ -23,9 +23,10 @@ export interface OnDragProps {
 export interface UseDraggableProps {
 	onDrag: ( props: OnDragProps ) => { x: number; y: number };
 	iframeRef: React.RefObject<HTMLIFrameElement>;
+	dragHandleSelector: string;
 }
 
-export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ): [ React.LegacyRef<HTMLDivElement>, boolean ] => {
+export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDraggableProps ): [ React.LegacyRef<HTMLDivElement>, boolean ] => {
 	const [ pressed, setPressed ] = useState( false );
 
 	// Avoid storing positions in useState, as it will cause the component to re-render on every state change
@@ -45,6 +46,12 @@ export const useDraggable = ( { onDrag, iframeRef }: UseDraggableProps ): [ Reac
 			return;
 		}
 		const handleMouseDown = ( e: MouseEvent ) => {
+			// Only start dragging if the click was on the drag handle
+			const target = e.target as Element;
+			if ( ! target.closest( dragHandleSelector ) ) {
+				return;
+			}
+
 			e.preventDefault();
 
 			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
