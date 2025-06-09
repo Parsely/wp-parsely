@@ -5,9 +5,9 @@ title: Release wp-parsely x.y.z
 labels: "wp-parsely, Maintenance"
 ---
 
-This is an issue for tracking the next `wp-parsely` release. This ticket is to be opened the week before the actual release, so we have enough time to complete all the related tasks.
+This is an issue for tracking the next `wp-parsely` release (milestone: [x.y.z](https://github.com/Parsely/wp-parsely/milestone/milestone-id?closed=1)).
 
-The actual release of the plugin should be done on Mondays so we can catch the Tuesday WordPress VIP release window.
+This ticket is to be opened the week before the actual release, so we have enough time to complete all the related tasks. The actual release of the plugin should be done on Mondays so we can catch the Tuesday WordPress VIP release window.
 
 ## Before releasing
 
