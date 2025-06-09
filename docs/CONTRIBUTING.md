@@ -50,7 +50,7 @@ This section lists the minimum requirements for setting up a local development e
 
 Docker installation depends on your OS. [Please follow their official instructions](https://docs.docker.com/get-docker/). Please always use the latest possible version.
 
-##### Node.js 16 (LTS)
+##### Node.js 22.15 (LTS)
 
 Node.js is used in the build process of the Parse.ly plugin. If it's not already installed on your system, you can [visit the Node.js website and install the latest Long Term Support (LTS) version](https://nodejs.org/). If you use [nvm](https://github.com/nvm-sh/nvm) to manage node versions, you can run:
 
@@ -59,9 +59,9 @@ nvm install
 nvm use
 ```
 
-##### npm 7
+##### npm 10.9.2
 
-Node 16 ships with npm version 7, so you don't need to update it manually. In case you don't have the latest version, you can run:
+If you need to update npm, you can run:
 
 ```
 npm i -g npm
@@ -77,7 +77,7 @@ There are multiple ways to install PHP on your operating system. You can check o
 
 The Parse.ly plugin includes several packages that require Composer, the PHP package manager. You can view the [composer.json](https://github.com/Parsely/wp-parsely/blob/develop/composer.json) file for a full list of packages. You can install Composer through Homebrew on macOS: `brew install composer`. If you don't have access to Homebrew you can view instructions for how to install Composer on the [Composer website](https://getcomposer.org/download/).
 
-##### WordPress 5.2
+##### WordPress 6.3
 
 You don't need to install WordPress if you use the provided, Docker-based wp-env.
 
