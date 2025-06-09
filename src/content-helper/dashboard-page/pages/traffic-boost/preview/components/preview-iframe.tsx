@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
@@ -8,7 +8,7 @@ import { throttle, usePrevious } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Internal imports
+ * Internal dependencies
  */
 import { Loading } from '../../../../../common/components/loading';
 import { ErrorIcon } from '../../../../../common/icons/error-icon';

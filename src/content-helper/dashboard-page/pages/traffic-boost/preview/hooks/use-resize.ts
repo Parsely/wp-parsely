@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { useEffect } from '@wordpress/element';
 

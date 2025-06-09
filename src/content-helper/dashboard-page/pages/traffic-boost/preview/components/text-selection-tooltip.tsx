@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
 import { debounce } from '@wordpress/compose';
