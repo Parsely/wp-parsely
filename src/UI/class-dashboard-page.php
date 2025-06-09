@@ -298,9 +298,15 @@ final class Dashboard_Page {
 			$asset_info['version']
 		);
 
+		$inline_script_lines = array(
+			'window.wpParselyDependencies = {};',
+			sprintf( 'window.wpParselyDependencies.urlWpComponents = %s;', wp_json_encode( includes_url( 'css/dist/components/style.css' ) ) ),
+			sprintf( 'window._parsely_traffic_boost_preview_nonce = %s;', wp_json_encode( wp_create_nonce( 'parsely_preview' ) ) ),
+		);
+
 		wp_add_inline_script(
 			'parsely-dashboard-page',
-			'window._parsely_traffic_boost_preview_nonce = ' . wp_json_encode( wp_create_nonce( 'parsely_preview' ) ) . ';',
+			join( "\n", $inline_script_lines ),
 			'before'
 		);
 

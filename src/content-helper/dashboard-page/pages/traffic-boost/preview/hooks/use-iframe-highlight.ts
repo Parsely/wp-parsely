@@ -12,6 +12,7 @@ import { TrafficBoostLink } from '../../provider';
 import { LinkType } from '../components/link-counter';
 import { TextSelection } from '../preview';
 import { DRAG_MARGIN_PX } from './use-draggable';
+import { useWordpressComponentStyles } from './use-wordpress-component-styles';
 
 /**
  * Props for the useIframeHighlight hook.
@@ -46,6 +47,8 @@ export const useIframeHighlight = ( {
 	onRestoreOriginal,
 	actionsBar,
 }: UseIframeHighlightProps ) => {
+	const { injectWordpressComponentStyles } = useWordpressComponentStyles();
+
 	/**
 	 * Injects highlight styles into the iframe.
 	 *
@@ -59,16 +62,7 @@ export const useIframeHighlight = ( {
 			return;
 		}
 
-		let wordpressComponentStyling: HTMLLinkElement | null = iframeDocument.querySelector( 'link[data-wp-parsely-component-styles]' );
-
-		if ( wordpressComponentStyling === null ) {
-			// Inject WordPress components styles.
-			wordpressComponentStyling = iframeDocument.createElement( 'link' );
-			wordpressComponentStyling.rel = 'stylesheet';
-			wordpressComponentStyling.href = '/wp-includes/css/dist/components/style.css';
-			wordpressComponentStyling.setAttribute( 'data-wp-parsely-component-styles', 'true' );
-			iframeDocument.head.appendChild( wordpressComponentStyling );
-		}
+		injectWordpressComponentStyles( iframeDocument );
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
