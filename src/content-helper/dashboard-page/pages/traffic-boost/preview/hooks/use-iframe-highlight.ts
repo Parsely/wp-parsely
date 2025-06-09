@@ -214,7 +214,6 @@ export const useIframeHighlight = ( {
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle {
 				flex-shrink: 0;
-				margin-right: 4px;
 				cursor: grab;
 				border-right: 1px solid #1e1e1e;
 				padding: 0 8px;
@@ -229,7 +228,7 @@ export const useIframeHighlight = ( {
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
 				display: flex;
-				gap: 8px;
+				gap: 4px;
 				align-items: center;
 				flex-wrap: nowrap;
 				justify-content: center;

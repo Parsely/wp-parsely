@@ -5,7 +5,7 @@ import { Button, CheckboxControl, Icon, Tooltip } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { check, close, info, undo } from '@wordpress/icons';
+import { check, closeSmall, info, undo } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -131,7 +131,7 @@ export const PreviewActions = ( {
 								<Button
 									variant="tertiary"
 									onClick={ () => onDiscard( activeLink ) }
-									icon={ close }
+									icon={ closeSmall }
 								>{ __( 'Reject', 'wp-parsely' ) }</Button>
 								<VerticalDivider size={ 48 } color="#1e1e1e" />
 								{ ! selectedText &&
@@ -190,7 +190,7 @@ export const PreviewActions = ( {
 									<>
 										<Button
 											variant={ isRemoving ? 'primary' : 'tertiary' }
-											icon={ isRemoving ? null : close }
+											icon={ isRemoving ? null : closeSmall }
 											onClick={ () => onRemove( activeLink, restoreOriginal ) }
 											isBusy={ isRemoving }
 											disabled={ isRemoving }
