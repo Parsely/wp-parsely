@@ -1,12 +1,12 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight } from '@wordpress/icons';
 
 /**
- * Internal imports
+ * Internal dependencies
  */
 import { TrafficBoostLink } from '../../provider';
 

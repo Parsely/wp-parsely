@@ -1,5 +1,5 @@
 /**
- * External imports
+ * WordPress dependencies
  */
 import { useEffect } from '@wordpress/element';
 
@@ -8,7 +8,7 @@ import { useEffect } from '@wordpress/element';
 /**
  * Monitor resize events on an element.
  *
- * @since 3.19.3
+ * @since 3.20.0
  *
  * @param {RefObject} ref      The element ref to observe.
  * @param {Function}  callback The callback to call when the element is resized.

@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
 import { debounce } from '@wordpress/compose';
@@ -7,6 +7,7 @@ import { createRoot, useCallback, useEffect, useState } from '@wordpress/element
 import { __ } from '@wordpress/i18n';
 import { link, warning } from '@wordpress/icons';
 import { getContentArea } from '../utils';
+import { useWordpressComponentStyles } from '../hooks/use-wordpress-component-styles';
 
 /**
  * Custom hook to inject styles into the iframe.
@@ -16,21 +17,14 @@ import { getContentArea } from '../utils';
  * @param {Document} iframeDocument The iframe's document object.
  */
 const useIframeStyles = ( iframeDocument: Document ) => {
+	const { injectWordpressComponentStyles } = useWordpressComponentStyles();
+
 	useEffect( () => {
+		injectWordpressComponentStyles( iframeDocument );
+
 		// Get computed styles from parent window.
 		const adminColor = window.getComputedStyle( document.documentElement )
 			.getPropertyValue( '--wp-admin-theme-color' ).trim();
-
-		let wordpressComponentStyling: HTMLLinkElement | null = iframeDocument.querySelector( 'link[data-wp-parsely-component-styles]' );
-
-		if ( wordpressComponentStyling === null ) {
-			// Inject WordPress components styles.
-			wordpressComponentStyling = iframeDocument.createElement( 'link' );
-			wordpressComponentStyling.rel = 'stylesheet';
-			wordpressComponentStyling.href = '/wp-includes/css/dist/components/style.css';
-			wordpressComponentStyling.setAttribute( 'data-wp-parsely-component-styles', 'true' );
-			iframeDocument.head.appendChild( wordpressComponentStyling );
-		}
 
 		// Create and inject custom styles into the iframe.
 		const style = iframeDocument.createElement( 'style' );
@@ -113,7 +107,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 		return () => {
 			style.remove();
 		};
-	}, [ iframeDocument ] );
+	}, [ iframeDocument, injectWordpressComponentStyles ] );
 };
 
 /**

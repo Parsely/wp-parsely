@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
@@ -8,7 +8,7 @@ import { throttle, usePrevious } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Internal imports
+ * Internal dependencies
  */
 import { Loading } from '../../../../../common/components/loading';
 import { ErrorIcon } from '../../../../../common/icons/error-icon';
@@ -92,6 +92,7 @@ export const PreviewIframe = ( {
 		return url.toString();
 	}, [ previewUrl ] );
 
+	// Create a actions bar to be mounted in the iframe with useIframeHighlight().
 	const actionsBar = <PreviewActions
 		activeLink={ activeLink }
 		onAccept={ onAccept }

@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
 
@@ -35,6 +35,8 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 	const iframeRect = useRef<DOMRect | null>( null );
 	const originalItemRect = useRef<ItemRect | null>( null );
 	const ref = useRef<HTMLDivElement | null>( null );
+	const startPosition = useRef<{ x: number; y: number } | null>( null );
+	const startTotalDelta = useRef<{ x: number; y: number }>( { x: 0, y: 0 } );
 
 	const unsubscribe = useRef<( () => void ) | null>( null );
 	const externalRef = useCallback( ( elem: HTMLDivElement | null ) => {
@@ -60,6 +62,12 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 			}
 
 			originalItemRect.current = ref.current?.getBoundingClientRect() ?? null;
+
+			// Store the starting mouse position within the iframe, used for offset calculations
+			startPosition.current = { x: e.clientX, y: e.clientY };
+
+			// Store the current total delta at the start of the drag, used for offset calculations
+			startTotalDelta.current = { x: totalDelta.current.x, y: totalDelta.current.y };
 
 			// If the item already has a transform from being dragged, we need to adjust
 			// the originalItemRect to the item's position without any transformations to
@@ -97,13 +105,20 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 		}
 
 		const handleMouseMove = throttleToAnimationFrames( ( event: MouseEvent ) => {
-			if ( ! ref.current || ! iframeRect.current || ! originalItemRect.current ) {
+			if ( ! ref.current || ! iframeRect.current || ! originalItemRect.current || ! startPosition.current ) {
 				return;
 			}
 
+			// Calculate total delta using absolute positions instead of event movementX and movementY,
+			// which don't work properly in Safari within an iframe.
+			const currentMouseDelta = {
+				x: event.clientX - startPosition.current.x,
+				y: event.clientY - startPosition.current.y,
+			};
+
 			totalDelta.current = {
-				x: totalDelta.current.x + event.movementX,
-				y: totalDelta.current.y + event.movementY,
+				x: startTotalDelta.current.x + currentMouseDelta.x,
+				y: startTotalDelta.current.y + currentMouseDelta.y,
 			};
 
 			positionDelta.current = onDrag( {

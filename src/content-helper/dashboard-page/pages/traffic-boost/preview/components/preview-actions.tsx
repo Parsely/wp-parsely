@@ -1,25 +1,25 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Button, CheckboxControl, Icon, Tooltip } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback } from '@wordpress/element';
 import { check, close, info, undo } from '@wordpress/icons';
 
 /**
- * Internal imports
+ * Internal dependencies
  */
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
+import { DRAG_MARGIN_PX, OnDragProps, useDraggable } from '../hooks/use-draggable';
 import { TextSelection } from '../preview';
-import { useDraggable, OnDragProps, DRAG_MARGIN_PX } from '../hooks/use-draggable';
 
 /**
  * Props structure for PreviewActions.
  *
- * @since 3.19.0
+ * @since 3.20.0
  */
 interface PreviewActionsProps {
 	activeLink?: TrafficBoostLink | null;
@@ -36,7 +36,7 @@ interface PreviewActionsProps {
  * Preview actions component for the Traffic Boost feature.
  * Displays a draggable floating actions bar with link management controls.
  *
- * @since 3.19.3
+ * @since 3.20.0
  *
  * @param {PreviewActionsProps} props The component's props.
  */
@@ -108,8 +108,13 @@ export const PreviewActions = ( {
 		<div className="traffic-boost-preview-actions" ref={ actionsBarRef }>
 			{ ! isGenerating && (
 				<>
-					<div className={ `traffic-boost-preview-actions-drag-handle ${ isDragging ? 'dragging' : '' }` }>
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<div
+						className={ `traffic-boost-preview-actions-drag-handle ${ isDragging ? 'dragging' : '' }` }
+						role="button"
+						tabIndex={ 0 }
+						aria-label={ __( 'Drag to reposition actions bar', 'wp-parsely' ) }
+					>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 							<path d="M8 7H10V5H8V7ZM8 13H10V11H8V13ZM8 19H10V17H8V19ZM14 5V7H16V5H14ZM14 13H16V11H14V13ZM14 19H16V17H14V19Z" fill="#1E1E1E" />
 						</svg>
 					</div>

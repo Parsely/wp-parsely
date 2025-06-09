@@ -1,17 +1,27 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { createRoot, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import type { Root } from 'react-dom/client';
 
 /**
- * Internal imports
+ * Internal dependencies
  */
 import { escapeRegExp } from '../../../../../common/utils/functions';
 import { TrafficBoostLink } from '../../provider';
 import { LinkType } from '../components/link-counter';
 import { TextSelection } from '../preview';
 import { DRAG_MARGIN_PX } from './use-draggable';
+import { useWordpressComponentStyles } from './use-wordpress-component-styles';
+
+declare global {
+	interface Window {
+		// Keep track of the root element used for mounting the actions bar.
+		// Used to unmount the actions bar React root on removal.
+		wpParselyTrafficBoostPopoverActionsRoot: Root | null;
+	}
+}
 
 /**
  * Props for the useIframeHighlight hook.
@@ -46,6 +56,8 @@ export const useIframeHighlight = ( {
 	onRestoreOriginal,
 	actionsBar,
 }: UseIframeHighlightProps ) => {
+	const { injectWordpressComponentStyles } = useWordpressComponentStyles();
+
 	/**
 	 * Injects highlight styles into the iframe.
 	 *
@@ -59,16 +71,7 @@ export const useIframeHighlight = ( {
 			return;
 		}
 
-		let wordpressComponentStyling: HTMLLinkElement | null = iframeDocument.querySelector( 'link[data-wp-parsely-component-styles]' );
-
-		if ( wordpressComponentStyling === null ) {
-			// Inject WordPress components styles.
-			wordpressComponentStyling = iframeDocument.createElement( 'link' );
-			wordpressComponentStyling.rel = 'stylesheet';
-			wordpressComponentStyling.href = '/wp-includes/css/dist/components/style.css';
-			wordpressComponentStyling.setAttribute( 'data-wp-parsely-component-styles', 'true' );
-			iframeDocument.head.appendChild( wordpressComponentStyling );
-		}
+		injectWordpressComponentStyles( iframeDocument );
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
@@ -253,7 +256,7 @@ export const useIframeHighlight = ( {
 			}
 		`;
 		iframeDocument.head.appendChild( style );
-	}, [] );
+	}, [ injectWordpressComponentStyles ] );
 
 	/**
 	 * Finds all ranges containing the text.
@@ -364,6 +367,11 @@ export const useIframeHighlight = ( {
 
 				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
 				if ( existingActions ) {
+					if ( window.wpParselyTrafficBoostPopoverActionsRoot ) {
+						window.wpParselyTrafficBoostPopoverActionsRoot.unmount();
+						window.wpParselyTrafficBoostPopoverActionsRoot = null;
+					}
+
 					existingActions.remove();
 				}
 
@@ -416,6 +424,7 @@ export const useIframeHighlight = ( {
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
 
+				window.wpParselyTrafficBoostPopoverActionsRoot = root;
 				return highlightSpan;
 			} catch ( e ) {
 				// eslint-disable-next-line no-console
@@ -443,7 +452,7 @@ export const useIframeHighlight = ( {
 			 * Removes a highlight and cleans up the parent node.
 			 *
 			 * @since 3.19.0
-			 * @since 3.19.3 Removed `parent`, added `container` and `rootParent` parameters.
+			 * @since 3.20.0 Removed `parent`, added `container` and `rootParent` parameters.
 			 *
 			 * @param {Element}    highlight  The highlight element to remove.
 			 * @param {ParentNode} container  The parent container node of the highlight.
