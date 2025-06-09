@@ -41,7 +41,7 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
  *
  * @phpstan-type Test_Convert_To_Associative_Data array{
  *   args: array{
- *     obj: stdClass,
+ *     obj: \stdClass,
  *   },
  *   expected_output: array<mixed>,
  *   msg: string,
