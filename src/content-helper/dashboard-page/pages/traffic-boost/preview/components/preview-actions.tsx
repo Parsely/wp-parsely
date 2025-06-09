@@ -108,8 +108,13 @@ export const PreviewActions = ( {
 		<div className="traffic-boost-preview-actions" ref={ actionsBarRef }>
 			{ ! isGenerating && (
 				<>
-					<div className={ `traffic-boost-preview-actions-drag-handle ${ isDragging ? 'dragging' : '' }` }>
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<div
+						className={ `traffic-boost-preview-actions-drag-handle ${ isDragging ? 'dragging' : '' }` }
+						role="button"
+						tabIndex={ 0 }
+						aria-label={ __( 'Drag to reposition actions bar', 'wp-parsely' ) }
+					>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 							<path d="M8 7H10V5H8V7ZM8 13H10V11H8V13ZM8 19H10V17H8V19ZM14 5V7H16V5H14ZM14 13H16V11H14V13ZM14 19H16V17H14V19Z" fill="#1E1E1E" />
 						</svg>
 					</div>
