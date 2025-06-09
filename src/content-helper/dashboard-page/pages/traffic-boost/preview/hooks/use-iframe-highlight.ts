@@ -201,6 +201,7 @@ export const useIframeHighlight = ( {
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
+				font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,"Helvetica Neue", sans-serif;
 				height: 48px;
 				display: flex;
 				justify-content: center;
@@ -244,6 +245,7 @@ export const useIframeHighlight = ( {
 				display: flex;
 				cursor: pointer;
 				user-select: none;
+				align-items: center;
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint-text {

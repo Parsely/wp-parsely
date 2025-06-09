@@ -58,6 +58,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 			}
 
 			.parsely-traffic-boost-iframe-popover {
+				font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,"Helvetica Neue", sans-serif;
 				padding: 0;
 				pointer-events: auto;
 				white-space: nowrap;
