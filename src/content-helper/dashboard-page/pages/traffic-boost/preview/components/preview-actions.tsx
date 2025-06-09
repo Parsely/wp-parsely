@@ -3,8 +3,8 @@
  */
 import { Button, CheckboxControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { useState, useCallback } from '@wordpress/element';
 import { check, close, undo } from '@wordpress/icons';
 
 /**
@@ -13,13 +13,13 @@ import { check, close, undo } from '@wordpress/icons';
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
+import { DRAG_MARGIN_PX, OnDragProps, useDraggable } from '../hooks/use-draggable';
 import { TextSelection } from '../preview';
-import { useDraggable, OnDragProps, DRAG_MARGIN_PX } from '../hooks/use-draggable';
 
 /**
  * Props structure for PreviewActions.
  *
- * @since 3.19.0
+ * @since 3.20.0
  */
 interface PreviewActionsProps {
 	activeLink?: TrafficBoostLink | null;
@@ -36,7 +36,7 @@ interface PreviewActionsProps {
  * Preview actions component for the Traffic Boost feature.
  * Displays a draggable floating actions bar with link management controls.
  *
- * @since 3.19.3
+ * @since 3.20.0
  *
  * @param {PreviewActionsProps} props The component's props.
  */

@@ -19,7 +19,7 @@ interface VerticalDividerProps {
  * @since 3.14.0
  * @since 3.16.0 Moved from `RelatedPostItem` and `TitleSuggestion`.
  * @since 3.19.0 Added size prop.
- * @since 3.19.3 Added color prop.
+ * @since 3.20.0 Added color prop.
  *
  * @param {VerticalDividerProps} props The component's props.
  *

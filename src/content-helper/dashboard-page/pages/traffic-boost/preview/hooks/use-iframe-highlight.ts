@@ -422,7 +422,7 @@ export const useIframeHighlight = ( {
 			 * Removes a highlight and cleans up the parent node.
 			 *
 			 * @since 3.19.0
-			 * @since 3.19.3 Removed `parent`, added `container` and `rootParent` parameters.
+			 * @since 3.20.0 Removed `parent`, added `container` and `rootParent` parameters.
 			 *
 			 * @param {Element}    highlight  The highlight element to remove.
 			 * @param {ParentNode} container  The parent container node of the highlight.
