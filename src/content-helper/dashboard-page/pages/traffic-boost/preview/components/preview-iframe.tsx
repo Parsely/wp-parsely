@@ -92,6 +92,7 @@ export const PreviewIframe = ( {
 		return url.toString();
 	}, [ previewUrl ] );
 
+	// Create a actions bar to be mounted in the iframe with useIframeHighlight().
 	const actionsBar = <PreviewActions
 		activeLink={ activeLink }
 		onAccept={ onAccept }
