@@ -135,7 +135,7 @@ export const PreviewActions = ( {
 								>{ __( 'Reject', 'wp-parsely' ) }</Button>
 								<VerticalDivider size={ 48 } color="#1e1e1e" />
 								{ ! selectedText &&
-									<Tooltip text={ __( 'Highlight text on the page to customize suggestion', 'wp-parsely' ) }>
+									<Tooltip text={ __( 'Highlight text on the page to customize link placement.', 'wp-parsely' ) }>
 										<div className="traffic-boost-preview-actions-hint">
 											<div className="traffic-boost-preview-actions-hint-text">
 												{ __( 'Highlight to customize', 'wp-parsely' ) }
