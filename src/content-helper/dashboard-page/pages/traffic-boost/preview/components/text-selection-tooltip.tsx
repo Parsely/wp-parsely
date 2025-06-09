@@ -107,7 +107,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 		return () => {
 			style.remove();
 		};
-	}, [ iframeDocument ] );
+	}, [ iframeDocument, injectWordpressComponentStyles ] );
 };
 
 /**
