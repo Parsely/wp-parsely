@@ -469,7 +469,6 @@ export const useIframeHighlight = ( {
 				}
 
 				// Insert the fragment before the highlight span.
-
 				rootParent.insertBefore( fragment, container );
 				rootParent.removeChild( container );
 				rootParent.normalize();
@@ -768,7 +767,7 @@ export const useIframeHighlight = ( {
 	/**
 	 * Readjusts the position of the actions bar. Call during resize events.
 	 *
-	 * @since 3.19.0
+	 * @since 3.20.0
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to highlight the links in.
 	 */
