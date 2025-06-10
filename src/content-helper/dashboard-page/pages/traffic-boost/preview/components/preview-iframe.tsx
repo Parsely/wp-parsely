@@ -2,9 +2,9 @@
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { throttle, usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
-import { throttle, usePrevious } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -15,11 +15,11 @@ import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
+import useResize from '../hooks/use-resize';
 import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
-import { TextSelectionTooltip } from './text-selection-tooltip';
 import { PreviewActions } from './preview-actions';
-import useResize from '../hooks/use-resize';
+import { TextSelectionTooltip } from './text-selection-tooltip';
 
 /**
  * Props structure for PreviewIframe.
@@ -92,7 +92,7 @@ export const PreviewIframe = ( {
 		return url.toString();
 	}, [ previewUrl ] );
 
-	// Create a actions bar to be mounted in the iframe with useIframeHighlight().
+	// Create an actions bar to be mounted in the iframe with useIframeHighlight().
 	const actionsBar = <PreviewActions
 		activeLink={ activeLink }
 		onAccept={ onAccept }

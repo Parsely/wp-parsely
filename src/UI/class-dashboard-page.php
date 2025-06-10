@@ -300,8 +300,14 @@ final class Dashboard_Page {
 
 		$inline_script_lines = array(
 			'window.wpParselyDependencies = {};',
-			sprintf( 'window.wpParselyDependencies.urlWpComponents = %s;', wp_json_encode( includes_url( 'css/dist/components/style.css' ) ) ),
-			sprintf( 'window._parsely_traffic_boost_preview_nonce = %s;', wp_json_encode( wp_create_nonce( 'parsely_preview' ) ) ),
+			sprintf(
+				'window.wpParselyDependencies.urlWpComponents = %s;',
+				wp_json_encode( includes_url( 'css/dist/components/style.css' ) )
+			),
+			sprintf(
+				'window._parsely_traffic_boost_preview_nonce = %s;',
+				wp_json_encode( wp_create_nonce( 'parsely_preview' ) )
+			),
 		);
 
 		wp_add_inline_script(

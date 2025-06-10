@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useState, useRef, useCallback, useEffect } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 
 export const DRAG_MARGIN_PX = 8;
 
@@ -41,12 +41,15 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 	const unsubscribe = useRef<( () => void ) | null>( null );
 	const externalRef = useCallback( ( elem: HTMLDivElement | null ) => {
 		ref.current = elem;
+
 		if ( unsubscribe.current ) {
 			unsubscribe.current();
 		}
+
 		if ( ! elem ) {
 			return;
 		}
+
 		const handleMouseDown = ( e: MouseEvent ) => {
 			// Only start dragging if the click was on the drag handle
 			const target = e.target as Element;
@@ -162,12 +165,14 @@ const throttleToAnimationFrames = <Args extends readonly unknown[], Return>(
 
 		token = null;
 	};
+
 	const result = ( ...args: Args ) => {
 		lastArgs = args;
 		if ( ! token ) {
 			token = requestAnimationFrame( invoke );
 		}
 	};
+
 	result.cancel = () => token && cancelAnimationFrame( token );
 	return result;
 };
