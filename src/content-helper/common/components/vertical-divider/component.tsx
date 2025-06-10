@@ -26,9 +26,10 @@ interface VerticalDividerProps {
  * @return {import('react').JSX.Element} The vertical divider component.
  */
 export const VerticalDivider = ( { size = 40, color = '#cccccc' }: VerticalDividerProps ): JSX.Element => {
-	return (
+	return <>
+		{ /* Use 3px width instead of 1px to ensure the divider is visible on all browsers. */ }
 		<SVG xmlns="http://www.w3.org/2000/svg" width="3" height={ size } viewBox={ `0 0 1 ${ size }` } fill="none">
 			<Rect width="1" height={ size } fill={ color } />
 		</SVG>
-	);
+	</>;
 };

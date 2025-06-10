@@ -201,6 +201,7 @@ export const useIframeHighlight = ( {
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
+				/* Reset font family to editor defaults to avoid inheriting frontend font in actions toolbar. */
 				font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,"Helvetica Neue", sans-serif;
 				height: 48px;
 				display: flex;
