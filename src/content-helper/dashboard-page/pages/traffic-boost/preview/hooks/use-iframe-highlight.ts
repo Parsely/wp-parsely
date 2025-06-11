@@ -367,8 +367,12 @@ export const useIframeHighlight = ( {
 					return;
 				}
 
+				// Only mount or unmount the actions bar if the highlight is a smart link suggestion.
+				// Avoid changing the actions bar for other highlight types, like external links.
+				const highlightHasActionsBar = className === 'smart-link-highlight';
+
 				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
-				if ( existingActions ) {
+				if ( highlightHasActionsBar && existingActions ) {
 					if ( window.wpParselyTrafficBoostPopoverActionsRoot ) {
 						window.wpParselyTrafficBoostPopoverActionsRoot.unmount();
 						window.wpParselyTrafficBoostPopoverActionsRoot = null;
@@ -417,16 +421,18 @@ export const useIframeHighlight = ( {
 					range.insertNode( highlightContainerDiv );
 				}
 
-				// Create popover container.
-				const actionsContainer = iframeDocument.createElement( 'div' );
-				actionsContainer.className = 'parsely-traffic-boost-popover-actions';
-				highlightContainerDiv.appendChild( actionsContainer );
+				if ( highlightHasActionsBar ) {
+					const actionsContainer = iframeDocument.createElement( 'div' );
+					actionsContainer.className = 'parsely-traffic-boost-popover-actions';
+					highlightContainerDiv.appendChild( actionsContainer );
 
-				// Create popover content.
-				const root = createRoot( actionsContainer );
-				root.render( actionsBar );
+					// Create popover content.
+					const root = createRoot( actionsContainer );
+					root.render( actionsBar );
 
-				window.wpParselyTrafficBoostPopoverActionsRoot = root;
+					window.wpParselyTrafficBoostPopoverActionsRoot = root;
+				}
+
 				return highlightSpan;
 			} catch ( e ) {
 				// eslint-disable-next-line no-console
