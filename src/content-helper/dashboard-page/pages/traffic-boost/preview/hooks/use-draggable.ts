@@ -12,6 +12,7 @@ export const DRAG_MARGIN_PX = 8;
 
 /**
  * Represents the position and dimensions of a draggable item.
+ *
  * This is a subset of DOMRect, containing only the properties we need
  * to avoid calculating additional parameters like top, left, right, bottom.
  */
@@ -48,20 +49,26 @@ export interface UseDraggableProps {
 
 /**
  * Custom hook that makes an element draggable within an iframe.
+ *
  * onDrag will be called with the drag delta of the original item, and will
  * update the visible position to the return.
  *
  * @param {UseDraggableProps}            props                    Configuration object for the draggable behavior.
- * @param {Function}                     props.onDrag             Callback function that receives current drag information and returns new position.
+ * @param {Function}                     props.onDrag             Callback function that receives current drag information
+ *                                                                and returns new position.
  * @param {RefObject<HTMLIFrameElement>} props.iframeRef          Reference to the iframe containing the draggable element.
  * @param {string}                       props.dragHandleSelector CSS selector for the element that triggers dragging.
  *
- * @return {[LegacyRef<HTMLDivElement>, boolean]} A tuple containing a ref to attach to the draggable element, and a boolean indicating whether the element is currently being dragged.
+ * @return {[LegacyRef<HTMLDivElement>, boolean]} A tuple containing a ref to attach to the draggable element, and a
+ *                                                boolean indicating whether the element is currently being dragged.
  */
-export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDraggableProps ): [ React.LegacyRef<HTMLDivElement>, boolean ] => {
+export const useDraggable = (
+	{ onDrag, iframeRef, dragHandleSelector }: UseDraggableProps
+): [ React.LegacyRef<HTMLDivElement>, boolean ] => {
 	const [ pressed, setPressed ] = useState( false );
 
-	// Avoid storing positions in useState, as it will cause the component to re-render on every state change.
+	// Avoid storing positions in useState, as it will cause the component to
+	// re-render on every state change.
 	const totalDelta = useRef( { x: 0, y: 0 } );
 	const positionDelta = useRef( { x: 0, y: 0 } );
 	const iframeRect = useRef<DOMRect | null>( null );
@@ -144,8 +151,8 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 				return;
 			}
 
-			// Calculate total delta using absolute positions instead of event movementX and movementY,
-			// which don't work properly in Safari within an iframe.
+			// Calculate total delta using absolute positions instead of event movementX
+			// and movementY, which don't work properly in Safari within an iframe.
 			const currentMouseDelta = {
 				x: event.clientX - startPosition.current.x,
 				y: event.clientY - startPosition.current.y,
@@ -187,15 +194,16 @@ export const useDraggable = ( { onDrag, iframeRef, dragHandleSelector }: UseDrag
 /**
  * Throttles function calls to animation frames for smooth rendering.
  *
- * This utility function ensures that the provided function is called at most once
- * per animation frame, preventing excessive executions during rapid events like
- * mouse movements.
+ * This utility function ensures that the provided function is called at most
+ * once per animation frame, preventing excessive executions during rapid events
+ * like mouse movements.
  *
- * @template Args - The type of arguments the function accepts.
- * @template Return - The return type of the function.
- * @param {Function} f - The function to throttle.
+ * @template Args The type of arguments the function accepts.
+ * @template Return The return type of the function.
+ * @param {Function} f The function to throttle.
  *
- * @return {Function & { cancel: Function }} An object with a throttled wrap of the function and a cancel method to cancel pending calls.
+ * @return {Function & { cancel: Function }} An object with a throttled wrap of the function
+ *                                           and a cancel method to cancel pending calls.
  */
 const throttleToAnimationFrames = <Args extends readonly unknown[], Return>(
 	f: ( ...args: Args ) => Return
