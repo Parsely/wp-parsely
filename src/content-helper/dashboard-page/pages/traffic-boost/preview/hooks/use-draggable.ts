@@ -51,7 +51,7 @@ export interface UseDraggableProps {
  * Custom hook that makes an element draggable within an iframe.
  *
  * onDrag will be called with the drag delta of the original item, and will
- * update the visible position to the return.
+ * update the visible position on return.
  *
  * @param {UseDraggableProps}            props                    Configuration object for the draggable behavior.
  * @param {Function}                     props.onDrag             Callback function that receives current drag information
