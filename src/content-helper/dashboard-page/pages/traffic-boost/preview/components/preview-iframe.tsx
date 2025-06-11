@@ -15,6 +15,7 @@ import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
+import useIframeScroll from '../hooks/use-iframe-scroll';
 import useResize from '../hooks/use-resize';
 import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
@@ -115,6 +116,7 @@ export const PreviewIframe = ( {
 		highlightLinkType,
 		removeSmartLinkHighlights,
 		adjustActionsBarPosition,
+		handleHighlightScroll,
 	} = useIframeHighlight( {
 		iframeRef,
 		contentAreaRef,
@@ -373,6 +375,20 @@ export const PreviewIframe = ( {
 			iframe.removeEventListener( 'load', handleLoadCallback );
 		};
 	}, [ isGenerating, iFrameSrc, handleIframeLoad, onLoadingChange ] );
+
+	/**
+	 * Manages scroll event listener for the iframe.
+	 *
+	 * @since 3.20.0
+	 */
+	useIframeScroll( {
+		iframeRef,
+		onScroll: ( iframe: HTMLIFrameElement ) => {
+			if ( ! isLoading && ! isGenerating && contentAreaRef.current ) {
+				handleHighlightScroll( iframe );
+			}
+		},
+	} );
 
 	/**
 	 * Resets content area ref when active link changes.

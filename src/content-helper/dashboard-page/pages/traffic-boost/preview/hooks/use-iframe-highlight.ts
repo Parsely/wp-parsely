@@ -804,6 +804,36 @@ export const useIframeHighlight = ( {
 		}, 0 );
 	}, [] );
 
+	const handleHighlightScroll = useCallback( ( iframe: HTMLIFrameElement ) => {
+		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
+		if ( ! iframeDocument ) {
+			return;
+		}
+
+		const allHighlights = Array.from( iframeDocument.querySelectorAll( '.smart-link-highlight' ) );
+		const currentHighlights = allHighlights.filter( ( highlight ) => ! highlight.classList.contains( 'previous-suggestion' ) );
+		if ( currentHighlights.length !== 1 ) {
+			return;
+		}
+		const currentHighlight = currentHighlights[ 0 ];
+
+		const highlightRect = currentHighlight.getBoundingClientRect();
+		const iframeRect = iframe.getBoundingClientRect();
+		const elemTop = highlightRect.top;
+		const elemBottom = highlightRect.bottom;
+
+		// Only completely visible elements return true:
+		const isAboveViewport = elemBottom < 0;
+		const isBelowViewport = elemTop > iframeRect.height;
+		if ( isAboveViewport ) {
+			console.log( 'isAboveViewport' );
+		}
+
+		if ( isBelowViewport ) {
+			console.log( 'isBelowViewport' );
+		}
+	}, [] );
+
 	return {
 		injectHighlightStyles,
 		highlightSmartLink,
@@ -811,5 +841,6 @@ export const useIframeHighlight = ( {
 		removeSmartLinkHighlights,
 		removeHighlights,
 		adjustActionsBarPosition,
+		handleHighlightScroll,
 	};
 };
