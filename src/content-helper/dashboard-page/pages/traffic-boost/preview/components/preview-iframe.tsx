@@ -1,22 +1,24 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { throttle, usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Internal imports
+ * Internal dependencies
  */
-import { usePrevious } from '@wordpress/compose';
 import { Loading } from '../../../../../common/components/loading';
 import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
+import useResize from '../hooks/use-resize';
 import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
+import { PreviewActions } from './preview-actions';
 import { TextSelectionTooltip } from './text-selection-tooltip';
 
 /**
@@ -33,6 +35,10 @@ interface PreviewIframeProps {
 	isFrontendPreview: boolean;
 	onLoadingChange: ( isLoading: boolean ) => void;
 	onRestoreOriginal: () => void;
+	onAccept: ( link: TrafficBoostLink ) => void;
+	onDiscard: ( link: TrafficBoostLink ) => void;
+	onUpdateLink: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
+	onRemove: ( link: TrafficBoostLink, restoreOriginal: boolean ) => void;
 }
 
 /**
@@ -52,10 +58,14 @@ export const PreviewIframe = ( {
 	selectedText,
 	onLoadingChange,
 	onRestoreOriginal,
+	onAccept,
+	onDiscard,
+	onUpdateLink,
+	onRemove,
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null );
-
 	const iframeRef = useRef<HTMLIFrameElement>( null );
+
 	const isInboundLink = ! activeLink?.isSuggestion;
 
 	const { selectedLinkType, isGenerating } = useSelect( ( select ) => ( {
@@ -82,6 +92,18 @@ export const PreviewIframe = ( {
 		return url.toString();
 	}, [ previewUrl ] );
 
+	// Create an actions bar to be mounted in the iframe with useIframeHighlight().
+	const actionsBar = <PreviewActions
+		activeLink={ activeLink }
+		onAccept={ onAccept }
+		onDiscard={ onDiscard }
+		onUpdateLink={ onUpdateLink }
+		onRemove={ onRemove }
+		onRestoreOriginal={ onRestoreOriginal }
+		selectedText={ selectedText ?? null }
+		iframeRef={ iframeRef }
+	/>;
+
 	/**
 	 * Highlights the smart link in the iframe.
 	 *
@@ -92,6 +114,7 @@ export const PreviewIframe = ( {
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
+		adjustActionsBarPosition,
 	} = useIframeHighlight( {
 		iframeRef,
 		contentAreaRef,
@@ -99,7 +122,22 @@ export const PreviewIframe = ( {
 		selectedText,
 		isInboundLink,
 		onRestoreOriginal,
+		actionsBar,
 	} );
+
+	useResize( iframeRef, throttle(
+		// At most every 250ms on resize events, check that the actions bar is fully visible
+		// and adjust its position if needed.
+		useCallback(
+			() => {
+				if ( iframeRef.current !== null ) {
+					adjustActionsBarPosition( iframeRef.current );
+				}
+			},
+			[ adjustActionsBarPosition ]
+		),
+		250
+	) );
 
 	/**
 	 * Hides the admin bar from the iframe if the preview is in frontend mode.
@@ -278,6 +316,11 @@ export const PreviewIframe = ( {
 			contentAreaRef.current = contentArea;
 		}
 
+		const iframeDocument = iframeRef.current?.contentDocument;
+		if ( ! iframeDocument ) {
+			return;
+		}
+
 		hideAdminBar( iframe );
 		highlightLinkType( iframe, selectedLinkType );
 		disableNavigation( iframe );
@@ -341,7 +384,7 @@ export const PreviewIframe = ( {
 	}, [ activeLink, contentAreaRef ] );
 
 	/**
-	 * Re-highlights smart link when selection changes.
+	 * Highlights smart link on initial load or when manually selected text is chosen.
 	 *
 	 * @since 3.19.0
 	 */
@@ -409,6 +452,7 @@ export const PreviewIframe = ( {
 							className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
 							sandbox="allow-same-origin allow-scripts"
 						/>
+
 						<TextSelectionTooltip
 							iframeRef={ iframeRef }
 							onTextSelected={ ( text, offset ) => {
@@ -416,7 +460,6 @@ export const PreviewIframe = ( {
 							} }
 						/>
 					</>
-
 				) }
 			</div>
 		</div>

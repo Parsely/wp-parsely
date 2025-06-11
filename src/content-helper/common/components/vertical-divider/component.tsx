@@ -10,6 +10,7 @@ import { Rect, SVG } from '@wordpress/components';
  */
 interface VerticalDividerProps {
 	size?: number;
+	color?: string;
 }
 
 /**
@@ -18,15 +19,16 @@ interface VerticalDividerProps {
  * @since 3.14.0
  * @since 3.16.0 Moved from `RelatedPostItem` and `TitleSuggestion`.
  * @since 3.19.0 Added size prop.
+ * @since 3.20.0 Added color prop.
  *
  * @param {VerticalDividerProps} props The component's props.
  *
  * @return {import('react').JSX.Element} The vertical divider component.
  */
-export const VerticalDivider = ( { size = 40 }: VerticalDividerProps ): JSX.Element => {
+export const VerticalDivider = ( { size = 40, color = '#cccccc' }: VerticalDividerProps ): JSX.Element => {
 	return (
 		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height={ size } viewBox={ `0 0 1 ${ size }` } fill="none">
-			<Rect width="1" height={ size } fill="#cccccc" />
+			<Rect width="1" height={ size } fill={ color } />
 		</SVG>
 	);
 };

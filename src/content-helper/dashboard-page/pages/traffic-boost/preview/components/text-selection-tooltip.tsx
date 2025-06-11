@@ -1,5 +1,5 @@
 /**
- * WordPress imports
+ * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
 import { debounce } from '@wordpress/compose';
@@ -7,6 +7,7 @@ import { createRoot, useCallback, useEffect, useState } from '@wordpress/element
 import { __ } from '@wordpress/i18n';
 import { link, warning } from '@wordpress/icons';
 import { getContentArea } from '../utils';
+import { useWordpressComponentStyles } from '../hooks/use-wordpress-component-styles';
 
 /**
  * Custom hook to inject styles into the iframe.
@@ -16,16 +17,14 @@ import { getContentArea } from '../utils';
  * @param {Document} iframeDocument The iframe's document object.
  */
 const useIframeStyles = ( iframeDocument: Document ) => {
+	const { injectWordpressComponentStyles } = useWordpressComponentStyles();
+
 	useEffect( () => {
+		injectWordpressComponentStyles( iframeDocument );
+
 		// Get computed styles from parent window.
 		const adminColor = window.getComputedStyle( document.documentElement )
 			.getPropertyValue( '--wp-admin-theme-color' ).trim();
-
-		// Inject WordPress components styles.
-		const wpComponentsLink = iframeDocument.createElement( 'link' );
-		wpComponentsLink.rel = 'stylesheet';
-		wpComponentsLink.href = '/wp-includes/css/dist/components/style.css';
-		iframeDocument.head.appendChild( wpComponentsLink );
 
 		// Create and inject custom styles into the iframe.
 		const style = iframeDocument.createElement( 'style' );
@@ -106,10 +105,9 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 
 		// Cleanup function to remove styles when component unmounts.
 		return () => {
-			wpComponentsLink.remove();
 			style.remove();
 		};
-	}, [ iframeDocument ] );
+	}, [ iframeDocument, injectWordpressComponentStyles ] );
 };
 
 /**
@@ -282,13 +280,13 @@ export const TextSelectionTooltip = ( {
 
 		// Find word boundary at start.
 		let startOffset = range.startOffset;
-		while ( startOffset > 0 && /[^\s.,!?;:'")\]}]/g.test( startText[ startOffset - 1 ] ) ) {
+		while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
 			startOffset--;
 		}
 
 		// Find word boundary at end.
 		let endOffset = range.endOffset;
-		while ( endOffset < endText.length && /[^\s.,!?;:'"([{]/g.test( endText[ endOffset ] ) ) {
+		while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
 			endOffset++;
 		}
 
@@ -416,6 +414,21 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
+		if ( docSelection.rangeCount > 1 ) {
+			// If docSelection has multiple ranges, it can be because they've selected over an existing
+			// suggestion (valid), or they've selected a range over multiple paragraphs (invalid).
+			// Verify that the first and last ranges have the same start and end containers.
+			const firstRange = docSelection.getRangeAt( 0 );
+			const lastRange = docSelection.getRangeAt( docSelection.rangeCount - 1 );
+
+			const startParagraph = firstRange.startContainer.parentElement?.closest( 'p, li' );
+			const endParagraph = lastRange.endContainer.parentElement?.closest( 'p, li' );
+
+			if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
+				return;
+			}
+		}
+
 		const range = docSelection.getRangeAt( 0 );
 
 		// Check if selection is within content area.
@@ -465,7 +478,26 @@ export const TextSelectionTooltip = ( {
 					popoverContainer.classList.add( 'closing' );
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
-					onTextSelected( docSelection.toString().trim(), offset );
+
+					let docSelectionText = docSelection.toString().trim();
+
+					if ( docSelection.rangeCount > 1 || docSelection.toString().includes( '\n' ) ) {
+						// If docSelection has multiple ranges or contains a newline character, it can be because a selection
+						// has been made on top of an existing suggestion. Existing selections contain HTML as children,
+						// so we need to ignore the inner HTML content and return the text content of the selection.
+						const selectionContainer = iframeDocument.createElement( 'div' );
+						for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
+							const currentRange = docSelection.getRangeAt( rangeIndex );
+							const rangeContents = currentRange.cloneContents();
+							selectionContainer.appendChild( rangeContents );
+						}
+
+						docSelectionText = selectionContainer.textContent ?? '';
+					}
+
+					// Remove newlines that can be present from prior toolbar HTML injection.
+					onTextSelected( docSelectionText, offset );
+
 					docSelection.removeAllRanges();
 
 					// Wait for animation to complete before cleanup.
