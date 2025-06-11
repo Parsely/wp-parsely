@@ -1,11 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { Button, CheckboxControl } from '@wordpress/components';
+import { Button, CheckboxControl, Icon, Tooltip } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { check, close, undo } from '@wordpress/icons';
+import { check, closeSmall, info, undo } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -131,19 +131,27 @@ export const PreviewActions = ( {
 								<Button
 									variant="tertiary"
 									onClick={ () => onDiscard( activeLink ) }
-									icon={ close }
+									icon={ closeSmall }
 								>{ __( 'Reject', 'wp-parsely' ) }</Button>
+								<VerticalDivider size={ 48 } color="#1e1e1e" />
+								{ ! selectedText &&
+									<Tooltip text={ __( 'Highlight text on the page to customize link placement.', 'wp-parsely' ) }>
+										<div className="traffic-boost-preview-actions-hint">
+											<div className="traffic-boost-preview-actions-hint-text">
+												{ __( 'Highlight to customize', 'wp-parsely' ) }
+											</div>
+											<Icon icon={ info } />
+										</div>
+									</Tooltip>
+								}
 								{ selectedText && (
-									<>
-										<VerticalDivider size={ 48 } color="#1e1e1e" />
-										<Button
-											variant="tertiary"
-											onClick={ onRestoreOriginal }
-											icon={ undo }
-										>
-											{ __( 'Clear changes', 'wp-parsely' ) }
-										</Button>
-									</>
+									<Button
+										variant="tertiary"
+										onClick={ onRestoreOriginal }
+										icon={ undo }
+									>
+										{ __( 'Clear changes', 'wp-parsely' ) }
+									</Button>
 								) }
 							</>
 						) }
@@ -182,7 +190,7 @@ export const PreviewActions = ( {
 							<>
 								<Button
 									variant={ isRemoving ? 'primary' : 'tertiary' }
-									icon={ isRemoving ? null : close }
+									icon={ isRemoving ? null : closeSmall }
 									onClick={ () => onRemove( activeLink, restoreOriginal ) }
 									isBusy={ isRemoving }
 									disabled={ isRemoving }

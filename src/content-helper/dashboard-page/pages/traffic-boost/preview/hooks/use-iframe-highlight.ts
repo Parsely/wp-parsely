@@ -201,6 +201,8 @@ export const useIframeHighlight = ( {
 			}
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
+				/* Reset font family to editor defaults to avoid inheriting frontend font in actions toolbar. */
+				font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,"Helvetica Neue", sans-serif;
 				height: 48px;
 				display: flex;
 				justify-content: center;
@@ -213,7 +215,6 @@ export const useIframeHighlight = ( {
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle {
 				flex-shrink: 0;
-				margin-right: 4px;
 				cursor: grab;
 				border-right: 1px solid #1e1e1e;
 				padding: 0 8px;
@@ -228,7 +229,7 @@ export const useIframeHighlight = ( {
 
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
 				display: flex;
-				gap: 8px;
+				gap: 4px;
 				align-items: center;
 				flex-wrap: nowrap;
 				justify-content: center;
@@ -238,6 +239,22 @@ export const useIframeHighlight = ( {
 			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons .components-button {
 				height: 36px;
 				white-space: nowrap;
+			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint {
+				display: flex;
+				cursor: pointer;
+				user-select: none;
+				align-items: center;
+			}
+
+			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint-text {
+				font-size: 13px;
+				font-family: inherit;
+				white-space: nowrap;
+				margin-right: 4px;
+				padding-left: 8px;
+				color: #2F2F2F;
 			}
 		`;
 		iframeDocument.head.appendChild( style );
