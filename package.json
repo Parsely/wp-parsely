@@ -42,7 +42,7 @@
 		"lodash.debounce": "^4.0.8"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.52.0",
+		"@playwright/test": "^1.53.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.3.0",
 		"@types/jest": "^29.5.14",
@@ -77,7 +77,7 @@
 		"@wordpress/url": "^4.25.0",
 		"@wordpress/wordcount": "^4.25.0",
 		"concurrently": "^9.1.2",
-		"eslint-plugin-jest": "^28.13.0",
+		"eslint-plugin-jest": "^28.13.3",
 		"husky": "^9.1.7",
 		"lodash.debounce": "^4.0.8",
 		"prettier": "^3.5.3",
