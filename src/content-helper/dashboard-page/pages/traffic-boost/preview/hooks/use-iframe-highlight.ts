@@ -65,7 +65,7 @@ export const useIframeHighlight = ( {
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to inject styles into.
 	 */
-	const injectHighlightStyles = useCallback( ( iframe: HTMLIFrameElement ) => {
+	const initializeForHighlight = useCallback( ( iframe: HTMLIFrameElement ) => {
 		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
 		if ( ! iframeDocument ) {
 			return;
@@ -256,8 +256,44 @@ export const useIframeHighlight = ( {
 				padding-left: 8px;
 				color: #2F2F2F;
 			}
+
+			.parsely-traffic-boost-link-out-of-frame-container {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				z-index: 1001;
+			}
+
+			.parsely-traffic-boost-link-out-of-frame-container.parsely-traffic-boost-out-of-frame-above {
+				display: block;
+				top: 0;
+			}
+
+			.parsely-traffic-boost-link-out-of-frame-container.parsely-traffic-boost-out-of-frame-below {
+				display: block;
+				top: auto;
+				bottom: 0;
+			}
+
+			.parsely-traffic-boost-link-out-of-frame {
+				cursor: pointer;
+				background-color: var(--wp-components-color-accent-darker-10, var(--wp-admin-theme-color-darker-10, #2145e6));
+				color: white;
+				border: none;
+				border-radius: 4px;
+				padding: 8px;
+				width: 32px;
+				height: 32px;
+			}
+
+			.parsely-traffic-boost-link-out-of-frame svg {
+				fill: currentColor;
+			}
 		`;
 		iframeDocument.head.appendChild( style );
+
+		createOutOfFrameContainer( iframeDocument );
 	}, [ injectWordpressComponentStyles ] );
 
 	/**
@@ -825,17 +861,21 @@ export const useIframeHighlight = ( {
 		// Only completely visible elements return true:
 		const isAboveViewport = elemBottom < 0;
 		const isBelowViewport = elemTop > iframeRect.height;
-		if ( isAboveViewport ) {
-			console.log( 'isAboveViewport' );
-		}
 
-		if ( isBelowViewport ) {
-			console.log( 'isBelowViewport' );
+		const outOfFrameContainer = iframeDocument.querySelector( '.parsely-traffic-boost-link-out-of-frame-container' );
+
+		// Update the position of the arrow on the button, or remove it if the highlight is visible.
+		if ( isAboveViewport ) {
+			outOfFrameContainer?.classList.add( 'parsely-traffic-boost-out-of-frame-above' );
+		} else if ( isBelowViewport ) {
+			outOfFrameContainer?.classList.add( 'parsely-traffic-boost-out-of-frame-below' );
+		} else {
+			outOfFrameContainer?.classList.remove( 'parsely-traffic-boost-out-of-frame-above', 'parsely-traffic-boost-out-of-frame-below' );
 		}
 	}, [] );
 
 	return {
-		injectHighlightStyles,
+		initializeForHighlight,
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
@@ -843,4 +883,20 @@ export const useIframeHighlight = ( {
 		adjustActionsBarPosition,
 		handleHighlightScroll,
 	};
+};
+
+const createOutOfFrameContainer = ( iframeDocument: Document ) => {
+	let outOfFrameContainer = iframeDocument.querySelector( '.parsely-traffic-boost-link-out-of-frame-container' );
+
+	if ( null === outOfFrameContainer ) {
+		outOfFrameContainer = iframeDocument.createElement( 'div' );
+		outOfFrameContainer.className = 'parsely-traffic-boost-link-out-of-frame-container';
+
+		const outOfFrameButton = iframeDocument.createElement( 'button' );
+		outOfFrameButton.className = 'parsely-traffic-boost-link-out-of-frame';
+		outOfFrameButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 17.389H8.444A5.194 5.194 0 1 1 8.444 7H10v1.5H8.444a3.694 3.694 0 0 0 0 7.389H10v1.5ZM14 7h1.556a5.194 5.194 0 0 1 0 10.39H14v-1.5h1.556a3.694 3.694 0 0 0 0-7.39H14V7Zm-4.5 6h5v-1.5h-5V13Z" /></svg>';
+		outOfFrameContainer.appendChild( outOfFrameButton );
+
+		iframeDocument.body.appendChild( outOfFrameContainer );
+	}
 };

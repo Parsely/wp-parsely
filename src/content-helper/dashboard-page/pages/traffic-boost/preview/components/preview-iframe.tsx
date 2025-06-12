@@ -111,7 +111,7 @@ export const PreviewIframe = ( {
 	 * @since 3.19.0
 	 */
 	const {
-		injectHighlightStyles,
+		initializeForHighlight,
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
@@ -310,7 +310,7 @@ export const PreviewIframe = ( {
 			return;
 		}
 
-		injectHighlightStyles( iframe );
+		initializeForHighlight( iframe );
 
 		// Updates the content area ref to the iframe's content area.
 		const contentArea = getContentArea( iframe.contentDocument );
@@ -333,7 +333,7 @@ export const PreviewIframe = ( {
 		disableNavigation,
 		hideAdminBar,
 		highlightLinkType,
-		injectHighlightStyles,
+		initializeForHighlight,
 		jumpToSmartLink,
 		onLoadingChange,
 		selectedLinkType,
