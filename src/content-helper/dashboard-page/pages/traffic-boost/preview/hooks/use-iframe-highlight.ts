@@ -183,6 +183,7 @@ export const useIframeHighlight = ( {
 				transform: translateX(-50%);
 				bottom: 2rem;
 				z-index: 1000;
+				user-select: none;
 
 				/* Reset font weight and style for actions toolbar if highlight is inside a <strong> or <em>. */
 				font-weight: normal;

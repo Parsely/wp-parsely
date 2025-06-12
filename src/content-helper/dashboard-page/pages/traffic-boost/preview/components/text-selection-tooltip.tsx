@@ -268,36 +268,50 @@ export const TextSelectionTooltip = ( {
 	 * @since 3.19.0
 	 *
 	 * @param {Selection} docSelection The document's current selection.
-	 * @param {Range}     range        The current selection range.
 	 */
-	const expandToWordBoundary = ( docSelection: Selection, range: Range ) => {
-		const startNode = range.startContainer as Text;
-		const endNode = range.endContainer as Text;
-		const startText = startNode.textContent ?? '';
-		const endText = endNode.textContent ?? '';
+	const expandToWordBoundary = ( docSelection: Selection ) => {
+		const adjustedRanges = [];
+		let isAdjustmentNeeded = false;
 
-		// Get initial selection boundaries before expanding.
-		const initialStart = range.startOffset;
-		const initialEnd = range.endOffset;
+		for ( let i = 0; i < docSelection.rangeCount; i++ ) {
+			const range = docSelection.getRangeAt( i );
 
-		// Find word boundary at start.
-		let startOffset = range.startOffset;
-		while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
-			startOffset--;
+			const startNode = range.startContainer as Text;
+			const endNode = range.endContainer as Text;
+			const startText = startNode.textContent ?? '';
+			const endText = endNode.textContent ?? '';
+
+			// Get initial selection boundaries before expanding.
+			const initialStart = range.startOffset;
+			const initialEnd = range.endOffset;
+
+			// Find word boundary at start.
+			let startOffset = range.startOffset;
+			while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
+				startOffset--;
+			}
+
+			// Find word boundary at end.
+			let endOffset = range.endOffset;
+			while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
+				endOffset++;
+			}
+
+			// Only update if boundaries have changed.
+			if ( startOffset !== initialStart || endOffset !== initialEnd ) {
+				isAdjustmentNeeded = true;
+				range.setStart( startNode, startOffset );
+				range.setEnd( endNode, endOffset );
+			}
+
+			adjustedRanges.push( range );
 		}
 
-		// Find word boundary at end.
-		let endOffset = range.endOffset;
-		while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
-			endOffset++;
-		}
-
-		// Only update if boundaries have changed.
-		if ( startOffset !== initialStart || endOffset !== initialEnd ) {
-			range.setStart( startNode, startOffset );
-			range.setEnd( endNode, endOffset );
+		if ( isAdjustmentNeeded ) {
 			docSelection.removeAllRanges();
-			docSelection.addRange( range );
+			for ( const range of adjustedRanges ) {
+				docSelection.addRange( range );
+			}
 		}
 	};
 
@@ -352,7 +366,7 @@ export const TextSelectionTooltip = ( {
 		docSelection: Selection,
 		previewWrapper: Element
 	): number => {
-		const selectedText = docSelection.toString().trim();
+		const selectedText = getCleanSelectionText( docSelection );
 		if ( ! selectedText ) {
 			return 0;
 		}
@@ -416,41 +430,36 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		if ( docSelection.rangeCount > 1 ) {
-			// If docSelection has multiple ranges, it can be because they've selected over an existing
-			// suggestion (valid), or they've selected a range over multiple paragraphs (invalid).
-			// Verify that the first and last ranges have the same start and end containers.
-			const firstRange = docSelection.getRangeAt( 0 );
-			const lastRange = docSelection.getRangeAt( docSelection.rangeCount - 1 );
+		// If docSelection has multiple ranges, it can be because they've selected over an existing
+		// suggestion (valid), or they've selected a range over multiple paragraphs (invalid).
+		// Verify that the first and last ranges have the same start and end containers.
+		const firstRange = docSelection.getRangeAt( 0 );
+		const lastRange = docSelection.getRangeAt( docSelection.rangeCount - 1 );
 
-			const startParagraph = firstRange.startContainer.parentElement?.closest( 'p, li' );
-			const endParagraph = lastRange.endContainer.parentElement?.closest( 'p, li' );
-
-			if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
-				return;
-			}
-		}
-
-		const range = docSelection.getRangeAt( 0 );
-
-		// Check if selection is within content area.
-		if ( ! contentArea.contains( range.commonAncestorContainer ) ) {
-			return;
-		}
-
-		// Check if selection spans multiple paragraphs.
-		const startParagraph = range.startContainer.parentElement?.closest( 'p, li' );
-		const endParagraph = range.endContainer.parentElement?.closest( 'p, li' );
+		const startParagraph = firstRange.startContainer.parentElement?.closest( 'p, li' );
+		const endParagraph = lastRange.endContainer.parentElement?.closest( 'p, li' );
 
 		if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 			return;
 		}
 
-		// If selection is inside a link, expand to encompass the entire link.
-		if ( ! expandToLinkNode( docSelection, range ) ) {
-			// Only expand to word boundary if we didn't expand to a link.
-			expandToWordBoundary( docSelection, range );
+		// Check if selection is within content area.
+		if ( ! contentArea.contains( firstRange.commonAncestorContainer ) || ! contentArea.contains( lastRange.commonAncestorContainer ) ) {
+			console.log( 'ContentArea does not contain both ranges' );
+			return;
 		}
+
+		// Only expand to word boundary if we didn't expand to a link.
+		console.log( 'Expanding to word boundary' );
+		expandToWordBoundary( docSelection );
+
+		// if ( ! expandToLinkNode( docSelection ) ) {
+		// 	// Only expand to word boundary if we didn't expand to a link.
+		// 	console.log( 'Expanding to word boundary' );
+		// 	expandToWordBoundary( docSelection );
+		// } else {
+		// 	console.log( 'Expanded to link node' );
+		// }
 
 		// Create highlight overlay.
 		const highlight = iframeDocument.createElement( 'div' );
@@ -480,26 +489,9 @@ export const TextSelectionTooltip = ( {
 					popoverContainer.classList.add( 'closing' );
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
+					const docSelectionText = getCleanSelectionText( docSelection );
 
-					let docSelectionText = docSelection.toString().trim();
-
-					if ( docSelection.rangeCount > 1 || docSelection.toString().includes( '\n' ) ) {
-						// If docSelection has multiple ranges or contains a newline character, it can be because a selection
-						// has been made on top of an existing suggestion. Existing selections contain HTML as children,
-						// so we need to ignore the inner HTML content and return the text content of the selection.
-						const selectionContainer = iframeDocument.createElement( 'div' );
-						for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
-							const currentRange = docSelection.getRangeAt( rangeIndex );
-							const rangeContents = currentRange.cloneContents();
-							selectionContainer.appendChild( rangeContents );
-						}
-
-						docSelectionText = selectionContainer.textContent ?? '';
-					}
-
-					// Remove newlines that can be present from prior toolbar HTML injection.
 					onTextSelected( docSelectionText, offset );
-
 					docSelection.removeAllRanges();
 
 					// Wait for animation to complete before cleanup.
@@ -516,7 +508,7 @@ export const TextSelectionTooltip = ( {
 		 * @since 3.19.0
 		 */
 		const updatePosition = () => {
-			const rect = range.getBoundingClientRect();
+			const rect = firstRange.getBoundingClientRect();
 			const scrollY = iframeDocument.defaultView?.scrollY ?? 0;
 
 			highlight.style.top = `${ rect.top + scrollY }px`;
@@ -579,6 +571,32 @@ export const TextSelectionTooltip = ( {
 };
 
 /**
+ * Gets the paragraph element (p or li) that contains the given node.
+ * Only works with text nodes - looks for the closest parent paragraph element.
+ *
+ * @since 3.20.0
+ *
+ * @param {Node} node The node to find the paragraph element for.
+ *
+ * @return {Element|null} The paragraph element containing the node, or null if none found.
+ */
+const getParentElement = ( node: Node ): Element | null => {
+	if ( node.nodeType === Node.TEXT_NODE ) {
+		return node.parentElement?.closest( 'p, li' ) ?? null;
+	} else if ( node.nodeType === Node.ELEMENT_NODE ) {
+		const nodeElement = node as Element;
+
+		if ( nodeElement.tagName === 'P' || nodeElement.tagName === 'LI' ) {
+			return nodeElement;
+		}
+
+		return nodeElement.parentElement?.closest( 'p, li' ) ?? null;
+	}
+
+	return null;
+};
+
+/**
  * Traverses the DOM tree to find the next node in document order.
  *
  * @since 3.19.0
@@ -604,4 +622,32 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
 	}
 
 	return node.nextSibling ? node.nextSibling : getNextNode( node.parentNode, true, endNode );
+};
+
+const getCleanSelectionText = ( selection: Selection ): string => {
+	const selectionText = selection.toString().trim();
+	console.log( 'getCleanSelectionText() selectionText:', JSON.stringify( selectionText ) );
+
+	let cleanSelectionText = '';
+	for ( let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex++ ) {
+		const currentRange = selection.getRangeAt( rangeIndex );
+		const rangeContents = getCleanTextFromRange( currentRange );
+		cleanSelectionText += rangeContents;
+	}
+
+	console.log( 'getCleanSelectionText() cleanSelectionText:', JSON.stringify( cleanSelectionText ) );
+
+	return cleanSelectionText;
+};
+
+const getCleanTextFromRange = ( range: Range ): string => {
+	const rangeContents = range.cloneContents();
+
+	// Remove the inner popover actions element if it exists.
+	const popoverActions = rangeContents.querySelector( '.parsely-traffic-boost-popover-actions' );
+	if ( popoverActions ) {
+		popoverActions.remove();
+	}
+
+	return rangeContents.textContent ?? '';
 };
