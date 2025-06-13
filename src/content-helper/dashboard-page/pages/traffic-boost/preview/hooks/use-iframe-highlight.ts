@@ -13,6 +13,7 @@ import { LinkType } from '../components/link-counter';
 import { TextSelection } from '../preview';
 import { DRAG_MARGIN_PX } from './use-draggable';
 import { useWordpressComponentStyles } from './use-wordpress-component-styles';
+import { throttle } from '@wordpress/compose';
 
 declare global {
 	interface Window {
@@ -168,28 +169,23 @@ export const useIframeHighlight = ( {
 			}
 
 			/* Action bar styles. */
-			.parsely-traffic-boost-popover-actions {
+			.parsely-traffic-boost-actions-container {
 				position: absolute;
 				z-index: 1000;
-				top: 0;
-
-				/* Default to centered positioning. */
-				left: 50%;
-				transform: translateX(-50%);
+				top: ${ DRAG_MARGIN_PX }px;
+				left: ${ DRAG_MARGIN_PX }px;
 			}
 
-			.parsely-traffic-boost-popover-actions.align-left {
-				left: 0;
-				transform: none;
+			.parsely-traffic-boost-actions-container.align-left {
+				left: ${ DRAG_MARGIN_PX }px;
 			}
 
-			.parsely-traffic-boost-popover-actions.align-right {
+			.parsely-traffic-boost-actions-container.align-right {
 				left: auto;
-				right: 0;
-				transform: none;
+				right: ${ DRAG_MARGIN_PX }px;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions {
 				/* Reset font family to editor defaults to avoid inheriting frontend font in actions toolbar. */
 				font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,"Helvetica Neue", sans-serif;
 				height: 48px;
@@ -202,7 +198,7 @@ export const useIframeHighlight = ( {
 				gap: 8px;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-drag-handle {
 				flex-shrink: 0;
 				cursor: grab;
 				border-right: 1px solid #1e1e1e;
@@ -212,11 +208,11 @@ export const useIframeHighlight = ( {
 				align-items: center;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle.dragging {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-drag-handle.dragging {
 				cursor: grabbing;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-buttons {
 				display: flex;
 				gap: 4px;
 				align-items: center;
@@ -225,19 +221,19 @@ export const useIframeHighlight = ( {
 				padding-right: 8px;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons .components-button {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-buttons .components-button {
 				height: 36px;
 				white-space: nowrap;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-hint {
 				display: flex;
 				cursor: pointer;
 				user-select: none;
 				align-items: center;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint-text {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-hint-text {
 				font-size: 13px;
 				font-family: inherit;
 				white-space: nowrap;
@@ -356,7 +352,7 @@ export const useIframeHighlight = ( {
 					return;
 				}
 
-				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
+				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-actions-container' );
 				if ( existingActions && window.wpParselyTrafficBoostCleanupActionsBar ) {
 					window.wpParselyTrafficBoostCleanupActionsBar();
 				}
@@ -396,7 +392,7 @@ export const useIframeHighlight = ( {
 				}
 
 				const actionsContainer = iframeDocument.createElement( 'div' );
-				actionsContainer.className = 'parsely-traffic-boost-popover-actions';
+				actionsContainer.className = 'parsely-traffic-boost-actions-container';
 				iframeDocument.body.appendChild( actionsContainer );
 
 				// Create popover content.
@@ -417,10 +413,13 @@ export const useIframeHighlight = ( {
 				};
 
 				const positionActionsBar = () => {
-					const renderedActionsBar = iframeDocument.querySelector( '.traffic-boost-preview-actions' );
+					const renderedActionsBar = iframeDocument.querySelector( '.traffic-boost-preview-actions' ) as HTMLElement;
 					if ( ! renderedActionsBar ) {
 						return;
 					}
+
+					// Reset any translation that's already applied to the actionsBar from a manual drag.
+					renderedActionsBar.style.transform = '';
 
 					const highlightRect = highlightSpan.getBoundingClientRect();
 					const iframeRect = iframeDocument.documentElement.getBoundingClientRect();
@@ -430,37 +429,39 @@ export const useIframeHighlight = ( {
 					actionsContainer.classList.remove( 'align-left', 'align-right' );
 
 					// Calculate base position above highlight, accounting for scroll position
-					const PIXELS_ABOVE_HIGHLIGHT = 50;
+					const PIXELS_ABOVE_HIGHLIGHT = 35;
 					const scrollTop = iframeDocument.documentElement.scrollTop;
 					const top = highlightRect.top + scrollTop - PIXELS_ABOVE_HIGHLIGHT - actionsRect.height;
-					const left = ( highlightRect.left ) + ( highlightRect.width / 2 );
+					const left = highlightRect.left + ( highlightRect.width / 2 ) - ( actionsRect.width / 2 );
 
 					// Set initial position
 					actionsContainer.style.top = `${ Math.max( top, 0 ) }px`;
-					actionsContainer.style.left = `${ left }px`;
 
 					// Check if actions bar would be cut off on either side
 					const actionsWidth = actionsRect.width;
 					const iframeWidth = iframeRect.width;
-					const actionsLeft = left - ( actionsWidth / 2 );
-					const actionsRight = left + ( actionsWidth / 2 );
+					const actionsLeft = left;
+					const actionsRight = left + actionsWidth;
 
 					if ( actionsRight > iframeWidth ) {
 						// Would be cut off on right, align to right
 						actionsContainer.classList.add( 'align-right' );
-						actionsContainer.style.left = `${ iframeWidth - DRAG_MARGIN_PX }px`;
+						actionsContainer.style.left = ''; // Clear inline left style
 					} else if ( actionsLeft < 0 ) {
 						// Would be cut off on left, align to left
 						actionsContainer.classList.add( 'align-left' );
-						actionsContainer.style.left = `${ DRAG_MARGIN_PX }px`;
+						actionsContainer.style.left = ''; // Clear inline left style
+					} else {
+						// Center position is fine, set left directly
+						actionsContainer.style.left = `${ left }px`;
 					}
 				};
 
-				// Initial position
-				setTimeout( positionActionsBar, 20 );
+				// Setup initial position
+				setTimeout( positionActionsBar, 0 );
 
 				// Reposition on resize
-				const resizeHandler = () => positionActionsBar();
+				const resizeHandler = throttle( () => positionActionsBar(), 100 );
 				iframeDocument.defaultView?.addEventListener( 'resize', resizeHandler );
 
 				return highlightSpan;
@@ -797,45 +798,11 @@ export const useIframeHighlight = ( {
 		} );
 	}, [ activeLink, contentAreaRef, highlightRange, removeHighlights ] );
 
-	/**
-	 * Readjusts the position of the actions bar. Call during resize events.
-	 *
-	 * @since 3.20.0
-	 *
-	 * @param {HTMLIFrameElement} iframe The iframe element to highlight the links in.
-	 */
-	const adjustActionsBarPosition = useCallback( ( iframe: HTMLIFrameElement ) => {
-		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-		if ( ! iframeDocument ) {
-			return;
-		}
-
-		const actionsContainer = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
-		if ( ! actionsContainer ) {
-			return;
-		}
-
-		actionsContainer.classList.remove( 'align-right', 'align-left' );
-
-		setTimeout( () => {
-			// After layout finishes, see if we need to adjust left or right.
-			const iframeBounds = iframeDocument.documentElement.getBoundingClientRect();
-			const actionsRect = actionsContainer.getBoundingClientRect();
-
-			if ( actionsRect.width + actionsRect.x + DRAG_MARGIN_PX > iframeBounds.width ) {
-				actionsContainer.classList.add( 'align-right' );
-			} else if ( actionsRect.x - DRAG_MARGIN_PX < 0 ) {
-				actionsContainer.classList.add( 'align-left' );
-			}
-		}, 0 );
-	}, [] );
-
 	return {
 		injectHighlightStyles,
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
 		removeHighlights,
-		adjustActionsBarPosition,
 	};
 };

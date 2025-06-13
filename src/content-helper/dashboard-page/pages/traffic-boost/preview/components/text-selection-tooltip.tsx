@@ -33,7 +33,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 			.parsely-traffic-boost-highlight {
 				position: absolute;
 				pointer-events: none;
-				z-index: 1000;
+				z-index: 1010;
 				transition: all 0.15s ease-out;
 			}
 
