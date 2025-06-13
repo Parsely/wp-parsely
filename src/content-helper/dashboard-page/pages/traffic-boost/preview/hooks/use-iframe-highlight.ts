@@ -3,7 +3,6 @@
  */
 import { createRoot, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import type { Root } from 'react-dom/client';
 
 /**
  * Internal dependencies
@@ -17,9 +16,7 @@ import { useWordpressComponentStyles } from './use-wordpress-component-styles';
 
 declare global {
 	interface Window {
-		// Keep track of the root element used for mounting the actions bar.
-		// Used to unmount the actions bar React root on removal.
-		wpParselyTrafficBoostPopoverActionsRoot: Root | null;
+		wpParselyTrafficBoostCleanupActionsBar?: () => void;
 	}
 }
 
@@ -75,12 +72,6 @@ export const useIframeHighlight = ( {
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
-			/* Highlight container styles. */
-			.parsely-traffic-boost-highlight-container {
-				position: relative;
-				display: inline;
-			}
-
 			/** Smart link highlight styles. */
 			.smart-link-highlight {
 				outline: 2px solid #3858E9;
@@ -179,14 +170,12 @@ export const useIframeHighlight = ( {
 			/* Action bar styles. */
 			.parsely-traffic-boost-popover-actions {
 				position: absolute;
+				z-index: 1000;
+				top: 0;
+
+				/* Default to centered positioning. */
 				left: 50%;
 				transform: translateX(-50%);
-				bottom: 2rem;
-				z-index: 1000;
-
-				/* Reset font weight and style for actions toolbar if highlight is inside a <strong> or <em>. */
-				font-weight: normal;
-				font-style: normal;
 			}
 
 			.parsely-traffic-boost-popover-actions.align-left {
@@ -368,17 +357,9 @@ export const useIframeHighlight = ( {
 				}
 
 				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
-				if ( existingActions ) {
-					if ( window.wpParselyTrafficBoostPopoverActionsRoot ) {
-						window.wpParselyTrafficBoostPopoverActionsRoot.unmount();
-						window.wpParselyTrafficBoostPopoverActionsRoot = null;
-					}
-
-					existingActions.remove();
+				if ( existingActions && window.wpParselyTrafficBoostCleanupActionsBar ) {
+					window.wpParselyTrafficBoostCleanupActionsBar();
 				}
-
-				const highlightContainerDiv = iframeDocument.createElement( 'div' );
-				highlightContainerDiv.className = 'parsely-traffic-boost-highlight-container';
 
 				const fragment = range.cloneContents();
 				const highlightSpan = iframeDocument.createElement( 'span' );
@@ -394,8 +375,6 @@ export const useIframeHighlight = ( {
 					highlightSpan.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
 				}
 
-				highlightContainerDiv.appendChild( highlightSpan );
-
 				// Find if the range is within a link and if it encompasses the entire link text.
 				const container = range.commonAncestorContainer as Element;
 				const linkNode = container.nodeType === Node.ELEMENT_NODE
@@ -406,31 +385,86 @@ export const useIframeHighlight = ( {
 
 				if ( isFullLinkSelected && linkNode ) {
 					// Create a new span and insert it before the link.
-					linkNode.parentNode?.insertBefore( highlightContainerDiv, linkNode );
-
+					linkNode.parentNode?.insertBefore( highlightSpan, linkNode );
 					// Move the link into the span.
 					highlightSpan.appendChild( linkNode );
 				} else {
 					// Normal case - no links or partial link selection.
 					range.deleteContents();
 					highlightSpan.appendChild( fragment );
-					range.insertNode( highlightContainerDiv );
+					range.insertNode( highlightSpan );
 				}
 
-				// Create popover container.
 				const actionsContainer = iframeDocument.createElement( 'div' );
 				actionsContainer.className = 'parsely-traffic-boost-popover-actions';
-				highlightContainerDiv.appendChild( actionsContainer );
+				iframeDocument.body.appendChild( actionsContainer );
 
 				// Create popover content.
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
 
-				window.wpParselyTrafficBoostPopoverActionsRoot = root;
+				// Setup cleanup function.
+				window.wpParselyTrafficBoostCleanupActionsBar = () => {
+					window.wpParselyTrafficBoostCleanupActionsBar = undefined;
+
+					iframeDocument.defaultView?.removeEventListener( 'resize', resizeHandler );
+
+					root.unmount();
+
+					if ( actionsContainer.parentNode ) {
+						actionsContainer.parentNode.removeChild( actionsContainer );
+					}
+				};
+
+				const positionActionsBar = () => {
+					const renderedActionsBar = iframeDocument.querySelector( '.traffic-boost-preview-actions' );
+					if ( ! renderedActionsBar ) {
+						return;
+					}
+
+					const highlightRect = highlightSpan.getBoundingClientRect();
+					const iframeRect = iframeDocument.documentElement.getBoundingClientRect();
+					const actionsRect = renderedActionsBar.getBoundingClientRect();
+
+					// Reset any existing alignment classes
+					actionsContainer.classList.remove( 'align-left', 'align-right' );
+
+					// Calculate base position above highlight, accounting for scroll position
+					const PIXELS_ABOVE_HIGHLIGHT = 50;
+					const scrollTop = iframeDocument.documentElement.scrollTop;
+					const top = highlightRect.top + scrollTop - PIXELS_ABOVE_HIGHLIGHT - actionsRect.height;
+					const left = ( highlightRect.left ) + ( highlightRect.width / 2 );
+
+					// Set initial position
+					actionsContainer.style.top = `${ Math.max( top, 0 ) }px`;
+					actionsContainer.style.left = `${ left }px`;
+
+					// Check if actions bar would be cut off on either side
+					const actionsWidth = actionsRect.width;
+					const iframeWidth = iframeRect.width;
+					const actionsLeft = left - ( actionsWidth / 2 );
+					const actionsRight = left + ( actionsWidth / 2 );
+
+					if ( actionsRight > iframeWidth ) {
+						// Would be cut off on right, align to right
+						actionsContainer.classList.add( 'align-right' );
+						actionsContainer.style.left = `${ iframeWidth - DRAG_MARGIN_PX }px`;
+					} else if ( actionsLeft < 0 ) {
+						// Would be cut off on left, align to left
+						actionsContainer.classList.add( 'align-left' );
+						actionsContainer.style.left = `${ DRAG_MARGIN_PX }px`;
+					}
+				};
+
+				// Initial position
+				setTimeout( positionActionsBar, 20 );
+
+				// Reposition on resize
+				const resizeHandler = () => positionActionsBar();
+				iframeDocument.defaultView?.addEventListener( 'resize', resizeHandler );
+
 				return highlightSpan;
 			} catch ( e ) {
-				// eslint-disable-next-line no-console
-				console.error( 'WP Parsely: Error highlighting range', e );
 			}
 		}, [ iframeRef, actionsBar ] );
 
@@ -454,13 +488,16 @@ export const useIframeHighlight = ( {
 			 * Removes a highlight and cleans up the parent node.
 			 *
 			 * @since 3.19.0
-			 * @since 3.20.0 Removed `parent`, added `container` and `rootParent` parameters.
 			 *
-			 * @param {Element}    highlight  The highlight element to remove.
-			 * @param {ParentNode} container  The parent container node of the highlight.
-			 * @param {ParentNode} rootParent The parent node of the container, e.g. a <p> tag.
+			 * @param {Element}    highlight The highlight element to remove.
+			 * @param {ParentNode} parent    The parent node of the container, e.g. a <p> tag.
 			 */
-			const removeAndClean = ( highlight: Element, container: ParentNode, rootParent: ParentNode ) => {
+			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
+				// Clean up actions bar if it exists
+				if ( window.wpParselyTrafficBoostCleanupActionsBar ) {
+					window.wpParselyTrafficBoostCleanupActionsBar();
+				}
+
 				// Create a document fragment to temporarily hold the children.
 				const fragment = iframeDocument.createDocumentFragment();
 
@@ -470,15 +507,15 @@ export const useIframeHighlight = ( {
 				}
 
 				// Insert the fragment before the highlight span.
-				rootParent.insertBefore( fragment, container );
-				rootParent.removeChild( container );
-				rootParent.normalize();
+				parent.insertBefore( fragment, highlight );
+				parent.removeChild( highlight );
+				parent.normalize();
 
 				// Remove any anchors without text in the parent node.
-				const anchors = Array.from( rootParent.querySelectorAll( 'a' ) );
+				const anchors = Array.from( parent.querySelectorAll( 'a' ) );
 				anchors.forEach( ( anchor ) => {
 					if ( ! anchor.textContent?.trim() ) {
-						rootParent.removeChild( anchor );
+						parent.removeChild( anchor );
 						return;
 					}
 
@@ -510,13 +547,8 @@ export const useIframeHighlight = ( {
 				const nestedHighlights = highlight.querySelectorAll( querySelector );
 				nestedHighlights.forEach( ( nested ) => unwrapHighlight( nested ) );
 
-				const container = highlight.parentNode;
-				if ( ! container ) {
-					return;
-				}
-
-				const rootParent = container.parentNode;
-				if ( ! rootParent ) {
+				const parent = highlight.parentNode;
+				if ( ! parent ) {
 					return;
 				}
 
@@ -524,10 +556,10 @@ export const useIframeHighlight = ( {
 					highlight.classList.add( 'removing' );
 
 					setTimeout( () => {
-						removeAndClean( highlight, container, rootParent );
+						removeAndClean( highlight, parent );
 					}, 200 );
 				} else {
-					removeAndClean( highlight, container, rootParent );
+					removeAndClean( highlight, parent );
 				}
 			};
 
