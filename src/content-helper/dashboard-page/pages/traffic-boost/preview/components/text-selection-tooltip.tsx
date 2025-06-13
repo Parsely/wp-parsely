@@ -271,25 +271,29 @@ export const TextSelectionTooltip = ( {
 	 * @param {Range}     range        The current selection range.
 	 */
 	const expandToWordBoundary = ( docSelection: Selection, range: Range ) => {
-		const startNode = range.startContainer as Text;
-		const endNode = range.endContainer as Text;
-		const startText = startNode.textContent ?? '';
-		const endText = endNode.textContent ?? '';
-
-		// Get initial selection boundaries before expanding.
-		const initialStart = range.startOffset;
-		const initialEnd = range.endOffset;
-
 		// Find word boundary at start.
+		const startNode = range.startContainer as Text;
+		const initialStart = range.startOffset;
 		let startOffset = range.startOffset;
-		while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
-			startOffset--;
+
+		if ( startNode.nodeType === Node.TEXT_NODE ) {
+			const startText = startNode.textContent ?? '';
+
+			while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
+				startOffset--;
+			}
 		}
 
 		// Find word boundary at end.
+		const endNode = range.endContainer as Text;
+		const initialEnd = range.endOffset;
 		let endOffset = range.endOffset;
-		while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
-			endOffset++;
+
+		if ( endNode.nodeType === Node.TEXT_NODE ) {
+			const endText = endNode.textContent ?? '';
+			while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
+				endOffset++;
+			}
 		}
 
 		// Only update if boundaries have changed.
@@ -417,14 +421,14 @@ export const TextSelectionTooltip = ( {
 		}
 
 		if ( docSelection.rangeCount > 1 ) {
-			// If docSelection has multiple ranges, it can be because they've selected over an existing
-			// suggestion (valid), or they've selected a range over multiple paragraphs (invalid).
+			// If docSelection has multiple ranges, it can be because they've selected over
+			// embedded markup, or they've selected a range over multiple paragraphs (invalid).
 			// Verify that the first and last ranges have the same start and end containers.
 			const firstRange = docSelection.getRangeAt( 0 );
 			const lastRange = docSelection.getRangeAt( docSelection.rangeCount - 1 );
 
-			const startParagraph = firstRange.startContainer.parentElement?.closest( 'p, li' );
-			const endParagraph = lastRange.endContainer.parentElement?.closest( 'p, li' );
+			const startParagraph = getClosestParagraphOrListItem( firstRange.startContainer );
+			const endParagraph = getClosestParagraphOrListItem( lastRange.endContainer );
 
 			if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 				return;
@@ -439,8 +443,8 @@ export const TextSelectionTooltip = ( {
 		}
 
 		// Check if selection spans multiple paragraphs.
-		const startParagraph = range.startContainer.parentElement?.closest( 'p, li' );
-		const endParagraph = range.endContainer.parentElement?.closest( 'p, li' );
+		const startParagraph = getClosestParagraphOrListItem( range.startContainer );
+		const endParagraph = getClosestParagraphOrListItem( range.endContainer );
 
 		if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 			return;
@@ -604,4 +608,21 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
 	}
 
 	return node.nextSibling ? node.nextSibling : getNextNode( node.parentNode, true, endNode );
+};
+
+/**
+ * Gets the closest paragraph or list item element from a node.
+ *
+ * @since 3.19.0
+ *
+ * @param {Node} node The node to start searching from.
+ * @return {Element|null} The closest paragraph or list item element, or null if not found.
+ */
+const getClosestParagraphOrListItem = ( node: Node ): Element | null => {
+	// If the node itself is a paragraph or list item, return it.
+	if ( node.nodeType === Node.ELEMENT_NODE && ( node as Element ).matches( 'p, li' ) ) {
+		return node as Element;
+	}
+
+	return node.parentElement?.closest( 'p, li' ) ?? null;
 };
