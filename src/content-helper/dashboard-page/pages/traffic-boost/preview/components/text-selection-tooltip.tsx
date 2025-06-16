@@ -343,6 +343,50 @@ export const TextSelectionTooltip = ( {
 	};
 
 	/**
+	 * Normalize selection range browser differences.
+	 *
+	 * @since 3.20.0
+	 *
+	 * @param {Range} range The range to normalize.
+	 *
+	 * @return {Range} The normalized range.
+	 */
+	const normalizeRange = ( range: Range ): Range => {
+		// In Chrome, triple-clicking to select an entire paragraph will also select up to the
+		// next paragraph, setting endContainer with an endOffset of 0 on the next node in the document.
+		// When we detect this type of range is present, change the endContainer to the same paragraph,
+		// which matches manual selection behavior.
+		if ( range.endOffset === 0 ) {
+			const startParagraph = getClosestParagraphOrListItem( range.startContainer );
+			const endContainer = range.endContainer;
+
+			// If we're at the beginning of a different paragraph, move the end back
+			if ( startParagraph && endContainer && startParagraph !== endContainer ) {
+				const newRange = range.cloneRange();
+
+				// Check if the previous node belongs to the start paragraph
+				let previousNode = endContainer.previousSibling;
+
+				// Skip whitespace-only text nodes (same as a trim() on selected content)
+				while ( previousNode && previousNode.nodeType === Node.TEXT_NODE && ! previousNode.textContent?.trim() ) {
+					previousNode = previousNode.previousSibling;
+				}
+
+				if ( previousNode ) {
+					const prevParagraph = getClosestParagraphOrListItem( previousNode );
+
+					if ( prevParagraph === startParagraph ) {
+						newRange.setEnd( startParagraph, startParagraph.childNodes.length );
+						return newRange;
+					}
+				}
+			}
+		}
+
+		return range;
+	};
+
+	/**
 	 * Calculates the offset of the selected text by counting previous occurrences.
 	 *
 	 * @since 3.19.0
@@ -443,17 +487,18 @@ export const TextSelectionTooltip = ( {
 		}
 
 		// Check if selection spans multiple paragraphs.
-		const startParagraph = getClosestParagraphOrListItem( range.startContainer );
-		const endParagraph = getClosestParagraphOrListItem( range.endContainer );
+		const normalizedRange = normalizeRange( range );
+		const startParagraph = getClosestParagraphOrListItem( normalizedRange.startContainer );
+		const endParagraph = getClosestParagraphOrListItem( normalizedRange.endContainer );
 
 		if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 			return;
 		}
 
 		// If selection is inside a link, expand to encompass the entire link.
-		if ( ! expandToLinkNode( docSelection, range ) ) {
+		if ( ! expandToLinkNode( docSelection, normalizedRange ) ) {
 			// Only expand to word boundary if we didn't expand to a link.
-			expandToWordBoundary( docSelection, range );
+			expandToWordBoundary( docSelection, normalizedRange );
 		}
 
 		// Create highlight overlay.
@@ -485,10 +530,9 @@ export const TextSelectionTooltip = ( {
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
 
-					// Using docSelection.toString() directly as docSelectionText will replace some characters
-					// like &nbsp; with a space. Later when we're highlighting the text, this will cause the text
-					// to not match the content on the page.
-					// Instead, get text content using a cloneContents() and .textContent to exactly match page content.
+					// Using docSelection.toString() directly will replace some characters like &nbsp; with a space.
+					// Later when we're highlighting the text, this will cause the text to not match the content on the page.
+					// Get text content using cloneContents() and .textContent to exactly match page content.
 					const selectionContainer = iframeDocument.createElement( 'div' );
 					for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
 						const currentRange = docSelection.getRangeAt( rangeIndex );
@@ -496,7 +540,7 @@ export const TextSelectionTooltip = ( {
 						selectionContainer.appendChild( rangeContents );
 					}
 
-					const docSelectionText = selectionContainer.textContent ?? '';
+					const docSelectionText = selectionContainer.textContent?.trim() ?? '';
 
 					// Remove newlines that can be present from prior toolbar HTML injection.
 					onTextSelected( docSelectionText, offset );
@@ -517,7 +561,7 @@ export const TextSelectionTooltip = ( {
 		 * @since 3.19.0
 		 */
 		const updatePosition = () => {
-			const rect = range.getBoundingClientRect();
+			const rect = normalizedRange.getBoundingClientRect();
 			const scrollY = iframeDocument.defaultView?.scrollY ?? 0;
 
 			highlight.style.top = `${ rect.top + scrollY }px`;
