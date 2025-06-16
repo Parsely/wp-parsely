@@ -175,6 +175,12 @@ export const useIframeHighlight = ( {
 				top: ${ DRAG_MARGIN_PX }px;
 				left: ${ DRAG_MARGIN_PX }px;
 				user-select: none;
+				opacity: 0;
+				transition: opacity 0.1s ease-in-out;
+			}
+
+			.parsely-traffic-boost-actions-container.fade-in {
+				opacity: 1;
 			}
 
 			.parsely-traffic-boost-actions-container.align-left {
@@ -455,10 +461,18 @@ export const useIframeHighlight = ( {
 						// Center position is fine, set left directly
 						actionsContainer.style.left = `${ left }px`;
 					}
+
+					// Add fade-in animation after positioning
+					actionsContainer.classList.add( 'fade-in' );
 				};
 
-				// Setup initial position
-				setTimeout( positionActionsBar, 0 );
+				if ( iframeDocument.documentElement.scrollTop === 0 ) {
+					// Setup initial position. Wait 400ms for auto-scroll to complete so that position calculations
+					// from scrollTop are correct.
+					setTimeout( positionActionsBar, 400 );
+				} else {
+					setTimeout( positionActionsBar, 0 );
+				}
 
 				// Reposition on resize
 				const resizeHandler = throttle( () => positionActionsBar(), 100 );
