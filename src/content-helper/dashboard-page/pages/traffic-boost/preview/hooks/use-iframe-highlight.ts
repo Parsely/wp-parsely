@@ -174,6 +174,7 @@ export const useIframeHighlight = ( {
 				z-index: 1000;
 				top: ${ DRAG_MARGIN_PX }px;
 				left: ${ DRAG_MARGIN_PX }px;
+				user-select: none;
 			}
 
 			.parsely-traffic-boost-actions-container.align-left {
@@ -228,7 +229,7 @@ export const useIframeHighlight = ( {
 
 			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-hint {
 				display: flex;
-				cursor: pointer;
+				cursor: help;
 				user-select: none;
 				align-items: center;
 			}
@@ -238,7 +239,6 @@ export const useIframeHighlight = ( {
 				font-family: inherit;
 				white-space: nowrap;
 				margin-right: 4px;
-				padding-left: 8px;
 				color: #2F2F2F;
 			}
 		`;

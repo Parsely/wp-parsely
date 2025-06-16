@@ -613,7 +613,7 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
 /**
  * Gets the closest paragraph or list item element from a node.
  *
- * @since 3.19.0
+ * @since 3.20.0
  *
  * @param {Node} node The node to start searching from.
  * @return {Element|null} The closest paragraph or list item element, or null if not found.
