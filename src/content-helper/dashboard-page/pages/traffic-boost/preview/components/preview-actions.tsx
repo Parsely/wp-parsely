@@ -148,7 +148,7 @@ export const PreviewActions = ( {
 										onClick={ onRestoreOriginal }
 										icon={ undo }
 									>
-										{ __( 'Clear changes', 'wp-parsely' ) }
+										{ __( 'Revert', 'wp-parsely' ) }
 									</Button>
 								) }
 							</>
@@ -179,7 +179,7 @@ export const PreviewActions = ( {
 									onClick={ onRestoreOriginal }
 									icon={ undo }
 								>
-									{ __( 'Clear changes', 'wp-parsely' ) }
+									{ __( 'Revert', 'wp-parsely' ) }
 								</Button>
 							</>
 						) }
