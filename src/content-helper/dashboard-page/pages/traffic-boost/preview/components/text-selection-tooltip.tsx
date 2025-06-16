@@ -485,21 +485,18 @@ export const TextSelectionTooltip = ( {
 
 					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
 
-					let docSelectionText = docSelection.toString().trim();
-
-					if ( docSelection.rangeCount > 1 || docSelection.toString().includes( '\n' ) ) {
-						// If docSelection has multiple ranges or contains a newline character, it can be because a selection
-						// has been made on top of an existing suggestion. Existing selections contain HTML as children,
-						// so we need to ignore the inner HTML content and return the text content of the selection.
-						const selectionContainer = iframeDocument.createElement( 'div' );
-						for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
-							const currentRange = docSelection.getRangeAt( rangeIndex );
-							const rangeContents = currentRange.cloneContents();
-							selectionContainer.appendChild( rangeContents );
-						}
-
-						docSelectionText = selectionContainer.textContent ?? '';
+					// Using docSelection.toString() directly as docSelectionText will replace some characters
+					// like &nbsp; with a space. Later when we're highlighting the text, this will cause the text
+					// to not match the content on the page.
+					// Instead, get text content using a cloneContents() and .textContent to exactly match page content.
+					const selectionContainer = iframeDocument.createElement( 'div' );
+					for ( let rangeIndex = 0; rangeIndex < docSelection.rangeCount; rangeIndex++ ) {
+						const currentRange = docSelection.getRangeAt( rangeIndex );
+						const rangeContents = currentRange.cloneContents();
+						selectionContainer.appendChild( rangeContents );
 					}
+
+					const docSelectionText = selectionContainer.textContent ?? '';
 
 					// Remove newlines that can be present from prior toolbar HTML injection.
 					onTextSelected( docSelectionText, offset );
