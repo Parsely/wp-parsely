@@ -238,7 +238,7 @@ export const useIframeHighlight = ( {
 				font-size: 13px;
 				font-family: inherit;
 				white-space: nowrap;
-				margin-right: 4px;
+				margin-left: 4px;
 				color: #2F2F2F;
 			}
 		`;
