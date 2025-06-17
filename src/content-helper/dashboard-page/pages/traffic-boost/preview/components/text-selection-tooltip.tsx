@@ -263,50 +263,6 @@ export const TextSelectionTooltip = ( {
 	onTextSelected,
 }: TextSelectionTooltipProps ): null => {
 	/**
-	 * Normalize selection range browser differences.
-	 *
-	 * @since 3.20.0
-	 *
-	 * @param {Range} range The range to normalize.
-	 *
-	 * @return {Range} The normalized range.
-	 */
-	const normalizeRange = ( range: Range ): Range => {
-		// In Chrome, triple-clicking to select an entire paragraph will also select up to the
-		// next paragraph, setting endContainer with an endOffset of 0 on the next node in the document.
-		// When we detect this type of range is present, change the endContainer to the same paragraph,
-		// which matches manual selection behavior.
-		if ( range.endOffset === 0 ) {
-			const startParagraph = getClosestParagraphOrListItem( range.startContainer );
-			const endContainer = range.endContainer;
-
-			// If we're at the beginning of a different paragraph, move the end back.
-			if ( startParagraph && endContainer && startParagraph !== endContainer ) {
-				const newRange = range.cloneRange();
-
-				// Check if the previous node belongs to the start paragraph.
-				let previousNode = endContainer.previousSibling;
-
-				// Skip whitespace-only text nodes (same as a trim() on selected content).
-				while ( previousNode && previousNode.nodeType === Node.TEXT_NODE && ! previousNode.textContent?.trim() ) {
-					previousNode = previousNode.previousSibling;
-				}
-
-				if ( previousNode ) {
-					const prevParagraph = getClosestParagraphOrListItem( previousNode );
-
-					if ( prevParagraph === startParagraph ) {
-						newRange.setEnd( startParagraph, startParagraph.childNodes.length );
-						return newRange;
-					}
-				}
-			}
-		}
-
-		return range;
-	};
-
-	/**
 	 * Calculates the offset of the selected text by counting previous occurrences.
 	 *
 	 * @since 3.19.0
@@ -391,8 +347,8 @@ export const TextSelectionTooltip = ( {
 			const firstRange = docSelection.getRangeAt( 0 );
 			const lastRange = docSelection.getRangeAt( docSelection.rangeCount - 1 );
 
-			const startParagraph = getClosestParagraphOrListItem( firstRange.startContainer );
-			const endParagraph = getClosestParagraphOrListItem( lastRange.endContainer );
+			const startParagraph = getClosestSelectableItem( firstRange.startContainer );
+			const endParagraph = getClosestSelectableItem( lastRange.endContainer );
 
 			if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 				return;
@@ -408,8 +364,13 @@ export const TextSelectionTooltip = ( {
 
 		// Check if selection spans multiple paragraphs.
 		const normalizedRange = normalizeRange( range );
-		const startParagraph = getClosestParagraphOrListItem( normalizedRange.startContainer );
-		const endParagraph = getClosestParagraphOrListItem( normalizedRange.endContainer );
+		if ( isRangeChanged( range, normalizedRange ) ) {
+			docSelection.removeAllRanges();
+			docSelection.addRange( normalizedRange );
+		}
+
+		const startParagraph = getClosestSelectableItem( normalizedRange.startContainer );
+		const endParagraph = getClosestSelectableItem( normalizedRange.endContainer );
 
 		if ( ! startParagraph || ! endParagraph || startParagraph !== endParagraph ) {
 			return;
@@ -519,26 +480,28 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		// Add selection event listener.
-		const handleSelectionChange = debounce( () => {
-			handleSelection();
-		}, 300, {
+		// Add selection event listener to update the highlight.
+		const handleSelectionChange = debounce( handleSelection, 300, {
 			leading: true,
 			trailing: true,
 		} );
-
 		iframeDocument.addEventListener( 'selectionchange', handleSelectionChange );
 
+		// Add mouseup listener to expand selection to word boundaries.
 		const handleSelectionEnd = () => {
 			const selection = iframeDocument.getSelection();
 			const range = selection?.getRangeAt( 0 );
 
 			if ( selection && range ) {
 				const normalizedRange = normalizeRange( range );
+				if ( isRangeChanged( range, normalizedRange ) ) {
+					selection.removeAllRanges();
+					selection.addRange( normalizedRange );
+				}
+
 				expandToWordBoundary( selection, normalizedRange );
 			}
 		};
-
 		iframeDocument.addEventListener( 'mouseup', handleSelectionEnd );
 
 		return () => {
@@ -579,21 +542,80 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
 };
 
 /**
- * Gets the closest paragraph or list item element from a node.
+ * Normalize selection range browser differences.
+ *
+ * @since 3.20.0
+ *
+ * @param {Range} range The range to normalize.
+ *
+ * @return {Range} The normalized range.
+ */
+const normalizeRange = ( range: Range ): Range => {
+	// Only care about instances where the endOffset is on a node boundary.
+	if ( range.endOffset !== 0 ) {
+		return range;
+	}
+
+	// In Chrome, triple-clicking a text section will select:
+	// - The entire section contents (e.g. a paragraph)
+	// - Any whitespace text nodes after the section (e.g. some "\n" characters)
+	// - The next element in the document at endOffset 0 (e.g. the beginning of a <ul><li> list after the paragraph)
+	//
+	// This makes selecting the initial triple-click location difficult, because the range
+	// can include unrelated nodes at a different depth in the DOM.
+	//
+	// Fortunately, we only see range.endOffset === 0 when the user triple-clicks in Chrome,
+	// or drag a selection just past the end of a selectable section.
+	// When we detect this, we can use the startContainer to find the paragraph,
+	// and then set the endContainer to the same paragraph. This ignores the extra nodes
+	// appended to the selection, and gives a strong approximation of the original triple-click location.
+
+	const startParagraph = getClosestSelectableItem( range.startContainer );
+
+	if ( startParagraph === null ) {
+		return range;
+	}
+
+	const newRange = document.createRange();
+	newRange.selectNodeContents( startParagraph as Node );
+
+	return newRange;
+};
+
+/**
+ * Returns true if the two range parameters are different.
+ *
+ * @param {Range} range    The original range.
+ * @param {Range} newRange The new range.
+ *
+ * @return {boolean} True if the ranges are different, false otherwise.
+ * @since 3.20.0
+ */
+const isRangeChanged = ( range: Range, newRange: Range ): boolean => {
+	return range.startContainer !== newRange.startContainer ||
+		range.startOffset !== newRange.startOffset ||
+		range.endContainer !== newRange.endContainer ||
+		range.endOffset !== newRange.endOffset;
+};
+
+/**
+ * Gets the closest selectable item (p, li) element from a node.
  *
  * @since 3.20.0
  *
  * @param {Node} node The node to start searching from.
  *
- * @return {Element|null} The closest paragraph or list item element, or null if not found.
+ * @return {Element|null} The closest selectable item element, or null if not found.
  */
-const getClosestParagraphOrListItem = ( node: Node ): Element | null => {
-	// If the node itself is a paragraph or list item, return it.
-	if ( node.nodeType === Node.ELEMENT_NODE && ( node as Element ).matches( 'p, li' ) ) {
+const getClosestSelectableItem = ( node: Node ): Element | null => {
+	const selectableItems = [ 'p', 'li' ].join( ', ' );
+
+	// If the node itself is a matching item, return it.
+	if ( node.nodeType === Node.ELEMENT_NODE && ( node as Element ).matches( selectableItems ) ) {
 		return node as Element;
 	}
 
-	return node.parentElement?.closest( 'p, li' ) ?? null;
+	return node.parentElement?.closest( selectableItems ) ?? null;
 };
 
 /**
