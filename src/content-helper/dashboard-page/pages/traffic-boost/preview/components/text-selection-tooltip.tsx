@@ -263,86 +263,6 @@ export const TextSelectionTooltip = ( {
 	onTextSelected,
 }: TextSelectionTooltipProps ): null => {
 	/**
-	 * Expands the current selection to word boundaries.
-	 *
-	 * @since 3.19.0
-	 *
-	 * @param {Selection} docSelection The document's current selection.
-	 * @param {Range}     range        The current selection range.
-	 */
-	const expandToWordBoundary = ( docSelection: Selection, range: Range ) => {
-		// Find word boundary at start.
-		const startNode = range.startContainer as Text;
-		const initialStart = range.startOffset;
-		let startOffset = range.startOffset;
-
-		if ( startNode.nodeType === Node.TEXT_NODE ) {
-			const startText = startNode.textContent ?? '';
-
-			while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
-				startOffset--;
-			}
-		}
-
-		// Find word boundary at end.
-		const endNode = range.endContainer as Text;
-		const initialEnd = range.endOffset;
-		let endOffset = range.endOffset;
-
-		if ( endNode.nodeType === Node.TEXT_NODE ) {
-			const endText = endNode.textContent ?? '';
-			while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
-				endOffset++;
-			}
-		}
-
-		// Only update if boundaries have changed.
-		if ( startOffset !== initialStart || endOffset !== initialEnd ) {
-			range.setStart( startNode, startOffset );
-			range.setEnd( endNode, endOffset );
-			docSelection.removeAllRanges();
-			docSelection.addRange( range );
-		}
-	};
-
-	/**
-	 * Expands the current selection to encompass the entire link node if
-	 * selection is within a link.
-	 *
-	 * @since 3.19.0
-	 *
-	 * @param {Selection} docSelection The document's current selection.
-	 * @param {Range}     range        The current selection range.
-	 *
-	 * @return {boolean} True if selection was expanded to a link, false otherwise.
-	 */
-	const expandToLinkNode = ( docSelection: Selection, range: Range ): boolean => {
-		// Find if selection is within an anchor tag.
-		const container = range.commonAncestorContainer as Element;
-		const linkNode = container.nodeType === Node.ELEMENT_NODE
-			? container.closest( 'a' )
-			: container.parentElement?.closest( 'a' );
-
-		// If the selection is already the full link, return true.
-		if ( docSelection.toString() === linkNode?.textContent ) {
-			return true;
-		}
-
-		if ( linkNode ) {
-			// Create a new range that encompasses the entire link.
-			const newRange = range.cloneRange();
-			newRange.selectNodeContents( linkNode );
-
-			// Update the selection.
-			docSelection.removeAllRanges();
-			docSelection.addRange( newRange );
-			return true;
-		}
-
-		return false;
-	};
-
-	/**
 	 * Normalize selection range browser differences.
 	 *
 	 * @since 3.20.0
@@ -495,12 +415,6 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		// If selection is inside a link, expand to encompass the entire link.
-		if ( ! expandToLinkNode( docSelection, normalizedRange ) ) {
-			// Only expand to word boundary if we didn't expand to a link.
-			expandToWordBoundary( docSelection, normalizedRange );
-		}
-
 		// Create highlight overlay.
 		const highlight = iframeDocument.createElement( 'div' );
 		highlight.className = 'parsely-traffic-boost-highlight';
@@ -615,8 +529,21 @@ export const TextSelectionTooltip = ( {
 
 		iframeDocument.addEventListener( 'selectionchange', handleSelectionChange );
 
+		const handleSelectionEnd = () => {
+			const selection = iframeDocument.getSelection();
+			const range = selection?.getRangeAt( 0 );
+
+			if ( selection && range ) {
+				const normalizedRange = normalizeRange( range );
+				expandToWordBoundary( selection, normalizedRange );
+			}
+		};
+
+		iframeDocument.addEventListener( 'mouseup', handleSelectionEnd );
+
 		return () => {
 			iframeDocument.removeEventListener( 'selectionchange', handleSelectionChange );
+			iframeDocument.removeEventListener( 'mouseup', handleSelectionEnd );
 		};
 	}, [ handleSelection, iframeRef ] );
 
@@ -667,4 +594,88 @@ const getClosestParagraphOrListItem = ( node: Node ): Element | null => {
 	}
 
 	return node.parentElement?.closest( 'p, li' ) ?? null;
+};
+
+/**
+ * Expands the current selection to encompass the entire link node if
+ * selection is within a link.
+ *
+ * @since 3.19.0
+ *
+ * @param {Selection} docSelection The document's current selection.
+ * @param {Range}     range        The current selection range.
+ *
+ * @return {boolean} True if selection was expanded to a link, false otherwise.
+ */
+const expandToLinkNode = ( docSelection: Selection, range: Range ): boolean => {
+	// Find if selection is within an anchor tag.
+	const container = range.commonAncestorContainer as Element;
+	const linkNode = container.nodeType === Node.ELEMENT_NODE
+		? container.closest( 'a' )
+		: container.parentElement?.closest( 'a' );
+
+	// If the selection is already the full link, return true.
+	if ( docSelection.toString() === linkNode?.textContent ) {
+		return true;
+	}
+
+	if ( linkNode ) {
+		// Create a new range that encompasses the entire link.
+		const newRange = range.cloneRange();
+		newRange.selectNodeContents( linkNode );
+
+		// Update the selection.
+		docSelection.removeAllRanges();
+		docSelection.addRange( newRange );
+		return true;
+	}
+
+	return false;
+};
+
+/**
+ * Expands the current selection to word boundaries.
+ *
+ * @since 3.19.0
+ *
+ * @param {Selection} docSelection The document's current selection.
+ * @param {Range}     range        The current selection range.
+ */
+const expandToWordBoundary = ( docSelection: Selection, range: Range ) => {
+	// If selection is inside a link, expand to encompass the entire link.
+	if ( ! expandToLinkNode( docSelection, range ) ) {
+		// Only expand to word boundary if we didn't expand to a link.
+		// Find word boundary at start.
+		const startNode = range.startContainer as Text;
+		const initialStart = range.startOffset;
+		let startOffset = range.startOffset;
+
+		if ( startNode.nodeType === Node.TEXT_NODE ) {
+			const startText = startNode.textContent ?? '';
+
+			while ( startOffset > 0 && /[^\s.,!?;:'"’)\]}]/g.test( startText[ startOffset - 1 ] ) ) {
+				startOffset--;
+			}
+		}
+
+		// Find word boundary at end.
+		const endNode = range.endContainer as Text;
+		const initialEnd = range.endOffset;
+		let endOffset = range.endOffset;
+
+		if ( endNode.nodeType === Node.TEXT_NODE ) {
+			const endText = endNode.textContent ?? '';
+			while ( endOffset < endText.length && /[^\s.,!?;:'"’([{]/g.test( endText[ endOffset ] ) ) {
+				endOffset++;
+			}
+		}
+
+		// Only update if boundaries have changed.
+		if ( startOffset !== initialStart || endOffset !== initialEnd ) {
+			range.setStart( startNode, startOffset );
+			range.setEnd( endNode, endOffset );
+			docSelection.removeAllRanges();
+			docSelection.addRange( range );
+		}
+	}
 };
