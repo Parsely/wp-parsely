@@ -168,7 +168,7 @@ export const useIframeHighlight = ( {
 				}
 			}
 
-			/* Action bar styles. */
+			/* Actions bar styles. */
 			.parsely-traffic-boost-actions-container {
 				position: absolute;
 				z-index: 1000;
@@ -405,7 +405,11 @@ export const useIframeHighlight = ( {
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
 
-				// Setup cleanup function.
+				/**
+				 * Sets up the actions bar cleanup function.
+				 *
+				 * @since 3.20.0
+				 */
 				window.wpParselyTrafficBoostCleanupActionsBar = () => {
 					window.wpParselyTrafficBoostCleanupActionsBar = undefined;
 
