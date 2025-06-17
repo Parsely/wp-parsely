@@ -496,7 +496,12 @@ export const TextSelectionTooltip = ( {
 		// Add mouseup listener to expand selection to word boundaries.
 		const handleSelectionEnd = () => {
 			const selection = iframeDocument.getSelection();
-			const range = selection?.getRangeAt( 0 );
+
+			if ( selection === null || selection.rangeCount === 0 ) {
+				return;
+			}
+
+			const range = selection.getRangeAt( 0 );
 			const rangeHasContent = range?.collapsed === false;
 
 			if ( selection && range && rangeHasContent ) {
