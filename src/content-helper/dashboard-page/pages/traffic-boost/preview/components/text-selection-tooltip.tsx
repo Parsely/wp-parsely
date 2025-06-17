@@ -369,7 +369,7 @@ export const TextSelectionTooltip = ( {
 		}
 
 		// Check if selection spans multiple paragraphs.
-		const normalizedRange = normalizeRange( range );
+		const normalizedRange = normalizeRange( range, iframeDocument );
 		if ( isRangeChanged( range, normalizedRange ) ) {
 			docSelection.removeAllRanges();
 			docSelection.addRange( normalizedRange );
@@ -505,7 +505,7 @@ export const TextSelectionTooltip = ( {
 			const rangeHasContent = range?.collapsed === false;
 
 			if ( selection && range && rangeHasContent ) {
-				const normalizedRange = normalizeRange( range );
+				const normalizedRange = normalizeRange( range, iframeDocument );
 				if ( isRangeChanged( range, normalizedRange ) ) {
 					selection.removeAllRanges();
 					selection.addRange( normalizedRange );
@@ -558,11 +558,12 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
  *
  * @since 3.20.0
  *
- * @param {Range} range The range to normalize.
+ * @param {Range}    range           The range to normalize.
+ * @param {Document} currentDocument The current document.
  *
  * @return {Range} The normalized range.
  */
-const normalizeRange = ( range: Range ): Range => {
+const normalizeRange = ( range: Range, currentDocument: Document ): Range => {
 	// Only care about instances the range is over multiple nodes, and the endOffset is on a node boundary.
 	if ( range.startContainer !== range.endContainer && range.endOffset === 0 ) {
 		// In Chrome, triple-clicking a text section will select:
@@ -585,7 +586,7 @@ const normalizeRange = ( range: Range ): Range => {
 			return range;
 		}
 
-		const newRange = document.createRange();
+		const newRange = currentDocument.createRange();
 		newRange.selectNodeContents( startParagraph as Node );
 
 		return newRange;
