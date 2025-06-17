@@ -487,6 +487,8 @@ export const useIframeHighlight = ( {
 
 				return highlightSpan;
 			} catch ( e ) {
+				// eslint-disable-next-line no-console
+				console.error( 'WP Parsely: Error highlighting range', e );
 			}
 		}, [ iframeRef, actionsBar ] );
 
