@@ -7,13 +7,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { throttle } from '@wordpress/compose';
 import { escapeRegExp } from '../../../../../common/utils/functions';
 import { TrafficBoostLink } from '../../provider';
 import { LinkType } from '../components/link-counter';
 import { TextSelection } from '../preview';
 import { DRAG_MARGIN_PX } from './use-draggable';
 import { useWordpressComponentStyles } from './use-wordpress-component-styles';
-import { throttle } from '@wordpress/compose';
 
 declare global {
 	interface Window {
@@ -418,23 +418,30 @@ export const useIframeHighlight = ( {
 					}
 				};
 
+				/**
+				 * Positions the actions bar, ensuring it remains visible and
+				 * aligned within boundaries.
+				 *
+				 * @since 3.20.0
+				 */
 				const positionActionsBar = () => {
 					const renderedActionsBar = iframeDocument.querySelector( '.traffic-boost-preview-actions' ) as HTMLElement;
 					if ( ! renderedActionsBar ) {
 						return;
 					}
 
-					// Reset any translation that's already applied to the actionsBar from a manual drag.
+					// Reset any transform that's already applied to the
+					// actionsBar from a manual drag.
 					renderedActionsBar.style.transform = '';
 
 					const highlightRect = highlightSpan.getBoundingClientRect();
 					const iframeRect = iframeDocument.documentElement.getBoundingClientRect();
 					const actionsRect = renderedActionsBar.getBoundingClientRect();
 
-					// Reset any existing alignment classes
+					// Reset any existing alignment classes.
 					actionsContainer.classList.remove( 'align-left', 'align-right' );
 
-					// Calculate base position above highlight, accounting for scroll position
+					// Calculate base position above highlight, accounting for scroll position.
 					const PIXELS_ABOVE_HIGHLIGHT = 35;
 					const scrollTop = iframeDocument.documentElement.scrollTop;
 					const top = highlightRect.top + scrollTop - PIXELS_ABOVE_HIGHLIGHT - actionsRect.height;
@@ -443,38 +450,38 @@ export const useIframeHighlight = ( {
 					// Set initial position
 					actionsContainer.style.top = `${ Math.max( top, 0 ) }px`;
 
-					// Check if actions bar would be cut off on either side
+					// Check if the actions bar would be cut off on either side.
 					const actionsWidth = actionsRect.width;
 					const iframeWidth = iframeRect.width;
 					const actionsLeft = left;
 					const actionsRight = left + actionsWidth;
 
 					if ( actionsRight > iframeWidth ) {
-						// Would be cut off on right, align to right
+						// Would be cut off on right, align to right.
 						actionsContainer.classList.add( 'align-right' );
-						actionsContainer.style.left = ''; // Clear inline left style
+						actionsContainer.style.left = ''; // Clear inline left style.
 					} else if ( actionsLeft < 0 ) {
-						// Would be cut off on left, align to left
+						// Would be cut off on left, align to left.
 						actionsContainer.classList.add( 'align-left' );
-						actionsContainer.style.left = ''; // Clear inline left style
+						actionsContainer.style.left = ''; // Clear inline left style.
 					} else {
-						// Center position is fine, set left directly
+						// Center position is fine, set left directly.
 						actionsContainer.style.left = `${ left }px`;
 					}
 
-					// Add fade-in animation after positioning
+					// Add fade-in animation after positioning.
 					actionsContainer.classList.add( 'fade-in' );
 				};
 
+				// Setup initial position. Wait 400ms for auto-scroll to complete
+				// so that position calculations from scrollTop are correct.
 				if ( iframeDocument.documentElement.scrollTop === 0 ) {
-					// Setup initial position. Wait 400ms for auto-scroll to complete so that position calculations
-					// from scrollTop are correct.
 					setTimeout( positionActionsBar, 400 );
 				} else {
 					setTimeout( positionActionsBar, 0 );
 				}
 
-				// Reposition on resize
+				// Reposition on resize.
 				const resizeHandler = throttle( () => positionActionsBar(), 100 );
 				iframeDocument.defaultView?.addEventListener( 'resize', resizeHandler );
 

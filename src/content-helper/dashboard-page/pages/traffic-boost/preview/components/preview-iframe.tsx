@@ -163,7 +163,7 @@ export const PreviewIframe = ( {
 		iframeDocument.addEventListener( 'click', ( event ) => {
 			const target = event.target as HTMLElement;
 
-			// Allow clicks on the actions bar
+			// Allow clicks on the actions bar.
 			if ( target instanceof Element && target.closest( '.parsely-traffic-boost-actions-container' ) ) {
 				return;
 			}

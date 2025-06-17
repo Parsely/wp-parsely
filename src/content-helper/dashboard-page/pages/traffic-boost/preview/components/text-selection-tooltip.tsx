@@ -6,8 +6,8 @@ import { debounce } from '@wordpress/compose';
 import { createRoot, useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { link, warning } from '@wordpress/icons';
-import { getContentArea } from '../utils';
 import { useWordpressComponentStyles } from '../hooks/use-wordpress-component-styles';
+import { getContentArea } from '../utils';
 
 /**
  * Custom hook to inject styles into the iframe.
@@ -360,14 +360,14 @@ export const TextSelectionTooltip = ( {
 			const startParagraph = getClosestParagraphOrListItem( range.startContainer );
 			const endContainer = range.endContainer;
 
-			// If we're at the beginning of a different paragraph, move the end back
+			// If we're at the beginning of a different paragraph, move the end back.
 			if ( startParagraph && endContainer && startParagraph !== endContainer ) {
 				const newRange = range.cloneRange();
 
-				// Check if the previous node belongs to the start paragraph
+				// Check if the previous node belongs to the start paragraph.
 				let previousNode = endContainer.previousSibling;
 
-				// Skip whitespace-only text nodes (same as a trim() on selected content)
+				// Skip whitespace-only text nodes (same as a trim() on selected content).
 				while ( previousNode && previousNode.nodeType === Node.TEXT_NODE && ! previousNode.textContent?.trim() ) {
 					previousNode = previousNode.previousSibling;
 				}
@@ -657,6 +657,7 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
  * @since 3.20.0
  *
  * @param {Node} node The node to start searching from.
+ *
  * @return {Element|null} The closest paragraph or list item element, or null if not found.
  */
 const getClosestParagraphOrListItem = ( node: Node ): Element | null => {
