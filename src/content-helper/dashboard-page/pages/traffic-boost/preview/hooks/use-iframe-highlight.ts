@@ -413,6 +413,11 @@ export const useIframeHighlight = ( {
 				window.wpParselyTrafficBoostCleanupActionsBar = () => {
 					window.wpParselyTrafficBoostCleanupActionsBar = undefined;
 
+					// resizeHandler is throttled, so cancel any pending calls.
+					if ( typeof resizeHandler.cancel === 'function' ) {
+						resizeHandler.cancel();
+					}
+
 					iframeDocument.defaultView?.removeEventListener( 'resize', resizeHandler );
 
 					root.unmount();
