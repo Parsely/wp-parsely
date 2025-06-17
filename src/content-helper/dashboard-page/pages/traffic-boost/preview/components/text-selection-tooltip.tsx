@@ -149,6 +149,12 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 		let currentNode: Node | null = range.startContainer;
 		const endNode = range.endContainer;
 
+		if ( currentNode === endNode && currentNode.firstChild ) {
+			// On triple-click, startContainer and endContainer will be the same node.
+			// Start iterating from the first child of the selected section to find inner anchors.
+			currentNode = currentNode.firstChild;
+		}
+
 		while ( currentNode !== null ) {
 			if ( currentNode.nodeType === Node.ELEMENT_NODE ) {
 				const element = currentNode as Element;
@@ -491,8 +497,9 @@ export const TextSelectionTooltip = ( {
 		const handleSelectionEnd = () => {
 			const selection = iframeDocument.getSelection();
 			const range = selection?.getRangeAt( 0 );
+			const rangeHasContent = range?.collapsed === false;
 
-			if ( selection && range ) {
+			if ( selection && range && rangeHasContent ) {
 				const normalizedRange = normalizeRange( range );
 				if ( isRangeChanged( range, normalizedRange ) ) {
 					selection.removeAllRanges();
@@ -551,35 +558,35 @@ const getNextNode = function( node: Node, skipChildren: boolean, endNode: Node )
  * @return {Range} The normalized range.
  */
 const normalizeRange = ( range: Range ): Range => {
-	// Only care about instances where the endOffset is on a node boundary.
-	if ( range.endOffset !== 0 ) {
-		return range;
+	// Only care about instances the range is over multiple nodes, and the endOffset is on a node boundary.
+	if ( range.startContainer !== range.endContainer && range.endOffset === 0 ) {
+		// In Chrome, triple-clicking a text section will select:
+		// - The entire section contents (e.g. a paragraph)
+		// - Any whitespace text nodes after the section (e.g. some "\n" characters)
+		// - The next element in the document at endOffset 0 (e.g. the beginning of a <ul><li> list after the paragraph)
+		//
+		// This makes selecting the initial triple-click location difficult, because the range
+		// can include unrelated nodes at a different depth in the DOM.
+		//
+		// Fortunately, we only see range.endOffset === 0 when the user triple-clicks in Chrome,
+		// or drag a selection just past the end of a selectable section.
+		// When we detect this, we can use the startContainer to find the paragraph,
+		// and then set the endContainer to the same paragraph. This ignores the extra nodes
+		// appended to the selection, and gives a strong approximation of the original triple-click location.
+
+		const startParagraph = getClosestSelectableItem( range.startContainer );
+
+		if ( startParagraph === null ) {
+			return range;
+		}
+
+		const newRange = document.createRange();
+		newRange.selectNodeContents( startParagraph as Node );
+
+		return newRange;
 	}
 
-	// In Chrome, triple-clicking a text section will select:
-	// - The entire section contents (e.g. a paragraph)
-	// - Any whitespace text nodes after the section (e.g. some "\n" characters)
-	// - The next element in the document at endOffset 0 (e.g. the beginning of a <ul><li> list after the paragraph)
-	//
-	// This makes selecting the initial triple-click location difficult, because the range
-	// can include unrelated nodes at a different depth in the DOM.
-	//
-	// Fortunately, we only see range.endOffset === 0 when the user triple-clicks in Chrome,
-	// or drag a selection just past the end of a selectable section.
-	// When we detect this, we can use the startContainer to find the paragraph,
-	// and then set the endContainer to the same paragraph. This ignores the extra nodes
-	// appended to the selection, and gives a strong approximation of the original triple-click location.
-
-	const startParagraph = getClosestSelectableItem( range.startContainer );
-
-	if ( startParagraph === null ) {
-		return range;
-	}
-
-	const newRange = document.createRange();
-	newRange.selectNodeContents( startParagraph as Node );
-
-	return newRange;
+	return range;
 };
 
 /**
