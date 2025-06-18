@@ -245,7 +245,7 @@ export const PostExcerptSuggestions = ( {
 						variant="link"
 						rel="noopener"
 					>
-						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						{ __( 'Learn more about Excerpt Suggestions', 'wp-parsely' ) }
 						<Icon icon={ external } size={ 18 } className="parsely-external-link-icon" />
 					</Button>
 				</div>
@@ -373,7 +373,7 @@ export const PostExcerptSuggestions = ( {
 						variant="link"
 						rel="noopener"
 					>
-						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						{ __( 'Learn more about Excerpt Suggestions', 'wp-parsely' ) }
 						<Icon
 							icon={ external }
 							size={ 18 }

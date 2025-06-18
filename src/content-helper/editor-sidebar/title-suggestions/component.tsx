@@ -230,7 +230,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 						target="_blank"
 						variant="link"
 					>
-						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						{ __( 'Learn more about Title Suggestions', 'wp-parsely' ) }
 						<Icon
 							icon={ external }
 							size={ 18 }
