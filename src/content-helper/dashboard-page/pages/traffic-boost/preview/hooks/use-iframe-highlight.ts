@@ -3,11 +3,11 @@
  */
 import { createRoot, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import type { Root } from 'react-dom/client';
 
 /**
  * Internal dependencies
  */
+import { throttle } from '@wordpress/compose';
 import { escapeRegExp } from '../../../../../common/utils/functions';
 import { TrafficBoostLink } from '../../provider';
 import { LinkType } from '../components/link-counter';
@@ -17,9 +17,7 @@ import { useWordpressComponentStyles } from './use-wordpress-component-styles';
 
 declare global {
 	interface Window {
-		// Keep track of the root element used for mounting the actions bar.
-		// Used to unmount the actions bar React root on removal.
-		wpParselyTrafficBoostPopoverActionsRoot: Root | null;
+		wpParselyTrafficBoostCleanupActionsBar?: () => void;
 	}
 }
 
@@ -75,12 +73,6 @@ export const useIframeHighlight = ( {
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
-			/* Highlight container styles. */
-			.parsely-traffic-boost-highlight-container {
-				position: relative;
-				display: inline;
-			}
-
 			/** Smart link highlight styles. */
 			.smart-link-highlight {
 				outline: 2px solid #3858E9;
@@ -176,31 +168,31 @@ export const useIframeHighlight = ( {
 				}
 			}
 
-			/* Action bar styles. */
-			.parsely-traffic-boost-popover-actions {
+			/* Actions bar styles. */
+			.parsely-traffic-boost-actions-container {
 				position: absolute;
-				left: 50%;
-				transform: translateX(-50%);
-				bottom: 2rem;
 				z-index: 1000;
-
-				/* Reset font weight and style for actions toolbar if highlight is inside a <strong> or <em>. */
-				font-weight: normal;
-				font-style: normal;
+				top: ${ DRAG_MARGIN_PX }px;
+				left: ${ DRAG_MARGIN_PX }px;
+				user-select: none;
+				opacity: 0;
+				transition: opacity 0.1s ease-in-out;
 			}
 
-			.parsely-traffic-boost-popover-actions.align-left {
-				left: 0;
-				transform: none;
+			.parsely-traffic-boost-actions-container.fade-in {
+				opacity: 1;
 			}
 
-			.parsely-traffic-boost-popover-actions.align-right {
+			.parsely-traffic-boost-actions-container.align-left {
+				left: ${ DRAG_MARGIN_PX }px;
+			}
+
+			.parsely-traffic-boost-actions-container.align-right {
 				left: auto;
-				right: 0;
-				transform: none;
+				right: ${ DRAG_MARGIN_PX }px;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions {
 				/* Reset font family to editor defaults to avoid inheriting frontend font in actions toolbar. */
 				font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,"Helvetica Neue", sans-serif;
 				height: 48px;
@@ -213,7 +205,7 @@ export const useIframeHighlight = ( {
 				gap: 8px;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-drag-handle {
 				flex-shrink: 0;
 				cursor: grab;
 				border-right: 1px solid #1e1e1e;
@@ -223,11 +215,11 @@ export const useIframeHighlight = ( {
 				align-items: center;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-drag-handle.dragging {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-drag-handle.dragging {
 				cursor: grabbing;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-buttons {
 				display: flex;
 				gap: 4px;
 				align-items: center;
@@ -236,24 +228,23 @@ export const useIframeHighlight = ( {
 				padding-right: 8px;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-buttons .components-button {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-buttons .components-button {
 				height: 36px;
 				white-space: nowrap;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-hint {
 				display: flex;
-				cursor: pointer;
+				cursor: help;
 				user-select: none;
 				align-items: center;
 			}
 
-			.parsely-traffic-boost-popover-actions .traffic-boost-preview-actions-hint-text {
+			.parsely-traffic-boost-actions-container .traffic-boost-preview-actions-hint-text {
 				font-size: 13px;
 				font-family: inherit;
 				white-space: nowrap;
-				margin-right: 4px;
-				padding-left: 8px;
+				margin-left: 4px;
 				color: #2F2F2F;
 			}
 		`;
@@ -367,18 +358,10 @@ export const useIframeHighlight = ( {
 					return;
 				}
 
-				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
-				if ( existingActions ) {
-					if ( window.wpParselyTrafficBoostPopoverActionsRoot ) {
-						window.wpParselyTrafficBoostPopoverActionsRoot.unmount();
-						window.wpParselyTrafficBoostPopoverActionsRoot = null;
-					}
-
-					existingActions.remove();
+				const existingActions = iframeDocument.querySelector( '.parsely-traffic-boost-actions-container' );
+				if ( existingActions && window.wpParselyTrafficBoostCleanupActionsBar ) {
+					window.wpParselyTrafficBoostCleanupActionsBar();
 				}
-
-				const highlightContainerDiv = iframeDocument.createElement( 'div' );
-				highlightContainerDiv.className = 'parsely-traffic-boost-highlight-container';
 
 				const fragment = range.cloneContents();
 				const highlightSpan = iframeDocument.createElement( 'span' );
@@ -394,8 +377,6 @@ export const useIframeHighlight = ( {
 					highlightSpan.setAttribute( 'aria-roledescription', __( 'Previous suggestion', 'wp-parsely' ) );
 				}
 
-				highlightContainerDiv.appendChild( highlightSpan );
-
 				// Find if the range is within a link and if it encompasses the entire link text.
 				const container = range.commonAncestorContainer as Element;
 				const linkNode = container.nodeType === Node.ELEMENT_NODE
@@ -406,27 +387,113 @@ export const useIframeHighlight = ( {
 
 				if ( isFullLinkSelected && linkNode ) {
 					// Create a new span and insert it before the link.
-					linkNode.parentNode?.insertBefore( highlightContainerDiv, linkNode );
-
+					linkNode.parentNode?.insertBefore( highlightSpan, linkNode );
 					// Move the link into the span.
 					highlightSpan.appendChild( linkNode );
 				} else {
 					// Normal case - no links or partial link selection.
 					range.deleteContents();
 					highlightSpan.appendChild( fragment );
-					range.insertNode( highlightContainerDiv );
+					range.insertNode( highlightSpan );
 				}
 
-				// Create popover container.
 				const actionsContainer = iframeDocument.createElement( 'div' );
-				actionsContainer.className = 'parsely-traffic-boost-popover-actions';
-				highlightContainerDiv.appendChild( actionsContainer );
+				actionsContainer.className = 'parsely-traffic-boost-actions-container';
+				iframeDocument.body.appendChild( actionsContainer );
 
 				// Create popover content.
 				const root = createRoot( actionsContainer );
 				root.render( actionsBar );
 
-				window.wpParselyTrafficBoostPopoverActionsRoot = root;
+				/**
+				 * Sets up the actions bar cleanup function.
+				 *
+				 * @since 3.20.0
+				 */
+				window.wpParselyTrafficBoostCleanupActionsBar = () => {
+					window.wpParselyTrafficBoostCleanupActionsBar = undefined;
+
+					// resizeHandler is throttled, so cancel any pending calls.
+					if ( typeof resizeHandler.cancel === 'function' ) {
+						resizeHandler.cancel();
+					}
+
+					iframeDocument.defaultView?.removeEventListener( 'resize', resizeHandler );
+
+					root.unmount();
+
+					if ( actionsContainer.parentNode ) {
+						actionsContainer.parentNode.removeChild( actionsContainer );
+					}
+				};
+
+				/**
+				 * Positions the actions bar, ensuring it remains visible and
+				 * aligned within boundaries.
+				 *
+				 * @since 3.20.0
+				 */
+				const positionActionsBar = () => {
+					const renderedActionsBar = iframeDocument.querySelector( '.traffic-boost-preview-actions' ) as HTMLElement;
+					if ( ! renderedActionsBar ) {
+						return;
+					}
+
+					// Reset any transform that's already applied to the
+					// actionsBar from a manual drag.
+					renderedActionsBar.style.transform = '';
+
+					const highlightRect = highlightSpan.getBoundingClientRect();
+					const iframeRect = iframeDocument.documentElement.getBoundingClientRect();
+					const actionsRect = renderedActionsBar.getBoundingClientRect();
+
+					// Reset any existing alignment classes.
+					actionsContainer.classList.remove( 'align-left', 'align-right' );
+
+					// Calculate base position above highlight, accounting for scroll position.
+					const PIXELS_ABOVE_HIGHLIGHT = 35;
+					const scrollTop = iframeDocument.documentElement.scrollTop;
+					const top = highlightRect.top + scrollTop - PIXELS_ABOVE_HIGHLIGHT - actionsRect.height;
+					const left = highlightRect.left + ( highlightRect.width / 2 ) - ( actionsRect.width / 2 );
+
+					// Set initial position
+					actionsContainer.style.top = `${ Math.max( top, 0 ) }px`;
+
+					// Check if the actions bar would be cut off on either side.
+					const actionsWidth = actionsRect.width;
+					const iframeWidth = iframeRect.width;
+					const actionsLeft = left;
+					const actionsRight = left + actionsWidth;
+
+					if ( actionsRight > iframeWidth ) {
+						// Would be cut off on right, align to right.
+						actionsContainer.classList.add( 'align-right' );
+						actionsContainer.style.left = ''; // Clear inline left style.
+					} else if ( actionsLeft < 0 ) {
+						// Would be cut off on left, align to left.
+						actionsContainer.classList.add( 'align-left' );
+						actionsContainer.style.left = ''; // Clear inline left style.
+					} else {
+						// Center position is fine, set left directly.
+						actionsContainer.style.left = `${ left }px`;
+					}
+
+					// Add fade-in animation after positioning.
+					actionsContainer.classList.add( 'fade-in' );
+				};
+
+				// Setup initial position. Wait 400ms for auto-scroll to complete
+				// so that position calculations from scrollTop are correct.
+				if ( iframeDocument.documentElement.scrollTop === 0 ) {
+					setTimeout( positionActionsBar, 400 );
+				} else {
+					setTimeout( positionActionsBar, 0 );
+				}
+
+				// Reposition on resize.
+				const resizeHandler = throttle( () => positionActionsBar(), 100 );
+				iframeDocument.defaultView?.addEventListener( 'resize', resizeHandler );
+
 				return highlightSpan;
 			} catch ( e ) {
 				// eslint-disable-next-line no-console
@@ -454,13 +521,16 @@ export const useIframeHighlight = ( {
 			 * Removes a highlight and cleans up the parent node.
 			 *
 			 * @since 3.19.0
-			 * @since 3.20.0 Removed `parent`, added `container` and `rootParent` parameters.
 			 *
-			 * @param {Element}    highlight  The highlight element to remove.
-			 * @param {ParentNode} container  The parent container node of the highlight.
-			 * @param {ParentNode} rootParent The parent node of the container, e.g. a <p> tag.
+			 * @param {Element}    highlight The highlight element to remove.
+			 * @param {ParentNode} parent    The parent node of the container, e.g. a <p> tag.
 			 */
-			const removeAndClean = ( highlight: Element, container: ParentNode, rootParent: ParentNode ) => {
+			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
+				// Clean up actions bar if it exists
+				if ( window.wpParselyTrafficBoostCleanupActionsBar ) {
+					window.wpParselyTrafficBoostCleanupActionsBar();
+				}
+
 				// Create a document fragment to temporarily hold the children.
 				const fragment = iframeDocument.createDocumentFragment();
 
@@ -470,15 +540,15 @@ export const useIframeHighlight = ( {
 				}
 
 				// Insert the fragment before the highlight span.
-				rootParent.insertBefore( fragment, container );
-				rootParent.removeChild( container );
-				rootParent.normalize();
+				parent.insertBefore( fragment, highlight );
+				parent.removeChild( highlight );
+				parent.normalize();
 
 				// Remove any anchors without text in the parent node.
-				const anchors = Array.from( rootParent.querySelectorAll( 'a' ) );
+				const anchors = Array.from( parent.querySelectorAll( 'a' ) );
 				anchors.forEach( ( anchor ) => {
 					if ( ! anchor.textContent?.trim() ) {
-						rootParent.removeChild( anchor );
+						parent.removeChild( anchor );
 						return;
 					}
 
@@ -510,13 +580,8 @@ export const useIframeHighlight = ( {
 				const nestedHighlights = highlight.querySelectorAll( querySelector );
 				nestedHighlights.forEach( ( nested ) => unwrapHighlight( nested ) );
 
-				const container = highlight.parentNode;
-				if ( ! container ) {
-					return;
-				}
-
-				const rootParent = container.parentNode;
-				if ( ! rootParent ) {
+				const parent = highlight.parentNode;
+				if ( ! parent ) {
 					return;
 				}
 
@@ -524,10 +589,10 @@ export const useIframeHighlight = ( {
 					highlight.classList.add( 'removing' );
 
 					setTimeout( () => {
-						removeAndClean( highlight, container, rootParent );
+						removeAndClean( highlight, parent );
 					}, 200 );
 				} else {
-					removeAndClean( highlight, container, rootParent );
+					removeAndClean( highlight, parent );
 				}
 			};
 
@@ -765,45 +830,11 @@ export const useIframeHighlight = ( {
 		} );
 	}, [ activeLink, contentAreaRef, highlightRange, removeHighlights ] );
 
-	/**
-	 * Readjusts the position of the actions bar. Call during resize events.
-	 *
-	 * @since 3.20.0
-	 *
-	 * @param {HTMLIFrameElement} iframe The iframe element to highlight the links in.
-	 */
-	const adjustActionsBarPosition = useCallback( ( iframe: HTMLIFrameElement ) => {
-		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-		if ( ! iframeDocument ) {
-			return;
-		}
-
-		const actionsContainer = iframeDocument.querySelector( '.parsely-traffic-boost-popover-actions' );
-		if ( ! actionsContainer ) {
-			return;
-		}
-
-		actionsContainer.classList.remove( 'align-right', 'align-left' );
-
-		setTimeout( () => {
-			// After layout finishes, see if we need to adjust left or right.
-			const iframeBounds = iframeDocument.documentElement.getBoundingClientRect();
-			const actionsRect = actionsContainer.getBoundingClientRect();
-
-			if ( actionsRect.width + actionsRect.x + DRAG_MARGIN_PX > iframeBounds.width ) {
-				actionsContainer.classList.add( 'align-right' );
-			} else if ( actionsRect.x - DRAG_MARGIN_PX < 0 ) {
-				actionsContainer.classList.add( 'align-left' );
-			}
-		}, 0 );
-	}, [] );
-
 	return {
 		injectHighlightStyles,
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
 		removeHighlights,
-		adjustActionsBarPosition,
 	};
 };

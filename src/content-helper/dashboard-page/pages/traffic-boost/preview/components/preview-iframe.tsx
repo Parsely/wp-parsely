@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
-import { throttle, usePrevious } from '@wordpress/compose';
+import { usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -15,7 +15,6 @@ import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
-import useResize from '../hooks/use-resize';
 import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
 import { PreviewActions } from './preview-actions';
@@ -114,7 +113,6 @@ export const PreviewIframe = ( {
 		highlightSmartLink,
 		highlightLinkType,
 		removeSmartLinkHighlights,
-		adjustActionsBarPosition,
 	} = useIframeHighlight( {
 		iframeRef,
 		contentAreaRef,
@@ -124,20 +122,6 @@ export const PreviewIframe = ( {
 		onRestoreOriginal,
 		actionsBar,
 	} );
-
-	useResize( iframeRef, throttle(
-		// At most every 250ms on resize events, check that the actions bar is fully visible
-		// and adjust its position if needed.
-		useCallback(
-			() => {
-				if ( iframeRef.current !== null ) {
-					adjustActionsBarPosition( iframeRef.current );
-				}
-			},
-			[ adjustActionsBarPosition ]
-		),
-		250
-	) );
 
 	/**
 	 * Hides the admin bar from the iframe if the preview is in frontend mode.
@@ -178,6 +162,11 @@ export const PreviewIframe = ( {
 		// Prevent clicks on all links and handle link selection.
 		iframeDocument.addEventListener( 'click', ( event ) => {
 			const target = event.target as HTMLElement;
+
+			// Allow clicks on the actions bar.
+			if ( target.closest && target.closest( '.parsely-traffic-boost-actions-container' ) ) {
+				return;
+			}
 
 			// If the link is outside the content area, don't handle it.
 			if ( ! contentAreaRef.current?.contains( target ) ) {
