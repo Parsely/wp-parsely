@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix outbound link highlights in Traffic Boost ([#3469](https://github.com/Parsely/wp-parsely/pull/3469))
 
-
 ## [3.20.0](https://github.com/Parsely/wp-parsely/compare/3.19.3...3.20.0) - 2025-06-18
 
 ### Changed
