@@ -350,7 +350,7 @@ export const PostExcerptSuggestions = ( {
 						<div className="excerpt-suggestions-generate">
 							<Button
 								onClick={ generateExcerpt }
-								variant="primary"
+								variant="secondary"
 								isBusy={ isLoading }
 								disabled={ isLoading || ! postContent }
 							>

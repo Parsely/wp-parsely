@@ -708,7 +708,7 @@ export const SmartLinkingPanel = ( {
 				<div className="smart-linking-generate">
 					<Button
 						onClick={ generateSmartLinks }
-						variant="primary"
+						variant="secondary"
 						isBusy={ loading }
 						disabled={ loading }
 					>

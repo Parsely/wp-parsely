@@ -305,7 +305,7 @@ export const PerformanceStats = (
 			{ window.wpParselyPostUrl && (
 				<Button
 					className="wp-parsely-view-post"
-					variant={ 'primary' }
+					variant="secondary"
 					onClick={ () => {
 						Telemetry.trackEvent( 'editor_sidebar_view_post_pressed' );
 					} }

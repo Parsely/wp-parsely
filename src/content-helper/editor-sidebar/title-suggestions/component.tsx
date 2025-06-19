@@ -286,7 +286,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 				/>
 				<div className="title-suggestions-generate">
 					<Button
-						variant="primary"
+						variant="secondary"
 						isBusy={ loading }
 						disabled={ loading || tone === 'custom' || persona === 'custom' }
 						onClick={ generateOnClickHandler }
