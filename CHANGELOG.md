@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Change feature "Traffic Boost" to "Engagement Boost" ([#3482](https://github.com/Parsely/wp-parsely/pull/3482))
+- Change feature name from "Traffic Boost" to "Engagement Boost" ([#3482](https://github.com/Parsely/wp-parsely/pull/3482))
 
 
 ## [3.20.1](https://github.com/Parsely/wp-parsely/compare/3.20.0...3.20.1) - 2025-06-19
