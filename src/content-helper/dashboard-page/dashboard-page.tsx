@@ -47,11 +47,10 @@ domReady( () => {
 const ParselyDashboard = () => {
 	return (
 		<Routes>
-			<Route path="/" element={ <Navigate to="/traffic-boost" replace /> } />
-			<Route path="/traffic-boost" element={ <TrafficBoostPage /> } />
-			<Route path="/traffic-boost/:postId" element={ <TrafficBoostPostPage /> } />
+			<Route path="/" element={ <Navigate to="/engagement-boost" replace /> } />
+			<Route path="/engagement-boost" element={ <TrafficBoostPage /> } />
+			<Route path="/engagement-boost/:postId" element={ <TrafficBoostPostPage /> } />
 			<Route path="/settings" element={ <SettingsPage /> } />
 		</Routes>
 	);
 };
-
