@@ -6,6 +6,7 @@ import {
 	Route,
 	HashRouter as Router,
 	Routes,
+	useParams,
 } from 'react-router';
 
 /**
@@ -51,6 +52,19 @@ const ParselyDashboard = () => {
 			<Route path="/engagement-boost" element={ <TrafficBoostPage /> } />
 			<Route path="/engagement-boost/:postId" element={ <TrafficBoostPostPage /> } />
 			<Route path="/settings" element={ <SettingsPage /> } />
+
+			<Route path="/traffic-boost" element={ <Navigate to="/engagement-boost" replace /> } />
+			<Route path="/traffic-boost/:postId" element={ <EngagementBoostRedirect /> } />
 		</Routes>
 	);
+};
+
+/**
+ * Redirect component for "traffic-boost/:postId" to "engagement-boost/:postId" URLs.
+ *
+ * @since 3.20.2
+ */
+const EngagementBoostRedirect = () => {
+	const { postId } = useParams();
+	return <Navigate to={ `/engagement-boost/${ postId }` } replace />;
 };
