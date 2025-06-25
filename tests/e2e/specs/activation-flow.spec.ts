@@ -57,7 +57,7 @@ test.describe( 'Activation flow', (): void => {
 		// Initialize locators.
 		const basicTab = page.getByRole( 'link', { name: 'Basic' } );
 		const basicSection = page.locator( '.basic-section' );
-		const contentHelperTab = page.getByRole( 'link', { name: 'Content Helper' } );
+		const contentHelperTab = page.getByRole( 'link', { name: 'Content Intelligence' } );
 		const contentHelperSection = page.locator( '.content-helper-section' );
 		const recrawlTab = page.getByRole( 'link', { name: 'Recrawl' } );
 		const recrawlSection = page.locator( '.recrawl-section' );
