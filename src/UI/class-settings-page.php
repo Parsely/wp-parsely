@@ -438,7 +438,7 @@ final class Settings_Page {
 
 		add_settings_section(
 			$section_key,
-			__( 'Content Helper', 'wp-parsely' ),
+			__( 'Content Intelligence', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
