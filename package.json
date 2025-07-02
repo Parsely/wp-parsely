@@ -54,7 +54,7 @@
 		"@types/wordpress__edit-post": "^8.4.2",
 		"@types/wordpress__wordcount": "^2.4.5",
 		"@typescript-eslint/eslint-plugin": "^6.21.0",
-		"@wordpress/api-fetch": "^7.25.0",
+		"@wordpress/api-fetch": "^7.26.0",
 		"@wordpress/babel-preset-default": "^7.42.0",
 		"@wordpress/block-editor": "^14.20.0",
 		"@wordpress/blocks": "^14.14.0",
