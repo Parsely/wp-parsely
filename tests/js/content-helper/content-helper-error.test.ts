@@ -52,7 +52,7 @@ const softErrorCodes = [
  * Verifies that all error codes within the ContentHelperErrorCode class are
  * being tested.
  *
- * @since 3.21.0
+ * @since 3.20.4
  */
 test( 'All Content Helper error codes are being tested', () => {
 	expect( Object.values( ContentHelperErrorCode ) ).toEqual( errorCodes );
@@ -70,7 +70,7 @@ describe( 'ContentHelperError class should set retryFetch to', () => {
 	 * is set to true for soft errors and false for hard errors.
 	 *
 	 * @since 3.9.0
-	 * @since 3.21.0 Implemented looping instead of individual testing each error code.
+	 * @since 3.20.4 Implemented looping instead of individual testing each error code.
 	 */
 	errorCodes.forEach( ( code ) => {
 		const expected = softErrorCodes.includes( code );
@@ -88,7 +88,7 @@ describe( 'ContentHelperError class should set retryFetch to', () => {
 	 * false.
 	 *
 	 * @since 3.9.0
-	 * @since 3.21.0 Returns false instead of true for non-registered error codes.
+	 * @since 3.20.4 Returns false instead of true for non-registered error codes.
 	 */
 	test( 'false when any other error occurs', () => {
 		const code = 'some_other_error_code' as ContentHelperErrorCode;
