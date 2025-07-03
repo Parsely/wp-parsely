@@ -561,13 +561,14 @@ class Parsely {
 			$this->set_default_full_metadata_in_non_posts();
 		}
 
-		// Existing plugin installation without Content Helper options.
+		// Existing plugin installation without Content Intelligence options.
 		/* @phpstan-ignore isset.offset, booleanAnd.alwaysFalse */
 		if ( is_array( $options ) && ! isset( $options['content_helper'] ) ) {
 			$this->set_default_content_helper_settings_values();
 		}
 
-		// Existing plugin installation that's missing a Content Helper feature option.
+		// Existing plugin installation that's missing a Content Intelligence
+		// feature option.
 		/* @phpstan-ignore isset.offset */
 		if ( is_array( $options ) && isset( $options['content_helper'] ) ) {
 			/** @var array<string,Parsely_Options_Content_Helper_Feature> $pch_options */
@@ -685,7 +686,7 @@ class Parsely {
 	}
 
 	/**
-	 * Sets the default values for Content Helper options.
+	 * Sets the default values for Content Intelligence options.
 	 *
 	 * Gives PCH access to all users having the edit_posts capability, to keep
 	 * consistent behavior with plugin versions prior to 3.16.0.

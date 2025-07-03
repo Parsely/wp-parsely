@@ -54,7 +54,7 @@ export const getRelatedPostsMessage = async (
 
 	await admin.createNewPost();
 
-	// Show the Content Helper Sidebar and expand the Related Posts panel.
+	// Show the Content Intelligence Sidebar and expand the Related Posts panel.
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
 	await setSidebarPanelExpanded( page, 'Related Posts', true );
 

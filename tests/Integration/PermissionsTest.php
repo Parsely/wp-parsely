@@ -36,7 +36,7 @@ final class PermissionsTest extends TestCase {
 	);
 
 	/**
-	 * The Content Helper features to be tested by this integration test.
+	 * The Content Intelligence features to be tested by this integration test.
 	 *
 	 * @since 3.17.0
 	 * @var array<int, string> $features_to_test
@@ -108,7 +108,7 @@ final class PermissionsTest extends TestCase {
 
 	/**
 	 * Verifies that permissions are correct when an allowed User Role tries to
-	 * access enabled Content Helper features.
+	 * access enabled Content Intelligence features.
 	 *
 	 * @since 3.17.0
 	 *
@@ -144,7 +144,7 @@ final class PermissionsTest extends TestCase {
 
 	/**
 	 * Verifies that permissions are correct when a disallowed User Role tries
-	 * to access enabled Content Helper features.
+	 * to access enabled Content Intelligence features.
 	 *
 	 * @since 3.17.0
 	 *
@@ -182,7 +182,7 @@ final class PermissionsTest extends TestCase {
 
 	/**
 	 * Verifies that permissions are correct when a super admin tries to access
-	 * disabled Content Helper features.
+	 * disabled Content Intelligence features.
 	 *
 	 * @since 3.17.0
 	 *
@@ -218,7 +218,7 @@ final class PermissionsTest extends TestCase {
 
 	/**
 	 * Verifies that permissions are correct when a super admin tries to access
-	 * enabled Content Helper features, but with all the roles disallowed.
+	 * enabled Content Intelligence features, but with all the roles disallowed.
 	 *
 	 * @since 3.17.0
 	 *
@@ -263,7 +263,7 @@ final class PermissionsTest extends TestCase {
 
 	/**
 	 * Verifies that permissions are correct when an allowed User Role tries to
-	 * access disabled Content Helper features.
+	 * access disabled Content Intelligence features.
 	 *
 	 * @since 3.17.0
 	 *
@@ -298,7 +298,7 @@ final class PermissionsTest extends TestCase {
 
 	/**
 	 * Verifies that permissions are correct when a disallowed User Role tries
-	 * to access disabled Content Helper features.
+	 * to access disabled Content Intelligence features.
 	 *
 	 * @since 3.17.0
 	 *
@@ -332,8 +332,9 @@ final class PermissionsTest extends TestCase {
 	}
 
 	/**
-	 * Asserts whether the current user can use a Content Helper feature, depending
-	 * on the value of the wp_parsely_current_user_can_use_pch_feature filter.
+	 * Asserts whether the current user can use a Content Intelligence feature,
+	 * depending on the value of the wp_parsely_current_user_can_use_pch_feature
+	 * filter.
 	 *
 	 * @since 3.17.0
 	 *

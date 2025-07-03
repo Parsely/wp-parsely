@@ -737,7 +737,7 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Transforms Content Helper options to the format expected by the
+	 * Transforms Content Intelligence options to the format expected by the
 	 * validation function of the Settings_Page class.
 	 *
 	 * @since 3.16.0

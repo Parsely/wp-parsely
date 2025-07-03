@@ -15,8 +15,8 @@ import {
 
 /**
  * Enumeration of all the possible errors that might get thrown or processed by
- * the Content Helper during error handling. All errors thrown by the Content
- * Helper should start with a "ch_" prefix.
+ * Content Intelligence during error handling. All errors thrown by Content
+ * Intelligence should start with a "ch_" prefix.
  */
 export enum ContentHelperErrorCode {
 	AccessToFeatureDisabled = 'ch_access_to_feature_disabled',
@@ -45,7 +45,7 @@ export enum ContentHelperErrorCode {
 }
 
 /**
- * Extends the standard JS Error class for use with the Content Helper.
+ * Extends the standard JS Error class for use with Content Intelligence.
  *
  * @see https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
  */

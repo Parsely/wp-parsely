@@ -585,10 +585,10 @@ final class OptionsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that default Content Helper permission options are set as
+	 * Verifies that default Content Intelligence permission options are set as
 	 * expected when we have a new plugin installation.
 	 *
-	 * In this case, the default Content Helper options should give AI feature
+	 * In this case, the default Content Intelligence options should give AI feature
 	 * access to administrators only. This is the default behavior for plugin
 	 * versions 3.16.0 and newer.
 	 *
@@ -621,12 +621,12 @@ final class OptionsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that default Content Helper permission options are set as
-	 * expected when an existing plugin install does not have any Content Helper
-	 * options (first run after upgrading to 3.16.0 or newer).
+	 * Verifies that default Content Intelligence permission options are set as
+	 * expected when an existing plugin install does not have any Content
+	 * Intelligence options (first run after upgrading to 3.16.0 or newer).
 	 *
-	 * In this case, the Content Helper permission options should be based on
-	 * the edit_posts capability, to keep the behavior consistent with plugin
+	 * In this case, the Content Intelligence permission options should be based
+	 * on the edit_posts capability, to keep the behavior consistent with plugin
 	 * versions prior to 3.16.0.
 	 *
 	 * @since 3.17.0
@@ -662,8 +662,8 @@ final class OptionsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that Content Helper options are as expected when we have an
-	 * existing plugin installation with Content Helper options set.
+	 * Verifies that Content Intelligence options are as expected when we have
+	 * an existing plugin installation with Content Intelligence options set.
 	 *
 	 * In this case, the options should be the ones fetched from the database,
 	 * not being overwritten by any defaults.
@@ -699,9 +699,9 @@ final class OptionsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that Content Helper options are as expected when we have an
-	 * existing plugin installation with a missing Content Helper feature
-	 * option.
+	 * Verifies that Content Intelligence options are as expected when we have
+	 * an existing plugin installation with a missing Content Intelligence
+	 * feature option.
 	 *
 	 * In this case, the feature option should be added from default options to
 	 * the current options array.

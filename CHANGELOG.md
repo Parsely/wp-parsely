@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update "Content Helper" to "Content Intelligence" on settings page ([#3489](github.com/Parsely/wp-parsely/pull/3489))
+- Update "Content Helper" to "Content Intelligence" on settings page ([#3489](https://github.com/Parsely/wp-parsely/pull/3489))
 
 ### Fixed
 

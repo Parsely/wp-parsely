@@ -138,7 +138,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_user_has_not_enough_capabilities(): void {
 		self::assert_enqueued_status( null, null, false, 'test_contributor', 'contributor' );
@@ -165,7 +165,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_page_is_not_post_list(): void {
 		$this->assert_enqueued_status(

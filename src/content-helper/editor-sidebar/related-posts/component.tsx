@@ -176,8 +176,8 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 			const { getEditedPostContent } = select( 'core/editor' ) as GutenbergFunction;
 			debouncedSetPostContent( getEditedPostContent() );
 		} else {
-			// It would be better to mock this in the Content Helper structure
-			// test.
+			// It would be better to mock this in the Content Intelligence
+			// structure test.
 			debouncedSetPostContent( 'Jest test is running' );
 		}
 	}, [ debouncedSetPostContent ] );

@@ -54,7 +54,7 @@ const softErrorCodes = [
  *
  * @since 3.20.4
  */
-test( 'All Content Helper error codes are being tested', () => {
+test( 'All Content Intelligence error codes are being tested', () => {
 	expect( Object.values( ContentHelperErrorCode ) ).toEqual( errorCodes );
 } );
 
