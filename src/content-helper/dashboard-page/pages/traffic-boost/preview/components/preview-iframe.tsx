@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
-import { throttle, usePrevious } from '@wordpress/compose';
+import { usePrevious } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useEffect, useMemo, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -15,11 +15,11 @@ import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TRAFFIC_BOOST_LOADING_MESSAGES, TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
-import useResize from '../hooks/use-resize';
 import { TextSelection } from '../preview';
 import { getContentArea, isExternalURL } from '../utils';
 import { PreviewActions } from './preview-actions';
 import { TextSelectionTooltip } from './text-selection-tooltip';
+import { useExistingLinkHighlight } from '../hooks/use-existing-link-highlight';
 
 /**
  * Props structure for PreviewIframe.
@@ -93,16 +93,18 @@ export const PreviewIframe = ( {
 	}, [ previewUrl ] );
 
 	// Create an actions bar to be mounted in the iframe with useIframeHighlight().
-	const actionsBar = <PreviewActions
-		activeLink={ activeLink }
-		onAccept={ onAccept }
-		onDiscard={ onDiscard }
-		onUpdateLink={ onUpdateLink }
-		onRemove={ onRemove }
-		onRestoreOriginal={ onRestoreOriginal }
-		selectedText={ selectedText ?? null }
-		iframeRef={ iframeRef }
-	/>;
+	const actionsBar = useMemo( () => (
+		<PreviewActions
+			activeLink={ activeLink }
+			onAccept={ onAccept }
+			onDiscard={ onDiscard }
+			onUpdateLink={ onUpdateLink }
+			onRemove={ onRemove }
+			onRestoreOriginal={ onRestoreOriginal }
+			selectedText={ selectedText ?? null }
+			iframeRef={ iframeRef }
+		/>
+	), [ activeLink, onAccept, onDiscard, onUpdateLink, onRemove, onRestoreOriginal, selectedText, iframeRef ] );
 
 	/**
 	 * Highlights the smart link in the iframe.
@@ -112,9 +114,7 @@ export const PreviewIframe = ( {
 	const {
 		injectHighlightStyles,
 		highlightSmartLink,
-		highlightLinkType,
 		removeSmartLinkHighlights,
-		adjustActionsBarPosition,
 	} = useIframeHighlight( {
 		iframeRef,
 		contentAreaRef,
@@ -125,19 +125,14 @@ export const PreviewIframe = ( {
 		actionsBar,
 	} );
 
-	useResize( iframeRef, throttle(
-		// At most every 250ms on resize events, check that the actions bar is fully visible
-		// and adjust its position if needed.
-		useCallback(
-			() => {
-				if ( iframeRef.current !== null ) {
-					adjustActionsBarPosition( iframeRef.current );
-				}
-			},
-			[ adjustActionsBarPosition ]
-		),
-		250
-	) );
+	const {
+		injectExistingLinkHighlightStyles,
+		highlightExistingLinkType,
+	} = useExistingLinkHighlight( {
+		iframeRef,
+		contentAreaRef,
+		activeLink,
+	} );
 
 	/**
 	 * Hides the admin bar from the iframe if the preview is in frontend mode.
@@ -178,6 +173,11 @@ export const PreviewIframe = ( {
 		// Prevent clicks on all links and handle link selection.
 		iframeDocument.addEventListener( 'click', ( event ) => {
 			const target = event.target as HTMLElement;
+
+			// Allow clicks on the actions bar.
+			if ( target.closest && target.closest( '.parsely-traffic-boost-actions-container' ) ) {
+				return;
+			}
 
 			// If the link is outside the content area, don't handle it.
 			if ( ! contentAreaRef.current?.contains( target ) ) {
@@ -309,6 +309,7 @@ export const PreviewIframe = ( {
 		}
 
 		injectHighlightStyles( iframe );
+		injectExistingLinkHighlightStyles( iframe );
 
 		// Updates the content area ref to the iframe's content area.
 		const contentArea = getContentArea( iframe.contentDocument );
@@ -322,7 +323,6 @@ export const PreviewIframe = ( {
 		}
 
 		hideAdminBar( iframe );
-		highlightLinkType( iframe, selectedLinkType );
 		disableNavigation( iframe );
 
 		onLoadingChange( false );
@@ -330,11 +330,10 @@ export const PreviewIframe = ( {
 	}, [ contentAreaRef,
 		disableNavigation,
 		hideAdminBar,
-		highlightLinkType,
 		injectHighlightStyles,
+		injectExistingLinkHighlightStyles,
 		jumpToSmartLink,
 		onLoadingChange,
-		selectedLinkType,
 	] );
 
 	/**
@@ -410,8 +409,8 @@ export const PreviewIframe = ( {
 			return;
 		}
 
-		highlightLinkType( iframe, selectedLinkType );
-	}, [ contentAreaRef, highlightLinkType, isLoading, selectedLinkType ] );
+		highlightExistingLinkType( iframe, selectedLinkType );
+	}, [ contentAreaRef, highlightExistingLinkType, isLoading, selectedLinkType ] );
 
 	return (
 		<div className="wp-parsely-preview">

@@ -1,11 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { Button, CheckboxControl, Icon, Tooltip } from '@wordpress/components';
+import { Button, CheckboxControl, Icon } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useCallback, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { check, closeSmall, info, undo } from '@wordpress/icons';
+import { check, closeSmall, help, undo } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -135,14 +135,12 @@ export const PreviewActions = ( {
 								>{ __( 'Reject', 'wp-parsely' ) }</Button>
 								<VerticalDivider size={ 48 } color="#1e1e1e" />
 								{ ! selectedText &&
-									<Tooltip text={ __( 'Highlight text on the page to customize link placement.', 'wp-parsely' ) }>
-										<div className="traffic-boost-preview-actions-hint">
-											<div className="traffic-boost-preview-actions-hint-text">
-												{ __( 'Highlight to customize', 'wp-parsely' ) }
-											</div>
-											<Icon icon={ info } />
+									<div className="traffic-boost-preview-actions-hint">
+										<Icon icon={ help } />
+										<div className="traffic-boost-preview-actions-hint-text">
+											{ __( 'TIP: Customize by selecting different text.', 'wp-parsely' ) }
 										</div>
-									</Tooltip>
+									</div>
 								}
 								{ selectedText && (
 									<Button
@@ -150,7 +148,7 @@ export const PreviewActions = ( {
 										onClick={ onRestoreOriginal }
 										icon={ undo }
 									>
-										{ __( 'Clear changes', 'wp-parsely' ) }
+										{ __( 'Revert', 'wp-parsely' ) }
 									</Button>
 								) }
 							</>
@@ -181,7 +179,7 @@ export const PreviewActions = ( {
 									onClick={ onRestoreOriginal }
 									icon={ undo }
 								>
-									{ __( 'Clear changes', 'wp-parsely' ) }
+									{ __( 'Revert', 'wp-parsely' ) }
 								</Button>
 							</>
 						) }
