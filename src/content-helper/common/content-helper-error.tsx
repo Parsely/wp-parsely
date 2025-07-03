@@ -20,11 +20,10 @@ import {
  */
 export enum ContentHelperErrorCode {
 	AccessToFeatureDisabled = 'ch_access_to_feature_disabled',
-	CannotFormulateApiQuery = 'ch_cannot_formulate_api_query',
 	FetchError = 'fetch_error', // apiFetch() failure, possibly caused by ad blocker.
 	HttpRequestFailed = 'http_request_failed', // Parse.ly API is unreachable.
 	ParselyAborted = 'ch_parsely_aborted', // The request was aborted.
-	ParselyApiForbidden = 403, // Intentionally without quotes.
+	ParselyApiForbidden = '403',
 	ParselyApiResponseContainsError = 'ch_response_contains_error',
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
 	ParselyApiReturnedTooManyResults = 'ch_parsely_api_returned_too_many_results',
@@ -43,9 +42,6 @@ export enum ContentHelperErrorCode {
 	ParselySuggestionsApiOpenAiSchema = 'OPENAI_SCHEMA', // HTTP Code 507.
 	ParselySuggestionsApiOpenAiUnavailable = 'OPENAI_UNAVAILABLE', // HTTP Code 500.
 	ParselySuggestionsApiSchemaError = 'SCHEMA_ERROR', // HTTP Code 422.
-
-	// Traffic Boost API.
-	TrafficBoostInboundLinkNotFound = 'tb_inbound_link_not_found',
 }
 
 /**
@@ -68,34 +64,33 @@ export class ContentHelperError extends Error {
 			messagePrefix = '';
 		}
 
+		// If the error code is not a string, convert it to a string.
+		if ( typeof code !== 'string' ) {
+			code = String( code ) as ContentHelperErrorCode;
+		}
+
 		// Initialization.
 		super( messagePrefix.length > 0 ? `${ messagePrefix } ${ message }` : message );
 		this.name = this.constructor.name;
 		this.code = code;
 
-		// Errors for which we should not retry a fetch operation.
-		const noRetryFetchErrors: Array<ContentHelperErrorCode> = [
-			ContentHelperErrorCode.AccessToFeatureDisabled,
-			ContentHelperErrorCode.ParselyAborted,
-			ContentHelperErrorCode.ParselyApiForbidden,
-			ContentHelperErrorCode.ParselyApiResponseContainsError,
-			ContentHelperErrorCode.ParselyApiReturnedNoData,
-			ContentHelperErrorCode.ParselyApiReturnedTooManyResults,
-			ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected,
-			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
-			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
-			ContentHelperErrorCode.PostIsNotPublished,
-			ContentHelperErrorCode.UnknownError,
+		// Errors for which we should retry fetch operations. We call them soft
+		// errors as they will not terminate execution.
+		const softErrors: Array<ContentHelperErrorCode> = [
+			// Generic HTTP/Fetch errors.
+			ContentHelperErrorCode.FetchError,
+			ContentHelperErrorCode.HttpRequestFailed,
 
-			// Suggestions API errors.
+			// Suggestions API errors that can be caused by network issues or
+			// due to the non-deterministic nature of LLMs.
 			ContentHelperErrorCode.ParselySuggestionsApiAuthUnavailable,
-			ContentHelperErrorCode.ParselySuggestionsApiNoAuthentication,
-			ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization,
-			ContentHelperErrorCode.ParselySuggestionsApiNoData,
+			ContentHelperErrorCode.ParselySuggestionsApiOpenAiError,
+			ContentHelperErrorCode.ParselySuggestionsApiOpenAiSchema,
+			ContentHelperErrorCode.ParselySuggestionsApiOpenAiUnavailable,
 			ContentHelperErrorCode.ParselySuggestionsApiSchemaError,
 		];
 
-		this.retryFetch = ! noRetryFetchErrors.includes( this.code );
+		this.retryFetch = softErrors.includes( this.code );
 
 		// Set the prototype explicitly.
 		Object.setPrototypeOf( this, ContentHelperError.prototype );
