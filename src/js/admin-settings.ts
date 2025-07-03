@@ -91,7 +91,7 @@ function addContentHelperTabEventHandlers(): void {
 
 	// Selector for all fieldsets in the Content Intelligence section.
 	const fieldsets = document.querySelectorAll(
-		'div.content-helper-section fieldset'
+		'div.content-intelligence-section fieldset'
 	);
 
 	// Event handlers.
@@ -220,7 +220,7 @@ function addContentHelperTabEventHandlers(): void {
 	function enableAllFormFieldsOnSubmit(): void {
 		document.querySelector( '.wp-admin form[name="parsely"]' )
 			?.addEventListener( 'submit', (): void => {
-				const baseSelector = '.wp-admin .content-helper-section fieldset';
+				const baseSelector = '.wp-admin .content-intelligence-section fieldset';
 
 				document.querySelectorAll( `${ baseSelector }[disabled]` )
 					.forEach( ( fieldset: Element ): void => {
@@ -292,7 +292,7 @@ async function displayContentHelperSectionMessages(): Promise<void> {
 			const div = document.createElement( 'div' );
 			div.className = 'content-helper-message notice notice-error';
 			div.innerHTML = message;
-			const contentHelperSection = document.querySelector( '.content-helper-section' );
+			const contentHelperSection = document.querySelector( '.content-intelligence-section' );
 			if ( contentHelperSection ) {
 				contentHelperSection.insertBefore( div, contentHelperSection.firstChild );
 			}
