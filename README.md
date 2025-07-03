@@ -34,18 +34,18 @@ The plugin automatically inserts the Parse.ly metadata and JavaScript in all pub
 - Choose whether logged-in users should be tracked.
 - Define how to track every Post Type (as Post, Non-Post or no tracking).
 
-#### The Parse.ly Content Helper
+#### Parse.ly Content Intelligence
 
-The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of content insight tools including:
-- The [Parse.ly Dashboard Widget](https://docs.parse.ly/plugin-content-helper/#h-dashboard) - Displays the site's top posts in the WordPress Dashboard.
-- The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-helper/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
-- The [Engagement Boost](https://docs.wpvip.com/parse-ly/wp-parsely-features/traffic-boost/) feature - Helps you increase page views and engagement by strategically placing links to key content within high-performing articles on your site.
-- The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
-  - [Title Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
-  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
-  - [Smart Linking](https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
-  - [Related Posts](https://docs.parse.ly/plugin-content-helper/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
-  - [Performance Stats](https://docs.parse.ly/plugin-content-helper/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
+[Content Intelligence](https://docs.parse.ly/plugin-content-intelligence/) is a set of content insight tools including:
+- The [Parse.ly Dashboard Widget](https://docs.parse.ly/plugin-content-intelligence/#h-dashboard) - Displays the site's top posts in the WordPress Dashboard.
+- The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-intelligence/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
+- The [Engagement Boost](https://docs.wpvip.com/parse-ly/parsely-features/engagement-boost/) feature - Helps you increase page views and engagement by strategically placing links to key content within high-performing articles on your site.
+- The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-intelligence/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
+  - [Title Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
+  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
+  - [Smart Linking](https://docs.wpvip.com/parse-ly/parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
+  - [Related Posts](https://docs.parse.ly/plugin-content-intelligence/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
+  - [Performance Stats](https://docs.parse.ly/plugin-content-intelligence/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
 
 #### The Parse.ly Recommendations Block
 

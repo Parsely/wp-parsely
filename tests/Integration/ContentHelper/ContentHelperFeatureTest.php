@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: Base class for all Content Helper feature tests
+ * Integration Tests: Base class for all Content Intelligence feature tests
  *
  * @package Parsely\Tests
  * @since   3.9.0
@@ -14,7 +14,7 @@ use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Base class for all Content Helper feature integration tests.
+ * Base class for all Content Intelligence feature integration tests.
  *
  * @since 3.9.0
  */
@@ -185,7 +185,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_get_enqueued_by_default(): void {
 		$this->assert_enqueued_status( null, null, true, 'admin', 'administrator' );
@@ -241,7 +241,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_get_enqueued_when_global_filter_is_true(): void {
 		$this->assert_enqueued_status( true, null, true, 'admin', 'administrator' );
@@ -285,7 +285,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_global_filter_is_false(): void {
 		$this->assert_enqueued_status( false, null, false, 'admin', 'administrator' );
@@ -329,7 +329,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_global_filter_is_invalid(): void {
 		// We expect the filter to be boolean true.
@@ -386,7 +386,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_get_enqueued_when_feature_filter_is_true(): void {
 		$this->assert_enqueued_status( null, true, true, 'admin', 'administrator' );
@@ -430,7 +430,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_feature_filter_is_false(): void {
 		$this->assert_enqueued_status( null, false, false, 'admin', 'administrator' );
@@ -474,7 +474,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_feature_filter_is_invalid(): void {
 		$this->assert_enqueued_status( null, array(), false, 'admin', 'administrator' );
@@ -530,7 +530,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_get_enqueued_when_both_filters_are_true(): void {
 		$this->assert_enqueued_status( true, true, true, 'admin', 'administrator' );
@@ -581,7 +581,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_both_filters_are_false(): void {
 		$this->assert_enqueued_status( false, false, false, 'admin', 'administrator' );
@@ -625,7 +625,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_both_filters_are_invalid(): void {
 		$this->assert_enqueued_status( 'string', 'string', false, 'admin', 'administrator' );
@@ -669,7 +669,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_global_filter_is_true_and_feature_filter_is_false(): void {
 		$this->assert_enqueued_status( true, false, false, 'admin', 'administrator' );
@@ -725,7 +725,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_get_enqueued_when_global_filter_is_false_and_feature_filter_is_true(): void {
 		$this->assert_enqueued_status( false, true, true, 'admin', 'administrator' );
@@ -770,7 +770,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_global_filter_is_true_and_feature_filter_is_invalid(): void {
 		$this->assert_enqueued_status( true, array(), false, 'admin', 'administrator' );
@@ -826,7 +826,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_get_enqueued_when_global_filter_is_invalid_and_feature_filter_is_true(): void {
 		$this->assert_enqueued_status( 'string', true, true, 'admin', 'administrator' );

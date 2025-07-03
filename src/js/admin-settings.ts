@@ -71,7 +71,7 @@ function selectImage( event: Event ) {
 }
 
 /**
- * Adds the necessary event handlers to the Content Helper tab.
+ * Adds the necessary event handlers to the Content Intelligence tab.
  *
  * @since 3.16.0
  */
@@ -89,7 +89,7 @@ function addContentHelperTabEventHandlers(): void {
 		'input#content_helper_traffic_boost_enabled'
 	);
 
-	// Selector for all fieldsets in the Content Helper section.
+	// Selector for all fieldsets in the Content Intelligence section.
 	const fieldsets = document.querySelectorAll(
 		'div.content-helper-section fieldset'
 	);
@@ -243,7 +243,7 @@ function addContentHelperTabEventHandlers(): void {
 }
 
 /**
- * Displays any messages needed under the Content Helper section.
+ * Displays any messages needed under the Content Intelligence section.
  *
  * @since 3.19.0
  */
@@ -270,19 +270,19 @@ async function displayContentHelperSectionMessages(): Promise<void> {
 
 		if ( err instanceof ContentHelperError ) {
 			if ( ContentHelperErrorCode.PluginSettingsApiSecretNotSet === err.code ) {
-				message = sprintf( '<p><strong>%s</strong></p>', escapeHTML( __( 'All Content Helper AI functionality is disabled because an API Secret has not been set.', 'wp-parsely' ) ) );
+				message = sprintf( '<p><strong>%s</strong></p>', escapeHTML( __( 'All Content Intelligence AI functionality is disabled because an API Secret has not been set.', 'wp-parsely' ) ) );
 			}
 		}
 	} finally {
 		if ( authResponse ) {
 			if ( 200 !== authResponse.api.code ) {
 				const requestAccessLink = sprintf( '<a href="%1$s" target="_blank" rel="noopener">%2$s</a>', 'https://wpvip.com/content-helper/#content-helper-form', __( 'Request access here', 'wp-parsely' ) );
-				/* translators: %s: Link to request access to Content Helper AI functionality. */
-				const messageWithAccessLink = sprintf( escapeHTML( __( 'All Content Helper AI functionality is disabled for this website. %s.', 'wp-parsely' ) ), requestAccessLink );
+				/* translators: %s: Link to request access to Content Intelligence AI functionality. */
+				const messageWithAccessLink = sprintf( escapeHTML( __( 'All Content Intelligence AI functionality is disabled for this website. %s.', 'wp-parsely' ) ), requestAccessLink );
 				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
 			} else if ( 200 === authResponse.api.code && 200 !== authResponse.traffic_boost.code ) {
 				const contactSupportLink = sprintf( '<a href="%1$s">%2$s</a>', 'mailto:support@parsely.com', 'support@parsely.com' );
-				/* translators: %s: Link to request access to Content Helper AI functionality. */
+				/* translators: %s: Link to request access to Content Intelligence AI functionality. */
 				const messageWithAccessLink = sprintf( escapeHTML( __( 'Engagement Boost functionality is disabled for this website. To enable it, contact %s.', 'wp-parsely' ) ), contactSupportLink );
 				message = sprintf( '<p><strong>%s</strong></p>', messageWithAccessLink );
 			}

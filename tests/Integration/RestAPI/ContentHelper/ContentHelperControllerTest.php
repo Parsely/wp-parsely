@@ -1,6 +1,6 @@
 <?php
 /**
- * Content Helper Controller Test
+ * Content Intelligence Controller Test
  *
  * @package Parsely
  * @since   3.17.0

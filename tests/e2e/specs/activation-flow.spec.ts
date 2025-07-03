@@ -83,7 +83,7 @@ test.describe( 'Activation flow', (): void => {
 		await expect( recrawlSection ).toBeHidden();
 		await expect( advancedSection ).toBeHidden();
 
-		// Test section visibility when the Content Helper tab is clicked.
+		// Test section visibility when the Content Intelligence tab is clicked.
 		await contentHelperTab.click();
 		await expect( basicSection ).toBeHidden();
 		await expect( contentHelperSection ).toBeVisible();
