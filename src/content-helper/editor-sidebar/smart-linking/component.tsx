@@ -675,7 +675,7 @@ export const SmartLinkingPanel = ( {
 						target="_blank"
 						variant="link"
 					>
-						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						{ __( 'Learn more about Smart Linking', 'wp-parsely' ) }
 						<Icon icon={ external } size={ 18 } className="parsely-external-link-icon" />
 					</Button>
 				</div>
@@ -709,7 +709,7 @@ export const SmartLinkingPanel = ( {
 				<div className="smart-linking-generate">
 					<Button
 						onClick={ generateSmartLinks }
-						variant="primary"
+						variant="secondary"
 						isBusy={ loading }
 						disabled={ loading }
 					>
