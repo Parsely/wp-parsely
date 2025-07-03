@@ -76,6 +76,7 @@ export class ContentHelperError extends Error {
 		// Errors for which we should not retry a fetch operation.
 		const noRetryFetchErrors: Array<ContentHelperErrorCode> = [
 			ContentHelperErrorCode.AccessToFeatureDisabled,
+			ContentHelperErrorCode.ParselyAborted,
 			ContentHelperErrorCode.ParselyApiForbidden,
 			ContentHelperErrorCode.ParselyApiResponseContainsError,
 			ContentHelperErrorCode.ParselyApiReturnedNoData,
