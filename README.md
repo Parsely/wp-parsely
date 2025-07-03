@@ -113,23 +113,23 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
 
 ## Screenshots
 
-1. The Parse.ly Dashboard Widget, showing the website's top posts.
+1. The Parse.ly Dashboard Widget, showing the website's top posts.  
    ![Parse.ly Dashboard Widget](.wordpress-org/screenshot-1.png)
-2. The Parse.ly Stats Column (on the right), showing information about content that is being tracked as Posts.
+2. The Parse.ly Stats Column (on the right), showing information about content that is being tracked as Posts.  
    ![Parse.ly List Column](.wordpress-org/screenshot-2.png)
-3. The Parse.ly Engagement Boost feature.
+3. The Parse.ly Engagement Boost feature.  
    ![Parse.ly Engagement Boost](.wordpress-org/screenshot-3.png)
-4. The Parse.ly Editor Sidebar, featuring the Title Suggestions panel.
+4. The Parse.ly Editor Sidebar, featuring the Title Suggestions panel.  
    ![Parse.ly Editor Sidebar - Title Suggestions](.wordpress-org/screenshot-4.png)
-5. The Parse.ly Editor Sidebar, featuring the Smart Linking panel.
+5. The Parse.ly Editor Sidebar, featuring the Smart Linking panel.  
    ![Parse.ly Editor Sidebar - Smart Linking](.wordpress-org/screenshot-5.png)
-6. The Parse.ly Editor Sidebar, featuring the Related Posts panel.
+6. The Parse.ly Editor Sidebar, featuring the Related Posts panel.  
    ![Parse.ly Editor Sidebar - Related Posts](.wordpress-org/screenshot-6.png)
-7. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.
+7. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.  
    ![Parse.ly Editor Sidebar - Performance Stats](.wordpress-org/screenshot-7.png)
-8. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.
+8. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.  
    ![Parse.ly Excerpt Suggestions](.wordpress-org/screenshot-8.png)
-9. The Recommendations Block, showcasing links to related content on your site.
+9. The Recommendations Block, showcasing links to related content on your site.  
    ![Parse.ly Recommendations Block](.wordpress-org/screenshot-9.png)
-10. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.
+10. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  
    ![Parse.ly Dashboard Overview](.wordpress-org/screenshot-10.png)
