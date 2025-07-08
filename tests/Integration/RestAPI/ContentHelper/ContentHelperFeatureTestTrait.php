@@ -1,6 +1,6 @@
 <?php
 /**
- * Trait for testing the Content Helper API feature.
+ * Trait for testing the Content Intelligence API feature.
  *
  * @package Parsely
  * @since   3.17.0
@@ -15,7 +15,7 @@ use WP_Error;
 use WP_REST_Request;
 
 /**
- * Trait for testing the Content Helper API feature.
+ * Trait for testing the Content Intelligence API feature.
  *
  * @since 3.17.0
  *
