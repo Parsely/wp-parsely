@@ -120,7 +120,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_user_has_not_enough_capabilities(): void {
 		self::assert_enqueued_status( null, null, false, 'test_contributor', 'contributor' );
@@ -145,7 +145,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
-	 * @group content-helper
+	 * @group content-intelligence
 	 */
 	public function test_assets_do_not_get_enqueued_when_page_is_not_dashboard(): void {
 		$this->assert_enqueued_status(

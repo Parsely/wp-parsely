@@ -8,7 +8,7 @@ import { type Page } from '@playwright/test';
  */
 import { Admin } from '@wordpress/e2e-test-utils-playwright';
 
-export const PLUGIN_VERSION = '3.20.3';
+export const PLUGIN_VERSION = '3.20.4';
 export const VALID_SITE_ID = 'demoaccount.parsely.com';
 export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
@@ -54,7 +54,7 @@ export const getRelatedPostsMessage = async (
 
 	await admin.createNewPost();
 
-	// Show the Content Helper Sidebar and expand the Related Posts panel.
+	// Show the Content Intelligence Sidebar and expand the Related Posts panel.
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
 	await setSidebarPanelExpanded( page, 'Related Posts', true );
 
