@@ -433,6 +433,6 @@ class EndpointUtilsPostTest extends BaseEndpointTest {
 		$data = rest_get_server()->dispatch( new WP_REST_Request( 'GET', $route ) )->get_data()['data'];
 
 		// Return the data without the Post ID.
-		return str_replace( "/${post_id}", '', $data );
+		return str_replace( "/$post_id", '', $data );
 	}
 }
