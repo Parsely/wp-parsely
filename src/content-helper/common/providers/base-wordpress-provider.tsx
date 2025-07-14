@@ -346,12 +346,11 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		let postRestRoute: PostRestRouteResponse;
 
 		try {
-			postRestRoute = await this.fetch<PostRestRouteResponse>({
+			postRestRoute = await this.fetch<PostRestRouteResponse>( {
 				method: 'GET',
-				path: `/wp-parsely/v2/utils/post/${postId}/rest-route`,
-			}, id);
-
-		} catch (error) {
+				path: `/wp-parsely/v2/utils/post/${ postId }/rest-route`,
+			}, id );
+		} catch ( error ) {
 			throw new ContentHelperError(
 				__( "The target post's REST route could not be fetched.", 'wp-parsely' ),
 				ContentHelperErrorCode.UnknownError,
