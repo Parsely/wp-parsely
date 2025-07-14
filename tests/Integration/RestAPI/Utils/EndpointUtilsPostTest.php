@@ -331,6 +331,13 @@ class EndpointUtilsPostTest extends BaseEndpointTest {
 		// Post types that aren't registered with the REST API should return an
 		// empty string.
 		self::assertSame( '', $this->get_base_rest_route( 'cpt_no_rest' ) );
+
+		// Clean up.
+		unregister_post_type( 'cpt_rest' );
+		unregister_post_type( 'cpt_no_rest' );
+		unregister_post_type( 'cpt_private' );
+		unregister_post_type( 'cpt_public' );
+		unregister_post_type( 'cpt_custom_rest_base' );
 	}
 
 	/**
@@ -374,7 +381,7 @@ class EndpointUtilsPostTest extends BaseEndpointTest {
 		register_post_type( 'cpt_filtered_route', array( 'show_in_rest' => true ) );
 		add_filter(
 			'rest_route_for_post_type_items',
-			function ( $route, $post_type ) {
+			$filtered_route_callback = function ( $route, $post_type ) {
 				if ( 'cpt_filtered_route' === $post_type->name ) {
 					$route = '/wp/v2/filtered_route';
 				}
@@ -390,7 +397,7 @@ class EndpointUtilsPostTest extends BaseEndpointTest {
 		register_post_type( 'cpt_filtered_route_2', array( 'show_in_rest' => true ) );
 		add_filter(
 			'rest_route_for_post',
-			function ( $route, $post ) {
+			$filtered_route_2_callback = function ( $route, $post ) {
 				if ( '/wp/v2/cpt_filtered_route_2/' . $post->ID === $route ) {
 					$route = '/wp/v2/filtered_route_2';
 				}
@@ -401,6 +408,12 @@ class EndpointUtilsPostTest extends BaseEndpointTest {
 			2
 		);
 		self::assertSame( '/wp/v2/filtered_route_2', $this->get_base_rest_route( 'cpt_filtered_route_2' ) );
+
+		// Clean up.
+		remove_filter( 'rest_route_for_post_type_items', $filtered_route_callback );
+		remove_filter( 'rest_route_for_post', $filtered_route_2_callback );
+		unregister_post_type( 'cpt_filtered_route' );
+		unregister_post_type( 'cpt_filtered_route_2' );
 	}
 
 	/**
