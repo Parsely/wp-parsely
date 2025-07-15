@@ -23,7 +23,7 @@ use WP_REST_Request;
  *
  * @since 3.17.0
  */
-class EndpointPostTest extends BaseEndpointTest {
+class EndpointStatsPostTest extends BaseEndpointTest {
 	/**
 	 * The endpoint instance.
 	 *
