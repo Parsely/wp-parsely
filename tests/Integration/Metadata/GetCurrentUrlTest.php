@@ -132,7 +132,7 @@ final class GetCurrentUrlTest extends TestCase {
 
 		// Using Front_Page_Builder since we can't instantiate abstract
 		// Metadata_Builder.
-		$builder         = new Front_Page_Builder( new Parsely() );
+		$builder         = new Front_Page_Builder( new Parsely(), $this->get_post( 0 ) );
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder );
 
@@ -149,7 +149,7 @@ final class GetCurrentUrlTest extends TestCase {
 
 		// Using Front_Page_Builder since we can't instantiate abstract
 		// Metadata_Builder.
-		$builder         = new Front_Page_Builder( new Parsely() );
+		$builder         = new Front_Page_Builder( new Parsely(), $this->get_post( $post_id ) );
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder, 'post', $post_id );
 
@@ -166,7 +166,7 @@ final class GetCurrentUrlTest extends TestCase {
 
 		// Using Front_Page_Builder since we can't instantiate abstract
 		// Metadata_Builder.
-		$builder         = new Front_Page_Builder( new Parsely() );
+		$builder         = new Front_Page_Builder( new Parsely(), $this->get_post( 0 ) );
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder );
 
