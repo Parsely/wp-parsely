@@ -971,15 +971,27 @@ final class Settings_Page {
 	public function print_text_tag( $args ): void {
 		$options = $this->parsely->get_options();
 		$name    = $args['option_key'];
-		/**
-		 * Variable.
-		 *
-		 * @var string
-		 */
-		$value               = $options[ $name ] ?? '';
+		
+		// Get option value - handle nested options properly.
+		if ( false === strpos( $name, '[' ) ) {
+			$value = $options[ $name ] ?? '';
+		} else {
+			$value = Parsely::get_nested_option_value( $name, $options ) ?? '';
+		}
+		
 		$optional_args       = $args['optional_args'] ?? array();
 		$id                  = esc_attr( $name );
-		$name                = Parsely::OPTIONS_KEY . "[$id]";
+		
+		// Handle nested option names properly.
+		if ( strpos( $name, 'headline_testing' ) === 0 ) {
+			$html_name = str_replace(
+				'headline_testing',
+				'[headline_testing]',
+				Parsely::OPTIONS_KEY . esc_attr( $name )
+			);
+		} else {
+			$html_name = Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
+		}
 		$is_obfuscated_value = $optional_args['is_obfuscated_value'] ?? false;
 		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value ) : esc_attr( $value );
 		$accepted_args       = array( 'placeholder', 'required', 'disabled' );
@@ -987,7 +999,7 @@ final class Settings_Page {
 
 		$is_managed = key_exists( $id, $this->parsely->managed_options );
 		echo '<fieldset', $is_managed ? ' disabled>' : '>';
-		printf( "<input type='%s' name='%s' id='%s' value='%s'", esc_attr( $type ), esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
+		printf( "<input type='%s' name='%s' id='%s' value='%s'", esc_attr( $type ), esc_attr( $html_name ), esc_attr( $id ), esc_attr( $value ) );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
