@@ -1186,6 +1186,17 @@ final class Settings_Page {
 		$name          = $args['option_key'];
 		$id            = esc_attr( $name );
 		$selected      = $this->get_nested_option_value( $name );
+		
+		// Handle nested option names properly.
+		if ( strpos( $name, 'headline_testing' ) === 0 ) {
+			$html_name = str_replace(
+				'headline_testing',
+				'[headline_testing]',
+				Parsely::OPTIONS_KEY . esc_attr( $name )
+			);
+		} else {
+			$html_name = Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
+		}
 		$title         = $args['title'] ?? '';
 		$radio_options = $args['radio_options'] ?? array();
 
@@ -1203,7 +1214,7 @@ final class Settings_Page {
 				<label for="<?php echo esc_attr( "{$id}_{$value}" ); ?>">
 					<input
 						type="radio"
-						name="<?php echo esc_attr( Parsely::OPTIONS_KEY . "[$id]" ); ?>"
+						name="<?php echo esc_attr( $html_name ); ?>"
 						id="<?php echo esc_attr( "{$id}_{$value}" ); ?>"
 						value="<?php echo esc_attr( $value ); ?>"
 					<?php checked( $selected, $value ); ?>
@@ -1581,30 +1592,8 @@ final class Settings_Page {
 		$sanitize = function ( $input ) use ( &$sanitize ) {
 			foreach ( $input as $key => $value ) {
 				if ( is_array( $value ) ) {
-					if ( 'allowed_user_roles' === $key && count( $input[ $key ] ) > 0 ) {
-						$passed_roles    = array_keys( $input[ $key ] );
-						$valid_roles     = array_keys(
-							Permissions::get_user_roles_with_edit_posts_cap()
-						);
-						$sanitized_roles = array();
-
-						// Sanitize passed user roles and remove invalid ones.
-						foreach ( $passed_roles as $user_role ) {
-							if ( ! is_string( $user_role ) ) {
-								continue;
-							}
-
-							$user_role = sanitize_text_field( $user_role );
-							if ( in_array( $user_role, $valid_roles, true ) ) {
-								$sanitized_roles[] = $user_role;
-							}
-						}
-
-						$input[ $key ] = $sanitized_roles;
-					} else {
-						// Recurse when we have an array that's not user roles.
-						$input[ $key ] = $sanitize( $value );
-					}
+					// Recurse for nested arrays.
+					$input[ $key ] = $sanitize( $value );
 				} else {
 					// Handle different field types.
 					switch ( $key ) {
