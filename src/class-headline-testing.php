@@ -13,6 +13,8 @@ namespace Parsely;
 use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Permissions;
 
+/** @phpstan-import-type Parsely_Options_Headline_Testing from Parsely */
+
 /**
  * Handles the Headline Testing feature functionality.
  *
@@ -60,7 +62,7 @@ class Headline_Testing extends Content_Helper_Feature {
 	private function should_initialize(): bool {
 		$options = $this->parsely->get_options();
 		
-		if ( ! isset( $options['headline_testing']['enabled'] ) || false === $options['headline_testing']['enabled'] ) {
+		if ( false === $options['headline_testing']['enabled'] ) {
 			return false;
 		}
 
@@ -92,8 +94,8 @@ class Headline_Testing extends Content_Helper_Feature {
 	public function enqueue_headline_testing_script(): void {
 		$options = $this->parsely->get_options();
 		
-		// Check if headline testing options exist and are enabled.
-		if ( ! isset( $options['headline_testing'] ) || ! is_array( $options['headline_testing'] ) || ! isset( $options['headline_testing']['enabled'] ) || false === $options['headline_testing']['enabled'] ) {
+		// Check if headline testing is enabled.
+		if ( false === $options['headline_testing']['enabled'] ) {
 			return;
 		}
 		
@@ -104,7 +106,7 @@ class Headline_Testing extends Content_Helper_Feature {
 			return;
 		}
 
-		$installation_method = $headline_testing_options['installation_method'] ?? 'one_line';
+		$installation_method = $headline_testing_options['installation_method'];
 		
 		if ( 'one_line' === $installation_method ) {
 			$this->enqueue_one_line_script( $headline_testing_options, $site_id );
@@ -118,28 +120,42 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array<string, mixed> $options The headline testing options.
-	 * @param string               $site_id The Parse.ly site ID.
+	 * @param array{enabled: bool, installation_method: string, enable_flicker_control: bool, enable_live_updates: bool, live_update_timeout: int, allow_after_content_load: bool} $options The headline testing options.
+	 * @param string                                                                                                                                                               $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_one_line_script( array $options, string $site_id ): void {
 		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
 		
-		// Add query parameters for options instead of data attributes.
-		$query_params = array();
+		// Build data attributes string.
+		$data_attributes = array();
 		
-		if ( (bool) ( $options['enable_live_updates'] ?? false ) ) {
-			$query_params[] = 'enableLiveUpdates=true';
+		if ( $options['enable_live_updates'] ) {
+			$data_attributes[] = 'data-enable-live-updates="true"';
 			
-			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
-			$query_params[] = 'liveUpdateTimeout=' . $timeout;
+			$timeout = $options['live_update_timeout'];
+			if ( 30000 !== $timeout ) {
+				$data_attributes[] = 'data-live-update-timeout="' . esc_attr( (string) $timeout ) . '"';
+			}
 		}
 
-		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
-			$query_params[] = 'allowAfterContentLoad=true';
+		if ( $options['allow_after_content_load'] ) {
+			$data_attributes[] = 'data-allow-after-content-load="true"';
 		}
 		
-		if ( ! empty( $query_params ) ) {
-			$script_url .= '&' . implode( '&', $query_params );
+		// Add filter to modify the script tag.
+		if ( count( $data_attributes ) > 0 ) {
+			add_filter(
+				'script_loader_tag',
+				function ( $tag, $handle ) use ( $data_attributes ) {
+					if ( 'parsely-headline-testing-one-line' === $handle ) {
+						// Insert data attributes before the closing > of the script tag.
+						$tag = str_replace( '></script>', ' ' . implode( ' ', $data_attributes ) . '></script>', $tag );
+					}
+					return $tag;
+				},
+				10,
+				2
+			);
 		}
 
 		// Register and enqueue the script.
@@ -159,24 +175,24 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array<string, mixed> $options The headline testing options.
-	 * @param string               $site_id The Parse.ly site ID.
+	 * @param array{enabled: bool, installation_method: string, enable_flicker_control: bool, enable_live_updates: bool, live_update_timeout: int, allow_after_content_load: bool} $options The headline testing options.
+	 * @param string                                                                                                                                                               $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_advanced_script( array $options, string $site_id ): void {
 		$config_options = array();
 
-		if ( (bool) ( $options['enable_flicker_control'] ?? false ) ) {
+		if ( $options['enable_flicker_control'] ) {
 			$config_options[] = 'enableFlickerControl: true';
 		}
 
-		if ( (bool) ( $options['enable_live_updates'] ?? false ) ) {
+		if ( $options['enable_live_updates'] ) {
 			$config_options[] = 'enableLiveUpdates: true';
 			
-			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
+			$timeout          = $options['live_update_timeout'];
 			$config_options[] = 'liveUpdateTimeout: ' . $timeout;
 		}
 
-		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
+		if ( $options['allow_after_content_load'] ) {
 			$config_options[] = 'allowAfterContentLoad: true';
 		}
 
@@ -216,8 +232,7 @@ class Headline_Testing extends Content_Helper_Feature {
 	public function is_enabled(): bool {
 		$options = $this->parsely->get_options();
 		
-		return isset( $options['headline_testing']['enabled'] ) && 
-				true === $options['headline_testing']['enabled'] &&
+		return true === $options['headline_testing']['enabled'] &&
 				'' !== $this->parsely->get_site_id();
 	}
 

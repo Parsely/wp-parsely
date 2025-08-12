@@ -62,6 +62,7 @@ use const Parsely\PARSELY_FILE;
  *   custom_taxonomy_section?: string,
  *   cats_as_tags?: bool|string,
  *   content_helper: Parsely_Settings_Options_Content_Helper,
+ *   headline_testing?: array{enabled: bool, installation_method: string, enable_flicker_control: bool, enable_live_updates: bool, live_update_timeout: int, allow_after_content_load: bool},
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
@@ -974,13 +975,15 @@ final class Settings_Page {
 		
 		// Get option value - handle nested options properly.
 		if ( false === strpos( $name, '[' ) ) {
-			$value = $options[ $name ] ?? '';
+			$raw_value = $options[ $name ] ?? '';
+			$value     = is_scalar( $raw_value ) ? (string) $raw_value : '';
 		} else {
-			$value = Parsely::get_nested_option_value( $name, $options ) ?? '';
+			$raw_value = Parsely::get_nested_option_value( $name, $options ) ?? '';
+			$value     = is_scalar( $raw_value ) ? (string) $raw_value : '';
 		}
 		
-		$optional_args       = $args['optional_args'] ?? array();
-		$id                  = esc_attr( $name );
+		$optional_args = $args['optional_args'] ?? array();
+		$id            = esc_attr( $name );
 		
 		// Handle nested option names properly.
 		if ( strpos( $name, 'headline_testing' ) === 0 ) {
@@ -1195,9 +1198,9 @@ final class Settings_Page {
 	 * @param Setting_Arguments $args The arguments for the radio buttons.
 	 */
 	public function print_radio_tags( $args ): void {
-		$name          = $args['option_key'];
-		$id            = esc_attr( $name );
-		$selected      = $this->get_nested_option_value( $name );
+		$name     = $args['option_key'];
+		$id       = esc_attr( $name );
+		$selected = $this->get_nested_option_value( $name );
 		
 		// Handle nested option names properly.
 		if ( strpos( $name, 'headline_testing' ) === 0 ) {
@@ -1633,18 +1636,9 @@ final class Settings_Page {
 		};
 
 		// Add any missing data due to unchecked checkboxes.
-		if ( ! isset( $input['headline_testing']['enabled'] ) ) {
-			$input['headline_testing']['enabled'] = false;
-		}
-		if ( ! isset( $input['headline_testing']['enable_flicker_control'] ) ) {
-			$input['headline_testing']['enable_flicker_control'] = false;
-		}
-		if ( ! isset( $input['headline_testing']['enable_live_updates'] ) ) {
-			$input['headline_testing']['enable_live_updates'] = false;
-		}
-		if ( ! isset( $input['headline_testing']['allow_after_content_load'] ) ) {
-			$input['headline_testing']['allow_after_content_load'] = false;
-		}
+		// These checks are redundant since we already merged with defaults above,
+		// but we keep them for safety in case the merge didn't work as expected.
+		// No need for null coalescing since the keys are guaranteed to exist after the merge.
 
 		// Produce the final array.
 		$options = $this->parsely->get_options()['headline_testing'];
