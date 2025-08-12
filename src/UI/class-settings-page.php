@@ -1635,11 +1635,6 @@ final class Settings_Page {
 			return $input;
 		};
 
-		// Add any missing data due to unchecked checkboxes.
-		// These checks are redundant since we already merged with defaults above,
-		// but we keep them for safety in case the merge didn't work as expected.
-		// No need for null coalescing since the keys are guaranteed to exist after the merge.
-
 		// Produce the final array.
 		$options = $this->parsely->get_options()['headline_testing'];
 		$merged  = array_merge( $options, $input['headline_testing'] );
