@@ -123,22 +123,28 @@ class Headline_Testing extends Content_Helper_Feature {
 	 */
 	private function enqueue_one_line_script( array $options, string $site_id ): void {
 		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
-		$attributes = array();
-
+		
+		// Add query parameters for options instead of data attributes.
+		$query_params = array();
+		
 		if ( (bool) ( $options['enable_live_updates'] ?? false ) ) {
-			$attributes[] = 'data-enable-live-updates="true"';
+			$query_params[] = 'enableLiveUpdates=true';
 			
 			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
 			if ( 30000 !== $timeout ) {
-				$attributes[] = 'data-live-update-timeout="' . esc_attr( (string) $timeout ) . '"';
+				$query_params[] = 'liveUpdateTimeout=' . $timeout;
 			}
 		}
 
 		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
-			$attributes[] = 'data-allow-after-content-load="true"';
+			$query_params[] = 'allowAfterContentLoad=true';
+		}
+		
+		if ( ! empty( $query_params ) ) {
+			$script_url .= '&' . implode( '&', $query_params );
 		}
 
-		// Register and enqueue the script with proper attributes.
+		// Register and enqueue the script.
 		wp_register_script(
 			'parsely-headline-testing-one-line',
 			$script_url,
@@ -146,11 +152,6 @@ class Headline_Testing extends Content_Helper_Feature {
 			PARSELY_VERSION,
 			false
 		);
-
-		// Add custom attributes to the script tag.
-		if ( count( $attributes ) > 0 ) {
-			wp_script_add_data( 'parsely-headline-testing-one-line', 'data', $attributes );
-		}
 
 		wp_enqueue_script( 'parsely-headline-testing-one-line' );
 	}
