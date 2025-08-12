@@ -1610,30 +1610,17 @@ final class Settings_Page {
 					// Recurse for nested arrays.
 					$input[ $key ] = $sanitize( $value );
 				} else {
-					// Handle different field types.
-					switch ( $key ) {
-						case 'enabled':
-						case 'enable_flicker_control':
-						case 'enable_live_updates':
-						case 'allow_after_content_load':
-							$input[ $key ] = 'true' === $value || true === $value;
-							break;
-						case 'installation_method':
-							$valid_methods = array( 'one_line', 'advanced' );
-							$input[ $key ] = in_array( $value, $valid_methods, true ) ? $value : 'one_line';
-							break;
-						case 'live_update_timeout':
-							$timeout       = intval( $value );
-							$input[ $key ] = ( $timeout >= 1000 && $timeout <= 60000 ) ? $timeout : 30000;
-							break;
-						default:
-							$input[ $key ] = sanitize_text_field( $value );
-					}
+					$input[ $key ] = $this->sanitize_headline_testing_field( $key, $value );
 				}
 			}
 
 			return $input;
 		};
+
+		// Add any missing data due to unchecked checkboxes.
+		// These checks are redundant since we already merged with defaults above,
+		// but we keep them for safety in case the merge didn't work as expected.
+		// No need for null coalescing since the keys are guaranteed to exist after the merge.
 
 		// Produce the final array.
 		$options = $this->parsely->get_options()['headline_testing'];
@@ -1979,5 +1966,30 @@ final class Settings_Page {
 				'wp_template_part_area',
 			)
 		);
+	}
+
+	/**
+	 * Sanitizes headline testing field values.
+	 *
+	 * @param string $key The field key.
+	 * @param mixed  $value The field value.
+	 * @return mixed The sanitized value.
+	 */
+	private function sanitize_headline_testing_field( string $key, $value ) {
+		switch ( $key ) {
+			case 'enabled':
+			case 'enable_flicker_control':
+			case 'enable_live_updates':
+			case 'allow_after_content_load':
+				return 'true' === $value || true === $value;
+			case 'installation_method':
+				$valid_methods = array( 'one_line', 'advanced' );
+				return in_array( $value, $valid_methods, true ) ? $value : 'one_line';
+			case 'live_update_timeout':
+				$timeout = intval( is_scalar( $value ) ? (string) $value : '0' );
+				return ( $timeout >= 1000 && $timeout <= 60000 ) ? $timeout : 30000;
+			default:
+				return sanitize_text_field( is_scalar( $value ) ? (string) $value : '' );
+		}
 	}
 }
