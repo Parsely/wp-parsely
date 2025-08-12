@@ -131,9 +131,7 @@ class Headline_Testing extends Content_Helper_Feature {
 			$query_params[] = 'enableLiveUpdates=true';
 			
 			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
-			if ( 30000 !== $timeout ) {
-				$query_params[] = 'liveUpdateTimeout=' . $timeout;
-			}
+			$query_params[] = 'liveUpdateTimeout=' . $timeout;
 		}
 
 		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
@@ -175,9 +173,7 @@ class Headline_Testing extends Content_Helper_Feature {
 			$config_options[] = 'enableLiveUpdates: true';
 			
 			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
-			if ( 30000 !== $timeout ) {
-				$config_options[] = 'liveUpdateTimeout: ' . $timeout;
-			}
+			$config_options[] = 'liveUpdateTimeout: ' . $timeout;
 		}
 
 		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
