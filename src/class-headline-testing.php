@@ -93,7 +93,7 @@ class Headline_Testing extends Content_Helper_Feature {
 		$options = $this->parsely->get_options();
 		
 		// Check if headline testing options exist and are enabled.
-		if ( ! isset( $options['headline_testing'] ) || ! isset( $options['headline_testing']['enabled'] ) || false === $options['headline_testing']['enabled'] ) {
+		if ( ! isset( $options['headline_testing'] ) || ! is_array( $options['headline_testing'] ) || ! isset( $options['headline_testing']['enabled'] ) || false === $options['headline_testing']['enabled'] ) {
 			return;
 		}
 		
@@ -118,23 +118,23 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array<string, mixed>  $options The headline testing options.
-	 * @param string $site_id The Parse.ly site ID.
+	 * @param array<string, mixed> $options The headline testing options.
+	 * @param string               $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_one_line_script( array $options, string $site_id ): void {
 		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
 		$attributes = array();
 
-		if ( $options['enable_live_updates'] ?? false ) {
+		if ( (bool) ( $options['enable_live_updates'] ?? false ) ) {
 			$attributes[] = 'data-enable-live-updates="true"';
 			
-			$timeout = $options['live_update_timeout'] ?? 30000;
+			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
 			if ( 30000 !== $timeout ) {
-				$attributes[] = 'data-live-update-timeout="' . esc_attr( $timeout ) . '"';
+				$attributes[] = 'data-live-update-timeout="' . esc_attr( (string) $timeout ) . '"';
 			}
 		}
 
-		if ( $options['allow_after_content_load'] ?? false ) {
+		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
 			$attributes[] = 'data-allow-after-content-load="true"';
 		}
 
@@ -160,26 +160,26 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array<string, mixed>  $options The headline testing options.
-	 * @param string $site_id The Parse.ly site ID.
+	 * @param array<string, mixed> $options The headline testing options.
+	 * @param string               $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_advanced_script( array $options, string $site_id ): void {
 		$config_options = array();
 
-		if ( $options['enable_flicker_control'] ?? false ) {
+		if ( (bool) ( $options['enable_flicker_control'] ?? false ) ) {
 			$config_options[] = 'enableFlickerControl: true';
 		}
 
-		if ( $options['enable_live_updates'] ?? false ) {
+		if ( (bool) ( $options['enable_live_updates'] ?? false ) ) {
 			$config_options[] = 'enableLiveUpdates: true';
 			
-			$timeout = $options['live_update_timeout'] ?? 30000;
+			$timeout = (int) ( $options['live_update_timeout'] ?? 30000 );
 			if ( 30000 !== $timeout ) {
-				$config_options[] = 'liveUpdateTimeout: ' . intval( $timeout );
+				$config_options[] = 'liveUpdateTimeout: ' . $timeout;
 			}
 		}
 
-		if ( $options['allow_after_content_load'] ?? false ) {
+		if ( (bool) ( $options['allow_after_content_load'] ?? false ) ) {
 			$config_options[] = 'allowAfterContentLoad: true';
 		}
 

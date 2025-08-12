@@ -1559,6 +1559,19 @@ final class Settings_Page {
 		if ( ! isset( $input['headline_testing'] ) ) {
 			$input['headline_testing'] = array();
 		}
+		
+		// Ensure all required keys exist with defaults.
+		$input['headline_testing'] = array_merge(
+			array(
+				'enabled'                  => false,
+				'installation_method'      => 'one_line',
+				'enable_flicker_control'   => false,
+				'enable_live_updates'      => false,
+				'live_update_timeout'      => 30000,
+				'allow_after_content_load' => false,
+			),
+			$input['headline_testing']
+		);
 
 		/**
 		 * Sanitizes the Headline Testing data.

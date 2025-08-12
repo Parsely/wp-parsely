@@ -44,7 +44,7 @@ class Endpoint_Headline_Testing_Settings extends Base_Settings_Endpoint {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @return array<string, array{values: array, default: mixed}>
+	 * @return array<string, array{values: array<int|bool|string>, default: bool|int|string}>
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
