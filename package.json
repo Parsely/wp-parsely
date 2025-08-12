@@ -69,7 +69,7 @@
 		"@wordpress/element": "^6.26.0",
 		"@wordpress/env": "^10.26.0",
 		"@wordpress/eslint-plugin": "^22.12.0",
-		"@wordpress/hooks": "^4.26.0",
+		"@wordpress/hooks": "^4.28.0",
 		"@wordpress/i18n": "^5.26.0",
 		"@wordpress/icons": "^10.26.0",
 		"@wordpress/plugins": "^7.26.0",
