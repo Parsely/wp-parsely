@@ -45,8 +45,8 @@ class Headline_Testing extends Content_Helper_Feature {
 			return;
 		}
 
-		// Add script injection with high priority to ensure it loads early in head.
-		add_action( 'wp_head', array( $this, 'inject_headline_testing_script' ), 5 );
+		// Enqueue the headline testing script properly.
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_headline_testing_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 	}
 
@@ -85,11 +85,11 @@ class Headline_Testing extends Content_Helper_Feature {
 	}
 
 	/**
-	 * Injects the Headline Testing script into the page head.
+	 * Enqueues the Headline Testing script properly.
 	 *
 	 * @since 3.21.0
 	 */
-	public function inject_headline_testing_script(): void {
+	public function enqueue_headline_testing_script(): void {
 		$options = $this->parsely->get_options();
 		
 		// Check if headline testing options exist and are enabled.
@@ -104,46 +104,24 @@ class Headline_Testing extends Content_Helper_Feature {
 			return;
 		}
 
-		$script = $this->generate_script( $headline_testing_options, $site_id );
+		$installation_method = $headline_testing_options['installation_method'] ?? 'one_line';
 		
-		if ( ! empty( $script ) ) {
-			echo '<!-- Parse.ly Headline Testing Script -->' . "\n";
-			echo $script; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		if ( 'one_line' === $installation_method ) {
+			$this->enqueue_one_line_script( $headline_testing_options, $site_id );
+		} else {
+			$this->enqueue_advanced_script( $headline_testing_options, $site_id );
 		}
 	}
 
 	/**
-	 * Generates the appropriate script based on installation method.
+	 * Enqueues the one-line snippet script.
 	 *
 	 * @since 3.21.0
 	 *
 	 * @param array  $options The headline testing options.
 	 * @param string $site_id The Parse.ly site ID.
-	 * @return string The generated script HTML.
 	 */
-	private function generate_script( array $options, string $site_id ): string {
-		$installation_method = $options['installation_method'] ?? 'manual';
-
-		switch ( $installation_method ) {
-			case 'one_line':
-				return $this->generate_one_line_script( $options, $site_id );
-			case 'advanced':
-				return $this->generate_advanced_script( $options, $site_id );
-			default:
-				return $this->generate_one_line_script( $options, $site_id );
-		}
-	}
-
-	/**
-	 * Generates the one-line snippet script.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @param array  $options The headline testing options.
-	 * @param string $site_id The Parse.ly site ID.
-	 * @return string The generated script HTML.
-	 */
-	private function generate_one_line_script( array $options, string $site_id ): string {
+	private function enqueue_one_line_script( array $options, string $site_id ): void {
 		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
 		$attributes = array();
 
@@ -160,21 +138,32 @@ class Headline_Testing extends Content_Helper_Feature {
 			$attributes[] = 'data-allow-after-content-load="true"';
 		}
 
-		$attributes_str = ! empty( $attributes ) ? ' ' . implode( ' ', $attributes ) : '';
+		// Register and enqueue the script with proper attributes.
+		wp_register_script(
+			'parsely-headline-testing-one-line',
+			$script_url,
+			array(),
+			PARSELY_VERSION,
+			false
+		);
 
-		return '<script src="' . $script_url . '"' . $attributes_str . '></script>' . "\n";
+		// Add custom attributes to the script tag.
+		if ( ! empty( $attributes ) ) {
+			wp_script_add_data( 'parsely-headline-testing-one-line', 'data', $attributes );
+		}
+
+		wp_enqueue_script( 'parsely-headline-testing-one-line' );
 	}
 
 	/**
-	 * Generates the advanced installation script.
+	 * Enqueues the advanced installation script.
 	 *
 	 * @since 3.21.0
 	 *
 	 * @param array  $options The headline testing options.
 	 * @param string $site_id The Parse.ly site ID.
-	 * @return string The generated script HTML.
 	 */
-	private function generate_advanced_script( array $options, string $site_id ): string {
+	private function enqueue_advanced_script( array $options, string $site_id ): void {
 		$config_options = array();
 
 		if ( $options['enable_flicker_control'] ?? false ) {
@@ -196,9 +185,19 @@ class Headline_Testing extends Content_Helper_Feature {
 
 		$config_str = ! empty( $config_options ) ? ', {' . implode( ', ', $config_options ) . '}' : '';
 
-		$script = '!function(){"use strict";var e=window.VIP_EXP=window.VIP_EXP||{config:{}};e.loadVIPExp=function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};t&&(e.config=n,e.config.apikey=t,function(e){if(!e)return;var t="https://experiments.parsely.com/vip-experiments.js"+"?apiKey=".concat(e),n=document.createElement("script");n.src=t,n.type="text/javascript",n.fetchPriority="high";var i=document.getElementsByTagName("script")[0];i&&i.parentNode&&i.parentNode.insertBefore(n,i)}(t),n.enableFlickerControl&&function(){var t,n;if(null!==(t=performance)&&void 0!==t&&null!==(n=t.getEntriesByName)&&void 0!==n&&null!==(n=n.call(t,"first-contentful-paint"))&&void 0!==n&&n[0])return;var i="vipexp-fooc-prevention";e.config.disableFlickerControl=function(){var e=document.getElementById(i);null!=e&&e.parentNode&&e.parentNode.removeChild(e)};var o=document.createElement("style");o.setAttribute("type","text/css"),o.appendChild(document.createTextNode("body { visibility: hidden; }")),o.id=i,document.head.appendChild(o),window.setTimeout(e.config.disableFlickerControl,500)}())},e.loadVIPExp("' . esc_js( $site_id ) . '"' . $config_str . ')}();';
+		$script_content = '!function(){"use strict";var e=window.VIP_EXP=window.VIP_EXP||{config:{}};e.loadVIPExp=function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};t&&(e.config=n,e.config.apikey=t,function(e){if(!e)return;var t="https://experiments.parsely.com/vip-experiments.js"+"?apiKey=".concat(e),n=document.createElement("script");n.src=t,n.type="text/javascript",n.fetchPriority="high";var i=document.getElementsByTagName("script")[0];i&&i.parentNode&&i.parentNode.insertBefore(n,i)}(t),n.enableFlickerControl&&function(){var t,n;if(null!==(t=performance)&&void 0!==t&&null!==(n=t.getEntriesByName)&&void 0!==n&&null!==(n=n.call(t,"first-contentful-paint"))&&void 0!==n&&n[0])return;var i="vipexp-fooc-prevention";e.config.disableFlickerControl=function(){var e=document.getElementById(i);null!=e&&e.parentNode&&e.parentNode.removeChild(e)};var o=document.createElement("style");o.setAttribute("type","text/css"),o.appendChild(document.createTextNode("body { visibility: hidden; }")),o.id=i,document.head.appendChild(o),window.setTimeout(e.config.disableFlickerControl,500)}())},e.loadVIPExp("' . esc_js( $site_id ) . '"' . $config_str . ')}();';
 
-		return '<script>' . $script . '</script>' . "\n";
+		// Register and enqueue the inline script.
+		wp_register_script(
+			'parsely-headline-testing-advanced',
+			'',
+			array(),
+			PARSELY_VERSION,
+			false
+		);
+
+		wp_add_inline_script( 'parsely-headline-testing-advanced', $script_content );
+		wp_enqueue_script( 'parsely-headline-testing-advanced' );
 	}
 
 	/**
