@@ -118,7 +118,7 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array  $options The headline testing options.
+	 * @param array<string, mixed>  $options The headline testing options.
 	 * @param string $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_one_line_script( array $options, string $site_id ): void {
@@ -148,7 +148,7 @@ class Headline_Testing extends Content_Helper_Feature {
 		);
 
 		// Add custom attributes to the script tag.
-		if ( ! empty( $attributes ) ) {
+		if ( count( $attributes ) > 0 ) {
 			wp_script_add_data( 'parsely-headline-testing-one-line', 'data', $attributes );
 		}
 
@@ -160,7 +160,7 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array  $options The headline testing options.
+	 * @param array<string, mixed>  $options The headline testing options.
 	 * @param string $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_advanced_script( array $options, string $site_id ): void {
@@ -183,7 +183,7 @@ class Headline_Testing extends Content_Helper_Feature {
 			$config_options[] = 'allowAfterContentLoad: true';
 		}
 
-		$config_str = ! empty( $config_options ) ? ', {' . implode( ', ', $config_options ) . '}' : '';
+		$config_str = count( $config_options ) > 0 ? ', {' . implode( ', ', $config_options ) . '}' : '';
 
 		$script_content = '!function(){"use strict";var e=window.VIP_EXP=window.VIP_EXP||{config:{}};e.loadVIPExp=function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};t&&(e.config=n,e.config.apikey=t,function(e){if(!e)return;var t="https://experiments.parsely.com/vip-experiments.js"+"?apiKey=".concat(e),n=document.createElement("script");n.src=t,n.type="text/javascript",n.fetchPriority="high";var i=document.getElementsByTagName("script")[0];i&&i.parentNode&&i.parentNode.insertBefore(n,i)}(t),n.enableFlickerControl&&function(){var t,n;if(null!==(t=performance)&&void 0!==t&&null!==(n=t.getEntriesByName)&&void 0!==n&&null!==(n=n.call(t,"first-contentful-paint"))&&void 0!==n&&n[0])return;var i="vipexp-fooc-prevention";e.config.disableFlickerControl=function(){var e=document.getElementById(i);null!=e&&e.parentNode&&e.parentNode.removeChild(e)};var o=document.createElement("style");o.setAttribute("type","text/css"),o.appendChild(document.createTextNode("body { visibility: hidden; }")),o.id=i,document.head.appendChild(o),window.setTimeout(e.config.disableFlickerControl,500)}())},e.loadVIPExp("' . esc_js( $site_id ) . '"' . $config_str . ')}();';
 

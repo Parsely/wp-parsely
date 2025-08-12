@@ -69,7 +69,6 @@ use WP_Post;
  *   enable_live_updates: bool,
  *   live_update_timeout: int,
  *   allow_after_content_load: bool,
- *   allowed_user_roles: string[],
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
