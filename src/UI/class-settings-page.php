@@ -650,7 +650,7 @@ final class Settings_Page {
 			'option_key' => $field_id,
 			'label_for'  => $field_id,
 			'yes_text'   => __( 'Enabled', 'wp-parsely' ),
-			'help_text'  => __( 'Allow headline swapping even after the main content has loaded. May cause flickering.', 'wp-parsely' ),
+			'help_text'  => __( 'Allow headline swapping even after the main content has loaded. May cause flickering. Highly recommended if you are loading your script asynchronously.', 'wp-parsely' ),
 		);
 		add_settings_field(
 			$field_id,
