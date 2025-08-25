@@ -37,7 +37,7 @@
 	],
 	"dependencies": {
 		"@types/js-cookie": "^3.0.6",
-		"@wordpress/dom-ready": "^4.28.0",
+		"@wordpress/dom-ready": "^4.29.0",
 		"js-cookie": "^3.0.5",
 		"lodash.debounce": "^4.0.8"
 	},
@@ -66,7 +66,7 @@
 		"@wordpress/e2e-test-utils-playwright": "^1.26.0",
 		"@wordpress/edit-post": "^8.26.0",
 		"@wordpress/editor": "^14.26.0",
-		"@wordpress/element": "^6.26.0",
+		"@wordpress/element": "^6.29.0",
 		"@wordpress/env": "^10.26.0",
 		"@wordpress/eslint-plugin": "^22.15.0",
 		"@wordpress/hooks": "^4.28.0",
@@ -74,7 +74,7 @@
 		"@wordpress/icons": "^10.26.0",
 		"@wordpress/plugins": "^7.26.0",
 		"@wordpress/scripts": "^27.9.0",
-		"@wordpress/url": "^4.28.0",
+		"@wordpress/url": "^4.29.0",
 		"@wordpress/wordcount": "^4.28.0",
 		"concurrently": "^9.2.0",
 		"eslint-plugin-jest": "^28.14.0",
