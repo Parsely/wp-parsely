@@ -22,10 +22,10 @@ use WP_Post;
 class Front_Page_Builder extends Metadata_Builder {
 
 	/**
-	 * The post object for which the metadata is being generated.
+	 * Post object to generate the metadata for.
 	 *
-	 * @since 3.20.7 - this needs to be updated as per version in which this will be released.
-	 *
+	 * @since 3.21
+	 * 
 	 * @var WP_Post
 	 */
 	private $post;
