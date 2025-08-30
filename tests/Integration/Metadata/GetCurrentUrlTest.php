@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Metadata;
 
-use Parsely\Metadata\Front_Page_Builder;
+use Parsely\Metadata\{ Category_Builder, Front_Page_Builder };
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 
@@ -130,10 +130,10 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assert_current_url_for_homepage( string $expected ): void {
 		$this->go_to( '/' );
 
-		// Using Front_Page_Builder since we can't instantiate abstract
+		// Using Category_Builder since we can't instantiate abstract
 		// Metadata_Builder.
-		$builder         = new Front_Page_Builder( new Parsely(), $this->get_post( 0 ) );
-		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
+		$builder         = new Category_Builder( new Parsely() );
+		$get_current_url = self::get_method( 'get_current_url', Category_Builder::class );
 		$res             = $get_current_url->invoke( $builder );
 
 		self::assertSame( $expected . '/', $res, 'Homepage page does not match.' );
@@ -164,10 +164,10 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assert_current_url_for_random_url( string $expected ): void {
 		$this->go_to( '/random/url/' );
 
-		// Using Front_Page_Builder since we can't instantiate abstract
+		// Using Category_Builder since we can't instantiate abstract
 		// Metadata_Builder.
-		$builder         = new Front_Page_Builder( new Parsely(), $this->get_post( 0 ) );
-		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
+		$builder         = new Category_Builder( new Parsely() );
+		$get_current_url = self::get_method( 'get_current_url', Category_Builder::class );
 		$res             = $get_current_url->invoke( $builder );
 
 		$constructed_expected = $expected . '/random/url/';

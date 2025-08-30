@@ -260,18 +260,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 			$post_obj = get_post( $post_id );
 		}
 
-		if ( ! $post_obj instanceof WP_Post ) {
-			// Need to return post object, so if it's not WP_Post then create one.
-			$new_post_id = self::factory()->post->create();
-			if ( is_wp_error( $new_post_id ) ) {
-				throw new UnexpectedValueException( 'Failed to create a new post.' );
-			}
-			$post_obj = get_post( $new_post_id );
-			if ( ! $post_obj instanceof WP_Post ) {
-				throw new UnexpectedValueException( 'Failed to get the newly created post.' );
-			}
-		}
-
 		return $post_obj;
 	}
 
