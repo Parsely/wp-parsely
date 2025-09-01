@@ -20,7 +20,6 @@ use WP_Post;
  * @since 3.4.0
  */
 class Front_Page_Builder extends Metadata_Builder {
-
 	/**
 	 * Post object to generate the metadata for.
 	 *

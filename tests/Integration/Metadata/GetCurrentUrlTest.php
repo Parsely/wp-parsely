@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Metadata;
 
-use Parsely\Metadata\{ Category_Builder, Front_Page_Builder };
+use Parsely\Metadata\Category_Builder;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 
@@ -147,10 +147,10 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assert_current_url_for_post_with_id( string $expected ): void {
 		$post_id = $this->go_to_new_post();
 
-		// Using Front_Page_Builder since we can't instantiate abstract
+		// Using Category_Builder since we can't instantiate abstract
 		// Metadata_Builder.
-		$builder         = new Front_Page_Builder( new Parsely(), $this->get_post( $post_id ) );
-		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
+		$builder         = new Category_Builder( new Parsely() );
+		$get_current_url = self::get_method( 'get_current_url', Category_Builder::class );
 		$res             = $get_current_url->invoke( $builder, 'post', $post_id );
 
 		self::assertSame( $expected . '/?p=' . $post_id, $res, 'Specific post by ID does not match.' );
