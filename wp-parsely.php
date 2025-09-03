@@ -120,15 +120,15 @@ add_action( 'admin_init', __NAMESPACE__ . '\\create_engagement_boost_changeset_p
  * preview work for non-administrator user roles.
  *
  * When the Engagement Boost preview iframe is loaded, it calls the WordPress
- * Customizer in the iFrameSrc() function. The Customizer requires the current
+ * Customizer in the `iFrameSrc()` function. The Customizer requires the current
  * user to have the `customize` capability (available to Administrators), or the
  * passed UUID to have a corresponding changeset post in the database. Otherwise
  * it fails with -1 ("Non-existent changeset UUID") around line 561 in
- * class-wp-customize-manager.php and prevents preview, displaying "-1".
+ * `class-wp-customize-manager.php` and prevents preview, displaying "-1".
  *
  * By creating a predefined changeset post with a known UUID that we use in
- * iFrameSrc(), we guarantee that the preview will work for all authorized user
- * roles.
+ * `iFrameSrc()`, we guarantee that the preview will work for all authorized
+ * user roles.
  *
  * @since 3.21.0.
  */
