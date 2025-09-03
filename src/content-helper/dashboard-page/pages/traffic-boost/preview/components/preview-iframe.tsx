@@ -86,8 +86,8 @@ export const PreviewIframe = ( {
 			return previewUrl;
 		}
 
-		// Needs to match the UUID in create_engagement_boost_changeset_post()
-		// in wp-parsely.php.
+		// Needs to match the UUID in `create_engagement_boost_changeset_post()`
+		// in `wp-parsely.php`.
 		const uuid = '905b130b-4129-4416-919c-9e31433a6f65';
 		const url = new URL( previewUrl );
 		url.searchParams.set( 'customize_changeset_uuid', uuid );

@@ -133,6 +133,10 @@ add_action( 'admin_init', __NAMESPACE__ . '\\create_engagement_boost_changeset_p
  * @since 3.21.0.
  */
 function create_engagement_boost_changeset_post(): void {
+	if ( ! function_exists( 'post_exists' ) ) {
+		return;
+	}
+
 	$parsely = get_parsely();
 
 	if ( ! $parsely->api_secret_is_set() || ! Permissions::current_user_can_use_pch_feature(
@@ -142,7 +146,7 @@ function create_engagement_boost_changeset_post(): void {
 		return;
 	}
 
-	// Needs to match the UUID in iFrameSrc() in preview-frame.tsx.
+	// Needs to match the UUID in `iFrameSrc()` in `preview-iframe.tsx`.
 	$uuid    = '905b130b-4129-4416-919c-9e31433a6f65';
 	$post_id = post_exists( "wp-parsely-$uuid", '', '', 'customize_changeset', 'private' );
 
