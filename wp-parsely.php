@@ -114,6 +114,50 @@ function parsely_admin_init_register(): void {
 	( new Dashboard_Widget( $parsely ) )->run();
 }
 
+add_action( 'admin_init', __NAMESPACE__ . '\\create_engagement_boost_changeset_post' );
+/**
+ * Creates a predefined changeset post in order to make the Engagement Boost
+ * preview work for non-administrator user roles.
+ *
+ * When the Engagement Boost preview iframe is loaded, it calls the WordPress
+ * Customizer in the iFrameSrc() function. The Customizer requires the current
+ * user to have the `customize` capability (available to Administrators), or the
+ * passed UUID to have a corresponding changeset post in the database. Otherwise
+ * it fails with -1 ("Non-existent changeset UUID") around line 561 in
+ * class-wp-customize-manager.php and prevents preview, displaying "-1".
+ *
+ * By creating a predefined changeset post with a known UUID that we use in
+ * iFrameSrc(), we guarantee that the preview will work for all authorized user
+ * roles.
+ *
+ * @since 3.21.0.
+ */
+function create_engagement_boost_changeset_post(): void {
+	$parsely = get_parsely();
+
+	if ( ! $parsely->api_secret_is_set() || ! Permissions::current_user_can_use_pch_feature(
+		'traffic_boost',
+		$parsely->get_options()['content_helper']
+	) ) {
+		return;
+	}
+
+	// Needs to match the UUID in iFrameSrc() in preview-frame.tsx.
+	$uuid    = '905b130b-4129-4416-919c-9e31433a6f65';
+	$post_id = post_exists( "wp-parsely-$uuid", '', '', 'customize_changeset', 'private' );
+
+	if ( 0 === $post_id ) {
+		wp_insert_post(
+			array(
+				'post_type'   => 'customize_changeset',
+				'post_name'   => $uuid,
+				'post_title'  => "wp-parsely-$uuid",
+				'post_status' => 'private',
+			)
+		);
+	}
+}
+
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
  * Registers the additions the Parse.ly wp-admin settings page and Multisite
