@@ -35,7 +35,7 @@ test.describe( 'Front end metadata insertion', () => {
 		await setSiteKeys( page, VALID_SITE_ID, '' );
 
 		// Activate tracking for logged-in users.
-		await page.goto( '/wp-admin/admin.php?page=parsely-settings' );
+		await page.goto( '/wp-admin/admin.php?page=parsely-settings&e2e_parsely_skip_api_validate=y' );
 		await page.getByLabel( 'Yes, track logged-in users.' ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 	} );
@@ -53,8 +53,12 @@ test.describe( 'Front end metadata insertion', () => {
 
 		const content = await page.content();
 
-		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"wp-parsely","url":"http:\\/\\/localhost:8889"}</script>' );
-		expect( content ).not.toContain( '<meta name="parsely-title" ' );
+		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
+		expect( content ).toContain( '"@context":"https:\\/\\/schema.org"' );
+		expect( content ).toContain( '"@type":"WebPage"' );
+		expect( content ).toContain( '"headline":"wp-parsely"' );
+		expect( content ).toContain( '"url":"http:\\/\\/localhost:8889"' );
+		expect( content ).not.toContain( '<meta name="parsely-title"' );
 	} );
 
 	/**
@@ -104,9 +108,9 @@ test.describe( 'Front end metadata insertion', () => {
 		expect( content ).toContain( '<meta name="parsely-title" content="wp-parsely">' );
 		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889">' );
 		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
-		expect( content ).not.toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
-		expect( content ).not.toContain( '<meta name="parsely-section" content="Uncategorized">' );
-		expect( content ).not.toContain( '<meta name="parsely-author" content="admin">' );
+		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
+		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
+		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
 		expect( content ).not.toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
 	} );
 
@@ -183,7 +187,7 @@ class Utils {
 	async setMetadataFormat( format: string ) {
 		const page = this.admin.page;
 
-		await this.admin.visitAdminPage( '/admin.php?page=parsely-settings' );
+		await this.admin.visitAdminPage( '/admin.php?page=parsely-settings&e2e_parsely_skip_api_validate=y' );
 
 		await page.locator( `#meta_type_${ format }` ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();

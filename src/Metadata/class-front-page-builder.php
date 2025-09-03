@@ -50,8 +50,8 @@ class Front_Page_Builder extends Metadata_Builder {
 	 */
 	public function get_metadata(): array {
 		$this->build_basic();
-		$this->build_headline();
 		$this->build_url();
+		$this->build_headline();
 
 		if ( true === $this->parsely->get_options()['full_metadata_in_non_posts'] ) {
 			$this->build_type( $this->post, $this->post->post_type );
