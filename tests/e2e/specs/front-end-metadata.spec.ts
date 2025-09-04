@@ -107,7 +107,8 @@ test.describe( 'Front end metadata insertion', () => {
 
 		expect( content ).toContain( '<meta name="parsely-title" content="wp-parsely">' );
 		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889">' );
-		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
+		// making content as post here because in e2e env homepage is set as latest posts which is of post type post.
+		expect( content ).toContain( '<meta name="parsely-type" content="post">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
