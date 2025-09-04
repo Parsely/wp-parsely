@@ -35,7 +35,7 @@ test.describe( 'Front end metadata insertion', () => {
 		await setSiteKeys( page, VALID_SITE_ID, '' );
 
 		// Activate tracking for logged-in users.
-		await page.goto( '/wp-admin/admin.php?page=parsely-settings&e2e_parsely_skip_api_validate=y' );
+		await page.goto( '/wp-admin/admin.php?page=parsely-settings' );
 		await page.getByLabel( 'Yes, track logged-in users.' ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 	} );
@@ -107,8 +107,7 @@ test.describe( 'Front end metadata insertion', () => {
 
 		expect( content ).toContain( '<meta name="parsely-title" content="wp-parsely">' );
 		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889">' );
-		// making content as post here because in e2e env homepage is set as latest posts which is of post type post.
-		expect( content ).toContain( '<meta name="parsely-type" content="post">' );
+		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
