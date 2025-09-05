@@ -24,7 +24,7 @@ class Front_Page_Builder extends Metadata_Builder {
 	 * Post object to generate the metadata for.
 	 *
 	 * @since 3.21
-	 * 
+	 *
 	 * @var WP_Post
 	 */
 	private $post;
@@ -54,8 +54,6 @@ class Front_Page_Builder extends Metadata_Builder {
 		$this->build_headline();
 
 		if ( true === $this->parsely->get_options()['full_metadata_in_non_posts'] ) {
-			// passing down 'homepage' as post type to build_type method which will give 'WebPage' & content as index.
-			$this->build_type( $this->post, 'homepage' );
 			$this->build_main_entity( $this->post->post_type );
 			$this->build_thumbnail_url( $this->post );
 			$this->build_image( $this->post );

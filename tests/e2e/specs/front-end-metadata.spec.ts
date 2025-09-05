@@ -187,7 +187,7 @@ class Utils {
 	async setMetadataFormat( format: string ) {
 		const page = this.admin.page;
 
-		await this.admin.visitAdminPage( '/admin.php?page=parsely-settings&e2e_parsely_skip_api_validate=y' );
+		await this.admin.visitAdminPage( '/admin.php?page=parsely-settings' );
 
 		await page.locator( `#meta_type_${ format }` ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();
