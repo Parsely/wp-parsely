@@ -130,7 +130,7 @@ add_action( 'admin_init', __NAMESPACE__ . '\\create_engagement_boost_changeset_p
  * `iFrameSrc()`, we guarantee that the preview will work for all authorized
  * user roles.
  *
- * @since 3.21.0.
+ * @since 3.20.7
  */
 function create_engagement_boost_changeset_post(): void {
 	if ( ! function_exists( 'post_exists' ) ) {
