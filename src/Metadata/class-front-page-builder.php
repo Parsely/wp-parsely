@@ -23,7 +23,7 @@ class Front_Page_Builder extends Metadata_Builder {
 	/**
 	 * Post object to generate the metadata for.
 	 *
-	 * @since 3.21
+	 * @since 3.20.7
 	 *
 	 * @var WP_Post
 	 */
@@ -31,6 +31,8 @@ class Front_Page_Builder extends Metadata_Builder {
 
 	/**
 	 * Constructor.
+	 *
+	 * @since 3.20.7
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
 	 * @param WP_Post $post Post object to generate the metadata for.
