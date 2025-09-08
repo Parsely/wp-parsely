@@ -56,7 +56,7 @@ class Front_Page_Builder extends Metadata_Builder {
 		$this->build_url();
 
 		if ( true === $this->parsely->get_options()['full_metadata_in_non_posts'] ) {
-			$this->build_main_entity( $this->post->post_type );
+			$this->build_main_entity( 'non-post' );
 			$this->build_thumbnail_url( $this->post );
 			$this->build_image( $this->post );
 			$this->build_article_section( $this->post );
