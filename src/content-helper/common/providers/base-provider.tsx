@@ -137,6 +137,7 @@ export abstract class BaseProvider {
 	 * AbortController signal.
 	 *
 	 * @since 3.15.0
+	 * @since 3.20.7 Using APIFetchOptions<true> to avoid a type error when building on GitHub.
 	 *
 	 * @param {APIFetchOptions} options The options to pass to apiFetch.
 	 * @param {string?}         id      The (optional) ID of the request.
@@ -148,7 +149,9 @@ export abstract class BaseProvider {
 		options.signal = abortController.signal;
 
 		try {
-			const response = await apiFetch<ContentHelperAPIResponse<T>>( options );
+			const response = await apiFetch<ContentHelperAPIResponse<T>>(
+				options as APIFetchOptions<true>
+			);
 
 			// Validate API side errors.
 			if ( response.error ) {
