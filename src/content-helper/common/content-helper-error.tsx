@@ -107,7 +107,7 @@ export class ContentHelperError extends Error {
 	 *
 	 * This also allows for the internationalization of errors/hints.
 	 *
-	 * @since 3.21.0
+	 * @since 3.20.8
 	 */
 	protected CustomizeErrorMessaging(): void {
 		// Errors that need rephrasing.
