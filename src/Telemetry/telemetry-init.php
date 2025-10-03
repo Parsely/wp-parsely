@@ -13,11 +13,6 @@ use Parsely\Telemetry\Tracks;
 
 require_once __DIR__ . '/class-telemetry-system.php';
 
-// Only run if WordPress is loaded.
-if ( ! function_exists( 'add_action' ) ) {
-	return;
-}
-
 // If in a VIP environment, prevent logging duplicate Tracks events.
 if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
 	add_filter( 'wp_parsely_enable_telemetry_backend', '__return_false' );
