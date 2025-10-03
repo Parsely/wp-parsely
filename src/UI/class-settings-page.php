@@ -62,7 +62,14 @@ use const Parsely\PARSELY_FILE;
  *   custom_taxonomy_section?: string,
  *   cats_as_tags?: bool|string,
  *   content_helper: Parsely_Settings_Options_Content_Helper,
- *   headline_testing?: array{enabled: bool, installation_method: string, enable_flicker_control: bool, enable_live_updates: bool, live_update_timeout: int, allow_after_content_load: bool},
+ *   headline_testing?: array{
+ *      enabled: bool,
+ *      installation_method: string,
+ *      enable_flicker_control: bool,
+ *      enable_live_updates: bool,
+ *      live_update_timeout: int,
+ *      allow_after_content_load: bool
+ *   },
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
@@ -263,9 +270,9 @@ final class Settings_Page {
 
 		$this->initialize_basic_section();
 		$this->initialize_content_helper_section();
+		$this->initialize_headline_testing_section();
 		$this->initialize_recrawl_section();
 		$this->initialize_advanced_section();
-		$this->initialize_headline_testing_section();
 	}
 
 	/**
@@ -972,7 +979,7 @@ final class Settings_Page {
 	public function print_text_tag( $args ): void {
 		$options = $this->parsely->get_options();
 		$name    = $args['option_key'];
-		
+
 		// Get option value - handle nested options properly.
 		if ( false === strpos( $name, '[' ) ) {
 			$raw_value = $options[ $name ] ?? '';
@@ -981,10 +988,10 @@ final class Settings_Page {
 			$raw_value = Parsely::get_nested_option_value( $name, $options ) ?? '';
 			$value     = is_scalar( $raw_value ) ? (string) $raw_value : '';
 		}
-		
+
 		$optional_args = $args['optional_args'] ?? array();
 		$id            = esc_attr( $name );
-		
+
 		// Handle nested option names properly.
 		if ( strpos( $name, 'headline_testing' ) === 0 ) {
 			$html_name = str_replace(
@@ -1201,7 +1208,7 @@ final class Settings_Page {
 		$name     = $args['option_key'];
 		$id       = esc_attr( $name );
 		$selected = $this->get_nested_option_value( $name );
-		
+
 		// Handle nested option names properly.
 		if ( strpos( $name, 'headline_testing' ) === 0 ) {
 			$html_name = str_replace(
@@ -1577,6 +1584,8 @@ final class Settings_Page {
 	/**
 	 * Validates fields of Headline Testing Section.
 	 *
+	 * @since 3.21.0
+	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
 	 * @return ParselySettingOptions Validated inputs.
 	 */
@@ -1585,7 +1594,7 @@ final class Settings_Page {
 		if ( ! isset( $input['headline_testing'] ) ) {
 			$input['headline_testing'] = array();
 		}
-		
+
 		// Ensure all required keys exist with defaults.
 		$input['headline_testing'] = array_merge(
 			array(
@@ -1970,6 +1979,8 @@ final class Settings_Page {
 
 	/**
 	 * Sanitizes headline testing field values.
+	 *
+	 * @since 3.21.0
 	 *
 	 * @param string $key The field key.
 	 * @param mixed  $value The field value.
