@@ -62,14 +62,7 @@ use const Parsely\PARSELY_FILE;
  *   custom_taxonomy_section?: string,
  *   cats_as_tags?: bool|string,
  *   content_helper: Parsely_Settings_Options_Content_Helper,
- *   headline_testing?: array{
- *      enabled: bool,
- *      installation_method: string,
- *      enable_flicker_control: bool,
- *      enable_live_updates: bool,
- *      live_update_timeout: int,
- *      allow_after_content_load: bool
- *   },
+ *   headline_testing?: Parsely_Options_Headline_Testing,
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
@@ -89,6 +82,7 @@ use const Parsely\PARSELY_FILE;
  * }
  *
  * @phpstan-import-type Parsely_Options from Parsely
+ * @phpstan-import-type Parsely_Options_Headline_Testing from Parsely
  */
 final class Settings_Page {
 	/**
@@ -977,33 +971,15 @@ final class Settings_Page {
 	 * @param Setting_Arguments $args The arguments for text tag.
 	 */
 	public function print_text_tag( $args ): void {
-		$options = $this->parsely->get_options();
-		$name    = $args['option_key'];
-
-		// Get option value - handle nested options properly.
-		if ( false === strpos( $name, '[' ) ) {
-			$raw_value = $options[ $name ] ?? '';
-			$value     = is_scalar( $raw_value ) ? (string) $raw_value : '';
-		} else {
-			$raw_value = Parsely::get_nested_option_value( $name, $options ) ?? '';
-			$value     = is_scalar( $raw_value ) ? (string) $raw_value : '';
-		}
-
-		$optional_args = $args['optional_args'] ?? array();
-		$id            = esc_attr( $name );
-
-		// Handle nested option names properly.
-		if ( strpos( $name, 'headline_testing' ) === 0 ) {
-			$html_name = str_replace(
-				'headline_testing',
-				'[headline_testing]',
-				Parsely::OPTIONS_KEY . esc_attr( $name )
-			);
-		} else {
-			$html_name = Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
-		}
+		$options             = $this->parsely->get_options();
+		$name                = $args['option_key'];
+		$raw_value           = $this->get_option_value( $name, $options );
+		$value_as_string     = is_scalar( $raw_value ) ? (string) $raw_value : '';
+		$optional_args       = $args['optional_args'] ?? array();
+		$id                  = esc_attr( $name );
+		$html_name           = $this->get_html_name_attribute( $name );
 		$is_obfuscated_value = $optional_args['is_obfuscated_value'] ?? false;
-		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value ) : esc_attr( $value );
+		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value_as_string ) : esc_attr( $value_as_string );
 		$type                = $optional_args['type'] ?? 'text';
 		$accepted_args       = array( 'placeholder', 'required', 'disabled' );
 
@@ -1051,30 +1027,9 @@ final class Settings_Page {
 		$name         = $args['option_key'];
 		$has_fieldset = isset( $args['add_fieldset'] ) && true === $args['add_fieldset'];
 		$html_id      = rtrim( str_replace( array( '[', ']', '__' ), '_', $name ), '_' );
-		// Handle nested option names properly.
-		if ( strpos( $name, 'content_helper' ) === 0 ) {
-			$html_name = str_replace(
-				'content_helper',
-				'[content_helper]',
-				Parsely::OPTIONS_KEY . esc_attr( $name )
-			);
-		} elseif ( strpos( $name, 'headline_testing' ) === 0 ) {
-			$html_name = str_replace(
-				'headline_testing',
-				'[headline_testing]',
-				Parsely::OPTIONS_KEY . esc_attr( $name )
-			);
-		} else {
-			$html_name = Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
-		}
-		$yes_text = $args['yes_text'] ?? '';
-
-		// Get option value.
-		if ( false === strpos( $name, '[' ) ) {
-			$value = $options[ $name ];
-		} else {
-			$value = Parsely::get_nested_option_value( $name, $options );
-		}
+		$html_name    = $this->get_html_name_attribute( $name );
+		$yes_text     = $args['yes_text'] ?? '';
+		$value        = $this->get_option_value( $name, $options );
 
 		// Fieldset start.
 		if ( $has_fieldset ) {
@@ -1209,20 +1164,11 @@ final class Settings_Page {
 	 * @param Setting_Arguments $args The arguments for the radio buttons.
 	 */
 	public function print_radio_tags( $args ): void {
-		$name     = $args['option_key'];
-		$id       = esc_attr( $name );
-		$selected = $this->get_nested_option_value( $name );
-
-		// Handle nested option names properly.
-		if ( strpos( $name, 'headline_testing' ) === 0 ) {
-			$html_name = str_replace(
-				'headline_testing',
-				'[headline_testing]',
-				Parsely::OPTIONS_KEY . esc_attr( $name )
-			);
-		} else {
-			$html_name = Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
-		}
+		$options       = $this->parsely->get_options();
+		$name          = $args['option_key'];
+		$id            = esc_attr( $name );
+		$selected      = Parsely::get_nested_option_value( $name, $options );
+		$html_name     = $this->get_html_name_attribute( $name );
 		$title         = $args['title'] ?? '';
 		$radio_options = $args['radio_options'] ?? array();
 
@@ -1288,16 +1234,50 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Gets a nested option value from the options array.
+	 * Generates the HTML name attribute for a form field.
+	 *
+	 * Handles nested options (content_helper, headline_testing) and regular
+	 * options, properly escaping and formatting the attribute value.
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param string $key The option key (e.g., 'headline_testing[installation_method]').
-	 * @return mixed The option value or null if not found.
+	 * @param string $name The option key/name.
+	 * @return string The properly formatted and escaped HTML name attribute value.
 	 */
-	private function get_nested_option_value( string $key ) {
-		$options = $this->parsely->get_options();
-		return Parsely::get_nested_option_value( $key, $options );
+	private function get_html_name_attribute( string $name ): string {
+		if ( strpos( $name, 'content_helper' ) === 0 ) {
+			return Parsely::OPTIONS_KEY . str_replace(
+				'content_helper',
+				'[content_helper]',
+				esc_attr( $name )
+			);
+		} elseif ( strpos( $name, 'headline_testing' ) === 0 ) {
+			return Parsely::OPTIONS_KEY . str_replace(
+				'headline_testing',
+				'[headline_testing]',
+				esc_attr( $name )
+			);
+		} else {
+			return Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
+		}
+	}
+
+	/**
+	 * Gets the value of an option, handling both flat and nested option keys.
+	 *
+	 * @since 3.21.0
+	 *
+	 * @param string          $name    The option key name (may contain brackets for nested options).
+	 * @param Parsely_Options $options The options array to retrieve from.
+	 * @return mixed The option value, or null if not found.
+	 */
+	private function get_option_value( string $name, $options ) {
+		// Get raw value based on whether it's a nested option or not.
+		if ( false === strpos( $name, '[' ) ) {
+			return $options[ $name ] ?? null;
+		} else {
+			return Parsely::get_nested_option_value( $name, $options ) ?? null;
+		}
 	}
 
 	/**
