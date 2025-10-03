@@ -1004,8 +1004,12 @@ final class Settings_Page {
 		}
 		$is_obfuscated_value = $optional_args['is_obfuscated_value'] ?? false;
 		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value ) : esc_attr( $value );
-		$accepted_args       = array( 'placeholder', 'required', 'disabled' );
 		$type                = $optional_args['type'] ?? 'text';
+		$accepted_args       = array( 'placeholder', 'required', 'disabled' );
+
+		if ( 'number' === $type ) {
+			$accepted_args = array_merge( $accepted_args, array( 'min', 'max', 'step' ) );
+		}
 
 		$is_managed = key_exists( $id, $this->parsely->managed_options );
 		echo '<fieldset', $is_managed ? ' disabled>' : '>';
