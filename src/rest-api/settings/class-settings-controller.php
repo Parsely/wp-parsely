@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Settings;
 
 use Parsely\REST_API\REST_API_Controller;
-use Parsely\REST_API\Settings\Endpoint_Headline_Testing_Settings;
 
 /**
  * The Settings API Controller.

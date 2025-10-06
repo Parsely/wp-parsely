@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\Content_Helper\Content_Helper_Feature;
-use Parsely\Permissions;
 
 /** @phpstan-import-type Parsely_Options_Headline_Testing from Parsely */
 
