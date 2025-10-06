@@ -59,6 +59,8 @@ test.describe( 'Activation flow', (): void => {
 		const basicSection = page.locator( '.basic-section' );
 		const contentHelperTab = page.getByRole( 'link', { name: 'Content Intelligence' } );
 		const contentHelperSection = page.locator( '.content-intelligence-section' );
+		const headlineTestingTab = page.getByRole( 'link', { name: 'Headline Testing' } );
+		const headlineTestingSection = page.locator( '.headline-testing-section' );
 		const recrawlTab = page.getByRole( 'link', { name: 'Recrawl' } );
 		const recrawlSection = page.locator( '.recrawl-section' );
 		const advancedTab = page.getByRole( 'link', { name: 'Advanced' } );
@@ -67,41 +69,55 @@ test.describe( 'Activation flow', (): void => {
 		// Check that all tabs are present in the Settings page.
 		await expect( basicTab ).toBeVisible();
 		await expect( contentHelperTab ).toBeVisible();
+		await expect( headlineTestingTab ).toBeVisible();
 		await expect( recrawlTab ).toBeVisible();
 		await expect( advancedTab ).toBeVisible();
 
 		// Check that by default, the Basic Settings section is active.
 		await expect( basicSection ).toBeVisible();
 		await expect( contentHelperSection ).toBeHidden();
-		await expect( recrawlSection ).toBeHidden();
-		await expect( advancedSection ).toBeHidden();
-
-		// Test section visibility when the Basic tab is clicked.
-		await basicSection.click();
-		await expect( basicSection ).toBeVisible();
-		await expect( contentHelperSection ).toBeHidden();
+		await expect( headlineTestingSection ).toBeHidden();
 		await expect( recrawlSection ).toBeHidden();
 		await expect( advancedSection ).toBeHidden();
 
 		// Test section visibility when the Content Intelligence tab is clicked.
 		await contentHelperTab.click();
+		await contentHelperSection.waitFor( { state: 'visible' } );
 		await expect( basicSection ).toBeHidden();
-		await expect( contentHelperSection ).toBeVisible();
+		await expect( headlineTestingSection ).toBeHidden();
+		await expect( recrawlSection ).toBeHidden();
+		await expect( advancedSection ).toBeHidden();
+
+		// Test section visibility when the Headline Testing tab is clicked.
+		await headlineTestingTab.click();
+		await headlineTestingSection.waitFor( { state: 'visible' } );
+		await expect( basicSection ).toBeHidden();
+		await expect( contentHelperSection ).toBeHidden();
 		await expect( recrawlSection ).toBeHidden();
 		await expect( advancedSection ).toBeHidden();
 
 		// Test section visibility when the Recrawl tab is clicked.
 		await recrawlTab.click();
+		await recrawlSection.waitFor( { state: 'visible' } );
 		await expect( basicSection ).toBeHidden();
 		await expect( contentHelperSection ).toBeHidden();
-		await expect( recrawlSection ).toBeVisible();
+		await expect( headlineTestingSection ).toBeHidden();
 		await expect( advancedSection ).toBeHidden();
 
 		// Test section visibility when the Advanced tab is clicked.
 		await advancedTab.click();
+		await advancedSection.waitFor( { state: 'visible' } );
 		await expect( basicSection ).toBeHidden();
 		await expect( contentHelperSection ).toBeHidden();
+		await expect( headlineTestingSection ).toBeHidden();
 		await expect( recrawlSection ).toBeHidden();
-		await expect( advancedSection ).toBeVisible();
+
+		// Test section visibility when the Basic tab is clicked.
+		await basicTab.click();
+		await basicSection.waitFor( { state: 'visible' } );
+		await expect( contentHelperSection ).toBeHidden();
+		await expect( headlineTestingSection ).toBeHidden();
+		await expect( recrawlSection ).toBeHidden();
+		await expect( advancedSection ).toBeHidden();
 	} );
 } );
