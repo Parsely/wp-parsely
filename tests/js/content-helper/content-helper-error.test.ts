@@ -29,10 +29,13 @@ const errorCodes = [
 	ContentHelperErrorCode.ParselySuggestionsApiNoAuthentication,
 	ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization,
 	ContentHelperErrorCode.ParselySuggestionsApiNoData,
+	ContentHelperErrorCode.ParselySuggestionsApiNoDataManualLinking,
 	ContentHelperErrorCode.ParselySuggestionsApiOpenAiError,
 	ContentHelperErrorCode.ParselySuggestionsApiOpenAiSchema,
 	ContentHelperErrorCode.ParselySuggestionsApiOpenAiUnavailable,
+	ContentHelperErrorCode.ParselySuggestionsApiResponseValidationError,
 	ContentHelperErrorCode.ParselySuggestionsApiSchemaError,
+	ContentHelperErrorCode.ParselySuggestionsInvalidRequest,
 ];
 
 /**
