@@ -28,6 +28,7 @@ class Endpoint_Headline_Testing_Settings extends Base_Settings_Endpoint {
 	public static function get_endpoint_name(): string {
 		return 'headline-testing';
 	}
+
 	/**
 	 * Returns the meta entry's key.
 	 *

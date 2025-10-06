@@ -61,7 +61,7 @@ class Headline_Testing extends Content_Helper_Feature {
 	 */
 	private function should_initialize(): bool {
 		$options = $this->parsely->get_options();
-		
+
 		if ( false === $options['headline_testing']['enabled'] ) {
 			return false;
 		}
@@ -93,12 +93,12 @@ class Headline_Testing extends Content_Helper_Feature {
 	 */
 	public function enqueue_headline_testing_script(): void {
 		$options = $this->parsely->get_options();
-		
+
 		// Check if headline testing is enabled.
 		if ( false === $options['headline_testing']['enabled'] ) {
 			return;
 		}
-		
+
 		$headline_testing_options = $options['headline_testing'];
 		$site_id                  = $this->parsely->get_site_id();
 
@@ -107,7 +107,7 @@ class Headline_Testing extends Content_Helper_Feature {
 		}
 
 		$installation_method = $headline_testing_options['installation_method'];
-		
+
 		if ( 'one_line' === $installation_method ) {
 			$this->enqueue_one_line_script( $headline_testing_options, $site_id );
 		} else {
@@ -125,13 +125,13 @@ class Headline_Testing extends Content_Helper_Feature {
 	 */
 	private function enqueue_one_line_script( array $options, string $site_id ): void {
 		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
-		
+
 		// Build data attributes string.
 		$data_attributes = array();
-		
+
 		if ( $options['enable_live_updates'] ) {
 			$data_attributes[] = 'data-enable-live-updates="true"';
-			
+
 			$timeout = $options['live_update_timeout'];
 			if ( 30000 !== $timeout ) {
 				$data_attributes[] = 'data-live-update-timeout="' . esc_attr( (string) $timeout ) . '"';
@@ -141,7 +141,7 @@ class Headline_Testing extends Content_Helper_Feature {
 		if ( $options['allow_after_content_load'] ) {
 			$data_attributes[] = 'data-allow-after-content-load="true"';
 		}
-		
+
 		// Add filter to modify the script tag.
 		if ( count( $data_attributes ) > 0 ) {
 			add_filter(
@@ -187,7 +187,7 @@ class Headline_Testing extends Content_Helper_Feature {
 
 		if ( $options['enable_live_updates'] ) {
 			$config_options[] = 'enableLiveUpdates: true';
-			
+
 			$timeout          = $options['live_update_timeout'];
 			$config_options[] = 'liveUpdateTimeout: ' . $timeout;
 		}
@@ -231,7 +231,7 @@ class Headline_Testing extends Content_Helper_Feature {
 	 */
 	public function is_enabled(): bool {
 		$options = $this->parsely->get_options();
-		
+
 		return true === $options['headline_testing']['enabled'] &&
 				'' !== $this->parsely->get_site_id();
 	}
