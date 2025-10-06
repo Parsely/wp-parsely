@@ -16,6 +16,8 @@ use Parsely\REST_API\Settings\Base_Settings_Endpoint;
  * Endpoint for managing Headline Testing settings.
  *
  * @since 3.21.0
+ *
+ * @phpstan-import-type Subvalue_Spec from Base_Settings_Endpoint
  */
 class Endpoint_Headline_Testing_Settings extends Base_Settings_Endpoint {
 	/**
@@ -45,7 +47,7 @@ class Endpoint_Headline_Testing_Settings extends Base_Settings_Endpoint {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @return array<string, array{values: array<int|bool|string>, default: bool|int|string}>
+	 * @return array<string, Subvalue_Spec>
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
