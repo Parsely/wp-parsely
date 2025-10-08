@@ -31,6 +31,7 @@ use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Rest_Metadata;
+use Parsely\Headline_Testing;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
@@ -97,6 +98,10 @@ function parsely_initialize_plugin(): void {
 
 	$metadata_renderer = new Metadata_Renderer( $parsely );
 	$metadata_renderer->run();
+
+	// Initialize Headline Testing feature.
+	$headline_testing = new Headline_Testing( $parsely );
+	$headline_testing->run();
 }
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
