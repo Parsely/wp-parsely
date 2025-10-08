@@ -10,16 +10,14 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Content_Helper\Content_Helper_Feature;
-
-/** @phpstan-import-type Parsely_Options_Headline_Testing from Parsely */
-
 /**
  * Handles the Headline Testing feature functionality.
  *
  * @since 3.21.0
+ *
+ * @phpstan-import-type Parsely_Options_Headline_Testing from Parsely
  */
-class Headline_Testing extends Content_Helper_Feature {
+class Headline_Testing {
 	/**
 	 * Instance of Parsely class.
 	 *
@@ -28,7 +26,16 @@ class Headline_Testing extends Content_Helper_Feature {
 	protected $parsely;
 
 	/**
+	 * Data attributes to be added to the one-line script tag.
+	 *
+	 * @var array<string>
+	 */
+	private $data_attributes = array();
+
+	/**
 	 * Constructor.
+	 *
+	 * @since 3.21.0
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
 	 */
@@ -42,70 +49,39 @@ class Headline_Testing extends Content_Helper_Feature {
 	 * @since 3.21.0
 	 */
 	public function run(): void {
-		if ( false === $this->can_enable_feature( $this->should_initialize() ) ) {
+		if ( false === $this->can_enable_feature() ) {
 			return;
 		}
 
-		// Enqueue the headline testing script properly.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_headline_testing_script' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 	}
 
 	/**
-	 * Determines if the Headline Testing feature should be initialized.
+	 * Returns whether the Headline Testing feature can be enabled.
 	 *
 	 * @since 3.21.0
 	 *
-	 * @return bool True if the feature should be initialized, false otherwise.
+	 * @return bool True if the feature can be enabled, false otherwise.
 	 */
-	private function should_initialize(): bool {
+	public function can_enable_feature(): bool {
 		$options = $this->parsely->get_options();
 
-		if ( false === $options['headline_testing']['enabled'] ) {
-			return false;
-		}
-
-		// Check if user has permission to see headline testing.
-		if ( ! $this->user_has_permission() ) {
-			return false;
-		}
-
-		return true;
+		return true === $options['headline_testing']['enabled'] &&
+			'' !== $this->parsely->get_site_id();
 	}
 
 	/**
-	 * Checks if the current user has permission to use Headline Testing.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @return bool True if user has permission, false otherwise.
-	 */
-	private function user_has_permission(): bool {
-		// For headline testing, we'll allow all users since it's a frontend feature.
-		return true;
-	}
-
-	/**
-	 * Enqueues the Headline Testing script properly.
+	 * Enqueues the Headline Testing script, in accordance to the
+	 * installation_method option.
 	 *
 	 * @since 3.21.0
 	 */
 	public function enqueue_headline_testing_script(): void {
 		$options = $this->parsely->get_options();
-
-		// Check if headline testing is enabled.
-		if ( false === $options['headline_testing']['enabled'] ) {
-			return;
-		}
+		$site_id = $this->parsely->get_site_id();
 
 		$headline_testing_options = $options['headline_testing'];
-		$site_id                  = $this->parsely->get_site_id();
-
-		if ( '' === $site_id ) {
-			return;
-		}
-
-		$installation_method = $headline_testing_options['installation_method'];
+		$installation_method      = $headline_testing_options['installation_method'];
 
 		if ( 'one_line' === $installation_method ) {
 			$this->enqueue_one_line_script( $headline_testing_options, $site_id );
@@ -119,10 +95,10 @@ class Headline_Testing extends Content_Helper_Feature {
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array{enabled: bool, installation_method: string, enable_flicker_control: bool, enable_live_updates: bool, live_update_timeout: int, allow_after_content_load: bool} $options The headline testing options.
-	 * @param string                                                                                                                                                               $site_id The Parse.ly site ID.
+	 * @param Parsely_Options_Headline_Testing $options The headline testing options.
+	 * @param string                           $site_id The Parse.ly site ID.
 	 */
-	private function enqueue_one_line_script( array $options, string $site_id ): void {
+	private function enqueue_one_line_script( $options, string $site_id ): void {
 		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
 
 		// Build data attributes string.
@@ -141,20 +117,10 @@ class Headline_Testing extends Content_Helper_Feature {
 			$data_attributes[] = 'data-allow-after-content-load="true"';
 		}
 
-		// Add filter to modify the script tag.
+		// Store data attributes and add filter to modify the script tag.
 		if ( count( $data_attributes ) > 0 ) {
-			add_filter(
-				'script_loader_tag',
-				function ( $tag, $handle ) use ( $data_attributes ) {
-					if ( 'parsely-headline-testing-one-line' === $handle ) {
-						// Insert data attributes before the closing > of the script tag.
-						$tag = str_replace( '></script>', ' ' . implode( ' ', $data_attributes ) . '></script>', $tag );
-					}
-					return $tag;
-				},
-				10,
-				2
-			);
+			$this->data_attributes = $data_attributes;
+			add_filter( 'script_loader_tag', array( $this, 'add_data_attributes_to_script_tag' ), 10, 2 );
 		}
 
 		// Register and enqueue the script.
@@ -170,14 +136,32 @@ class Headline_Testing extends Content_Helper_Feature {
 	}
 
 	/**
+	 * Adds data attributes to the one-line script tag.
+	 *
+	 * @since 3.21.0
+	 *
+	 * @param string $tag    The script tag.
+	 * @param string $handle The script handle.
+	 * @return string The modified script tag.
+	 */
+	public function add_data_attributes_to_script_tag( string $tag, string $handle ): string {
+		if ( 'parsely-headline-testing-one-line' === $handle ) {
+			// Insert data attributes before the closing > of the script tag.
+			$tag = str_replace( '></script>', ' ' . implode( ' ', $this->data_attributes ) . '></script>', $tag );
+		}
+
+		return $tag;
+	}
+
+	/**
 	 * Enqueues the advanced installation script.
 	 *
 	 * @since 3.21.0
 	 *
-	 * @param array{enabled: bool, installation_method: string, enable_flicker_control: bool, enable_live_updates: bool, live_update_timeout: int, allow_after_content_load: bool} $options The headline testing options.
-	 * @param string                                                                                                                                                               $site_id The Parse.ly site ID.
+	 * @param Parsely_Options_Headline_Testing $options The headline testing options.
+	 * @param string                           $site_id The Parse.ly site ID.
 	 */
-	private function enqueue_advanced_script( array $options, string $site_id ): void {
+	private function enqueue_advanced_script( $options, string $site_id ): void {
 		$config_options = array();
 
 		if ( $options['enable_flicker_control'] ) {
@@ -210,61 +194,5 @@ class Headline_Testing extends Content_Helper_Feature {
 
 		wp_add_inline_script( 'parsely-headline-testing-advanced', $script_content );
 		wp_enqueue_script( 'parsely-headline-testing-advanced' );
-	}
-
-	/**
-	 * Enqueues admin scripts for the Headline Testing feature.
-	 *
-	 * @since 3.21.0
-	 */
-	public function enqueue_admin_scripts(): void {
-		// Add any admin-specific scripts here if needed.
-	}
-
-	/**
-	 * Checks if Headline Testing is enabled and configured.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @return bool True if enabled and configured, false otherwise.
-	 */
-	public function is_enabled(): bool {
-		$options = $this->parsely->get_options();
-
-		return true === $options['headline_testing']['enabled'] &&
-				'' !== $this->parsely->get_site_id();
-	}
-
-	/**
-	 * Gets the feature filter name.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @return string The feature filter name.
-	 */
-	public static function get_feature_filter_name(): string {
-		return 'wp_parsely_headline_testing';
-	}
-
-	/**
-	 * Gets the script ID.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @return string The script ID.
-	 */
-	public static function get_script_id(): string {
-		return 'parsely-headline-testing';
-	}
-
-	/**
-	 * Gets the style ID.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @return string The style ID.
-	 */
-	public static function get_style_id(): string {
-		return 'parsely-headline-testing';
 	}
 }
