@@ -99,7 +99,7 @@ class Headline_Testing {
 	 * @param string                           $site_id The Parse.ly site ID.
 	 */
 	private function enqueue_one_line_script( $options, string $site_id ): void {
-		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . esc_attr( $site_id );
+		$script_url = 'https://experiments.parsely.com/vip-experiments.js?apiKey=' . rawurlencode( $site_id );
 
 		// Build data attributes string.
 		$data_attributes = array();
@@ -107,7 +107,7 @@ class Headline_Testing {
 		if ( $options['enable_live_updates'] ) {
 			$data_attributes[] = 'data-enable-live-updates="true"';
 
-			$timeout = $options['live_update_timeout'];
+			$timeout = absint( $options['live_update_timeout'] );
 			if ( 30000 !== $timeout ) {
 				$data_attributes[] = 'data-live-update-timeout="' . esc_attr( (string) $timeout ) . '"';
 			}
@@ -182,7 +182,7 @@ class Headline_Testing {
 		if ( $options['enable_live_updates'] ) {
 			$config_options[] = 'enableLiveUpdates: true';
 
-			$timeout          = $options['live_update_timeout'];
+			$timeout          = absint( $options['live_update_timeout'] );
 			$config_options[] = 'liveUpdateTimeout: ' . $timeout;
 		}
 
