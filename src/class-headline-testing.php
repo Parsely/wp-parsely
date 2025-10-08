@@ -120,7 +120,18 @@ class Headline_Testing {
 		// Store data attributes and add filter to modify the script tag.
 		if ( count( $data_attributes ) > 0 ) {
 			$this->data_attributes = $data_attributes;
-			add_filter( 'script_loader_tag', array( $this, 'add_data_attributes_to_script_tag' ), 10, 2 );
+
+			if ( false === has_filter(
+				'script_loader_tag',
+				array( $this, 'add_data_attributes_to_script_tag' )
+			) ) {
+				add_filter(
+					'script_loader_tag',
+					array( $this, 'add_data_attributes_to_script_tag' ),
+					10,
+					2
+				);
+			}
 		}
 
 		// Register and enqueue the script.
