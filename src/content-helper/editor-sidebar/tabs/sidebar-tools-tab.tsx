@@ -1,13 +1,15 @@
 /**
  * WordPress dependencies
  */
-import { Panel, PanelBody } from '@wordpress/components';
+import { Button, Icon, Panel, PanelBody } from '@wordpress/components';
 import { PostTypeSupportCheck } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { select } from '@wordpress/data';
+import { external } from '@wordpress/icons';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { ContentHelperPermissions } from '../../common/utils/permissions';
 import { VerifyCredentials } from '../../common/verify-credentials';
@@ -38,6 +40,12 @@ export const SidebarToolsTab = (
 	{ trackToggle, permissions }: Readonly<SidebarToolsTabProps>
 ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
+
+	const editor = select( 'core/editor' );
+	const postId = editor.getCurrentPostId() ?? 0;
+	const postStatus = editor.getEditedPostAttribute( 'status' ) ?? 'draft';
+	const trackableStatuses = window.wpParselyTrackableStatuses ?? [ 'publish' ];
+	const isPostTrackable = trackableStatuses.includes( postStatus );
 
 	return (
 		<Panel>
@@ -126,6 +134,19 @@ export const SidebarToolsTab = (
 					</VerifyCredentials>
 				}
 			</PanelBody>
+
+			{ postId > 0 && isPostTrackable && permissions.TrafficBoost &&
+				<Button
+					className="boost-engagement"
+					href={ `/wp-admin/admin.php?page=parsely-dashboard-page#/engagement-boost/${ postId }` }
+					rel="noopener"
+					target="_blank"
+					variant="secondary"
+				>
+					{ __( 'Boost Engagement', 'wp-parsely' ) }
+					<Icon icon={ external } size={ 18 } className="parsely-external-link-icon" />
+				</Button>
+			}
 		</Panel>
 	);
 };
