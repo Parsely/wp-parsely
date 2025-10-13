@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Settings page: Fix Headline Testing documentation link ([#3753](https://github.com/Parsely/wp-parsely/pull/3753))
 
-
 ## [3.21.0](https://github.com/Parsely/wp-parsely/compare/3.20.8...3.21.0) - 2025-10-13
 
 ### Added
