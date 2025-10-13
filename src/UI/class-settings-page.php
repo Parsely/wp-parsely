@@ -544,7 +544,7 @@ final class Settings_Page {
 			__( 'Headline Testing', 'wp-parsely' ),
 			function (): void {
 				echo '<p>' . esc_html__( 'Configure Parse.ly Headline Testing to automatically test different headline variations and optimize for engagement.', 'wp-parsely' ) . '</p>';
-				echo '<p><a href="https://docs.parse.ly/install-headline-testing/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn more about Headline Testing', 'wp-parsely' ) . '</a></p>';
+				echo '<p><a href="https://docs.parse.ly/dashboard/optimization-menu/headline-testing-tab/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn more about Headline Testing', 'wp-parsely' ) . '</a></p>';
 			},
 			Parsely::MENU_SLUG
 		);
