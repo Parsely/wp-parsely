@@ -8,8 +8,9 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { select } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { external } from '@wordpress/icons';
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { ContentHelperPermissions } from '../../common/utils/permissions';
 import { VerifyCredentials } from '../../common/verify-credentials';
@@ -41,9 +42,16 @@ export const SidebarToolsTab = (
 ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
-	const editor = select( 'core/editor' );
-	const postId = editor.getCurrentPostId() ?? 0;
-	const postStatus = editor.getEditedPostAttribute( 'status' ) ?? 'draft';
+	const { postId, postStatus } = useSelect( ( select ) => {
+		const { getCurrentPostId, getEditedPostAttribute } =
+			select( 'core/editor' ) as GutenbergFunction;
+
+		return {
+			postId: getCurrentPostId() ?? 0,
+			postStatus: getEditedPostAttribute( 'status' ) ?? 'draft',
+		};
+	}, [] );
+
 	const trackableStatuses = window.wpParselyTrackableStatuses ?? [ 'publish' ];
 	const isPostTrackable = trackableStatuses.includes( postStatus );
 
