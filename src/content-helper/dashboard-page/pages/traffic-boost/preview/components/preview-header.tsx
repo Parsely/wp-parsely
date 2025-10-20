@@ -4,7 +4,7 @@
 import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { desktop, edit, external, moreVertical } from '@wordpress/icons';
+import { desktop, external, moreVertical, pencil } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -69,7 +69,7 @@ const VerticalMoreMenu = ( {
 		<DropdownMenu icon={ moreVertical } iconSize={ 24 } label={ __( 'Actions', 'wp-parsely' ) }>
 			{ ( { onClose } ) => (
 				<MenuGroup>
-					<MenuItem icon={ edit } onClick={ () => onClickHandler( 'edit', onClose ) }>
+					<MenuItem icon={ pencil } onClick={ () => onClickHandler( 'edit', onClose ) }>
 						{ __( 'Edit Post', 'wp-parsely' ) }
 					</MenuItem>
 					<MenuItem icon={ external } onClick={ () => onClickHandler( 'view-in-new-tab', onClose ) }>
