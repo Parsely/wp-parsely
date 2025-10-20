@@ -11,7 +11,7 @@ import {
 import { useDebounce, useInstanceId } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Icon, edit } from '@wordpress/icons';
+import { Icon, pencil } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -67,7 +67,7 @@ export const PARSELY_PERSONAS: Record<string, PersonaMetadata> = {
 	},
 	custom: {
 		label: __( 'Custom Persona', 'wp-parsely' ),
-		icon: edit,
+		icon: pencil,
 	},
 };
 

@@ -9,6 +9,7 @@ import type { MouseEventHandler } from 'react';
 import { SnackbarList } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
+import { WPNotice } from '@wordpress/notices/build-types/store/selectors';
 
 interface SnackbarNoticesProps {
 	className?: string; // Additional class name to be added to the base class.
@@ -27,8 +28,8 @@ export const SnackbarNotices = ( { className }: SnackbarNoticesProps ): JSX.Elem
 	const notices = useSelect(
 		( select ) => select( noticesStore )
 			.getNotices()
-			.filter( ( notice ) => notice.type === 'snackbar' )
-			.map( ( notice ) => ( {
+			.filter( ( notice: WPNotice ) => notice.type === 'snackbar' )
+			.map( ( notice: WPNotice ) => ( {
 				...notice,
 				actions: notice.actions?.map( ( action ) => ( {
 					...action,
