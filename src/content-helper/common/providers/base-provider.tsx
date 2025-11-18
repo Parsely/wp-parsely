@@ -148,7 +148,7 @@ export abstract class BaseProvider {
 		options.signal = abortController.signal;
 
 		try {
-			const response = await apiFetch<ContentHelperAPIResponse<T>, true>( options );
+			const response = await apiFetch<ContentHelperAPIResponse<T>>( options as APIFetchOptions<true> );
 
 			// Validate API side errors.
 			if ( response.error ) {
