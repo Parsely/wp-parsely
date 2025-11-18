@@ -143,7 +143,7 @@ export abstract class BaseProvider {
 	 *
 	 * @return {Promise<ContentHelperAPIResponse<any>>} The fetched data.
 	 */
-	protected async fetch<T>( options: APIFetchOptions<true>, id?: string ): Promise<T> {
+	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
 		const { abortController, abortId } = this.getOrCreateController( id );
 		options.signal = abortController.signal;
 
