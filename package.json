@@ -73,7 +73,7 @@
 		"@wordpress/i18n": "^6.8.0",
 		"@wordpress/icons": "^11.2.0",
 		"@wordpress/plugins": "^7.35.0",
-		"@wordpress/scripts": "^27.9.0",
+		"@wordpress/scripts": "^31.0.0",
 		"@wordpress/url": "^4.35.0",
 		"@wordpress/wordcount": "^4.35.0",
 		"concurrently": "^9.2.1",
