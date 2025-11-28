@@ -59,7 +59,7 @@
 		"@wordpress/block-editor": "^15.6.0",
 		"@wordpress/blocks": "^15.8.0",
 		"@wordpress/components": "^30.8.0",
-		"@wordpress/compose": "^7.35.0",
+		"@wordpress/compose": "^7.36.0",
 		"@wordpress/core-data": "^7.33.0",
 		"@wordpress/data": "^10.35.0",
 		"@wordpress/date": "^5.36.0",
