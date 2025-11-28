@@ -67,7 +67,7 @@
 		"@wordpress/edit-post": "^8.33.1",
 		"@wordpress/editor": "^14.33.2",
 		"@wordpress/element": "^6.36.0",
-		"@wordpress/env": "^10.35.0",
+		"@wordpress/env": "^10.36.0",
 		"@wordpress/eslint-plugin": "^22.22.0",
 		"@wordpress/hooks": "^4.36.0",
 		"@wordpress/i18n": "^6.9.0",
