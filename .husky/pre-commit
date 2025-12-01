@@ -1,4 +1,3 @@
-php lint.php
-npm run lint
-composer cs
-vendor/bin/phpstan analyse --memory-limit=2G
+npm run lint:js
+npm run lint:css
+npm run lint:pkg-json
