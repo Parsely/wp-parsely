@@ -138,17 +138,17 @@ export abstract class BaseProvider {
 	 *
 	 * @since 3.15.0
 	 *
-	 * @param {APIFetchOptions<true>} options The options to pass to apiFetch.
-	 * @param {string?}               id      The (optional) ID of the request.
+	 * @param {APIFetchOptions} options The options to pass to apiFetch.
+	 * @param {string?}         id      The (optional) ID of the request.
 	 *
 	 * @return {Promise<ContentHelperAPIResponse<any>>} The fetched data.
 	 */
-	protected async fetch<T>( options: APIFetchOptions<true>, id?: string ): Promise<T> {
+	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
 		const { abortController, abortId } = this.getOrCreateController( id );
 		options.signal = abortController.signal;
 
 		try {
-			const response = await apiFetch<ContentHelperAPIResponse<T>, true>( options );
+			const response = await apiFetch<ContentHelperAPIResponse<T>>( { ...options, parse: true } );
 
 			// Validate API side errors.
 			if ( response.error ) {

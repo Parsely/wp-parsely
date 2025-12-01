@@ -151,7 +151,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 
 		try {
 			// Fetch the raw Response object.
-			const response = await apiFetch( options as APIFetchOptions<false> ) as Response;
+			const response = await apiFetch( { ...options, parse: false } ) as Response;
 
 			// Access headers from the response.
 			const totalItemsHeader = response.headers.get( 'X-WP-Total' );
