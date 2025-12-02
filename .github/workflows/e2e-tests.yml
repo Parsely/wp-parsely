@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Refresh Composer autoload files
         run: composer dump-autoload --classmap-authoritative
@@ -31,7 +31,7 @@ jobs:
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -59,7 +59,7 @@ jobs:
           npm run dev:stop
 
       - name: Archive E2E results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: test-results

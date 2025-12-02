@@ -11,7 +11,7 @@ import {
 import { useDebounce, useInstanceId } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Icon, edit } from '@wordpress/icons';
+import { Icon, pencil } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -67,7 +67,7 @@ export const PARSELY_TONES: Record<string, ToneMetadata> = {
 	},
 	custom: {
 		label: __( 'Custom Tone', 'wp-parsely' ),
-		icon: edit,
+		icon: pencil,
 	},
 };
 
