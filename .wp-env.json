@@ -1,0 +1,10 @@
+{
+	"plugins": [
+		"."
+	],
+	"env": {
+		"development": {
+			"phpmyadminPort": 9000
+		}
+	}
+}
