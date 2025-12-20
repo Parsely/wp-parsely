@@ -382,7 +382,7 @@ abstract class Metadata_Builder {
 		}
 
 		/**
-		 * Attempt to get primary term if its set by Yoast SEO plugin.
+		 * Attempt to get primary term if it's set by Yoast SEO plugin.
 		 */
 		$primary_category = self::get_primary_term_from_yoast( $post_obj, $parsely_options['custom_taxonomy_section'] );
 
