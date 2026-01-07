@@ -68,7 +68,9 @@ jobs:
 
       - name: Install Composer dependencies for PHP >= 8.2
         if: ${{ matrix.php >= 8.2 }}
-        run: composer update --ignore-platform-reqs --no-interaction
+        run: |
+          composer install --no-interaction
+          composer update doctrine/instantiator --with-dependencies --ignore-platform-reqs --no-interaction
 
       - name: Install Subversion
         run: |
