@@ -37,7 +37,8 @@ export function ParselyRecommendations( {
 	function getErrorMessage() {
 		let message = `${ __( 'Error:', 'wp-parsely' ) } ${ JSON.stringify( error ) }`;
 		const httpError = message.includes( '"errors":{"http_request_failed"' ) ||
-		( typeof error === 'object' && error?.code === 'fetch_error' );
+		( typeof error === 'object' && error?.code === 'fetch_error' ) ||
+		( typeof error === 'object' && error?.code === 'offline_error' );
 
 		if ( httpError ) {
 			message = __( 'The Parse.ly Recommendations API is not accessible. You may be offline.', 'wp-parsely' );
