@@ -53,6 +53,12 @@
 		"jsdoc/check-tag-names": ["error", { "definedTags": ["link"] }],
 		// Disable import resolution checks for TypeScript files as TypeScript handles this.
 		"import/named": "off",
-		"import/no-extraneous-dependencies": "off"
+		"import/no-extraneous-dependencies": "off",
+		// Allow imports from @wordpress package build-types for TypeScript type definitions.
+		"import/no-unresolved": ["error", {
+			"ignore": [
+				"@wordpress/.*/build-types/.*"
+			]
+		}]
 	}
 }
