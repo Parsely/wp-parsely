@@ -46,7 +46,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -63,14 +63,7 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Install Composer dependencies
-        if: ${{ matrix.php < 8.2 }}
         uses: ramsey/composer-install@v3
-
-      - name: Install Composer dependencies for PHP >= 8.2
-        if: ${{ matrix.php >= 8.2 }}
-        uses: ramsey/composer-install@v3
-        with:
-          composer-options: --ignore-platform-reqs
 
       - name: Install Subversion
         run: |

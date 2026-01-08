@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Refresh Composer autoload files
         run: composer dump-autoload --classmap-authoritative
@@ -59,7 +59,7 @@ jobs:
           npm run dev:stop
 
       - name: Archive E2E results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: test-results
