@@ -90,6 +90,7 @@
 		"@wordpress/scripts": "Don't upgrade to v28 or greater until the plugin requires WordPress 6.6. See https://github.com/WordPress/gutenberg/pull/62265/files"
 	},
 	"overrides": {
+		"del": "^6.1.1",
 		"express": "^4.22.0",
 		"glob": "^10.5.0",
 		"js-yaml@^3": "3.14.2",
@@ -98,6 +99,7 @@
 		"qs": "^6.14.1"
 	},
 	"overridesComments": {
+		"del": "Fixes `npm run build`.",
 		"express": "Security update to v4.22.0 or later. Keep until @wordpress/scripts gets upgraded.",
 		"glob": "Security update to v10.5.0 or later.",
 		"js-yaml@^3": "Security update to v3.14.2. Keep until @wordpress/scripts gets upgraded.",
