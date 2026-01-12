@@ -104,6 +104,12 @@ p.content-helper-error-message-hint {
 					background: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
 				}
 			}
+
+			.components-button.boost-engagement {
+				display: flex;
+				justify-content: center;
+				margin: var(--grid-unit-15);
+			}
 		}
 	}
 

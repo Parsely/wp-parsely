@@ -88,7 +88,7 @@ class Lint_Rule {
 		string $error_message,
 		string $error_pattern,
 		string $include_files,
-		string $fix_pattern = null,
+		?string $fix_pattern = null,
 		array $exclude_dirs = array( 'artifacts', 'build', 'vendor', 'node_modules' )
 	) {
 		$this->error_message = $error_message;

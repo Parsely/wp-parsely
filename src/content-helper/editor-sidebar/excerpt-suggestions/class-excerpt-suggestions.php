@@ -37,7 +37,7 @@ class Excerpt_Suggestions extends Editor_Sidebar_Feature {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @return string The filter name.
+	 * @return non-empty-string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
 		return self::get_global_filter_name() . '_excerpt_generator';
