@@ -31,7 +31,8 @@
 		"rector/rector": "^1.0.0",
 		"szepeviktor/phpstan-wordpress": "^1.0",
 		"tomasvotruba/type-coverage": "^1.0.0",
-		"yoast/wp-test-utils": "^1"
+		"yoast/wp-test-utils": "^1",
+		"doctrine/instantiator": "^1.5 || ^2.0"
 	},
 	"config": {
 		"allow-plugins": {
