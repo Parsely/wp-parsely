@@ -20,6 +20,8 @@ trait TestsReflection {
 	 * 8.1, where setAccessible() is required. It is a no-op since PHP 8.1
 	 * and deprecated since PHP 8.5.
 	 *
+	 * @since 3.22.1
+	 *
 	 * @param ReflectionMethod|ReflectionProperty $reflection The reflection object.
 	 */
 	public static function make_accessible( object $reflection ): void {
