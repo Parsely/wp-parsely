@@ -653,7 +653,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$reflector = new ReflectionClass( $class_name );
 		$property  = $reflector->getProperty( $property_name );
 
-		$property->setAccessible( true );
+		self::make_accessible( $property );
 
 		return $property;
 	}
@@ -669,7 +669,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$reflector = new ReflectionClass( $class_name );
 		$method    = $reflector->getMethod( $method );
 
-		$method->setAccessible( true );
+		self::make_accessible( $method );
 
 		return $method;
 	}
