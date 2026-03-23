@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { type Page } from '@playwright/test';
+import { type FrameLocator } from '@playwright/test';
 
 /**
  * WordPress dependencies
@@ -33,7 +33,7 @@ test.describe( 'Recommendations Block', () => {
 	test( 'Should update correctly when any options are changed', async ( { admin } ) => {
 		const page = admin.page;
 		const editor = admin.editor;
-		const utils = new Utils( page );
+		const utils = new Utils( editor.canvas );
 
 		// Insert the Block in a new post.
 		await setSiteKeys( page, VALID_SITE_ID, '' );
@@ -41,11 +41,11 @@ test.describe( 'Recommendations Block', () => {
 		await editor.insertBlock( { name: 'wp-parsely/recommendations' } );
 
 		// Verify Block default values.
-		const listItems = page.locator( '.parsely-recommendations-list > li' );
-		await expect( page.locator( '.parsely-recommendations-list-title' ) )
+		const listItems = editor.canvas.locator( '.parsely-recommendations-list > li' );
+		await expect( editor.canvas.locator( '.parsely-recommendations-list-title' ) )
 			.toHaveText( 'Related Content' );
 		await expect( listItems ).toHaveCount( 3 );
-		expect( page.locator( '.parsely-recommendations-image' ) )
+		expect( editor.canvas.locator( '.parsely-recommendations-image' ) )
 			.toBeTruthy();
 
 		// Open sidebar to start changing settings.
@@ -80,7 +80,7 @@ test.describe( 'Recommendations Block', () => {
 
 		// Verify that toggling "Show Images" works.
 		await page.getByLabel( 'Show Images' ).click();
-		await expect( page.locator( '.parsely-recommendations-image' ) )
+		await expect( editor.canvas.locator( '.parsely-recommendations-image' ) )
 			.toHaveCount( 0 );
 	} );
 } );
@@ -92,21 +92,21 @@ test.describe( 'Recommendations Block', () => {
  */
 class Utils {
 	/**
-	 * The Page object of the calling function.
+	 * The FrameLocator for the editor canvas of the calling function.
 	 *
 	 * @since 3.17.0
 	 */
-	readonly page: Page;
+	readonly canvas: FrameLocator;
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param {Page} page The Page object of the calling function.
+	 * @param {FrameLocator} canvas The editor canvas FrameLocator of the calling function.
 	 */
-	constructor( page: Page ) {
-		this.page = page;
+	constructor( canvas: FrameLocator ) {
+		this.canvas = canvas;
 	}
 
 	/**
@@ -134,7 +134,7 @@ class Utils {
 	 * @return {Promise<Array<string | null>>} The "src" attribute of all images contained within the Block.
 	 */
 	async getResultImageUrls(): Promise<( string | null )[]> {
-		return this.page.locator( '.parsely-recommendations-image' )
+		return this.canvas.locator( '.parsely-recommendations-image' )
 			.evaluateAll( ( images: Element[] ) => images.map( ( image: Element ) =>
 				image.getAttribute( 'src' )
 			) );
@@ -148,7 +148,7 @@ class Utils {
 	 * @return {Promise<Array<string, string>>} The "target" and "rel" attributes of all links contained within the Block.
 	 */
 	async getLinkTargets(): Promise<string[][]> {
-		return this.page.locator( '.parsely-recommendations-link' )
+		return this.canvas.locator( '.parsely-recommendations-link' )
 			.evaluateAll( ( links: Element[] ) => links.map( ( link: Element ): string[] =>
 				[ link.getAttribute( 'target' ) ?? '', link.getAttribute( 'rel' ) ?? '' ]
 			) );
