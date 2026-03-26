@@ -50,15 +50,52 @@ export const getRelatedPostsMessage = async (
 	admin: Admin, selector: string = '.content-helper-error-message'
 ): Promise<string> => {
 	const page = admin.page;
-	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
 
 	await admin.createNewPost();
 
-	// Show the Content Intelligence Sidebar and expand the Related Posts panel.
+	// Show the Content Intelligence Sidebar.
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
-	await setSidebarPanelExpanded( page, 'Related Posts', true );
 
-	return await page.locator( contentHelperMessageSelector ).textContent() ?? '';
+	return getSidebarPanelOrTabMessage( page, selector );
+};
+
+/**
+ * Gets a message from the PCI Editor Sidebar, expanding the Related Posts
+ * panel when available, or reading the message from the tab level otherwise.
+ *
+ * When credentials are present, the Related Posts panel is visible and the
+ * message is found inside the opened panel body. When credentials are absent,
+ * the Related Posts panel is not rendered and the message appears at the tab
+ * level instead.
+ *
+ * @since 3.22.1
+ *
+ * @param {Page}   page     The Page object of the calling function.
+ * @param {string} selector The selector from which to extract the message.
+ *
+ * @return {Promise<string>} The message returned.
+ */
+export const getSidebarPanelOrTabMessage = async (
+	page: Page, selector: string = '.content-helper-error-message'
+): Promise<string> => {
+	// Wait for the sidebar content to render.
+	await page.locator( '.wp-parsely-content-helper' ).waitFor( { state: 'visible' } );
+
+	const relatedPostsButton = page.getByRole( 'button', { name: 'Related Posts' } );
+	const isRelatedPostsVisible = await relatedPostsButton.waitFor( { state: 'visible', timeout: 3000 } )
+		.then( () => true )
+		.catch( () => false );
+
+	// When credentials are absent, the Related Posts panel is not shown and
+	// the message appears at the tab level.
+	if ( isRelatedPostsVisible ) {
+		await setSidebarPanelExpanded( page, 'Related Posts', true );
+		return await page.locator(
+			'.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector
+		).textContent() ?? '';
+	}
+
+	return await page.locator( '.wp-parsely-content-helper ' + selector ).textContent() ?? '';
 };
 
 /**
