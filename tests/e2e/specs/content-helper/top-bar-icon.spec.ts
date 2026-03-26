@@ -13,7 +13,7 @@ import {
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
-	setSidebarPanelExpanded,
+	getSidebarPanelOrTabMessage,
 	setSiteKeys,
 } from '../../utils';
 
@@ -136,6 +136,10 @@ class Utils {
 	 * Tests the top bar icon by clicking on it and verifying that the PCH Editor
 	 * Sidebar opens.
 	 *
+	 * When credentials are absent, the Related Posts panel is not rendered and
+	 * the message appears at the tab level. In this case, the function returns
+	 * the tab-level message without attempting to expand a panel.
+	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 *
 	 * @param {string} siteId    The Site ID to use for the test.
@@ -152,13 +156,10 @@ class Utils {
 		await setSiteKeys( page, siteId, apiSecret );
 		await this.admin.createNewPost();
 
-		// Click the top bar icon and // Expand the Related Posts panel.
+		// Click the top bar icon.
 		await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
-		setSidebarPanelExpanded( page, 'Related Posts', true );
 
-		return await page.locator(
-			'.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector
-		).textContent() ?? '';
+		return getSidebarPanelOrTabMessage( page, selector );
 	}
 
 	/**
