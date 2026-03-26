@@ -20,6 +20,19 @@ import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/co
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
 
 /**
+ * Builds the Boost Engagement button URL from the admin base URL and post ID.
+ *
+ * @since 3.22.1
+ *
+ * @param {string} adminUrl The WordPress admin base URL.
+ * @param {number} postId   The current post ID.
+ * @return {string} The full URL to the engagement-boost page for the given post.
+ */
+export function getBoostEngagementUrl( adminUrl: string, postId: number ): string {
+	return `${ adminUrl }admin.php?page=parsely-dashboard-page#/engagement-boost/${ postId }`;
+}
+
+/**
  * SidebarToolsTab component props.
  *
  * @since 3.14.0
@@ -146,7 +159,7 @@ export const SidebarToolsTab = (
 			{ postId > 0 && isPostTrackable && permissions.TrafficBoost &&
 				<Button
 					className="boost-engagement"
-					href={ `/wp-admin/admin.php?page=parsely-dashboard-page#/engagement-boost/${ postId }` }
+					href={ getBoostEngagementUrl( window.wpParselyAdminUrl, postId ) }
 					rel="noopener"
 					target="_blank"
 					variant="secondary"
