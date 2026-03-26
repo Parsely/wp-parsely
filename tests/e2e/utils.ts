@@ -60,7 +60,7 @@ export const getRelatedPostsMessage = async (
 };
 
 /**
- * Gets a message from the PCH Editor Sidebar, expanding the Related Posts
+ * Gets a message from the PCI Editor Sidebar, expanding the Related Posts
  * panel when available, or reading the message from the tab level otherwise.
  *
  * When credentials are present, the Related Posts panel is visible and the
