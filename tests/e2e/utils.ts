@@ -39,10 +39,6 @@ export const setSiteKeys = async (
  * Gets the message returned by the PHC Editor Sidebar Related Posts panel
  * according to the various conditions passed to the function.
  *
- * When credentials are absent, the Related Posts panel is not rendered and the
- * message appears at the tab level. In this case, the function returns the
- * tab-level message without attempting to expand a panel.
- *
  * @since 3.17.0 Migrated to Playwright.
  *
  * @param {Admin}  admin    The Admin object of the calling function.
@@ -72,7 +68,7 @@ export const getRelatedPostsMessage = async (
  * the Related Posts panel is not rendered and the message appears at the tab
  * level instead.
  *
- * @since 3.17.0
+ * @since 3.22.1
  *
  * @param {Page}   page     The Page object of the calling function.
  * @param {string} selector The selector from which to extract the message.
@@ -86,10 +82,13 @@ export const getSidebarPanelOrTabMessage = async (
 	await page.locator( '.wp-parsely-content-helper' ).waitFor( { state: 'visible' } );
 
 	const relatedPostsButton = page.getByRole( 'button', { name: 'Related Posts' } );
+	const isRelatedPostsVisible = await relatedPostsButton.waitFor( { state: 'visible', timeout: 3000 } )
+		.then( () => true )
+		.catch( () => false );
 
 	// When credentials are absent, the Related Posts panel is not shown and
 	// the message appears at the tab level.
-	if ( await relatedPostsButton.isVisible() ) {
+	if ( isRelatedPostsVisible ) {
 		await setSidebarPanelExpanded( page, 'Related Posts', true );
 		return await page.locator(
 			'.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector
