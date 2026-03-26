@@ -82,20 +82,24 @@ export const getSidebarPanelOrTabMessage = async (
 	await page.locator( '.wp-parsely-content-helper' ).waitFor( { state: 'visible' } );
 
 	const relatedPostsButton = page.getByRole( 'button', { name: 'Related Posts' } );
-	const isRelatedPostsVisible = await relatedPostsButton.waitFor( { state: 'visible', timeout: 3000 } )
-		.then( () => true )
-		.catch( () => false );
+	const hasRelatedPostsPanel = ( await relatedPostsButton.count() ) > 0;
 
 	// When credentials are absent, the Related Posts panel is not shown and
 	// the message appears at the tab level.
-	if ( isRelatedPostsVisible ) {
+	if ( hasRelatedPostsPanel ) {
 		await setSidebarPanelExpanded( page, 'Related Posts', true );
-		return await page.locator(
+		const panelMessage = page.locator(
 			'.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector
-		).textContent() ?? '';
+		);
+		await panelMessage.waitFor( { state: 'visible' } );
+
+		return ( await panelMessage.textContent() ) ?? '';
 	}
 
-	return await page.locator( '.wp-parsely-content-helper ' + selector ).textContent() ?? '';
+	const tabMessage = page.locator( '.wp-parsely-content-helper ' + selector );
+	await tabMessage.waitFor( { state: 'visible' } );
+
+	return ( await tabMessage.textContent() ) ?? '';
 };
 
 /**
