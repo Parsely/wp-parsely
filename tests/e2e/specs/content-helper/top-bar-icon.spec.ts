@@ -13,7 +13,7 @@ import {
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
-	setSidebarPanelExpanded,
+	getSidebarPanelOrTabMessage,
 	setSiteKeys,
 } from '../../utils';
 
@@ -152,13 +152,10 @@ class Utils {
 		await setSiteKeys( page, siteId, apiSecret );
 		await this.admin.createNewPost();
 
-		// Click the top bar icon and // Expand the Related Posts panel.
+		// Click the top bar icon.
 		await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
-		setSidebarPanelExpanded( page, 'Related Posts', true );
 
-		return await page.locator(
-			'.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector
-		).textContent() ?? '';
+		return getSidebarPanelOrTabMessage( page, selector );
 	}
 
 	/**
