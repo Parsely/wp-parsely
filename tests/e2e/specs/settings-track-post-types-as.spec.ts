@@ -219,7 +219,7 @@ class Utils {
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
 	async activateRecrawlSection(): Promise<void> {
-		await this.page.goto( '/wp-admin/admin.php?page=parsely-settings' );
+		await this.page.goto( 'wp-admin/admin.php?page=parsely-settings' );
 		await this.page.click( '.recrawl-section-tab' );
 	}
 

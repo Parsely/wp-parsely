@@ -53,6 +53,54 @@ final class SiteHealthTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that the actions link in check_site_id() uses the correct admin
+	 * URL when WordPress is installed in a subdirectory, where admin_url() differs
+	 * from home_url() (i.e. siteurl ≠ home option).
+	 *
+	 * @since 3.22.1
+	 *
+	 * @covers \Parsely\UI\Site_Health::check_site_id
+	 * @uses \Parsely\Parsely::get_settings_url
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 */
+	public function test_check_site_id_uses_admin_url_for_subdirectory_install(): void {
+		$original_siteurl = get_option( 'siteurl' );
+		update_option( 'siteurl', 'http://example.org/wordpress' );
+
+		try {
+			// Re-instantiate so that get_settings_url() picks up the updated siteurl.
+			self::$site_health = new Site_Health( new Parsely() );
+
+			// Remove the Site ID to trigger the "critical" branch that renders the link.
+			self::set_options( array( 'apikey' => '' ) );
+
+			$tests = self::$site_health->check_site_id( array( 'direct' => array() ) );
+
+			// Assert the expected structure before drilling into it. This also
+			// narrows the types for static analysis.
+			self::assertIsArray( $tests['direct'] );
+			self::assertIsArray( $tests['direct']['parsely'] );
+			self::assertIsCallable( $tests['direct']['parsely']['test'] );
+
+			/** @var array{actions?: string} $result */
+			$result = ( $tests['direct']['parsely']['test'] )();
+
+			self::assertStringContainsString(
+				'http://example.org/wordpress/wp-admin/admin.php?page=parsely-settings',
+				$result['actions'] ?? '',
+				'The actions link must reflect the subdirectory admin URL.'
+			);
+			self::assertStringNotContainsString(
+				'href="/wp-admin/',
+				$result['actions'] ?? '',
+				'The actions link must not contain a hardcoded root /wp-admin/ path.'
+			);
+		} finally {
+			update_option( 'siteurl', $original_siteurl );
+		}
+	}
+
+	/**
 	 * Verifies that options_debug_info() can populate the args array to be
 	 * consumed by WordPress.
 	 *
