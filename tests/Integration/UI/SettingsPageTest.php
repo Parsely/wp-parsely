@@ -591,6 +591,30 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that get_settings_url() returns the correct URL when WordPress
+	 * is installed in a subdirectory, where admin_url() differs from home_url()
+	 * (i.e. siteurl ≠ home option).
+	 *
+	 * @since 3.22.1
+	 *
+	 * @covers \Parsely\Parsely::get_settings_url
+	 */
+	public function test_get_settings_url_with_subdirectory_install(): void {
+		$original_siteurl = get_option( 'siteurl' );
+		update_option( 'siteurl', 'http://example.org/wordpress' );
+
+		try {
+			self::assertSame(
+				'http://example.org/wordpress/wp-admin/admin.php?page=parsely-settings',
+				self::$parsely::get_settings_url(),
+				'The URL must reflect the subdirectory siteurl, not a hardcoded /wp-admin/ path.'
+			);
+		} finally {
+			update_option( 'siteurl', $original_siteurl );
+		}
+	}
+
+	/**
 	 * Verifies that the HTML markup generated for managed option fields is as
 	 * expected.
 	 *
