@@ -12,6 +12,7 @@ namespace Parsely\Tests\Unit\Integrations;
 use Parsely\Integrations\Integration;
 use Parsely\Integrations\Integrations;
 use Parsely\Parsely;
+use Parsely\Tests\Traits\TestsReflection;
 use ReflectionClass;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
@@ -19,6 +20,8 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
  * Unit Tests for the Integrations collection.
  */
 final class IntegrationsTest extends TestCase {
+	use TestsReflection;
+
 	/**
 	 * Internal variable.
 	 *
@@ -49,7 +52,7 @@ final class IntegrationsTest extends TestCase {
 		// Use Reflection to look inside the collection.
 		$reflector          = new ReflectionClass( $integrations );
 		$reflector_property = $reflector->getProperty( 'integrations' );
-		$reflector_property->setAccessible( true );
+		self::make_accessible( $reflector_property );
 		/**
 		 * Variable.
 		 *

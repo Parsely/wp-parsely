@@ -1297,7 +1297,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		// Replace the original API with the mock, using reflection.
 		$api_reflection = new ReflectionProperty( $obj, 'content_api' );
-		$api_reflection->setAccessible( true );
+		self::make_accessible( $api_reflection );
 		$api_reflection->setValue( $obj, $api );
 
 		return $obj->get_parsely_stats_response();
