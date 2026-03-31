@@ -1,9 +1,5 @@
 .column-parsely-stats {
-	width: 200px;
-
-	@media only screen and (max-width: 991px) {
-		width: 150px;
-	}
+	width: 6%;
 
 	.parsely-post-stats {
 		color: #959da5;
@@ -18,4 +14,9 @@
 	.parsely-post-page-views {
 		color: #000;
 	}
+}
+
+.fixed .column-categories,
+.fixed .column-tags {
+	width: 10%;
 }
