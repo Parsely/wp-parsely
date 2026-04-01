@@ -45,6 +45,7 @@ use WP_Post;
  *   meta_type: string,
  *   logo: string,
  *   metadata_secret: string,
+ *   tracker_url: string,
  *   disable_autotrack: bool,
  *   plugin_version: string,
  * }
@@ -165,6 +166,7 @@ class Parsely {
 		'meta_type'                  => 'json_ld',
 		'logo'                       => '',
 		'metadata_secret'            => '',
+		'tracker_url'                => '',
 		'disable_autotrack'          => false,
 		'plugin_version'             => self::VERSION,
 	);
@@ -372,8 +374,21 @@ class Parsely {
 	 */
 	public function get_tracker_url(): string {
 		if ( $this->site_id_is_set() ) {
-			$tracker_url = 'https://cdn.parsely.com/keys/' . $this->get_site_id() . '/p.js';
-			return esc_url( $tracker_url );
+			$options     = $this->get_options();
+			$tracker_url = $options['tracker_url'];
+
+			if ( '' === $tracker_url ) {
+				$tracker_url = 'https://cdn.parsely.com/keys/' . $this->get_site_id() . '/p.js';
+			}
+
+			/**
+			 * Filters the URL of the Parse.ly tracker script.
+			 *
+			 * @since 3.22.2
+			 *
+			 * @param string $tracker_url The URL of the tracker script.
+			 */
+			return esc_url( apply_filters( 'wp_parsely_tracker_url', $tracker_url ) );
 		}
 		return '';
 	}
