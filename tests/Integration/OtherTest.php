@@ -403,26 +403,6 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the tracker URL can be overridden via the tracker_url option.
-	 *
-	 * @since 3.22.2
-	 *
-	 * @covers \Parsely\Parsely::get_tracker_url
-	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 */
-	public function test_get_tracker_url_custom_option(): void {
-		$custom_url = 'https://my-cdn.example.com/p.js';
-		self::set_options(
-			array(
-				'apikey'      => self::VALID_SITE_ID,
-				'tracker_url' => $custom_url,
-			)
-		);
-		self::assertSame( $custom_url, self::$parsely->get_tracker_url() );
-	}
-
-	/**
 	 * Verifies that the tracker URL can be overridden via the
 	 * wp_parsely_tracker_url filter.
 	 *
@@ -445,36 +425,5 @@ final class OtherTest extends TestCase {
 		);
 
 		self::assertSame( $custom_url, self::$parsely->get_tracker_url() );
-	}
-
-	/**
-	 * Verifies that the wp_parsely_tracker_url filter takes precedence over
-	 * the tracker_url option.
-	 *
-	 * @since 3.22.2
-	 *
-	 * @covers \Parsely\Parsely::get_tracker_url
-	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 */
-	public function test_get_tracker_url_filter_overrides_option(): void {
-		$option_url = 'https://option-cdn.example.com/p.js';
-		$filter_url = 'https://filter-cdn.example.com/p.js';
-
-		self::set_options(
-			array(
-				'apikey'      => self::VALID_SITE_ID,
-				'tracker_url' => $option_url,
-			)
-		);
-
-		add_filter(
-			'wp_parsely_tracker_url',
-			function () use ( $filter_url ): string {
-				return $filter_url;
-			}
-		);
-
-		self::assertSame( $filter_url, self::$parsely->get_tracker_url() );
 	}
 }

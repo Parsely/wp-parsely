@@ -886,25 +886,6 @@ final class Settings_Page {
 				),
 			)
 		);
-
-		// Custom Tracker URL.
-		$field_id   = 'tracker_url';
-		$field_args = array(
-			'option_key'    => $field_id,
-			'help_text'     => __( 'If specified, the Parse.ly tracker script will be loaded from this URL instead of the default CDN. <strong>Warning:</strong> Only change this if you know what you are doing. Using an incorrect URL will break tracking on your site. This setting can be overridden by the <code>wp_parsely_tracker_url</code> filter.', 'wp-parsely' ),
-			'label_for'     => $field_id,
-			'optional_args' => array(
-				'placeholder' => 'https://cdn.parsely.com/keys/example.com/p.js',
-			),
-		);
-		add_settings_field(
-			$field_id,
-			__( 'Custom Tracker URL', 'wp-parsely' ),
-			array( $this, 'print_text_tag' ),
-			Parsely::MENU_SLUG,
-			$section_key,
-			$field_args
-		);
 	}
 
 	/**
@@ -1809,12 +1790,6 @@ final class Settings_Page {
 			);
 		} else {
 			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
-		}
-
-		if ( isset( $input['tracker_url'] ) ) {
-			$input['tracker_url'] = sanitize_url( $input['tracker_url'] );
-		} else {
-			$input['tracker_url'] = $options['tracker_url'];
 		}
 
 		return $input;
