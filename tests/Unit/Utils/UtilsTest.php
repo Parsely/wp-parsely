@@ -159,27 +159,27 @@ final class UtilsTest extends TestCase {
 		$tests_data = array(
 			array(
 				'args'            => array( 'seconds' => 0 ),
-				'expected_output' => '0 sec.',
+				'expected_output' => '0s',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
 				'args'            => array( 'seconds' => 0.5 ),
-				'expected_output' => '1 sec.',
+				'expected_output' => '1s',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
 				'args'            => array( 'seconds' => 0.5000 ),
-				'expected_output' => '1 sec.',
+				'expected_output' => '1s',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
 				'args'            => array( 'seconds' => 0.51 ),
-				'expected_output' => '1 sec.',
+				'expected_output' => '1s',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
 				'args'            => array( 'seconds' => 59 ),
-				'expected_output' => '59 sec.',
+				'expected_output' => '59s',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
