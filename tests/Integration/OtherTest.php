@@ -406,7 +406,7 @@ final class OtherTest extends TestCase {
 	 * Verifies that the tracker URL can be overridden via the
 	 * wp_parsely_tracker_url filter.
 	 *
-	 * @since 3.22.2
+	 * @since 3.23.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::site_id_is_set

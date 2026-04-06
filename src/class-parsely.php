@@ -377,7 +377,7 @@ class Parsely {
 			/**
 			 * Filters the URL of the Parse.ly tracker script.
 			 *
-			 * @since 3.22.2
+			 * @since 3.23.0
 			 *
 			 * @param string $tracker_url The URL of the tracker script.
 			 */
