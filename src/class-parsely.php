@@ -377,12 +377,15 @@ class Parsely {
 			/**
 			 * Filters the URL of the Parse.ly tracker script.
 			 *
+			 * The filtered value gets sanitized with {@see esc_url_raw()}.
+			 *
 			 * @since 3.23.0
 			 *
 			 * @param string $tracker_url The URL of the tracker script.
 			 */
-			return esc_url( apply_filters( 'wp_parsely_tracker_url', $tracker_url ) );
+			return esc_url_raw( apply_filters( 'wp_parsely_tracker_url', $tracker_url ) );
 		}
+
 		return '';
 	}
 
