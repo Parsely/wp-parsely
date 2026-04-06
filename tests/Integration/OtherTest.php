@@ -401,4 +401,29 @@ final class OtherTest extends TestCase {
 		$expected = '';
 		self::assertSame( $expected, self::$parsely->get_tracker_url() );
 	}
+
+	/**
+	 * Verifies that the tracker URL can be overridden via the
+	 * wp_parsely_tracker_url filter.
+	 *
+	 * @since 3.23.0
+	 *
+	 * @covers \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_options
+	 */
+	public function test_get_tracker_url_filter(): void {
+		self::set_options( array( 'apikey' => self::VALID_SITE_ID ) );
+		$custom_url = 'https://my-first-party-cdn.example.com/p.js';
+
+		add_filter(
+			'wp_parsely_tracker_url',
+			function () use ( $custom_url ): string {
+				return $custom_url;
+			}
+		);
+
+		self::assertSame( $custom_url, self::$parsely->get_tracker_url() );
+	}
 }
