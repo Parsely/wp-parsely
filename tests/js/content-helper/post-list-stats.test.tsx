@@ -22,11 +22,11 @@ describe( 'src/content-helper/post-list-stats', () => {
 
 		window.wpParselyPostsStatsResponse = JSON.stringify( {
 			data: {
-				'key-1': { page_views: '0 page views', visitors: '0 visitors', avg_time: '0 sec. avg time' },
-				'key-3': { page_views: '3 page views', visitors: '3 visitors', avg_time: '3 sec. avg time' },
-				'key-4': { page_views: '4 page views' },
-				'key-5': { visitors: '5 visitors' },
-				'key-6': { avg_time: '6 sec. avg time' },
+				'key-1': { page_views: '0', visitors: '0', avg_time: '0s' },
+				'key-3': { page_views: '3', visitors: '3', avg_time: '3s' },
+				'key-4': { page_views: '4' },
+				'key-5': { visitors: '5' },
+				'key-6': { avg_time: '6s' },
 			},
 			error: null,
 		} );
@@ -40,32 +40,32 @@ describe( 'src/content-helper/post-list-stats', () => {
 		expect( allPostStats.length ).toBe( 7 );
 
 		const postStat1 = getPostStatsElement( 'key-1' );
-		expect( getPageViewsElement( postStat1 )?.textContent ).toBe( '0 page views' );
-		expect( getVisitorsElement( postStat1 )?.textContent ).toBe( '0 visitors' );
-		expect( getAvgTimeElement( postStat1 )?.textContent ).toBe( '0 sec. avg time' );
+		expect( getPageViewsElement( postStat1 )?.textContent ).toBe( 'Page views: 0' );
+		expect( getVisitorsElement( postStat1 )?.textContent ).toBe( 'Visitors: 0' );
+		expect( getAvgTimeElement( postStat1 )?.textContent ).toBe( 'Avg. time: 0s' );
 
 		const postStat2 = getPostStatsElement( 'key-2' );
 		expect( postStat2?.textContent ).toBe( '—' );
 
 		const postStat3 = getPostStatsElement( 'key-3' );
-		expect( getPageViewsElement( postStat3 )?.textContent ).toBe( '3 page views' );
-		expect( getVisitorsElement( postStat3 )?.textContent ).toBe( '3 visitors' );
-		expect( getAvgTimeElement( postStat3 )?.textContent ).toBe( '3 sec. avg time' );
+		expect( getPageViewsElement( postStat3 )?.textContent ).toBe( 'Page views: 3' );
+		expect( getVisitorsElement( postStat3 )?.textContent ).toBe( 'Visitors: 3' );
+		expect( getAvgTimeElement( postStat3 )?.textContent ).toBe( 'Avg. time: 3s' );
 
 		const postStat4 = getPostStatsElement( 'key-4' );
-		expect( getPageViewsElement( postStat4 )?.textContent ).toBe( '4 page views' );
+		expect( getPageViewsElement( postStat4 )?.textContent ).toBe( 'Page views: 4' );
 		expect( getVisitorsElement( postStat4 ) ).toBeNull();
 		expect( getAvgTimeElement( postStat4 ) ).toBeNull();
 
 		const postStat5 = getPostStatsElement( 'key-5' );
 		expect( getPageViewsElement( postStat5 ) ).toBeNull();
-		expect( getVisitorsElement( postStat5 )?.textContent ).toBe( '5 visitors' );
+		expect( getVisitorsElement( postStat5 )?.textContent ).toBe( 'Visitors: 5' );
 		expect( getAvgTimeElement( postStat5 ) ).toBeNull();
 
 		const postStat6 = getPostStatsElement( 'key-6' );
 		expect( getPageViewsElement( postStat6 ) ).toBeNull();
 		expect( getVisitorsElement( postStat6 ) ).toBeNull();
-		expect( getAvgTimeElement( postStat6 )?.textContent ).toBe( '6 sec. avg time' );
+		expect( getAvgTimeElement( postStat6 )?.textContent ).toBe( 'Avg. time: 6s' );
 
 		const postStat7 = getPostStatsElement( 'key-7' );
 		expect( postStat7?.textContent ).toBe( '—' );
@@ -123,7 +123,7 @@ function getParselyStatsPlaceholders( numOfPlaceholders: number ): React.JSX.Ele
 		placeholders.push(
 			// This placeholder content should be kept in sync with Post_List_Stats
 			<div className="parsely-post-stats" key={ i } data-stats-key={ `key-${ i }` }>
-				<span className="parsely-post-stats-placeholder">...</span>
+				<span className="parsely-post-stats-placeholder">&mdash;</span>
 			</div>
 		);
 	}
@@ -144,15 +144,15 @@ function getPostStatsElement( key: string ): Element | null {
 }
 
 function getPageViewsElement( postStatElement: Element | null ): Element | null {
-	return postStatElement ? postStatElement.querySelector( `.parsely-post-page-views` ) : null;
+	return postStatElement ? postStatElement.querySelector( '.parsely-post-page-views .screen-reader-text' ) : null;
 }
 
 function getVisitorsElement( postStatElement: Element | null ): Element | null {
-	return postStatElement ? postStatElement.querySelector( `.parsely-post-visitors` ) : null;
+	return postStatElement ? postStatElement.querySelector( '.parsely-post-visitors .screen-reader-text' ) : null;
 }
 
 function getAvgTimeElement( postStatElement: Element | null ): Element | null {
-	return postStatElement ? postStatElement.querySelector( `.parsely-post-avg-time` ) : null;
+	return postStatElement ? postStatElement.querySelector( '.parsely-post-avg-time .screen-reader-text' ) : null;
 }
 
 function getStatsErrorElement(): Element | null {
