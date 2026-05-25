@@ -40,13 +40,26 @@ test.describe( 'Front-end tracking code injection', () => {
 		await page.goto( '/' );
 
 		const assetVersion = await utils.getAssetVersion();
-		const content = await page.content();
 
-		expect( content ).toContain( '<link rel="dns-prefetch" href="//cdn.parsely.com">' );
-		expect( content ).toContain( `<script data-parsely-site="${ VALID_SITE_ID }" src="https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
-		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }" id="wp-parsely-loader-js"></script>` );
-		expect( content ).not.toContain( "<script id='wp-parsely-loader-js-before'>" );
-		expect( content ).not.toContain( 'window.wpParselySiteId =' );
+		await expect( page.locator( 'link[rel="dns-prefetch"][href="//cdn.parsely.com"]' ) ).toHaveCount( 1 );
+
+		const parselyConfigScript = page.locator( 'script#parsely-cfg' );
+		await expect( parselyConfigScript ).toHaveCount( 1 );
+		await expect( parselyConfigScript ).toHaveAttribute( 'data-parsely-site', VALID_SITE_ID );
+		await expect( parselyConfigScript ).toHaveAttribute(
+			'src',
+			`https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }`
+		);
+
+		const loaderScript = page.locator( 'script#wp-parsely-loader-js' );
+		await expect( loaderScript ).toHaveCount( 1 );
+		await expect( loaderScript ).toHaveAttribute(
+			'src',
+			`http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }`
+		);
+
+		await expect( page.locator( 'script#wp-parsely-loader-js-before' ) ).toHaveCount( 0 );
+		await expect( page.locator( 'script', { hasText: 'window.wpParselySiteId =' } ) ).toHaveCount( 0 );
 	} );
 
 	/**
@@ -62,13 +75,27 @@ test.describe( 'Front-end tracking code injection', () => {
 		await page.goto( '/' );
 
 		const assetVersion = await utils.getAssetVersion();
-		const content = await page.content();
 
-		expect( content ).toContain( '<link rel="dns-prefetch" href="//cdn.parsely.com">' );
-		expect( content ).toContain( `<script data-parsely-site="${ VALID_SITE_ID }" src="https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
-		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }" id="wp-parsely-loader-js"></script>` );
-		expect( content ).toContain( '<script id="wp-parsely-loader-js-before">' );
-		expect( content ).toContain( `window.wpParselySiteId = '${ VALID_SITE_ID }'` );
+		await expect( page.locator( 'link[rel="dns-prefetch"][href="//cdn.parsely.com"]' ) ).toHaveCount( 1 );
+
+		const parselyConfigScript = page.locator( 'script#parsely-cfg' );
+		await expect( parselyConfigScript ).toHaveCount( 1 );
+		await expect( parselyConfigScript ).toHaveAttribute( 'data-parsely-site', VALID_SITE_ID );
+		await expect( parselyConfigScript ).toHaveAttribute(
+			'src',
+			`https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }`
+		);
+
+		const loaderScript = page.locator( 'script#wp-parsely-loader-js' );
+		await expect( loaderScript ).toHaveCount( 1 );
+		await expect( loaderScript ).toHaveAttribute(
+			'src',
+			`http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }`
+		);
+
+		const loaderInlineScript = page.locator( 'script#wp-parsely-loader-js-before' );
+		await expect( loaderInlineScript ).toHaveCount( 1 );
+		await expect( loaderInlineScript ).toContainText( `window.wpParselySiteId = '${ VALID_SITE_ID }'` );
 	} );
 } );
 
