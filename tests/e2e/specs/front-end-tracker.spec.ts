@@ -95,7 +95,10 @@ test.describe( 'Front-end tracking code injection', () => {
 
 		const loaderInlineScript = page.locator( 'script#wp-parsely-loader-js-before' );
 		await expect( loaderInlineScript ).toHaveCount( 1 );
-		await expect( loaderInlineScript ).toContainText( `window.wpParselySiteId = '${ VALID_SITE_ID }'` );
+		// `toContainText` returns "" for non-visible elements like <script>; use
+		// evaluate() to read textContent directly from the DOM instead.
+		const scriptContent = await loaderInlineScript.evaluate( ( el ) => el.textContent ?? '' );
+		expect( scriptContent ).toContain( `window.wpParselySiteId = '${ VALID_SITE_ID }'` );
 	} );
 } );
 
