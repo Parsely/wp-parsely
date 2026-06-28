@@ -35,7 +35,7 @@ test.describe( 'Front end metadata insertion', () => {
 		await setSiteKeys( page, VALID_SITE_ID, '' );
 
 		// Activate tracking for logged-in users.
-		await page.goto( '/wp-admin/admin.php?page=parsely-settings' );
+		await page.goto( 'wp-admin/admin.php?page=parsely-settings' );
 		await page.getByLabel( 'Yes, track logged-in users.' ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 	} );
