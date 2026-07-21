@@ -42,6 +42,15 @@ test.describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
 	test( 'Should attempt to fetch results when a Site ID and API Secret are provided', async ( { admin } ) => {
+		// Intercept the Related Posts API request to ensure the loading message
+		// stays visible long enough for the assertion. Without this, the fetch
+		// may complete before the check runs, causing a timeout on the transient
+		// loading state.
+		await admin.page.route( /\/wp-parsely\/v2\/stats\/posts/, async ( route ) => {
+			await new Promise( ( resolve ) => setTimeout( resolve, 2000 ) );
+			await route.continue();
+		} );
+
 		expect( await getRelatedPostsMessage(
 			admin, '.related-posts-loading-message'
 		) ).toMatch( `Loading…` );
