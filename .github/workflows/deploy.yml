@@ -5,7 +5,7 @@ jobs:
     name: New tag
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build # Remove or modify this step as needed
         run: |
           npm ci
