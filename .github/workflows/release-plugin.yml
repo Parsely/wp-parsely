@@ -52,7 +52,7 @@ jobs:
           fi
 
       - name: Checkout the specific branch/ref
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.SOURCE_REF }}
           fetch-depth: 0
@@ -131,7 +131,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Checkout the specific branch/ref
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.SOURCE_REF }}
           fetch-depth: 0
@@ -221,7 +221,7 @@ jobs:
           echo "Skip Tests: ${{ env.SKIP_TESTS }}"
           echo "Version: ${{ env.VERSION }}"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.tag_and_release.outputs.tag_name }}
 
