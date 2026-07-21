@@ -43,7 +43,7 @@ final class IntegrationsTest extends TestCase {
 
 		// Use Reflection to look inside the collection.
 		$reflector_property = ( new ReflectionClass( $integrations ) )->getProperty( 'integrations' );
-		$reflector_property->setAccessible( true );
+		self::make_accessible( $reflector_property );
 		/**
 		 * Variable.
 		 *

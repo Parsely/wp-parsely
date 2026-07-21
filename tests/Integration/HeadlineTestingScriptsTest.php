@@ -31,16 +31,6 @@ final class HeadlineTestingScriptsTest extends TestCase {
 	private static $headline_testing;
 
 	/**
-	 * One-line script string used in assertions.
-	 *
-	 * @since 3.21.0
-	 *
-	 * @var string $one_line_script_string Holds the one-line script string.
-	 */
-	private static $one_line_script_string = 'src="https://experiments.parsely.com/vip-experiments.js?apiKey=demoaccount.parsely.com&amp;ver='
-		. PARSELY_VERSION . '" id="parsely-headline-testing-one-line-js"';
-
-	/**
 	 * Advanced script string used in assertions.
 	 *
 	 * @since 3.21.0
@@ -262,7 +252,7 @@ final class HeadlineTestingScriptsTest extends TestCase {
 		$output = (string) ob_get_clean();
 
 		// Markup should contain the one-line script and not the advanced script.
-		self::assertStringContainsString( self::$one_line_script_string, $output );
+		$this->assert_one_line_script_in_output( $output );
 		self::assertStringNotContainsString( self::$advanced_script_string, $output );
 	}
 
@@ -307,10 +297,7 @@ final class HeadlineTestingScriptsTest extends TestCase {
 		$output = (string) ob_get_clean();
 
 		// Markup should contain the one-line script with the option's attribute.
-		self::assertStringContainsString(
-			self::$one_line_script_string . ' data-enable-live-updates="true"',
-			$output
-		);
+		$this->assert_one_line_script_in_output( $output, array( 'data-enable-live-updates' => 'true' ) );
 		self::assertStringNotContainsString( self::$advanced_script_string, $output );
 	}
 
@@ -410,7 +397,7 @@ final class HeadlineTestingScriptsTest extends TestCase {
 
 		// Markup should contain the advanced script and not the one-line script.
 		self::assertStringContainsString( self::$advanced_script_string, $output );
-		self::assertStringNotContainsString( self::$one_line_script_string, $output );
+		$this->assert_one_line_script_not_in_output( $output );
 	}
 
 	/**
@@ -460,7 +447,7 @@ final class HeadlineTestingScriptsTest extends TestCase {
 		// Markup should contain the advanced script with the option's config.
 		self::assertStringContainsString( self::$advanced_script_string, $output );
 		self::assertStringContainsString( 'enableLiveUpdates: true', $output );
-		self::assertStringNotContainsString( self::$one_line_script_string, $output );
+		$this->assert_one_line_script_not_in_output( $output );
 	}
 
 	/**
@@ -483,5 +470,43 @@ final class HeadlineTestingScriptsTest extends TestCase {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Asserts that the one-line headline testing script tag is present in the
+	 * given HTML output.
+	 *
+	 * Uses a regex with lookaheads to verify each attribute independently,
+	 * making the assertion robust against WordPress changes to attribute order
+	 * or HTML entity encoding variants (e.g. &amp; vs &#038;).
+	 *
+	 * @since 3.22.1
+	 *
+	 * @param string               $output      The HTML output to search.
+	 * @param array<string,string> $extra_attrs Optional extra attributes to assert on the tag.
+	 */
+	private function assert_one_line_script_in_output( string $output, array $extra_attrs = array() ): void {
+		$version    = preg_quote( PARSELY_VERSION, '~' );
+		$lookaheads = '(?=[^>]*\bid="parsely-headline-testing-one-line-js")'
+			. '(?=[^>]*\bsrc="https://experiments\.parsely\.com/vip-experiments\.js'
+			. '\?apiKey=demoaccount\.parsely\.com(?:&amp;|&#038;)ver=' . $version . '")';
+
+		foreach ( $extra_attrs as $attr => $value ) {
+			$lookaheads .= '(?=[^>]*\b' . preg_quote( $attr, '~' ) . '="' . preg_quote( $value, '~' ) . '")';
+		}
+
+		self::assertMatchesRegularExpression( '~<script' . $lookaheads . '~', $output );
+	}
+
+	/**
+	 * Asserts that the one-line headline testing script tag is not present in
+	 * the given HTML output.
+	 *
+	 * @since 3.22.1
+	 *
+	 * @param string $output The HTML output to search.
+	 */
+	private function assert_one_line_script_not_in_output( string $output ): void {
+		self::assertStringNotContainsString( 'id="parsely-headline-testing-one-line-js"', $output );
 	}
 }

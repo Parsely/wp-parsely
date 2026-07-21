@@ -33,7 +33,7 @@ test.describe( 'Recommendations Block', () => {
 		await admin.createNewPost();
 		await admin.editor.insertBlock( { name: 'wp-parsely/recommendations' } );
 
-		await expect( page.getByText(
+		await expect( admin.editor.canvas.getByText(
 			'Access denied. Please verify that your Site ID is valid.',
 			{ exact: true }
 		) ).toBeVisible();
@@ -51,7 +51,7 @@ test.describe( 'Recommendations Block', () => {
 		await admin.createNewPost();
 		await admin.editor.insertBlock( { name: 'wp-parsely/recommendations' } );
 
-		await expect( page.getByText(
+		await expect( admin.editor.canvas.getByText(
 			'To use this Block, a Parse.ly Site ID must be set in the plugin\'s options',
 			{ exact: true }
 		) ).toBeVisible();
@@ -71,7 +71,7 @@ test.describe( 'Recommendations Block', () => {
 		await context.setOffline( true );
 		await admin.editor.insertBlock( { name: 'wp-parsely/recommendations' } );
 
-		await expect( page.getByText(
+		await expect( admin.editor.canvas.getByText(
 			'The Parse.ly Recommendations API is not accessible. You may be offline.',
 			{ exact: true }
 		) ).toBeVisible();

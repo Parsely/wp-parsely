@@ -41,7 +41,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @var string
 	 */
-	private static $parsely_stats_column_header = 'Parse.ly Stats (7d)';
+	private static $parsely_stats_column_header = 'Parse.ly (7d)';
 
 	/**
 	 * Internal variable.
@@ -604,7 +604,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @return string
 	 */
 	private function get_parsely_stats_placeholder_content( string $key ): string {
-		return "		<div class=\"parsely-post-stats\" data-stats-key=\"$key\">\n			<span class=\"parsely-post-stats-placeholder\">...</span>\n		</div>\n		";
+		return "		<div class=\"parsely-post-stats\" data-stats-key=\"$key\">\n			<span class=\"parsely-post-stats-placeholder\">—</span>\n		</div>\n		";
 	}
 
 	/**
@@ -1118,6 +1118,22 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 					'avg_engaged' => 0.01,
 				),
 			),
+			array(
+				'url'     => 'http://example.com/2010/01/14/title-14-publish',
+				'metrics' => array(
+					'views'       => 1,
+					'visitors'    => 1,
+					'avg_engaged' => 1.0, // Exactly 60 seconds: s -> m:ss boundary.
+				),
+			),
+			array(
+				'url'     => 'http://example.com/2010/01/15/title-15-publish',
+				'metrics' => array(
+					'views'       => 1,
+					'visitors'    => 1,
+					'avg_engaged' => 60.0, // Exactly 3600 seconds: m:ss -> h:mm:ss boundary.
+				),
+			),
 		);
 		$res          = $this->get_parsely_stats_response(
 			$posts,
@@ -1134,64 +1150,74 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		self::assertSame(
 			array(
 				'/2010/01/01/title-1-publish'  => array(
-					'page_views' => '0 page views',
-					'visitors'   => '0 visitors',
-					'avg_time'   => '0 sec. avg time',
+					'page_views' => '0',
+					'visitors'   => '0',
+					'avg_time'   => '0s', // 0 seconds.
 				),
 				'/2010/01/02/title-2-publish'  => array(
-					'page_views' => '1 page view',
-					'visitors'   => '1 visitor',
-					'avg_time'   => '0 sec. avg time', // 0.3 seconds.
+					'page_views' => '1',
+					'visitors'   => '1',
+					'avg_time'   => '0s', // 0.3 seconds.
 				),
 				'/2010/01/03/title-3-publish'  => array(
-					'page_views' => '1 page view',
-					'visitors'   => '1 visitor',
-					'avg_time'   => '1 sec. avg time', // 0.6 seconds.
+					'page_views' => '1',
+					'visitors'   => '1',
+					'avg_time'   => '1s', // 0.6 seconds.
 				),
 				'/2010/01/04/title-4-publish'  => array(
-					'page_views' => '1 page view',
-					'visitors'   => '1 visitor',
-					'avg_time'   => '59 sec. avg time', // 59 seconds.
+					'page_views' => '1',
+					'visitors'   => '1',
+					'avg_time'   => '59s', // 59 seconds.
 				),
 				'/2010/01/05/title-5-publish'  => array(
-					'page_views' => '1.1k page views',
-					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:00 avg time', // 59.52 seconds.
+					'page_views' => '1.1k',
+					'visitors'   => '1.1M',
+					'avg_time'   => '1:00', // 59.52 seconds.
 				),
 				'/2010/01/06/title-6-publish'  => array(
-					'page_views' => '1.1k page views',
-					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:00 avg time', // 59.7 seconds.
+					'page_views' => '1.1k',
+					'visitors'   => '1.1M',
+					'avg_time'   => '1:00', // 59.7 seconds.
 				),
 				'/2010/01/07/title-7-publish'  => array(
-					'page_views' => '1 page view',
-					'visitors'   => '1 visitor',
-					'avg_time'   => '1:05 avg time', // 65 seconds.
+					'page_views' => '1',
+					'visitors'   => '1',
+					'avg_time'   => '1:05', // 65 seconds.
 				),
 				'/2010/01/08/title-8-publish'  => array(
-					'page_views' => '1.1k page views',
-					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:06 avg time', // 66 seconds.
+					'page_views' => '1.1k',
+					'visitors'   => '1.1M',
+					'avg_time'   => '1:06', // 66 seconds.
 				),
 				'/2010/01/09/title-9-publish'  => array(
-					'page_views' => '1.1k page views',
-					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:01:05 avg time', // 3665 seconds.
+					'page_views' => '1.1k',
+					'visitors'   => '1.1M',
+					'avg_time'   => '1:01:05', // 3665 seconds.
 				),
 				'/2010/01/11/title-11-publish' => array(
-					'page_views' => '1 page view',
-					'visitors'   => '0 visitors',
-					'avg_time'   => '0 sec. avg time',
+					'page_views' => '1',
+					'visitors'   => '0',
+					'avg_time'   => '0s',
 				),
 				'/2010/01/12/title-12-publish' => array(
-					'page_views' => '0 page views',
-					'visitors'   => '1 visitor',
-					'avg_time'   => '0 sec. avg time',
+					'page_views' => '0',
+					'visitors'   => '1',
+					'avg_time'   => '0s',
 				),
 				'/2010/01/13/title-13-publish' => array(
-					'page_views' => '0 page views',
-					'visitors'   => '0 visitors',
-					'avg_time'   => '1 sec. avg time', // 0.6 seconds.
+					'page_views' => '0',
+					'visitors'   => '0',
+					'avg_time'   => '1s', // 0.6 seconds.
+				),
+				'/2010/01/14/title-14-publish' => array(
+					'page_views' => '1',
+					'visitors'   => '1',
+					'avg_time'   => '1:00', // Exactly 60 seconds: s -> m:ss boundary.
+				),
+				'/2010/01/15/title-15-publish' => array(
+					'page_views' => '1',
+					'visitors'   => '1',
+					'avg_time'   => '1:00:00', // Exactly 3600 seconds: m:ss -> h:mm:ss boundary.
 				),
 			),
 			$res['data'] ?? null
@@ -1238,9 +1264,9 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		self::assertSame(
 			array(
 				'/2010/01/01/title-1-publish' => array(
-					'page_views' => '1.1k page views',
-					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:06 avg time',
+					'page_views' => '1.1k',
+					'visitors'   => '1.1M',
+					'avg_time'   => '1:06',
 				),
 			),
 			$res['data'] ?? null
@@ -1297,7 +1323,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		// Replace the original API with the mock, using reflection.
 		$api_reflection = new ReflectionProperty( $obj, 'content_api' );
-		$api_reflection->setAccessible( true );
+		self::make_accessible( $api_reflection );
 		$api_reflection->setValue( $obj, $api );
 
 		return $obj->get_parsely_stats_response();
