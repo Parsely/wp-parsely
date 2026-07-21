@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Check out the source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Checks for dependencies with known vulnerabilities
       - name: Review dependencies
