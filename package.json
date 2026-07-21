@@ -81,7 +81,7 @@
 		"husky": "^9.1.7",
 		"lodash.debounce": "^4.0.8",
 		"prettier": "^3.7.4",
-		"react-router": "^7.16.0",
+		"react-router": "^8.2.0",
 		"ts-loader": "^9.5.4",
 		"typescript": "^5.9.3"
 	},
