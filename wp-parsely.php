@@ -314,7 +314,7 @@ function parsely_check_data_schema_updates(): void {
 		$smart_links_without_status = get_posts(
 			array(
 				'post_type'      => 'parsely_smart_link',
-				'posts_per_page' => -1,
+				'posts_per_page' => -1, // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.posts_per_page_posts_per_page
 				'fields'         => 'ids',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 				'tax_query'      => array(
