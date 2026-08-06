@@ -146,13 +146,13 @@ trait Post_Data_Trait {
 			$post_id  = Utils::get_post_id_by_url( $item['url'] );
 			$post_url = Parsely::get_url_with_itm_source( $item['url'], null );
 
+			if ( Utils::parsely_is_https_supported() ) {
+				$post_url = str_replace( 'http://', 'https://', $post_url );
+			}
+
 			// If we have a post ID, update the post canonical URL.
 			if ( 0 !== $post_id ) {
 				Parsely::set_canonical_url( $post_id, $post_url );
-			}
-
-			if ( Utils::parsely_is_https_supported() ) {
-				$post_url = str_replace( 'http://', 'https://', $post_url );
 			}
 
 			$data['rawUrl']  = $post_url;
