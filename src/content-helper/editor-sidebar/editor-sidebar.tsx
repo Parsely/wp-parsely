@@ -30,6 +30,7 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
+import { DEFAULT_EXCERPT_LENGTH } from './excerpt-suggestions/component-panel-settings';
 import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
@@ -102,6 +103,7 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			Persona: 'journalist',
 		},
 		ExcerptSuggestions: {
+			Length: DEFAULT_EXCERPT_LENGTH,
 			Open: false,
 			Persona: 'journalist',
 			Tone: 'neutral',
@@ -175,6 +177,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( typeof mergedSettings.ExcerptSuggestions !== 'object' ) {
 		mergedSettings.ExcerptSuggestions = defaultSettings.ExcerptSuggestions;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Length !== 'number' ) {
+		mergedSettings.ExcerptSuggestions.Length = defaultSettings.ExcerptSuggestions.Length;
 	}
 	if ( typeof mergedSettings.ExcerptSuggestions.Open !== 'boolean' ) {
 		mergedSettings.ExcerptSuggestions.Open = defaultSettings.ExcerptSuggestions.Open;

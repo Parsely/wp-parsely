@@ -63,6 +63,7 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 		// Note: Array keys should be sorted alphabetically.
 		return array(
 			'ExcerptSuggestions' => array(
+				'Length'  => 160,
 				'Open'    => false,
 				'Persona' => 'journalist',
 				'Tone'    => 'neutral',

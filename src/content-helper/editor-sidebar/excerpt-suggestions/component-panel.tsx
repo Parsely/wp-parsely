@@ -1,21 +1,25 @@
 /**
  * WordPress dependencies
  */
+// @ts-ignore InspectorPopoverHeader is exported at runtime, but is missing from the package types.
+import { __experimentalInspectorPopoverHeader as InspectorPopoverHeader } from '@wordpress/block-editor';
 import {
-	Animate,
+	BaseControl,
 	Button,
+	Dropdown,
+	Flex,
 	Icon,
 	Notice,
 	TextareaControl,
+	__experimentalVStack as VStack,
 } from '@wordpress/components';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { external } from '@wordpress/icons';
+import { external, settings as settingsIcon } from '@wordpress/icons';
+import { store as noticesStore } from '@wordpress/notices';
 import { count } from '@wordpress/wordcount';
-import { PersonaProp } from '../../common/components/persona-selector';
-import { ToneProp } from '../../common/components/tone-selector';
 
 /**
  * Internal dependencies
@@ -25,7 +29,7 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { LeafIcon } from '../../common/icons/leaf-icon';
+import { AiIcon } from '../../common/icons/ai-icon';
 import {
 	ExcerptSuggestionsSettings as ExcerptSuggestionsSettingsType,
 	SidebarSettings,
@@ -35,48 +39,46 @@ import { ExcerptSuggestionsSettings } from './component-panel-settings';
 import { ExcerptSuggestionsProvider } from './provider';
 
 /**
- * Defines the structure of an object that holds excerpt data.
+ * The ID of the snackbar notice shown after generating an excerpt.
  *
- * @since 3.16.0
+ * Reusing the same ID replaces the previous notice instead of stacking.
+ *
+ * @since 3.24.0
  */
-interface ExcerptData {
-	currentExcerpt: string;
-	isUnderReview: boolean;
-	newExcerptGeneratedCount: number;
-	oldExcerpt: string;
-}
+const GENERATED_NOTICE_ID = 'wp-parsely-excerpt-generated';
 
-type ExcerptSuggestionsPanelProps = {
-	isDocumentSettingPanel?: boolean;
+/**
+ * Popover props for the settings popover, mirroring the popovers used by the
+ * core document sidebar rows.
+ *
+ * @since 3.24.0
+ */
+const POPOVER_PROPS = {
+	placement: 'left-start' as const,
+	offset: 36,
+	shift: true,
 };
 
 /**
  * The PostExcerptSuggestions component displays the excerpt textarea and the Parse.ly AI controls.
  *
- * @since 3.13.0
- * @since 3.17.0 Renamed from `PostExcerptSuggestions` and added the `isDocumentSettingPanel` prop.
+ * Generated excerpts are applied immediately and announced with a snackbar
+ * offering Undo, mirroring how core applies one-shot changes such as pushing
+ * block styles to Global Styles. The generation settings are progressively
+ * disclosed through a settings popover.
  *
- * @param {ExcerptSuggestionsPanelProps} props The component's props.
+ * @since 3.13.0
+ * @since 3.24.0 Replaced the review flow with apply + snackbar Undo.
  */
-export const PostExcerptSuggestions = ( {
-	isDocumentSettingPanel = false,
-}: Readonly<ExcerptSuggestionsPanelProps> ) => {
+export const PostExcerptSuggestions = () => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ excerptData, setExcerptData ] = useState<ExcerptData>( {
-		currentExcerpt: '',
-		isUnderReview: false,
-		newExcerptGeneratedCount: 0,
-		oldExcerpt: '',
-	} );
+	const [ generationCount, setGenerationCount ] = useState<number>( 0 );
 	const [ isLoading, setLoading ] = useState<boolean>( false );
-	const [ onChangeFired, setOnChangeFired ] = useState<boolean>( false );
-	const [ persona, setPersona ] = useState<PersonaProp>( settings.ExcerptSuggestions.Persona );
-	const [ tone, setTone ] = useState<ToneProp>( settings.ExcerptSuggestions.Tone );
-	const [ wordCountString, setWordCountString ] = useState<string>( '' );
 
 	const { editPost } = useDispatch( editorStore );
+	const { createSuccessNotice } = useDispatch( noticesStore );
 
 	/**
 	 * Handles changes to the excerpt suggestions settings.
@@ -84,9 +86,12 @@ export const PostExcerptSuggestions = ( {
 	 * @since 3.17.0
 	 *
 	 * @param {keyof ExcerptSuggestionsSettingsType} key   The setting key that changed.
-	 * @param {string|boolean}                       value The new value of the setting.
+	 * @param {string|boolean|number}                value The new value of the setting.
 	 */
-	const onSettingChange = ( key: keyof ExcerptSuggestionsSettingsType, value: string | boolean ) => {
+	const onSettingChange = (
+		key: keyof ExcerptSuggestionsSettingsType,
+		value: string | boolean | number
+	) => {
 		setSettings( {
 			ExcerptSuggestions: {
 				...settings.ExcerptSuggestions,
@@ -116,44 +121,28 @@ export const PostExcerptSuggestions = ( {
 		};
 	}, [] );
 
-	// Update the word count string when the excerpt changes.
-	useEffect( () => {
-		/**
-		 * Returns a descriptive text for the textarea's word count.
-		 *
-		 * @since 3.16.0
-		 *
-		 * @return {string} The word count string.
-		 */
-		const getWordCountString = (): string => {
-			const wordCount = count( excerptData.currentExcerpt || excerpt, 'words', {} );
+	const wordCount = count( excerpt, 'words', {} );
+	const wordCountString = wordCount > 0
+		? sprintf(
+			// Translators: %1$s the number of words in the excerpt.
+			_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
+			wordCount
+		) : '';
 
-			if ( wordCount > 0 ) {
-				return sprintf(
-					// Translators: %1$s the number of words in the excerpt.
-					_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
-					wordCount
-				);
-			}
-
-			return '';
-		};
-
-		setWordCountString( getWordCountString() );
-	}, [ excerptData.currentExcerpt, excerpt ] );
-
-	// Scroll the textarea to the top when the generated excerpt changes.
+	// Scroll the textarea to the top when a new excerpt is generated.
 	useEffect( () => {
 		const textarea = document.querySelector( '.editor-post-excerpt textarea' );
 		if ( textarea ) {
 			textarea.scrollTop = 0;
 		}
-	}, [ excerptData.newExcerptGeneratedCount ] );
+	}, [ generationCount ] );
 
 	/**
-	 * Generates an excerpt using Parse.ly AI.
+	 * Generates an excerpt using Parse.ly AI, applies it to the post, and
+	 * shows a snackbar notice offering Undo.
 	 *
 	 * @since 3.13.0
+	 * @since 3.24.0 Applies the excerpt immediately instead of entering a review state.
 	 */
 	const generateExcerpt = async () => {
 		setLoading( true );
@@ -161,16 +150,38 @@ export const PostExcerptSuggestions = ( {
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
+			// Read imperatively to avoid capturing a stale excerpt in the Undo closure.
+			const previousExcerpt =
+				wpSelect( editorStore ).getEditedPostAttribute( 'excerpt' ) ?? '';
 			const requestedExcerpt = await ExcerptSuggestionsProvider
 				.getInstance()
-				.generateExcerpt( postTitle, postContent, persona, tone );
+				.generateExcerpt(
+					postTitle,
+					postContent,
+					settings.ExcerptSuggestions.Persona,
+					settings.ExcerptSuggestions.Tone,
+					settings.ExcerptSuggestions.Length
+				);
 
-			setExcerptData( {
-				currentExcerpt: requestedExcerpt,
-				isUnderReview: true,
-				newExcerptGeneratedCount: excerptData.newExcerptGeneratedCount + 1,
-				oldExcerpt: excerpt,
-			} );
+			editPost( { excerpt: requestedExcerpt } );
+			setGenerationCount( ( prev ) => prev + 1 );
+
+			createSuccessNotice(
+				__( 'Excerpt generated.', 'wp-parsely' ),
+				{
+					type: 'snackbar',
+					id: GENERATED_NOTICE_ID,
+					actions: [
+						{
+							label: __( 'Undo', 'wp-parsely' ),
+							onClick: () => {
+								editPost( { excerpt: previousExcerpt } );
+								Telemetry.trackEvent( 'excerpt_generator_discarded' );
+							},
+						},
+					],
+				}
+			);
 		} catch ( err: unknown ) {
 			if ( err instanceof ContentHelperError ) {
 				setError( err );
@@ -183,225 +194,98 @@ export const PostExcerptSuggestions = ( {
 		}
 	};
 
-	/**
-	 * Accepts the generated excerpt and updates the post.
-	 *
-	 * @since 3.13.0
-	 */
-	const acceptGeneratedExcerpt = async () => {
-		await editPost( { excerpt: excerptData.currentExcerpt } );
-		setExcerptData( { ...excerptData, isUnderReview: false } );
-		Telemetry.trackEvent( 'excerpt_generator_accepted' );
-	};
-
-	/**
-	 * Discards the generated excerpt.
-	 *
-	 * @since 3.13.0
-	 */
-	const discardGeneratedExcerpt = async () => {
-		editPost( { excerpt: excerptData.oldExcerpt } );
-		setExcerptData( {
-			...excerptData,
-			currentExcerpt: excerptData.oldExcerpt, // Updates word count in UI.
-			isUnderReview: false,
-		} );
-		Telemetry.trackEvent( 'excerpt_generator_discarded' );
-	};
-
-	/**
-	 * Returns the value for the excerpt textarea.
-	 *
-	 * @since 3.13.0
-	 */
-	const getExcerptTextareaValue = (): string => {
-		if ( excerptData.isUnderReview ) {
-			return excerptData.currentExcerpt;
-		}
-
-		return excerpt;
-	};
-
-	const generateWithParselyHeader =
-		<div className="wp-parsely-excerpt-generator-header">
-			<LeafIcon size={ 16 } />
-			<div className="wp-parsely-excerpt-generator-header-label">
-				{ __( 'Generate With Parse.ly', 'wp-parsely' ) }
-			</div>
-		</div>;
-
-	const textareaLabel = isDocumentSettingPanel
-		? __( 'Write an excerpt (optional)', 'wp-parsely' )
-		: __( 'Excerpt', 'wp-parsely' );
-
 	return (
-		<div className="editor-post-excerpt" >
-			{ ! isDocumentSettingPanel && (
-				<div className="excerpt-suggestions-text">
-					{ __( 'Use Parse.ly AI to generate a concise, engaging excerpt for your post.', 'wp-parsely' ) }
-					<Button
-						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/"
-						target="_blank"
-						variant="link"
-						rel="noopener"
-					>
-						{ __( 'Learn more about Excerpt Suggestions', 'wp-parsely' ) }
-						<Icon icon={ external } size={ 18 } className="parsely-external-link-icon" />
-					</Button>
-				</div>
+		<VStack className="wp-parsely-excerpt-suggestions" spacing={ 4 }>
+			{ error && (
+				<Notice
+					className="wp-parsely-excerpt-generator-error"
+					onRemove={ () => setError( undefined ) }
+					status="info"
+				>
+					{ error.Message() }
+				</Notice>
 			) }
-			<div style={ { position: 'relative' } }>
-				{ isLoading && (
-					<div className={ 'editor-post-excerpt__loading_animation' }>
-						<LoadingAnimation />
-					</div>
-				) }
+
+			<div className="editor-post-excerpt">
 				<TextareaControl
 					__nextHasNoMarginBottom
-					label={ textareaLabel }
+					label={ __( 'Write an excerpt (optional)', 'wp-parsely' ) }
 					className="editor-post-excerpt__textarea"
-					onChange={ ( value ) => {
-						if ( ! excerptData.isUnderReview ) {
-							editPost( { excerpt: value } );
-						}
-						setExcerptData( { ...excerptData, currentExcerpt: value } );
-						setOnChangeFired( true );
-					} }
-					onKeyUp={ () => { // Make word count work with Keyboard shortcuts.
-						if ( onChangeFired ) {
-							setOnChangeFired( false );
-							return;
-						}
-
-						const textarea = document.querySelector( '.editor-post-excerpt textarea' );
-						const value = textarea?.textContent ?? '';
-
-						setExcerptData( { ...excerptData, currentExcerpt: value } );
-					} }
-					value={ isLoading ? '' : getExcerptTextareaValue() }
+					onChange={ ( value ) => editPost( { excerpt: value } ) }
+					value={ excerpt }
 					help={ wordCountString ? wordCountString : null }
+					disabled={ isLoading }
 				/>
 			</div>
 
-			{ isDocumentSettingPanel && (
-				<Button
-					href={ __( // eslint-disable-line @wordpress/i18n-text-domain
-						'https://wordpress.org/documentation/article/page-post-settings-sidebar/#excerpt'
-					) }
-					target="_blank"
-					variant="link"
-					rel="noopener"
-				>
-					{ __( 'Learn more about manual excerpts', 'wp-parsely' ) }
-					<Icon
-						icon={ external }
-						size={ 18 }
-						className="parsely-external-link-icon"
-					/>
-				</Button>
-			) }
-
-			<div className={ 'wp-parsely-excerpt-generator' + ( isDocumentSettingPanel ? ' is-doc-set-panel' : '' ) }>
-				{ error && (
-					<Notice
-						className="wp-parsely-excerpt-generator-error"
-						onRemove={ () => setError( undefined ) }
-						status="info"
-					>
-						{ error.Message() }
-					</Notice>
-				) }
-				{ excerptData.isUnderReview ? (
-					<>
-						{ isDocumentSettingPanel && generateWithParselyHeader }
-						<div className="wp-parsely-excerpt-suggestions-review-controls">
-							<Button
-								variant="secondary"
-								onClick={ acceptGeneratedExcerpt }
-							>
-								{ __( 'Accept', 'wp-parsely' ) }
-							</Button>
-							<Button
-								isDestructive={ true }
-								variant="secondary"
-								onClick={ discardGeneratedExcerpt }
-							>
-								{ __( 'Discard', 'wp-parsely' ) }
-							</Button>
-						</div>
-					</>
-				) : (
-					<>
-						<ExcerptSuggestionsSettings
-							isLoading={ isLoading }
-							onPersonaChange={ ( selectedPersona ) => {
-								onSettingChange( 'Persona', selectedPersona );
-								setPersona( selectedPersona );
-							} }
-							onSettingChange={ onSettingChange }
-							onToneChange={ ( selectedTone ) => {
-								onSettingChange( 'Tone', selectedTone );
-								setTone( selectedTone );
-							} }
-							persona={ settings.ExcerptSuggestions.Persona }
-							tone={ settings.ExcerptSuggestions.Tone }
-						/>
-						{ isDocumentSettingPanel && generateWithParselyHeader }
-						<div className="excerpt-suggestions-generate">
-							<Button
-								onClick={ generateExcerpt }
-								variant="secondary"
-								isBusy={ isLoading }
-								disabled={ isLoading || ! postContent }
-							>
-								{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
-								{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&
-									__( 'Regenerate Excerpt', 'wp-parsely' )
-								}
-								{ ! isLoading && excerptData.newExcerptGeneratedCount === 0 &&
-									__( 'Generate Excerpt', 'wp-parsely' )
-								}
-							</Button>
-						</div>
-					</>
-				) }
-
-				{ isDocumentSettingPanel && (
+			<BaseControl
+				__nextHasNoMarginBottom
+				help={ ! postContent
+					? __( 'Add content to generate an excerpt.', 'wp-parsely' )
+					: null
+				}
+			>
+				<Flex justify="flex-start" gap={ 2 } wrap>
 					<Button
-						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/"
-						target="_blank"
-						variant="link"
-						rel="noopener"
+						__next40pxDefaultSize
+						variant="secondary"
+						icon={ <AiIcon /> }
+						onClick={ generateExcerpt }
+						isBusy={ isLoading }
+						disabled={ isLoading || ! postContent }
 					>
-						{ __( 'Learn more about Excerpt Suggestions', 'wp-parsely' ) }
-						<Icon
-							icon={ external }
-							size={ 18 }
-							className="parsely-external-link-icon"
-						/>
+						{ isLoading && __( 'Generating…', 'wp-parsely' ) }
+						{ ! isLoading && generationCount > 0 && __( 'Regenerate', 'wp-parsely' ) }
+						{ ! isLoading && generationCount === 0 && __( 'Generate', 'wp-parsely' ) }
 					</Button>
-				) }
-			</div>
-		</div>
+					<Dropdown
+						contentClassName="editor-post-excerpt__dropdown__content"
+						popoverProps={ POPOVER_PROPS }
+						focusOnMount
+						renderToggle={ ( { isOpen, onToggle } ) => (
+							<Button
+								__next40pxDefaultSize
+								icon={ settingsIcon }
+								label={ __( 'Excerpt Suggestions settings', 'wp-parsely' ) }
+								onClick={ onToggle }
+								aria-expanded={ isOpen }
+							/>
+						) }
+						renderContent={ ( { onClose } ) => (
+							<>
+								<InspectorPopoverHeader
+									title={ __( 'Excerpt Suggestions settings', 'wp-parsely' ) }
+									onClose={ onClose }
+								/>
+								<ExcerptSuggestionsSettings
+									isLoading={ isLoading }
+									length={ settings.ExcerptSuggestions.Length }
+									onLengthChange={ ( length ) => onSettingChange( 'Length', length ) }
+									onPersonaChange={ ( persona ) => onSettingChange( 'Persona', persona ) }
+									onToneChange={ ( tone ) => onSettingChange( 'Tone', tone ) }
+									persona={ settings.ExcerptSuggestions.Persona }
+									tone={ settings.ExcerptSuggestions.Tone }
+								/>
+							</>
+						) }
+					/>
+				</Flex>
+			</BaseControl>
+
+			<Button
+				className="excerpt-suggestions-learn-more"
+				href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/"
+				target="_blank"
+				variant="link"
+				rel="noopener"
+			>
+				{ __( 'Learn more about Excerpt Suggestions', 'wp-parsely' ) }
+				<Icon
+					icon={ external }
+					size={ 18 }
+					className="parsely-external-link-icon"
+				/>
+			</Button>
+		</VStack>
 	);
 };
-
-/**
- * Component that renders a loading animation.
- *
- * @since 3.14.0
- *
- * @return {import('react').JSX.Element} The loading animation component.
- */
-const LoadingAnimation = (): React.JSX.Element => {
-	return (
-		<Animate type="loading">
-			{ ( { className } ) => (
-				<span className={ className }>
-					{ __( 'Generating…', 'wp-parsely' ) }
-				</span>
-			) }
-		</Animate>
-	);
-};
-

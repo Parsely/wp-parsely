@@ -37,9 +37,7 @@ export const ExcerptDocumentSettingPanel = () => {
 						window.wpParselyContentHelperSettings
 					) }
 				>
-					<PostExcerptSuggestions
-						isDocumentSettingPanel={ true }
-					/>
+					<PostExcerptSuggestions />
 				</SettingsProvider>
 			</PluginDocumentSettingPanel>
 		</PostTypeSupportCheck>

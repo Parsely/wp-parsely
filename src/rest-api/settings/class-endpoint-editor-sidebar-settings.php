@@ -54,11 +54,13 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 		return array(
 			'ExcerptSuggestions' => array(
 				'values'  => array(
+					'Length'  => array(),
 					'Open'    => array( true, false ),
 					'Persona' => array(),
 					'Tone'    => array(),
 				),
 				'default' => array(
+					'Length'  => 160,
 					'Open'    => false,
 					'Persona' => 'journalist',
 					'Tone'    => 'neutral',

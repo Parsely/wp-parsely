@@ -62,8 +62,10 @@ export interface SmartLinkingSettings {
  * Defines the settings structure for the PostExcerptSuggestions component.
  *
  * @since 3.17.0
+ * @since 3.24.0 Added the `Length` setting.
  */
 export interface ExcerptSuggestionsSettings {
+	Length: number;
 	Open: boolean;
 	Persona: string;
 	Tone: string;
