@@ -30,7 +30,11 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
-import { DEFAULT_EXCERPT_LENGTH } from './excerpt-suggestions/component-panel-settings';
+import {
+	DEFAULT_EXCERPT_LENGTH,
+	MAX_EXCERPT_LENGTH,
+	MIN_EXCERPT_LENGTH,
+} from './excerpt-suggestions/component-panel-settings';
 import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
@@ -178,7 +182,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( typeof mergedSettings.ExcerptSuggestions !== 'object' ) {
 		mergedSettings.ExcerptSuggestions = defaultSettings.ExcerptSuggestions;
 	}
-	if ( typeof mergedSettings.ExcerptSuggestions.Length !== 'number' ) {
+	if (
+		! Number.isInteger( mergedSettings.ExcerptSuggestions.Length ) ||
+		mergedSettings.ExcerptSuggestions.Length < MIN_EXCERPT_LENGTH ||
+		mergedSettings.ExcerptSuggestions.Length > MAX_EXCERPT_LENGTH
+	) {
 		mergedSettings.ExcerptSuggestions.Length = defaultSettings.ExcerptSuggestions.Length;
 	}
 	if ( typeof mergedSettings.ExcerptSuggestions.Open !== 'boolean' ) {

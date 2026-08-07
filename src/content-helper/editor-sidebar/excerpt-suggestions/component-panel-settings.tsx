@@ -51,7 +51,9 @@ export const MAX_EXCERPT_LENGTH = 300;
 const isCustomValue = (
 	value: string,
 	options: Record<string, unknown>
-): boolean => 'custom' === value || ! ( value in options );
+): boolean =>
+	'custom' === value ||
+	! Object.prototype.hasOwnProperty.call( options, value );
 
 /**
  * Props for the Excerpt Suggestions Settings component.

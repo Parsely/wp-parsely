@@ -69,11 +69,21 @@ const POPOVER_PROPS = {
 interface PendingGeneration {
 	generated: string;
 	previous: string;
+	saveCycle: number;
 }
 
 let pendingGeneration: PendingGeneration | null = null;
 let isWatchingSaves = false;
 let wasSaving = false;
+
+/**
+ * Counter of started non-autosave saves, so a generation is only attributed
+ * to a save that started after it. A save already in flight when a generation
+ * completes must not consume the generation's outcome.
+ *
+ * @since 3.24.0
+ */
+let saveCycle = 0;
 
 /**
  * Starts watching for post saves, attributing the pending generation's
@@ -95,11 +105,24 @@ const watchSavesForGenerationOutcome = (): void => {
 	}
 	isWatchingSaves = true;
 
+	// Seed from the current state, counting any save already in flight, so
+	// the first generation is not attributed to it.
+	const initialState = wpSelect( editorStore );
+	wasSaving = initialState.isSavingPost() && ! initialState.isAutosavingPost();
+	if ( wasSaving ) {
+		saveCycle++;
+	}
+
 	subscribe( () => {
 		const editor = wpSelect( editorStore );
 		const isSaving = editor.isSavingPost() && ! editor.isAutosavingPost();
 
+		if ( isSaving && ! wasSaving ) {
+			saveCycle++;
+		}
+
 		if ( wasSaving && ! isSaving && pendingGeneration &&
+			pendingGeneration.saveCycle < saveCycle &&
 			editor.didPostSaveRequestSucceed()
 		) {
 			const { generated, previous } = pendingGeneration;
@@ -226,11 +249,14 @@ export const PostExcerptSuggestions = () => {
 			editPost( { excerpt: requestedExcerpt } );
 			setGenerationCount( ( prev ) => prev + 1 );
 
+			// Start watching before recording the generation, so an
+			// already-in-flight save is counted into the current cycle.
+			watchSavesForGenerationOutcome();
 			pendingGeneration = {
 				generated: requestedExcerpt,
 				previous: previousExcerpt,
+				saveCycle,
 			};
-			watchSavesForGenerationOutcome();
 
 			createSuccessNotice(
 				__( 'Excerpt generated.', 'wp-parsely' ),
