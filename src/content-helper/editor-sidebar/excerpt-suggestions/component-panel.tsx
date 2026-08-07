@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 import { select as wpSelect, subscribe, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 import { count } from '@wordpress/wordcount';
@@ -44,18 +44,6 @@ import { ExcerptSuggestionsProvider } from './provider';
  * @since 3.24.0
  */
 const GENERATED_NOTICE_ID = 'wp-parsely-excerpt-generated';
-
-/**
- * Popover props for the settings popover, mirroring the popovers used by the
- * core document sidebar rows.
- *
- * @since 3.24.0
- */
-const POPOVER_PROPS = {
-	placement: 'left-start' as const,
-	offset: 36,
-	shift: true,
-};
 
 /**
  * The last applied generation, kept for attributing an accepted/discarded
@@ -157,6 +145,16 @@ export const PostExcerptSuggestions = () => {
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ generationCount, setGenerationCount ] = useState<number>( 0 );
 	const [ isLoading, setLoading ] = useState<boolean>( false );
+	const [ popoverAnchor, setPopoverAnchor ] = useState<HTMLElement | null>( null );
+
+	// Anchor the settings popover to the entire actions row, so it aligns to
+	// the left of the sidebar like the core document sidebar popovers.
+	const popoverProps = useMemo( () => ( {
+		anchor: popoverAnchor,
+		placement: 'left-start' as const,
+		offset: 36,
+		shift: true,
+	} ), [ popoverAnchor ] );
 
 	const { editPost } = useDispatch( editorStore );
 	const { createSuccessNotice } = useDispatch( noticesStore );
@@ -316,7 +314,7 @@ export const PostExcerptSuggestions = () => {
 					: null
 				}
 			>
-				<Flex justify="flex-start" gap={ 2 } wrap>
+				<Flex justify="flex-start" gap={ 2 } wrap ref={ setPopoverAnchor }>
 					<Button
 						__next40pxDefaultSize
 						variant="secondary"
@@ -331,7 +329,7 @@ export const PostExcerptSuggestions = () => {
 					</Button>
 					<Dropdown
 						contentClassName="editor-post-excerpt__dropdown__content"
-						popoverProps={ POPOVER_PROPS }
+						popoverProps={ popoverProps }
 						focusOnMount
 						renderToggle={ ( { isOpen, onToggle } ) => (
 							<Button
