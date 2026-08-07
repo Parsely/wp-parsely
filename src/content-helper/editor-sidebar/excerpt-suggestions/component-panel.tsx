@@ -8,7 +8,6 @@ import {
 	Button,
 	Dropdown,
 	Flex,
-	Icon,
 	Notice,
 	TextareaControl,
 	__experimentalVStack as VStack,
@@ -17,7 +16,6 @@ import { select as wpSelect, subscribe, useDispatch, useSelect } from '@wordpres
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { external, settings as settingsIcon } from '@wordpress/icons';
 import { store as noticesStore } from '@wordpress/notices';
 import { count } from '@wordpress/wordcount';
 
@@ -338,11 +336,12 @@ export const PostExcerptSuggestions = () => {
 						renderToggle={ ( { isOpen, onToggle } ) => (
 							<Button
 								__next40pxDefaultSize
-								icon={ settingsIcon }
-								label={ __( 'Excerpt Suggestions settings', 'wp-parsely' ) }
+								variant="tertiary"
 								onClick={ onToggle }
 								aria-expanded={ isOpen }
-							/>
+							>
+								{ __( 'Settings', 'wp-parsely' ) }
+							</Button>
 						) }
 						renderContent={ ( { onClose } ) => (
 							<>
@@ -364,21 +363,6 @@ export const PostExcerptSuggestions = () => {
 					/>
 				</Flex>
 			</BaseControl>
-
-			<Button
-				className="excerpt-suggestions-learn-more"
-				href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/"
-				target="_blank"
-				variant="link"
-				rel="noopener"
-			>
-				{ __( 'Learn more about Excerpt Suggestions', 'wp-parsely' ) }
-				<Icon
-					icon={ external }
-					size={ 18 }
-					className="parsely-external-link-icon"
-				/>
-			</Button>
 		</VStack>
 	);
 };
