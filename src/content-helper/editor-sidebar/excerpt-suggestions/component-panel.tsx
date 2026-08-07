@@ -13,7 +13,7 @@ import {
 	TextareaControl,
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
-import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
+import { select as wpSelect, subscribe, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
@@ -57,6 +57,66 @@ const POPOVER_PROPS = {
 	placement: 'left-start' as const,
 	offset: 36,
 	shift: true,
+};
+
+/**
+ * The last applied generation, kept for attributing an accepted/discarded
+ * telemetry event at save time. Module-scoped so the attribution survives
+ * collapsing the panel, which unmounts the component.
+ *
+ * @since 3.24.0
+ */
+interface PendingGeneration {
+	generated: string;
+	previous: string;
+}
+
+let pendingGeneration: PendingGeneration | null = null;
+let isWatchingSaves = false;
+let wasSaving = false;
+
+/**
+ * Starts watching for post saves, attributing the pending generation's
+ * outcome once a non-autosave save succeeds.
+ *
+ * With no explicit Accept button, acceptance is inferred at save time: a
+ * generated excerpt that is still in the post when the user saves counts as
+ * accepted (with a `modified` flag when it was edited first), while an
+ * excerpt reverted through the editor history or cleared counts as discarded.
+ *
+ * The subscription intentionally lives for the rest of the editor session,
+ * as it only starts after the first generation and its check is cheap.
+ *
+ * @since 3.24.0
+ */
+const watchSavesForGenerationOutcome = (): void => {
+	if ( isWatchingSaves ) {
+		return;
+	}
+	isWatchingSaves = true;
+
+	subscribe( () => {
+		const editor = wpSelect( editorStore );
+		const isSaving = editor.isSavingPost() && ! editor.isAutosavingPost();
+
+		if ( wasSaving && ! isSaving && pendingGeneration &&
+			editor.didPostSaveRequestSucceed()
+		) {
+			const { generated, previous } = pendingGeneration;
+			pendingGeneration = null;
+
+			const savedExcerpt = editor.getEditedPostAttribute( 'excerpt' ) ?? '';
+			if ( savedExcerpt === generated ) {
+				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: false } );
+			} else if ( savedExcerpt === previous || '' === savedExcerpt ) {
+				Telemetry.trackEvent( 'excerpt_generator_discarded', { via: 'editor_undo' } );
+			} else {
+				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: true } );
+			}
+		}
+
+		wasSaving = isSaving;
+	} );
 };
 
 /**
@@ -166,6 +226,12 @@ export const PostExcerptSuggestions = () => {
 			editPost( { excerpt: requestedExcerpt } );
 			setGenerationCount( ( prev ) => prev + 1 );
 
+			pendingGeneration = {
+				generated: requestedExcerpt,
+				previous: previousExcerpt,
+			};
+			watchSavesForGenerationOutcome();
+
 			createSuccessNotice(
 				__( 'Excerpt generated.', 'wp-parsely' ),
 				{
@@ -176,7 +242,8 @@ export const PostExcerptSuggestions = () => {
 							label: __( 'Undo', 'wp-parsely' ),
 							onClick: () => {
 								editPost( { excerpt: previousExcerpt } );
-								Telemetry.trackEvent( 'excerpt_generator_discarded' );
+								pendingGeneration = null;
+								Telemetry.trackEvent( 'excerpt_generator_discarded', { via: 'snackbar' } );
 							},
 						},
 					],
