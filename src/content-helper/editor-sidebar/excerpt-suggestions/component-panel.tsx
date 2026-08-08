@@ -384,6 +384,16 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 		}
 	};
 
+	// A single string child, as Button only detects a text label when it is one
+	// (or when the first child of an array is truthy). Without it, the button
+	// gets the icon-only padding.
+	let generateLabel: string = __( 'Generate', 'wp-parsely' );
+	if ( isLoading ) {
+		generateLabel = __( 'Generating…', 'wp-parsely' );
+	} else if ( generationCount > 0 ) {
+		generateLabel = __( 'Regenerate', 'wp-parsely' );
+	}
+
 	return (
 		<VStack className="wp-parsely-excerpt-suggestions" spacing={ 4 }>
 			{ error && (
@@ -426,9 +436,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 						isBusy={ isLoading }
 						disabled={ isLoading || ! postContent }
 					>
-						{ isLoading && __( 'Generating…', 'wp-parsely' ) }
-						{ ! isLoading && generationCount > 0 && __( 'Regenerate', 'wp-parsely' ) }
-						{ ! isLoading && generationCount === 0 && __( 'Generate', 'wp-parsely' ) }
+						{ generateLabel }
 					</Button>
 					<Dropdown
 						contentClassName="editor-post-excerpt__dropdown__content"
