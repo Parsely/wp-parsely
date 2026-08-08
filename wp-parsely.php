@@ -19,7 +19,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
  * Requires PHP:      7.4
- * Requires WP:       6.0.0
+ * Requires WP:       6.1.0
  */
 
 declare(strict_types=1);

@@ -1,7 +1,7 @@
 # Parse.ly
 
 Stable tag: 3.23.5  
-Requires at least: 6.0  
+Requires at least: 6.1  
 Tested up to: 6.9  
 Requires PHP: 7.4  
 License: GPLv2 or later  
@@ -127,7 +127,7 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![Parse.ly Editor Sidebar - Related Posts](.wordpress-org/screenshot-6.png)
 7. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.  
    ![Parse.ly Editor Sidebar - Performance Stats](.wordpress-org/screenshot-7.png)
-8. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.  
+8. The Parse.ly Excerpt Suggestions in the Post Editor's settings.  
    ![Parse.ly Excerpt Suggestions](.wordpress-org/screenshot-8.png)
 9. The Recommendations Block, showcasing links to related content on your site.  
    ![Parse.ly Recommendations Block](.wordpress-org/screenshot-9.png)

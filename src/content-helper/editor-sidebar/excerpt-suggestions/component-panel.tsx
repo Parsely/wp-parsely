@@ -12,6 +12,7 @@ import {
 	TextareaControl,
 	__experimentalVStack as VStack,
 } from '@wordpress/components';
+import { useInstanceId } from '@wordpress/compose';
 import { select as wpSelect, subscribe, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useMemo, useState } from '@wordpress/element';
@@ -46,20 +47,40 @@ import { ExcerptSuggestionsProvider } from './provider';
 const GENERATED_NOTICE_ID = 'wp-parsely-excerpt-generated';
 
 /**
- * The last applied generation, kept for attributing an accepted/discarded
- * telemetry event at save time. Module-scoped so the attribution survives
- * collapsing the panel, which unmounts the component.
+ * Describes an applied generation, kept for attributing an accepted/discarded
+ * telemetry event at save time.
  *
  * @since 3.24.0
  */
 interface PendingGeneration {
 	generated: string;
+	postId: string | number | null;
 	previous: string;
 	saveCycle: number;
 }
 
+/**
+ * The last applied generation. Module-scoped so the attribution survives
+ * collapsing the panel, which unmounts the component.
+ *
+ * @since 3.24.0
+ */
 let pendingGeneration: PendingGeneration | null = null;
-let isWatchingSaves = false;
+
+/**
+ * Whether a generation request is in flight. Module-scoped, as the component
+ * unmounts (losing its `isLoading` state) when the panel is collapsed.
+ *
+ * @since 3.24.0
+ */
+let isGenerating = false;
+
+/**
+ * The active save subscription, and the last observed saving state.
+ *
+ * @since 3.24.0
+ */
+let unsubscribeFromSaves: ( () => void ) | null = null;
 let wasSaving = false;
 
 /**
@@ -72,6 +93,18 @@ let wasSaving = false;
 let saveCycle = 0;
 
 /**
+ * Stops watching for post saves and forgets any pending generation.
+ *
+ * @since 3.24.0
+ */
+const stopWatchingSaves = (): void => {
+	unsubscribeFromSaves?.();
+	unsubscribeFromSaves = null;
+	pendingGeneration = null;
+	wasSaving = false;
+};
+
+/**
  * Starts watching for post saves, attributing the pending generation's
  * outcome once a non-autosave save succeeds.
  *
@@ -80,31 +113,58 @@ let saveCycle = 0;
  * accepted (with a `modified` flag when it was edited first), while an
  * excerpt reverted through the editor history or cleared counts as discarded.
  *
- * The subscription intentionally lives for the rest of the editor session,
- * as it only starts after the first generation and its check is cheap.
+ * Preview and trash saves are ignored, as neither expresses an outcome. The
+ * subscription is scoped to the editor store and is torn down as soon as the
+ * generation is attributed or can no longer be attributed.
  *
  * @since 3.24.0
  */
 const watchSavesForGenerationOutcome = (): void => {
-	if ( isWatchingSaves ) {
+	if ( unsubscribeFromSaves ) {
 		return;
 	}
-	isWatchingSaves = true;
+
+	/**
+	 * Returns whether the editor is performing a save that expresses an
+	 * outcome for a generated excerpt.
+	 *
+	 * Autosaves, preview saves and the save that follows trashing a post do
+	 * not, as none of them reflects a decision about the excerpt.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @return {boolean} Whether such a save is in progress.
+	 */
+	const isOutcomeSave = (): boolean => {
+		const editor = wpSelect( editorStore );
+
+		return editor.isSavingPost() &&
+			! editor.isAutosavingPost() &&
+			! editor.isPreviewingPost() &&
+			! editor.isDeletingPost();
+	};
 
 	// Seed from the current state, counting any save already in flight, so
-	// the first generation is not attributed to it.
-	const initialState = wpSelect( editorStore );
-	wasSaving = initialState.isSavingPost() && ! initialState.isAutosavingPost();
+	// the generation is not attributed to it.
+	wasSaving = isOutcomeSave();
 	if ( wasSaving ) {
 		saveCycle++;
 	}
 
-	subscribe( () => {
+	unsubscribeFromSaves = subscribe( () => {
 		const editor = wpSelect( editorStore );
-		const isSaving = editor.isSavingPost() && ! editor.isAutosavingPost();
+		const isSaving = isOutcomeSave();
 
 		if ( isSaving && ! wasSaving ) {
 			saveCycle++;
+		}
+
+		// The edited post changed, so the outcome can no longer be observed.
+		if ( pendingGeneration &&
+			pendingGeneration.postId !== editor.getCurrentPostId()
+		) {
+			stopWatchingSaves();
+			return;
 		}
 
 		if ( wasSaving && ! isSaving && pendingGeneration &&
@@ -112,9 +172,10 @@ const watchSavesForGenerationOutcome = (): void => {
 			editor.didPostSaveRequestSucceed()
 		) {
 			const { generated, previous } = pendingGeneration;
-			pendingGeneration = null;
-
 			const savedExcerpt = editor.getEditedPostAttribute( 'excerpt' ) ?? '';
+
+			stopWatchingSaves();
+
 			if ( savedExcerpt === generated ) {
 				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: false } );
 			} else if ( savedExcerpt === previous || '' === savedExcerpt ) {
@@ -122,10 +183,12 @@ const watchSavesForGenerationOutcome = (): void => {
 			} else {
 				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: true } );
 			}
+
+			return;
 		}
 
 		wasSaving = isSaving;
-	} );
+	}, editorStore );
 };
 
 /**
@@ -137,24 +200,32 @@ const watchSavesForGenerationOutcome = (): void => {
  * disclosed through a settings popover.
  *
  * @since 3.13.0
+ * @since 3.17.0 Renamed from `PostExcerptSuggestions`.
  * @since 3.24.0 Replaced the review flow with apply + snackbar Undo.
+ *
+ * @return {import('react').JSX.Element} The PostExcerptSuggestions component.
  */
-export const PostExcerptSuggestions = () => {
+export const PostExcerptSuggestions = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ generationCount, setGenerationCount ] = useState<number>( 0 );
-	const [ isLoading, setLoading ] = useState<boolean>( false );
+	const [ isLoading, setLoading ] = useState<boolean>( isGenerating );
 	const [ popoverAnchor, setPopoverAnchor ] = useState<HTMLElement | null>( null );
+
+	const popoverTitle = __( 'Excerpt Suggestions settings', 'wp-parsely' );
+	const helpId = `wp-parsely-excerpt-generate-help-${ useInstanceId( PostExcerptSuggestions ) }`;
 
 	// Anchor the settings popover to the entire actions row, so it aligns to
 	// the left of the sidebar like the core document sidebar popovers.
 	const popoverProps = useMemo( () => ( {
+		'aria-label': popoverTitle,
 		anchor: popoverAnchor,
+		headerTitle: popoverTitle,
 		placement: 'left-start' as const,
 		offset: 36,
 		shift: true,
-	} ), [ popoverAnchor ] );
+	} ), [ popoverAnchor, popoverTitle ] );
 
 	const { editPost } = useDispatch( editorStore );
 	const { createSuccessNotice } = useDispatch( noticesStore );
@@ -200,16 +271,26 @@ export const PostExcerptSuggestions = () => {
 		};
 	}, [] );
 
-	const wordCount = count( excerpt, 'words', {} );
-	const wordCountString = wordCount > 0
-		? sprintf(
+	const wordCountString = useMemo( (): string => {
+		const wordCount = count( excerpt, 'words', {} );
+
+		if ( 0 === wordCount ) {
+			return '';
+		}
+
+		return sprintf(
 			// Translators: %1$s the number of words in the excerpt.
 			_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
 			wordCount
-		) : '';
+		);
+	}, [ excerpt ] );
 
 	// Scroll the textarea to the top when a new excerpt is generated.
 	useEffect( () => {
+		if ( 0 === generationCount ) {
+			return;
+		}
+
 		const textarea = document.querySelector( '.editor-post-excerpt textarea' );
 		if ( textarea ) {
 			textarea.scrollTop = 0;
@@ -224,14 +305,26 @@ export const PostExcerptSuggestions = () => {
 	 * @since 3.24.0 Applies the excerpt immediately instead of entering a review state.
 	 */
 	const generateExcerpt = async () => {
+		// The panel unmounts when collapsed, so guard against a second request
+		// being started while the first one is still in flight.
+		if ( isGenerating ) {
+			return;
+		}
+
+		isGenerating = true;
 		setLoading( true );
 		setError( undefined );
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
 			// Read imperatively to avoid capturing a stale excerpt in the Undo closure.
-			const previousExcerpt =
-				wpSelect( editorStore ).getEditedPostAttribute( 'excerpt' ) ?? '';
+			const editor = wpSelect( editorStore );
+			const postId = editor.getCurrentPostId();
+			// Attribute the outcome to the excerpt that was in the post before
+			// any generation, so Undo restores the author's own text.
+			const previousExcerpt = pendingGeneration?.postId === postId
+				? pendingGeneration.previous
+				: editor.getEditedPostAttribute( 'excerpt' ) ?? '';
 			const requestedExcerpt = await ExcerptSuggestionsProvider
 				.getInstance()
 				.generateExcerpt(
@@ -250,6 +343,7 @@ export const PostExcerptSuggestions = () => {
 			watchSavesForGenerationOutcome();
 			pendingGeneration = {
 				generated: requestedExcerpt,
+				postId,
 				previous: previousExcerpt,
 				saveCycle,
 			};
@@ -263,8 +357,14 @@ export const PostExcerptSuggestions = () => {
 						{
 							label: __( 'Undo', 'wp-parsely' ),
 							onClick: () => {
+								// The notice outlives the generation, so only
+								// act while it is still the pending one.
+								if ( pendingGeneration?.postId !== postId ) {
+									return;
+								}
+
+								stopWatchingSaves();
 								editPost( { excerpt: previousExcerpt } );
-								pendingGeneration = null;
 								Telemetry.trackEvent( 'excerpt_generator_discarded', { via: 'snackbar' } );
 							},
 						},
@@ -279,6 +379,7 @@ export const PostExcerptSuggestions = () => {
 				console.error( err ); // eslint-disable-line no-console
 			}
 		} finally {
+			isGenerating = false;
 			setLoading( false );
 		}
 	};
@@ -287,7 +388,7 @@ export const PostExcerptSuggestions = () => {
 		<VStack className="wp-parsely-excerpt-suggestions" spacing={ 4 }>
 			{ error && (
 				<Notice
-					className="wp-parsely-excerpt-generator-error"
+					className="wp-parsely-content-helper-error"
 					onRemove={ () => setError( undefined ) }
 					status="info"
 				>
@@ -309,6 +410,7 @@ export const PostExcerptSuggestions = () => {
 
 			<BaseControl
 				__nextHasNoMarginBottom
+				id={ helpId }
 				help={ ! postContent
 					? __( 'Add content to generate an excerpt.', 'wp-parsely' )
 					: null
@@ -317,6 +419,7 @@ export const PostExcerptSuggestions = () => {
 				<Flex justify="flex-start" gap={ 2 } wrap ref={ setPopoverAnchor }>
 					<Button
 						__next40pxDefaultSize
+						aria-describedby={ ! postContent ? `${ helpId }__help` : undefined }
 						variant="secondary"
 						icon={ <AiIcon /> }
 						onClick={ generateExcerpt }
@@ -330,13 +433,13 @@ export const PostExcerptSuggestions = () => {
 					<Dropdown
 						contentClassName="editor-post-excerpt__dropdown__content"
 						popoverProps={ popoverProps }
-						focusOnMount
 						renderToggle={ ( { isOpen, onToggle } ) => (
 							<Button
 								__next40pxDefaultSize
 								variant="tertiary"
 								onClick={ onToggle }
 								aria-expanded={ isOpen }
+								aria-label={ popoverTitle }
 							>
 								{ __( 'Settings', 'wp-parsely' ) }
 							</Button>
@@ -344,7 +447,7 @@ export const PostExcerptSuggestions = () => {
 						renderContent={ ( { onClose } ) => (
 							<>
 								<InspectorPopoverHeader
-									title={ __( 'Excerpt Suggestions settings', 'wp-parsely' ) }
+									title={ popoverTitle }
 									onClose={ onClose }
 								/>
 								<ExcerptSuggestionsSettings

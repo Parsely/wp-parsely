@@ -32,9 +32,11 @@ import {
 import { getContentHelperPermissions } from '../common/utils/permissions';
 import {
 	DEFAULT_EXCERPT_LENGTH,
+	DEFAULT_PERSONA,
+	DEFAULT_TONE,
 	MAX_EXCERPT_LENGTH,
 	MIN_EXCERPT_LENGTH,
-} from './excerpt-suggestions/component-panel-settings';
+} from './excerpt-suggestions/constants';
 import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
@@ -108,9 +110,8 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		},
 		ExcerptSuggestions: {
 			Length: DEFAULT_EXCERPT_LENGTH,
-			Open: false,
-			Persona: 'journalist',
-			Tone: 'neutral',
+			Persona: DEFAULT_PERSONA,
+			Tone: DEFAULT_TONE,
 		},
 	};
 
@@ -188,9 +189,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		mergedSettings.ExcerptSuggestions.Length > MAX_EXCERPT_LENGTH
 	) {
 		mergedSettings.ExcerptSuggestions.Length = defaultSettings.ExcerptSuggestions.Length;
-	}
-	if ( typeof mergedSettings.ExcerptSuggestions.Open !== 'boolean' ) {
-		mergedSettings.ExcerptSuggestions.Open = defaultSettings.ExcerptSuggestions.Open;
 	}
 	if ( typeof mergedSettings.ExcerptSuggestions.Tone !== 'string' ) {
 		mergedSettings.ExcerptSuggestions.Tone = defaultSettings.ExcerptSuggestions.Tone;

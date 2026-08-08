@@ -63,10 +63,11 @@ export interface SmartLinkingSettings {
  *
  * @since 3.17.0
  * @since 3.24.0 Added the `Length` setting.
+ * @since 3.24.0 Removed the `Open` setting, as the panel's collapsed state is
+ *               now persisted by the block editor's own preferences store.
  */
 export interface ExcerptSuggestionsSettings {
 	Length: number;
-	Open: boolean;
 	Persona: string;
 	Tone: string;
 }

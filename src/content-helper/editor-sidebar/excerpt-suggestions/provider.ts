@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import { BaseProvider } from '../../common/providers/base-provider';
-import { DEFAULT_EXCERPT_LENGTH } from './component-panel-settings';
+import { DEFAULT_EXCERPT_LENGTH } from './constants';
 
 /**
  * Provides the generate excerpt functionality to be used in other components.
@@ -35,6 +35,7 @@ export class ExcerptSuggestionsProvider extends BaseProvider {
 	/**
 	 * Generates an excerpt for a given post.
 	 *
+	 * @since 3.16.0
 	 * @since 3.24.0 Added the `maxCharacters` parameter.
 	 *
 	 * @param {string} title         The title of the post.

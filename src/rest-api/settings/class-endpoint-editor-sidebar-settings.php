@@ -20,6 +20,20 @@ namespace Parsely\REST_API\Settings;
  */
 class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	/**
+	 * The allowed range for the desired excerpt length, in characters.
+	 *
+	 * Kept in sync with the MIN_EXCERPT_LENGTH/MAX_EXCERPT_LENGTH constants
+	 * of the Excerpt Suggestions component.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const MIN_EXCERPT_LENGTH     = 50;
+	public const MAX_EXCERPT_LENGTH     = 300;
+	public const DEFAULT_EXCERPT_LENGTH = 160;
+
+	/**
 	 * Returns the endpoint's name.
 	 *
 	 * @since 3.17.0
@@ -47,6 +61,9 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	 *
 	 * @since 3.13.0
 	 * @since 3.17.0 Moved from Editor_Sidebar_Settings_Endpoint.
+	 * @since 3.24.0 Added the ExcerptSuggestions `Length` setting.
+	 * @since 3.24.0 Removed the ExcerptSuggestions `Open` setting, as the panel's
+	 *               collapsed state is now persisted by the block editor itself.
 	 *
 	 * @return array<string, Subvalue_Spec>
 	 */
@@ -55,13 +72,11 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 			'ExcerptSuggestions' => array(
 				'values'  => array(
 					'Length'  => array(),
-					'Open'    => array( true, false ),
 					'Persona' => array(),
 					'Tone'    => array(),
 				),
 				'default' => array(
-					'Length'  => 160,
-					'Open'    => false,
+					'Length'  => self::DEFAULT_EXCERPT_LENGTH,
 					'Persona' => 'journalist',
 					'Tone'    => 'neutral',
 				),
@@ -119,5 +134,32 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 				),
 			),
 		);
+	}
+
+	/**
+	 * Sanitizes the passed subvalue.
+	 *
+	 * Extends the parent implementation with a range check for the desired
+	 * excerpt length, which the enumerated valid values cannot express.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param string $composite_key The subvalue's key.
+	 * @param mixed  $value         The value to sanitize.
+	 * @return mixed The sanitized subvalue.
+	 */
+	protected function sanitize_subvalue( string $composite_key, $value ) {
+		if ( 'ExcerptSuggestions.Length' === $composite_key ) {
+			if ( ! is_int( $value ) ||
+				$value < self::MIN_EXCERPT_LENGTH ||
+				$value > self::MAX_EXCERPT_LENGTH
+			) {
+				return self::DEFAULT_EXCERPT_LENGTH;
+			}
+
+			return $value;
+		}
+
+		return parent::sanitize_subvalue( $composite_key, $value );
 	}
 }
