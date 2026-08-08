@@ -421,7 +421,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 						__next40pxDefaultSize
 						aria-describedby={ ! postContent ? `${ helpId }__help` : undefined }
 						variant="secondary"
-						icon={ <AiIcon /> }
+						icon={ AiIcon }
 						onClick={ generateExcerpt }
 						isBusy={ isLoading }
 						disabled={ isLoading || ! postContent }
