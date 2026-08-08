@@ -42,10 +42,10 @@ The plugin automatically inserts the Parse.ly metadata and JavaScript in all pub
 - The [Engagement Boost](https://docs.wpvip.com/parse-ly/parsely-features/engagement-boost/) feature - Helps you increase page views and engagement by strategically placing links to key content within high-performing articles on your site.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-intelligence/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Title Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
-  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
   - [Smart Linking](https://docs.wpvip.com/parse-ly/parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
   - [Related Posts](https://docs.parse.ly/plugin-content-intelligence/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
   - [Performance Stats](https://docs.parse.ly/plugin-content-intelligence/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
+- [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited, from the Excerpt panel of the Post Editor's settings.
 
 #### The Parse.ly Recommendations Block
 
