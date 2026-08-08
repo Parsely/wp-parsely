@@ -35,6 +35,7 @@ import {
 	useSettings,
 } from '../../common/settings';
 import { ExcerptSuggestionsSettings } from './component-panel-settings';
+import { CUSTOM_VALUE, DEFAULT_PERSONA, DEFAULT_TONE } from './constants';
 import { ExcerptSuggestionsProvider } from './provider';
 
 /**
@@ -45,6 +46,24 @@ import { ExcerptSuggestionsProvider } from './provider';
  * @since 3.24.0
  */
 const GENERATED_NOTICE_ID = 'wp-parsely-excerpt-generated';
+
+/**
+ * Resolves a tone or persona for the generation request.
+ *
+ * A custom tone or persona whose text is still empty is stored as the `custom`
+ * sentinel, which is meaningless to the API, so the default is sent instead.
+ * The sentinel is kept in the settings, so that reopening the popover still
+ * shows the custom option as selected.
+ *
+ * @since 3.24.0
+ *
+ * @param {string} value        The stored tone or persona.
+ * @param {string} defaultValue The default to fall back to.
+ *
+ * @return {string} The value to send to the API.
+ */
+const forRequest = ( value: string, defaultValue: string ): string =>
+	CUSTOM_VALUE === value || '' === value ? defaultValue : value;
 
 /**
  * Describes an applied generation, kept for attributing an accepted/discarded
@@ -330,8 +349,8 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 				.generateExcerpt(
 					postTitle,
 					postContent,
-					settings.ExcerptSuggestions.Persona,
-					settings.ExcerptSuggestions.Tone,
+					forRequest( settings.ExcerptSuggestions.Persona, DEFAULT_PERSONA ),
+					forRequest( settings.ExcerptSuggestions.Tone, DEFAULT_TONE ),
 					settings.ExcerptSuggestions.Length
 				);
 
