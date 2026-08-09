@@ -210,8 +210,8 @@ final class ConsentTest extends TestCase {
 	 *
 	 * @covers \Parsely\Consent::attach_consent_scripts
 	 * @covers \Parsely\Consent::can_enable_feature
-	 * @covers \Parsely\Consent::get_bridge
-	 * @covers \Parsely\Consent::get_wp_consent_api_bridge
+	 * @covers \Parsely\Consent::get_filter_bridge
+	 * @covers \Parsely\Consent::enqueue_wp_consent_api_bridge
 	 * @covers \Parsely\Consent::run
 	 * @uses \Parsely\Consent::__construct
 	 * @uses \Parsely\Parsely::__construct
@@ -246,17 +246,22 @@ final class ConsentTest extends TestCase {
 		self::assertStringContainsString( 'id="wp-parsely-tracker-js-before"', $output );
 		self::assertStringContainsString( 'window.PARSELY.enable_consent_tracking = true;', $output );
 
-		// Built-in bridge: the baked Consent API cookie prefix used for
-		// initialConsent seeding from recorded choices...
-		self::assertStringContainsString( 'var prefix = "wp_consent"', $output );
-		// ...the statistics-anonymous mapping to the anonymous-ping flag...
-		self::assertStringContainsString( 'statistics-anonymous', $output );
-		self::assertStringContainsString( 'emit_on_denied', $output );
-		// ...and the consent-change + late-consent-type listeners behind the
-		// tracker.
-		self::assertStringContainsString( 'id="wp-parsely-tracker-js-after"', $output );
-		self::assertStringContainsString( 'wp_listen_for_consent_change', $output );
-		self::assertStringContainsString( 'wp_consent_type_defined', $output );
+		// Built-in bridge: the built script (whose decision logic is
+		// unit-tested in tests/js/lib/consent-bridge.test.ts) prints before
+		// the tracker as its dependency, with the baked config data inline.
+		self::assertStringContainsString( 'build/consent.js', $output );
+		self::assertStringContainsString( 'window.wpParselyConsentConfig = ', $output );
+		self::assertStringContainsString( '"prefix":"wp_consent"', $output );
+		self::assertLessThan(
+			strpos( $output, 'build/consent.js' ),
+			strpos( $output, 'wpParselyConsentConfig' ),
+			'The config data inline must print before the bridge script.'
+		);
+		self::assertContains(
+			'wp-parsely-consent',
+			wp_scripts()->registered['wp-parsely-tracker']->deps,
+			'The tracker must depend on the bridge so it executes first.'
+		);
 	}
 
 	/**
@@ -268,8 +273,8 @@ final class ConsentTest extends TestCase {
 	 *
 	 * @covers \Parsely\Consent::attach_consent_scripts
 	 * @covers \Parsely\Consent::can_enable_feature
-	 * @covers \Parsely\Consent::get_bridge
-	 * @covers \Parsely\Consent::get_wp_consent_api_bridge
+	 * @covers \Parsely\Consent::get_filter_bridge
+	 * @covers \Parsely\Consent::enqueue_wp_consent_api_bridge
 	 * @covers \Parsely\Consent::run
 	 * @uses \Parsely\Consent::__construct
 	 * @uses \Parsely\Parsely::__construct
@@ -311,7 +316,7 @@ final class ConsentTest extends TestCase {
 		wp_print_scripts();
 		$output = (string) ob_get_clean();
 
-		self::assertStringContainsString( 'bakedType = "optout"', $output );
+		self::assertStringContainsString( '"consentType":"optout"', $output );
 	}
 
 	/**
@@ -322,7 +327,7 @@ final class ConsentTest extends TestCase {
 	 *
 	 * @covers \Parsely\Consent::attach_consent_scripts
 	 * @covers \Parsely\Consent::can_enable_feature
-	 * @covers \Parsely\Consent::get_bridge
+	 * @covers \Parsely\Consent::get_filter_bridge
 	 * @covers \Parsely\Consent::run
 	 * @uses \Parsely\Consent::__construct
 	 * @uses \Parsely\Parsely::__construct
@@ -369,8 +374,8 @@ final class ConsentTest extends TestCase {
 		self::assertStringContainsString( '/* custom-bridge-after */', $output );
 
 		// ...and without any trace of the built-in bridge.
-		self::assertStringNotContainsString( 'wp_listen_for_consent_change', $output );
-		self::assertStringNotContainsString( 'emit_on_denied', $output );
+		self::assertStringNotContainsString( 'build/consent.js', $output );
+		self::assertStringNotContainsString( 'wpParselyConsentConfig', $output );
 	}
 
 	/**

@@ -31,7 +31,7 @@ if ( ! function_exists( 'wp_has_consent' ) ) {
 	 * @param string|null $requested_by Optional plugin basename asking.
 	 * @return bool
 	 */
-	function wp_has_consent( string $category, ?string $requested_by = null ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	function wp_has_consent( string $category, ?string $requested_by = null ): bool { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound,Generic.CodeAnalysis.UnusedFunctionParameter -- mirrors the WP Consent API.
 		return true;
 	}
 }
@@ -48,9 +48,9 @@ if ( ! function_exists( 'wp_get_consent_type' ) ) {
 	 *
 	 * @return string The consent type ('optin', 'optout', or '').
 	 */
-	function wp_get_consent_type(): string {
+	function wp_get_consent_type(): string { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- mirrors the WP Consent API.
 		/** @var string */
-		return apply_filters( 'wp_get_consent_type', '' );
+		return apply_filters( 'wp_get_consent_type', '' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- the hook belongs to the WP Consent API.
 	}
 }
 
@@ -74,7 +74,18 @@ if ( ! function_exists( 'wp_add_cookie_info' ) ) {
 	 * @param string $type                    One of 'HTTP', 'LOCALSTORAGE', or 'API'.
 	 * @param string $domain                  Optional domain the cookie is set on.
 	 */
-	function wp_add_cookie_info( string $name, string $plugin_or_service, string $category, string $expires, string $cookie_function, string $collected_personal_data = '', bool $member_cookie = false, bool $administrator_cookie = false, string $type = 'HTTP', string $domain = '' ): void {
+	function wp_add_cookie_info(
+		string $name, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- mirrors the WP Consent API.
+		string $plugin_or_service,
+		string $category,
+		string $expires,
+		string $cookie_function,
+		string $collected_personal_data = '',
+		bool $member_cookie = false,
+		bool $administrator_cookie = false,
+		string $type = 'HTTP',
+		string $domain = '' 
+	): void {
 		$GLOBALS['wp_parsely_test_cookie_info'][ $name ] = array(
 			'plugin_or_service'       => $plugin_or_service,
 			'category'                => $category,

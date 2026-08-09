@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Utils\Utils;
+
 /**
  * Switches the Parse.ly tracker into consent mode and attaches a CMP bridge.
  *
@@ -78,12 +80,13 @@ class Consent {
 	}
 
 	/**
-	 * Attaches the consent-mode inline scripts to the tracker handle.
+	 * Attaches consent mode to the tracker handle.
 	 *
-	 * The `before` inline runs ahead of p.js: it switches the tracker into
-	 * consent mode and may seed `PARSELY.initialConsent` from a recorded prior
-	 * choice. The `after` inline runs behind p.js and registers the CMP
-	 * listeners that push later choices into `PARSELY.setConsent()`.
+	 * An inline ahead of p.js switches the tracker into consent mode. The
+	 * bridge then comes from one of two places: a site-supplied one via the
+	 * wp_parsely_consent_bridge filter (attached as before/after inlines), or
+	 * the built-in WP Consent API bridge (a built script, enqueued as a
+	 * dependency of the tracker so it executes first).
 	 *
 	 * @since 3.24.0
 	 */
@@ -95,9 +98,17 @@ class Consent {
 			return;
 		}
 
-		$bridge = $this->get_bridge();
+		$bridge = $this->get_filter_bridge();
 
 		$before = "window.PARSELY = window.PARSELY || {};\nwindow.PARSELY.enable_consent_tracking = true;";
+
+		if ( '' === $bridge['before'] && '' === $bridge['after'] ) {
+			// No site-supplied bridge: use the built-in WP Consent API bridge.
+			wp_add_inline_script( 'wp-parsely-tracker', $before, 'before' );
+			$this->enqueue_wp_consent_api_bridge();
+			return;
+		}
+
 		if ( '' !== $bridge['before'] ) {
 			$before .= "\n" . $bridge['before'];
 		}
@@ -110,13 +121,15 @@ class Consent {
 	}
 
 	/**
-	 * Returns the CMP bridge to attach, as before/after JavaScript.
+	 * Returns the site-supplied CMP bridge, as before/after JavaScript.
+	 * Both strings are empty when no filter is registered — the caller then
+	 * falls back to the built-in WP Consent API bridge.
 	 *
 	 * @since 3.24.0
 	 *
 	 * @return array{before: string, after: string}
 	 */
-	private function get_bridge(): array {
+	private function get_filter_bridge(): array {
 		/**
 		 * Filters the JavaScript bridge between the site's consent management
 		 * platform and the Parse.ly tracker's consent mode.
@@ -159,66 +172,51 @@ class Consent {
 			$filtered = array();
 		}
 
-		$bridge = array(
+		return array(
 			'before' => is_string( $filtered['before'] ?? null ) ? $filtered['before'] : '',
 			'after'  => is_string( $filtered['after'] ?? null ) ? $filtered['after'] : '',
 		);
-
-		if ( '' === $bridge['before'] && '' === $bridge['after'] ) {
-			return $this->get_wp_consent_api_bridge();
-		}
-
-		return $bridge;
 	}
 
 	/**
-	 * Returns the built-in bridge to the WordPress Consent API.
+	 * Enqueues the built-in bridge to the WordPress Consent API
+	 * (build/consent.js; sources: src/js/consent.ts and the unit-tested
+	 * decision logic in src/js/lib/consent-bridge.ts).
 	 *
-	 * The WP Consent API (https://wordpress.org/plugins/wp-consent-api/) is
-	 * the WordPress-native consent standard that CMP plugins register with.
-	 * This bridge maps its categories to the tracker's consent mode, so any
-	 * CMP speaking the Consent API works without Parse.ly-specific code. It
-	 * is inert when no such CMP is present.
+	 * The bridge must execute before the tracker script, so it is registered
+	 * as a dependency of the wp-parsely-tracker handle — WordPress then
+	 * guarantees the print order.
 	 *
-	 * CATEGORY MAPPING. `statistics` is identified analytics and maps to
-	 * consented/denied directly. `statistics-anonymous` (anonymous,
-	 * non-identifying measurement) maps to the tracker's anonymous modes: an
-	 * undecided visitor is already measured anonymously, and for a visitor
-	 * who denied `statistics` but allowed `statistics-anonymous`, the bridge
-	 * sets the tracker's `emit_on_denied` flag so the anonymous cookieless
-	 * ping continues. That flag is off by default in the tracker on purpose
-	 * (the site, not Parse.ly, must decide anonymous pings are lawful);
-	 * setting it from a CMP-recorded `statistics-anonymous` allow is exactly
-	 * such a site-level, visitor-consented instruction. One mapping is lossy
-	 * and documented as such: a visitor who denied `statistics-anonymous`
-	 * while `statistics` is unanswered is recorded as denied, because zero
-	 * beacons is the only tracker state that honors refusing even anonymous
-	 * measurement.
-	 *
-	 * UNANSWERED VISITORS mirror `wp_has_consent()`: under a declared
-	 * opt-out regime — or when no consent type is declared at all — an
-	 * unanswered visitor counts as consented; under opt-in they stay
-	 * undecided (anonymous measurement). A recorded choice always wins.
-	 *
-	 * WHY VALUES ARE BAKED SERVER-SIDE: the Consent API's script and its
-	 * localized `consent_api` object print in the footer AFTER these
-	 * inlines, so the cookie prefix, consent type, and waitfor flag are
-	 * resolved in PHP (site-level config, page-cache-safe) via the same
-	 * filters the API itself applies. `window.wp_consent_type`, when a CMP
-	 * has set it by the time the inline runs, still takes precedence, and a
-	 * late-defined type (server-side geo detection, signaled by the waitfor
-	 * flag) is handled by the `wp_consent_type_defined` listener.
-	 *
-	 * EVENT SEMANTICS: `wp_listen_for_consent_change` fires per category and
-	 * only on an actual change (a re-affirmed choice is silent), so initial
-	 * state must come from the cookies — which is what the `before` half
-	 * does, ahead of the tracker script.
+	 * The Consent API's cookie prefix, the site's declared consent type, and
+	 * the waitfor flag are resolved server-side via the same filters the API
+	 * itself applies, and passed as a data inline: the API's own script and
+	 * its localized `consent_api` object print in the footer AFTER this
+	 * script, so they cannot be read at execution time. All three values are
+	 * site-level configuration, so baking them into markup is page-cache
+	 * safe. A CMP-set `window.wp_consent_type` still takes precedence at
+	 * runtime, and a late-defined type (server-side geo detection) resolves
+	 * via the API's wp_consent_type_defined event.
 	 *
 	 * @since 3.24.0
-	 *
-	 * @return array{before: string, after: string}
 	 */
-	private function get_wp_consent_api_bridge(): array {
+	private function enqueue_wp_consent_api_bridge(): void {
+		$consent_asset = Utils::get_asset_info( 'build/consent.asset.php' );
+
+		wp_register_script(
+			'wp-parsely-consent',
+			plugin_dir_url( PARSELY_FILE ) . 'build/consent.js',
+			$consent_asset['dependencies'],
+			$consent_asset['version'],
+			true
+		);
+
+		$tracker = wp_scripts()->query( 'wp-parsely-tracker', 'registered' );
+		if ( $tracker instanceof \_WP_Dependency && ! in_array( 'wp-parsely-consent', $tracker->deps, true ) ) {
+			$tracker->deps[] = 'wp-parsely-consent';
+		}
+
+		wp_enqueue_script( 'wp-parsely-consent' );
+
 		$consent_type = function_exists( 'wp_get_consent_type' ) ? wp_get_consent_type() : '';
 
 		// The same filters the Consent API's own config applies.
@@ -227,108 +225,16 @@ class Consent {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- the hooks belong to the WP Consent API.
 		$waitfor = (bool) apply_filters( 'wp_consent_api_waitfor_consent_hook', false );
 
-		$baked = sprintf(
-			'var prefix = %s, bakedType = %s, bakedWaitFor = %s;',
-			wp_json_encode( $prefix ),
-			wp_json_encode( $consent_type ),
-			wp_json_encode( $waitfor )
+		$config = array(
+			'prefix'      => $prefix,
+			'consentType' => $consent_type,
+			'waitFor'     => $waitfor,
 		);
 
-		$helpers = <<<'JS'
-	function choice( category ) {
-		var safePrefix = prefix.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
-		var match = document.cookie.match( new RegExp( '(?:^|;\\s*)' + safePrefix + '_' + category + '=(allow|deny)' ) );
-		return null === match ? '' : match[ 1 ];
-	}
-JS;
-
-		$before = <<<'JS'
-	var consentType = 'undefined' !== typeof window.wp_consent_type ? window.wp_consent_type : bakedType;
-	var waitFor = 'undefined' !== typeof window.waitfor_consent_hook ? window.waitfor_consent_hook : bakedWaitFor;
-	var stats = choice( 'statistics' );
-
-	if ( 'allow' === stats ) {
-		window.PARSELY.initialConsent = true;
-	} else if ( 'deny' === stats ) {
-		window.PARSELY.initialConsent = false;
-		if ( 'allow' === choice( 'statistics-anonymous' ) ) {
-			// The visitor consented to anonymous measurement: permit the
-			// anonymous cookieless ping while identified tracking is denied.
-			window.PARSELY.emit_on_denied = true;
-		}
-	} else if ( 'deny' === choice( 'statistics-anonymous' ) ) {
-		// Refused even anonymous measurement; denied (zero beacons) is the
-		// only tracker state that honors that.
-		window.PARSELY.initialConsent = false;
-	} else if ( waitFor && 'undefined' === typeof window.wp_consent_type ) {
-		// The consent type arrives late (e.g. server-side geo detection);
-		// the wp_consent_type_defined listener decides then.
-	} else if ( ! consentType || -1 !== String( consentType ).indexOf( 'optout' ) ) {
-		// Mirror wp_has_consent(): an opt-out regime, or no declared consent
-		// management at all, treats an unanswered visitor as consented.
-		window.PARSELY.initialConsent = true;
-	}
-	// Otherwise (opt-in, unanswered): stay undecided — the tracker's
-	// anonymous, cookieless measurement mode.
-JS;
-
-		$after = <<<'JS'
-	function setConsent( granted ) {
-		if ( window.PARSELY && 'function' === typeof window.PARSELY.setConsent ) {
-			window.PARSELY.setConsent( granted );
-		}
-	}
-
-	// Fires per category and only on an actual change; detail is a
-	// string-keyed bag with a single entry.
-	document.addEventListener( 'wp_listen_for_consent_change', function( event ) {
-		var changed = event.detail || {};
-		for ( var category in changed ) {
-			if ( ! Object.prototype.hasOwnProperty.call( changed, category ) ) {
-				continue;
-			}
-			var value = changed[ category ];
-			if ( 'statistics' === category ) {
-				if ( 'allow' === value ) {
-					setConsent( true );
-				} else if ( 'deny' === value ) {
-					window.PARSELY.emit_on_denied = 'allow' === choice( 'statistics-anonymous' );
-					setConsent( false );
-				}
-			} else if ( 'statistics-anonymous' === category ) {
-				if ( 'allow' === value ) {
-					// Matters while statistics is denied: permits the
-					// anonymous cookieless ping.
-					window.PARSELY.emit_on_denied = true;
-				} else if ( 'deny' === value ) {
-					window.PARSELY.emit_on_denied = false;
-					if ( '' === choice( 'statistics' ) ) {
-						// Refused even anonymous measurement while
-						// statistics is unanswered; denied is the only
-						// zero-beacon state.
-						setConsent( false );
-					}
-				}
-			}
-		}
-	} );
-
-	// Late-defined consent type (geo detection). Only an unanswered visitor
-	// is affected; mirror wp_has_consent() for the now-known regime.
-	document.addEventListener( 'wp_consent_type_defined', function() {
-		if ( '' !== choice( 'statistics' ) || 'deny' === choice( 'statistics-anonymous' ) ) {
-			return;
-		}
-		var lateType = 'undefined' !== typeof window.wp_consent_type ? window.wp_consent_type : '';
-		if ( ! lateType || -1 !== String( lateType ).indexOf( 'optout' ) ) {
-			setConsent( true );
-		}
-	} );
-JS;
-
-		return array(
-			'before' => "( function() {\n" . $baked . "\n" . $helpers . "\n" . $before . "\n} )();",
-			'after'  => "( function() {\n" . $baked . "\n" . $helpers . "\n" . $after . "\n} )();",
+		wp_add_inline_script(
+			'wp-parsely-consent',
+			'window.wpParselyConsentConfig = ' . (string) wp_json_encode( $config ) . ';',
+			'before'
 		);
 	}
 }

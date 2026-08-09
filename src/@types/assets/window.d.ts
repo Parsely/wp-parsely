@@ -21,6 +21,10 @@ declare global {
 			autotrack?: boolean,
 			onload?: () => unknown,
 			onReady?: () => unknown,
+			enable_consent_tracking?: boolean,
+			initialConsent?: boolean,
+			emit_on_denied?: boolean,
+			setConsent?: ( granted: boolean ) => unknown,
 		},
 
 		wpParselyAdminUrl: string;
@@ -36,6 +40,20 @@ declare global {
 		wpParselySmartLinkingAllowedBlocks: string[];
 		wpParselyTrackableStatuses: string[];
 		wpParselyUseCategorySlugsInSearches: boolean;
+
+		/**
+		 * Parse.ly consent bridge configuration (baked by the Consent
+		 * feature) and the WP Consent API page globals it consumes.
+		 *
+		 * @since 3.24.0
+		 */
+		wpParselyConsentConfig?: {
+			prefix?: string,
+			consentType?: string,
+			waitFor?: boolean,
+		};
+		wp_consent_type?: string;
+		waitfor_consent_hook?: boolean;
 
 		/**
 		 * Jetpack Editor Initial State.

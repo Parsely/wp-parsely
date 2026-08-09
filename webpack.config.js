@@ -36,6 +36,9 @@ module.exports = {
 		'telemetry': [
 			path.resolve( __dirname, 'src', 'js', 'telemetry', 'init' ),
 		],
+		consent: [
+			path.resolve( __dirname, 'src', 'js', 'consent' ),
+		],
 	},
 	module: {
 		rules: defaultConfig.module.rules.concat(
