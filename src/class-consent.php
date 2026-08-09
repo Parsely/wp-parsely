@@ -103,6 +103,17 @@ class Consent {
 		$before = "window.PARSELY = window.PARSELY || {};\nwindow.PARSELY.enable_consent_tracking = true;";
 
 		if ( '' === $bridge['before'] && '' === $bridge['after'] ) {
+			if ( ! function_exists( 'wp_has_consent' ) ) {
+				// No bridge at all: no site-supplied bridge, and no WP Consent
+				// API for the built-in one to talk to. Without any consent
+				// source, consent mode would stamp every beacon as consented
+				// with no consent mechanism behind the claim — so refuse to
+				// activate, leaving the tracker exactly as it is with the
+				// feature off. This also makes the option safe to enable
+				// before the site's CMP is installed.
+				return;
+			}
+
 			// No site-supplied bridge: use the built-in WP Consent API bridge.
 			wp_add_inline_script( 'wp-parsely-tracker', $before, 'before' );
 			$this->enqueue_wp_consent_api_bridge();
