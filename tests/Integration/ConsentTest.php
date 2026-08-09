@@ -13,6 +13,8 @@ namespace Parsely\Tests\Integration;
 use Parsely\Consent;
 use Parsely\Parsely;
 
+require_once __DIR__ . '/wp-consent-api-stubs.php';
+
 /**
  * Integration Tests for the Consent feature.
  *
@@ -244,11 +246,72 @@ final class ConsentTest extends TestCase {
 		self::assertStringContainsString( 'id="wp-parsely-tracker-js-before"', $output );
 		self::assertStringContainsString( 'window.PARSELY.enable_consent_tracking = true;', $output );
 
-		// Built-in bridge: initialConsent seeding from the recorded choice...
-		self::assertStringContainsString( 'wp_consent_statistics', $output );
-		// ...and the consent-change listener behind the tracker.
+		// Built-in bridge: the baked Consent API cookie prefix used for
+		// initialConsent seeding from recorded choices...
+		self::assertStringContainsString( 'var prefix = "wp_consent"', $output );
+		// ...the statistics-anonymous mapping to the anonymous-ping flag...
+		self::assertStringContainsString( 'statistics-anonymous', $output );
+		self::assertStringContainsString( 'emit_on_denied', $output );
+		// ...and the consent-change + late-consent-type listeners behind the
+		// tracker.
 		self::assertStringContainsString( 'id="wp-parsely-tracker-js-after"', $output );
 		self::assertStringContainsString( 'wp_listen_for_consent_change', $output );
+		self::assertStringContainsString( 'wp_consent_type_defined', $output );
+	}
+
+	/**
+	 * Verifies that the site's declared consent type is baked into the bridge
+	 * server-side (the Consent API's own script and localized data print
+	 * after these inlines, so they cannot be read at seed time).
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\Consent::attach_consent_scripts
+	 * @covers \Parsely\Consent::can_enable_feature
+	 * @covers \Parsely\Consent::get_bridge
+	 * @covers \Parsely\Consent::get_wp_consent_api_bridge
+	 * @covers \Parsely\Consent::run
+	 * @uses \Parsely\Consent::__construct
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_default_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
+	 */
+	public function test_declared_consent_type_is_baked_into_the_bridge(): void {
+		// The stubbed wp_get_consent_type() mirrors the real one: it reads
+		// the wp_get_consent_type filter, which is how a CMP declares the
+		// site's regime.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- the hook belongs to the WP Consent API.
+		add_filter(
+			'wp_get_consent_type',
+			static function (): string {
+				return 'optout';
+			}
+		);
+
+		$this->enable_consent();
+		self::$consent->run();
+		$this->enqueue_fake_tracker();
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		do_action( 'wp_enqueue_scripts' );
+
+		ob_start();
+		wp_print_scripts();
+		$output = (string) ob_get_clean();
+
+		self::assertStringContainsString( 'bakedType = "optout"', $output );
 	}
 
 	/**
@@ -306,8 +369,8 @@ final class ConsentTest extends TestCase {
 		self::assertStringContainsString( '/* custom-bridge-after */', $output );
 
 		// ...and without any trace of the built-in bridge.
-		self::assertStringNotContainsString( 'wp_consent_statistics', $output );
 		self::assertStringNotContainsString( 'wp_listen_for_consent_change', $output );
+		self::assertStringNotContainsString( 'emit_on_denied', $output );
 	}
 
 	/**
