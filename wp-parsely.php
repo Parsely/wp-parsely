@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Consent;
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Post_List_Stats;
@@ -102,6 +103,10 @@ function parsely_initialize_plugin(): void {
 	// Initialize Headline Testing feature.
 	$headline_testing = new Headline_Testing( $parsely );
 	$headline_testing->run();
+
+	// Initialize Consent feature.
+	$consent = new Consent( $parsely );
+	$consent->run();
 }
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );

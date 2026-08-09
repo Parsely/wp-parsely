@@ -33,6 +33,7 @@ use WP_Post;
  *   cats_as_tags: bool,
  *   content_helper: Parsely_Options_Content_Helper,
  *   headline_testing: Parsely_Options_Headline_Testing,
+ *   consent: Parsely_Options_Consent,
  *   track_authenticated_users: bool,
  *   lowercase_tags: bool,
  *   force_https_canonicals: bool,
@@ -69,6 +70,10 @@ use WP_Post;
  *   enable_live_updates: bool,
  *   live_update_timeout: int,
  *   allow_after_content_load: bool,
+ * }
+ *
+ * @phpstan-type Parsely_Options_Consent array{
+ *   enabled: bool,
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
@@ -153,6 +158,9 @@ class Parsely {
 			'enable_live_updates'      => false,
 			'live_update_timeout'      => 30000,
 			'allow_after_content_load' => false,
+		),
+		'consent'                    => array(
+			'enabled' => false,
 		),
 		'track_authenticated_users'  => false,
 		'lowercase_tags'             => true,

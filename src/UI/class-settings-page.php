@@ -63,6 +63,7 @@ use const Parsely\PARSELY_FILE;
  *   cats_as_tags?: bool|string,
  *   content_helper: Parsely_Settings_Options_Content_Helper,
  *   headline_testing?: Parsely_Options_Headline_Testing,
+ *   consent?: array{enabled?: bool|string},
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
@@ -265,6 +266,7 @@ final class Settings_Page {
 		$this->initialize_basic_section();
 		$this->initialize_content_helper_section();
 		$this->initialize_headline_testing_section();
+		$this->initialize_consent_section();
 		$this->initialize_recrawl_section();
 		$this->initialize_advanced_section();
 	}
@@ -656,6 +658,43 @@ final class Settings_Page {
 		add_settings_field(
 			$field_id,
 			__( 'Allow After Content Load', 'wp-parsely' ),
+			array( $this, 'print_checkbox_tag' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
+	}
+
+	/**
+	 * Registers section and settings for Consent section.
+	 *
+	 * @since 3.24.0
+	 */
+	private function initialize_consent_section(): void {
+		$section_key = 'consent-section';
+
+		add_settings_section(
+			$section_key,
+			__( 'Consent', 'wp-parsely' ),
+			function (): void {
+				echo '<p>' . esc_html__( 'Make the Parse.ly tracker consent-aware. While enabled, visitors who have not granted analytics consent are measured anonymously with ephemeral, non-identifying IDs and no cookies; granting consent switches them to normal tracking.', 'wp-parsely' ) . '</p>';
+			},
+			Parsely::MENU_SLUG
+		);
+
+		// Enable Consent Mode.
+		$field_id   = 'consent[enabled]';
+		$field_args = array(
+			'option_key'   => $field_id,
+			'label_for'    => $field_id,
+			'yes_text'     => __( 'Enabled', 'wp-parsely' ),
+			'add_fieldset' => true,
+			'legend'       => __( 'Consent', 'wp-parsely' ),
+			'help_text'    => __( 'Switch the tracker into consent mode. Sites using a consent management platform that supports the WordPress Consent API need no further setup; others can supply a bridge via the wp_parsely_consent_bridge filter.', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Consent Mode', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -1257,6 +1296,12 @@ final class Settings_Page {
 				'[headline_testing]',
 				esc_attr( $name )
 			);
+		} elseif ( strpos( $name, 'consent' ) === 0 ) {
+			return Parsely::OPTIONS_KEY . str_replace(
+				'consent',
+				'[consent]',
+				esc_attr( $name )
+			);
 		} else {
 			return Parsely::OPTIONS_KEY . '[' . esc_attr( $name ) . ']';
 		}
@@ -1380,6 +1425,7 @@ final class Settings_Page {
 		$input = $this->validate_basic_section( $input );
 		$input = $this->validate_content_helper_section( $input );
 		$input = $this->validate_headline_testing_section( $input );
+		$input = $this->validate_consent_section( $input );
 		$input = $this->validate_recrawl_section( $input );
 		$input = $this->validate_advanced_section( $input );
 
@@ -1637,6 +1683,27 @@ final class Settings_Page {
 			default:
 				return sanitize_text_field( is_scalar( $value ) ? (string) $value : '' );
 		}
+	}
+
+	/**
+	 * Validates fields of Consent Section.
+	 *
+	 * An unchecked checkbox submits nothing, so an absent value must read as
+	 * disabled rather than falling back to the stored value.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param ParselySettingOptions $input Options from the settings page.
+	 * @return ParselySettingOptions Validated inputs.
+	 */
+	private function validate_consent_section( $input ) {
+		$enabled = $input['consent']['enabled'] ?? false;
+
+		$input['consent'] = array(
+			'enabled' => 'true' === $enabled || true === $enabled,
+		);
+
+		return $input;
 	}
 
 	/**
