@@ -172,15 +172,18 @@ class Scripts {
 		}
 
 		if ( null !== $tag && 'wp-parsely-tracker' === $handle ) {
-			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
-
-			if ( null !== $tag ) {
-				$tag = str_replace(
-					' src=',
-					' data-parsely-site="' . esc_attr( $this->parsely->get_site_id() ) . '" src=',
-					$tag
-				);
-			}
+			// $tag contains the script tag concatenated with any attached inline
+			// scripts, so both substitutions must stay anchored to the tracker
+			// tag itself. The id attribute is unique to it (inline scripts get
+			// `-js-before`/`-js-after` suffixes), which makes it a safe anchor
+			// for the data-parsely-site attribute too — a bare
+			// `str_replace( ' src=', ... )` here would also rewrite any inline
+			// script whose code contains that substring.
+			$tag = preg_replace(
+				'/ id=(["\'])wp-parsely-tracker-js\1/',
+				' id="parsely-cfg" data-parsely-site="' . esc_attr( $this->parsely->get_site_id() ) . '"',
+				$tag
+			);
 		}
 
 		return $tag ?? '';
