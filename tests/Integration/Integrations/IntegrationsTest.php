@@ -51,8 +51,8 @@ final class IntegrationsTest extends TestCase {
 		 */
 		$registered_integrations = $reflector_property->getValue( $integrations );
 
-		self::assertCount( 3, $registered_integrations );
-		self::assertSame( array( 'amp', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
+		self::assertCount( 4, $registered_integrations );
+		self::assertSame( array( 'amp', 'webstories', 'wp-consent-api', 'fake' ), array_keys( $registered_integrations ) );
 
 		// Use filter to override existing key.
 		add_action(
@@ -64,8 +64,8 @@ final class IntegrationsTest extends TestCase {
 			}
 		);
 
-		self::assertCount( 3, $registered_integrations );
-		self::assertSame( array( 'amp', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
+		self::assertCount( 4, $registered_integrations );
+		self::assertSame( array( 'amp', 'webstories', 'wp-consent-api', 'fake' ), array_keys( $registered_integrations ) );
 	}
 }
 

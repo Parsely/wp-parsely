@@ -74,8 +74,8 @@ if ( ! function_exists( 'wp_add_cookie_info' ) ) {
 	 * @param string $type                    One of 'HTTP', 'LOCALSTORAGE', or 'API'.
 	 * @param string $domain                  Optional domain the cookie is set on.
 	 */
-	function wp_add_cookie_info(
-		string $name, // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- mirrors the WP Consent API.
+	function wp_add_cookie_info( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- mirrors the WP Consent API.
+		string $name,
 		string $plugin_or_service,
 		string $category,
 		string $expires,
