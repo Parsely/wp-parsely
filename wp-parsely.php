@@ -36,6 +36,7 @@ use Parsely\Headline_Testing;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
+use Parsely\Integrations\Wp_Consent_Api;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Dashboard_Page;
@@ -282,6 +283,7 @@ function parsely_integrations( $parsely = null ): Integrations {
 	$parsely_integrations = new Integrations( $parsely );
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'webstories', Google_Web_Stories::class );
+	$parsely_integrations->register( 'wp-consent-api', Wp_Consent_Api::class );
 	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
 	$parsely_integrations->integrate();
 
