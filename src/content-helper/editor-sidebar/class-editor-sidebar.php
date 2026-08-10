@@ -185,6 +185,17 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			'before'
 		);
 
+		// Inject the tones and personas, so that PHP stays their single source
+		// and the settings page can offer the same choices as the editor.
+		wp_add_inline_script(
+			static::get_script_id(),
+			'window.wpParselyContentHelperTones = ' .
+				wp_json_encode( Suggestion_Defaults::get_tones() ) . ';' .
+			'window.wpParselyContentHelperPersonas = ' .
+				wp_json_encode( Suggestion_Defaults::get_personas() ) . ';',
+			'before'
+		);
+
 		$use_category_slugs_in_searches = apply_filters( 'wp_parsely_use_category_slugs_in_searches', false );
 		wp_add_inline_script(
 			static::get_script_id(),
