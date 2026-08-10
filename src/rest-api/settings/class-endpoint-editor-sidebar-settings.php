@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Settings;
 
+use Parsely\Content_Helper\Suggestion_Defaults;
+
 /**
  * Endpoint for saving and retrieving Content Intelligence Editor Sidebar
  * settings.
@@ -29,9 +31,9 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	 *
 	 * @var int
 	 */
-	public const MIN_EXCERPT_LENGTH     = 50;
-	public const MAX_EXCERPT_LENGTH     = 300;
-	public const DEFAULT_EXCERPT_LENGTH = 160;
+	public const MIN_EXCERPT_LENGTH     = Suggestion_Defaults::MIN_LENGTH;
+	public const MAX_EXCERPT_LENGTH     = Suggestion_Defaults::MAX_LENGTH;
+	public const DEFAULT_EXCERPT_LENGTH = Suggestion_Defaults::DEFAULT_LENGTH;
 
 	/**
 	 * Returns the endpoint's name.
@@ -64,10 +66,15 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	 * @since 3.24.0 Added the ExcerptSuggestions `Length` setting.
 	 * @since 3.24.0 Removed the ExcerptSuggestions `Open` setting, as the panel's
 	 *               collapsed state is now persisted by the block editor itself.
+	 * @since 3.24.0 The ExcerptSuggestions and TitleSuggestions defaults come
+	 *               from the site-wide settings of their respective features.
 	 *
 	 * @return array<string, Subvalue_Spec>
 	 */
 	protected function get_subvalues_specs(): array {
+		$excerpt_options = $this->get_feature_options( 'excerpt_suggestions' );
+		$title_options   = $this->get_feature_options( 'title_suggestions' );
+
 		return array(
 			'ExcerptSuggestions' => array(
 				'values'  => array(
@@ -76,9 +83,9 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 					'Tone'    => array(),
 				),
 				'default' => array(
-					'Length'  => self::DEFAULT_EXCERPT_LENGTH,
-					'Persona' => 'journalist',
-					'Tone'    => 'neutral',
+					'Length'  => Suggestion_Defaults::get_default_length( $excerpt_options ),
+					'Persona' => Suggestion_Defaults::get_default_persona( $excerpt_options ),
+					'Tone'    => Suggestion_Defaults::get_default_tone( $excerpt_options ),
 				),
 			),
 			'InitialTabName'     => array(
@@ -129,8 +136,8 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 				),
 				'default' => array(
 					'Open'    => false,
-					'Persona' => 'journalist',
-					'Tone'    => 'neutral',
+					'Persona' => Suggestion_Defaults::get_default_persona( $title_options ),
+					'Tone'    => Suggestion_Defaults::get_default_tone( $title_options ),
 				),
 			),
 		);
@@ -154,12 +161,29 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 				$value < self::MIN_EXCERPT_LENGTH ||
 				$value > self::MAX_EXCERPT_LENGTH
 			) {
-				return self::DEFAULT_EXCERPT_LENGTH;
+				return Suggestion_Defaults::get_default_length(
+					$this->get_feature_options( 'excerpt_suggestions' )
+				);
 			}
 
 			return $value;
 		}
 
 		return parent::sanitize_subvalue( $composite_key, $value );
+	}
+
+	/**
+	 * Returns the site-wide options of a Content Intelligence feature.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param string $feature_id The feature's name.
+	 * @return array<string, mixed> The feature's options.
+	 */
+	private function get_feature_options( string $feature_id ): array {
+		/** @var array<string, mixed> $options */
+		$options = $this->parsely->get_options()['content_helper'][ $feature_id ] ?? array();
+
+		return $options;
 	}
 }
