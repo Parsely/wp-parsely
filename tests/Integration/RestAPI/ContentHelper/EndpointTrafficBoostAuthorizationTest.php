@@ -18,6 +18,7 @@ namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\Models\Inbound_Smart_Link;
+use Parsely\Models\Smart_Link_Status;
 use Parsely\Parsely;
 use Parsely\Permissions;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
@@ -406,6 +407,198 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 		$this->set_current_user_to_admin();
 
 		$this->assert_placement_succeeds( $this->private_post_id );
+	}
+
+	/**
+	 * Injects a Suggestions API mock returning inbound links for the given
+	 * source posts.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @param array<int> $source_post_ids The source posts to suggest.
+	 */
+	private function mock_inbound_links( array $source_post_ids ): void {
+		$links = array_map(
+			function ( int $source_post_id ): Inbound_Smart_Link {
+				return new Inbound_Smart_Link(
+					(string) get_permalink( $this->destination_post_id ),
+					'Destination post',
+					self::LINK_TEXT,
+					0,
+					$source_post_id
+				);
+			},
+			$source_post_ids
+		);
+
+		$mock = $this->createMock( Suggestions_API_Service::class );
+		$mock->method( 'get_inbound_links' )->willReturn( $links );
+
+		self::set_protected_property( $this->endpoint, 'suggestions_api', $mock );
+	}
+
+	/**
+	 * Builds a `/generate` request for the destination post.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @return WP_REST_Request The request object.
+	 */
+	private function get_generate_request(): WP_REST_Request {
+		$request = new WP_REST_Request( 'POST' );
+
+		$this->endpoint->validate_post_id( (string) $this->destination_post_id, $request );
+
+		$request->set_param( 'post_id', $this->destination_post_id );
+		$request->set_param( 'max_items', 10 );
+		$request->set_param( 'save', true );
+		$request->set_param( 'discard_previous', false );
+		$request->set_param( 'url_exclusion_list', array() );
+
+		return $request;
+	}
+
+	/**
+	 * Stores a pending suggestion sourced from the restricted post.
+	 *
+	 * @since 3.23.6
+	 */
+	private function store_restricted_suggestion(): void {
+		$link = new Inbound_Smart_Link(
+			(string) get_permalink( $this->destination_post_id ),
+			'Destination post',
+			self::LINK_TEXT,
+			0,
+			$this->private_post_id
+		);
+		$link->set_context( 'traffic_boost' );
+		$link->set_status( Smart_Link_Status::PENDING );
+		$link->save();
+	}
+
+	/**
+	 * Verifies that generated suggestions omit source posts the current user
+	 * cannot use the feature on.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::generate_link_suggestions
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
+	 */
+	public function test_generated_suggestions_omit_inaccessible_source_posts(): void {
+		$this->mock_inbound_links( array( $this->own_post_id, $this->private_post_id ) );
+
+		$response = $this->endpoint->generate_link_suggestions( $this->get_generate_request() );
+		self::assertInstanceOf( WP_REST_Response::class, $response );
+
+		/** @var array{data: array<int, mixed>} $data */
+		$data = $response->get_data();
+
+		self::assertCount(
+			1,
+			$data['data'],
+			'Only the suggestion for the editable source post should be returned.'
+		);
+		self::assertStringNotContainsString(
+			self::RESTRICTED_MARKER,
+			(string) wp_json_encode( $data ),
+			'Restricted post content was disclosed by generate_link_suggestions().'
+		);
+	}
+
+	/**
+	 * Verifies that an Editor still receives suggestions for other users' posts.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::generate_link_suggestions
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
+	 */
+	public function test_generated_suggestions_retained_for_editor(): void {
+		TestCase::set_current_user_to( 'tb_editor', 'editor' );
+
+		$this->mock_inbound_links( array( $this->own_post_id, $this->private_post_id ) );
+
+		$response = $this->endpoint->generate_link_suggestions( $this->get_generate_request() );
+		self::assertInstanceOf( WP_REST_Response::class, $response );
+
+		/** @var array{data: array<int, mixed>} $data */
+		$data = $response->get_data();
+
+		self::assertCount(
+			2,
+			$data['data'],
+			'An Editor should receive suggestions for both source posts.'
+		);
+	}
+
+	/**
+	 * Verifies that stored suggestions for inaccessible source posts are not
+	 * listed, and their content is not disclosed.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_existing_suggestions
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 */
+	public function test_stored_suggestions_omit_inaccessible_source_posts(): void {
+		$this->store_restricted_suggestion();
+
+		$request = new WP_REST_Request( 'GET' );
+		$request->set_param( 'post_id', $this->destination_post_id );
+
+		$response = $this->endpoint->get_existing_suggestions( $request );
+
+		/** @var array{data: array<int, mixed>} $data */
+		$data = $response->get_data();
+
+		self::assertCount(
+			0,
+			$data['data'],
+			'A suggestion sourced from an inaccessible post should not be listed.'
+		);
+		self::assertStringNotContainsString(
+			self::RESTRICTED_MARKER,
+			(string) wp_json_encode( $data ),
+			'Restricted post content was disclosed by get_existing_suggestions().'
+		);
+	}
+
+	/**
+	 * Verifies that an Editor still sees stored suggestions for other users'
+	 * posts.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_existing_suggestions
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 */
+	public function test_stored_suggestions_retained_for_editor(): void {
+		$this->store_restricted_suggestion();
+
+		TestCase::set_current_user_to( 'tb_editor', 'editor' );
+
+		$request = new WP_REST_Request( 'GET' );
+		$request->set_param( 'post_id', $this->destination_post_id );
+
+		/** @var array{data: array<int, mixed>} $data */
+		$data = $this->endpoint->get_existing_suggestions( $request )->get_data();
+
+		self::assertCount(
+			1,
+			$data['data'],
+			'An Editor should still see the stored suggestion.'
+		);
 	}
 
 	/**
