@@ -447,6 +447,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			);
 		}
 
+		$source_post_access = $this->validate_source_post_access(
+			$source_post->ID
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
+
 		$suggestions = $this->suggestions_api->get_inbound_link_positions(
 			$source_post,
 			$destination_post,
@@ -646,6 +653,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 */
 		$restore_original_link = $request->get_param( 'restore_original' );
 
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
+
 		$deleted = $inbound_link->remove( $restore_original_link );
 
 		if ( is_wp_error( $deleted ) ) {
@@ -701,6 +715,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 * @var bool $restore_original_link
 		 */
 		$restore_original_link = (bool) $request->get_param( 'restore_original' );
+
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
 
 		$updated = $inbound_link->update_link_text( $text, $offset, $restore_original_link );
 
@@ -780,6 +801,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			);
 		}
 
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
+
 		$applied = $inbound_link->apply();
 
 		if ( is_wp_error( $applied ) ) {
@@ -806,6 +834,30 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				),
 			),
 			200
+		);
+	}
+
+	/**
+	 * Validates that the current user can use the feature on the source post.
+	 *
+	 * The source post is the post that gets read and modified when a placement
+	 * is generated or accepted. It is not always known at permission callback
+	 * time, as it can be derived from a stored Smart Link.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @param int $source_post_id The ID of the source post.
+	 * @return bool|WP_Error True if access is allowed, WP_Error otherwise.
+	 */
+	private function validate_source_post_access( int $source_post_id ) {
+		if ( $this->is_pch_feature_enabled_for_user( $source_post_id ) ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'parsely_cannot_access_source_post',
+			__( 'You are not allowed to modify the source post.', 'wp-parsely' ),
+			array( 'status' => 403 )
 		);
 	}
 
