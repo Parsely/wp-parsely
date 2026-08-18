@@ -66,6 +66,40 @@ const addOverlayBlock = async ( page: Page, clientId: string ): Promise<void> =>
 };
 
 /**
+ * Removes the Smart Linking overlay from a block.
+ *
+ * @since 3.23.6
+ *
+ * @param {Page}   page     The Page object of the calling function.
+ * @param {string} clientId The client ID to remove the overlay from.
+ */
+const removeOverlayBlock = async ( page: Page, clientId: string ): Promise<void> => {
+	await page.evaluate( ( id: string ) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const { wp } = window as any;
+
+		wp.data.dispatch( 'wp-parsely/smart-linking' ).removeOverlayBlock( id );
+	}, clientId );
+};
+
+/**
+ * Puts the Smart Linking store into its retrying state, which is the only state
+ * rendering the overlay's cancel control.
+ *
+ * @since 3.23.6
+ *
+ * @param {Page} page The Page object of the calling function.
+ */
+const setIsRetrying = async ( page: Page ): Promise<void> => {
+	await page.evaluate( () => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const { wp } = window as any;
+
+		wp.data.dispatch( 'wp-parsely/smart-linking' ).setIsRetrying( true );
+	} );
+};
+
+/**
  * Inserts a paragraph and returns its client ID.
  *
  * @since 3.23.6
@@ -82,6 +116,27 @@ const insertParagraph = async ( editor: Editor, page: Page ): Promise<string> =>
 	} );
 
 	return getFirstBlockClientId( page );
+};
+
+/**
+ * Inserts a block and returns its client ID.
+ *
+ * @since 3.23.6
+ *
+ * @param {Editor} editor The Editor object of the calling function.
+ * @param {Page}   page   The Page object of the calling function.
+ * @param {string} name   The name of the block to insert.
+ *
+ * @return {Promise<string>} The inserted block's client ID.
+ */
+const insertBlock = async ( editor: Editor, page: Page, name: string ): Promise<string> => {
+	await editor.insertBlock( { name } );
+
+	const canvas = await getCanvasScope( editor, page );
+	const blockLocator = canvas.locator( `[data-type="${ name }"]` ).first();
+	await expect( blockLocator ).toBeVisible();
+
+	return await blockLocator.getAttribute( 'data-block' ) as string;
 };
 
 /**
@@ -137,8 +192,10 @@ test.describe( 'Smart Linking in the Post Editor', () => {
 		await insertParagraph( editor, page );
 
 		const isIframed = 0 < await page.locator( 'iframe' ).count();
-		// eslint-disable-next-line no-console
-		console.log( `Editor canvas is ${ isIframed ? 'iframed' : 'not iframed' }.` );
+		test.info().annotations.push( {
+			type: 'canvas-mode',
+			description: isIframed ? 'iframed' : 'not iframed',
+		} );
 
 		const canvas = await getCanvasScope( editor, page );
 		await expect( canvas.locator( '[data-block]' ).first() ).toBeVisible();
@@ -201,17 +258,69 @@ test.describe( 'Smart Linking in the Post Editor', () => {
 		await addOverlayBlock( page, clientId );
 		await expect( canvas.locator( '.wp-parsely-block-overlay' ) ).toBeVisible();
 
-		await page.evaluate( ( id: string ) => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const { wp } = window as any;
-
-			wp.data.dispatch( 'wp-parsely/smart-linking' ).removeOverlayBlock( id );
-		}, clientId );
+		await removeOverlayBlock( page, clientId );
 
 		await expect( canvas.locator( '.wp-parsely-block-overlay' ) ).toBeHidden();
-		await expect( blockLocator )
-			.toHaveAttribute( 'contenteditable', initialContentEditable ?? 'true' );
+		if ( null === initialContentEditable ) {
+			await expect( blockLocator ).not.toHaveAttribute( 'contenteditable', /.*/ );
+		} else {
+			await expect( blockLocator )
+				.toHaveAttribute( 'contenteditable', initialContentEditable );
+		}
 		await expect( blockLocator ).not.toHaveAttribute( 'aria-disabled', 'true' );
+	} );
+
+	/**
+	 * Blocks holding no editable text carry no `contenteditable` attribute, so
+	 * restoring them means removing it rather than setting a value.
+	 *
+	 * @since 3.23.6
+	 */
+	test( 'Should restore blocks that carry no contenteditable attribute', async ( { editor, page } ) => {
+		const clientId = await insertBlock( editor, page, 'core/separator' );
+		const canvas = await getCanvasScope( editor, page );
+		const blockLocator = canvas.locator( `[data-block="${ clientId }"]` );
+
+		await expect( blockLocator ).not.toHaveAttribute( 'contenteditable', /.*/ );
+
+		await addOverlayBlock( page, clientId );
+		await expect( canvas.locator( '.wp-parsely-block-overlay' ) ).toBeVisible();
+		await expect( blockLocator ).toHaveAttribute( 'contenteditable', 'false' );
+
+		await removeOverlayBlock( page, clientId );
+
+		await expect( canvas.locator( '.wp-parsely-block-overlay' ) ).toBeHidden();
+		await expect( blockLocator ).not.toHaveAttribute( 'contenteditable', /.*/ );
+	} );
+
+	/**
+	 * The cancel control is rendered through a portal into the canvas, inside
+	 * the overlaid block's `aria-disabled` subtree.
+	 *
+	 * @since 3.23.6
+	 */
+	test( 'Should keep the overlay cancel control operable inside the canvas', async ( { editor, page, pageErrors } ) => {
+		const clientId = await insertParagraph( editor, page );
+		const canvas = await getCanvasScope( editor, page );
+
+		await addOverlayBlock( page, clientId );
+		await setIsRetrying( page );
+
+		const cancel = canvas.locator( '.wp-parsely-block-overlay-cancel' );
+		await expect( cancel ).toBeVisible();
+
+		// Fails when the block's `aria-disabled` reaches the control.
+		await expect( cancel ).toBeEnabled();
+
+		// Keyboard modality first, so that programmatic focus is focus-visible.
+		await page.keyboard.press( 'Tab' );
+		await cancel.focus();
+		await expect( cancel ).toHaveCSS( 'outline-style', 'solid' );
+
+		// Fails when the click cannot reach the React handler in the canvas.
+		await cancel.click();
+
+		expect( pageErrors ).toEqual( [] );
 	} );
 
 	/**
@@ -241,6 +350,9 @@ test.describe( 'Smart Linking deep link in the iframed Post Editor', () => {
 	const SMART_LINK_UID = 'e2e-smart-link-uid';
 	const SMART_LINK_TEXT = 'smart link';
 
+	// The posts created by this suite, removed after each test.
+	const createdPostIds: number[] = [];
+
 	/**
 	 * Creates a draft holding a Smart Link and opens it through the deep link.
 	 *
@@ -248,17 +360,17 @@ test.describe( 'Smart Linking deep link in the iframed Post Editor', () => {
 	 *
 	 * @param {Page}   page         The Page object of the calling function.
 	 * @param {Object} requestUtils The RequestUtils object of the calling function.
+	 * @param {string} linkMarkup   The markup held by the Smart Link.
 	 */
-	const createdPostIds: number[] = [];
-
 	const openPostThroughDeepLink = async (
 		page: Page,
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		requestUtils: any
+		requestUtils: any,
+		linkMarkup: string = SMART_LINK_TEXT
 	): Promise<void> => {
 		const post = await requestUtils.createPost( {
 			title: 'Smart Linking deep link test',
-			content: `<!-- wp:paragraph -->\n<p>Text with a <a href="https://example.com" data-smartlink="${ SMART_LINK_UID }">${ SMART_LINK_TEXT }</a> inside.</p>\n<!-- /wp:paragraph -->`,
+			content: `<!-- wp:paragraph -->\n<p>Text with a <a href="https://example.com" data-smartlink="${ SMART_LINK_UID }">${ linkMarkup }</a> inside.</p>\n<!-- /wp:paragraph -->`,
 			status: 'draft',
 			date_gmt: '2026-01-01T00:00:00',
 		} );
@@ -307,6 +419,28 @@ test.describe( 'Smart Linking deep link in the iframed Post Editor', () => {
 	 */
 	test( 'Should select the Smart Link in the Editor canvas', async ( { editor, page, requestUtils } ) => {
 		await openPostThroughDeepLink( page, requestUtils );
+		const canvas = await getCanvasScope( editor, page );
+
+		await expect(
+			canvas.locator( `a[data-smartlink="${ SMART_LINK_UID }"]` )
+		).toBeVisible();
+
+		await expect.poll(
+			async () => canvas.locator( 'body' ).evaluate(
+				( body ) => body.ownerDocument.getSelection()?.toString() ?? ''
+			),
+			{ timeout: 10_000 }
+		).toBe( SMART_LINK_TEXT );
+	} );
+
+	/**
+	 * A Smart Link can hold nested markup, such as a partially bold link. The
+	 * selection has to cover all of it, not just its first child.
+	 *
+	 * @since 3.23.6
+	 */
+	test( 'Should select a Smart Link holding nested markup', async ( { editor, page, requestUtils } ) => {
+		await openPostThroughDeepLink( page, requestUtils, 'smart <strong>link</strong>' );
 		const canvas = await getCanvasScope( editor, page );
 
 		await expect(

@@ -167,6 +167,9 @@ export const BlockOverlay = ( {
 								<Button
 									className={ 'wp-parsely-block-overlay-cancel' }
 									variant="link"
+									// The overlaid block carries `aria-disabled`, which
+									// otherwise applies to this control too.
+									aria-disabled={ false }
 									onClick={ () => {
 										SmartLinkingProvider.getInstance().cancelRequest();
 									} }

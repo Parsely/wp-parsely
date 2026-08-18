@@ -672,6 +672,7 @@ export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): P
  * scrolls the viewport to the link element.
  *
  * @since 3.16.0
+ * @since 3.23.6 Select the whole link, including any nested markup.
  *
  * @param {HTMLElement|null} blockContent   The block content to select the smart link in.
  * @param {string}           smartLinkValue The smart link value to select.
@@ -693,8 +694,9 @@ export const selectSmartLink = ( blockContent: HTMLElement | null, smartLinkValu
 		const ownerDocument = blockContent.ownerDocument;
 		const range = ownerDocument.createRange();
 		if ( linkElement.firstChild ) {
-			range.setStart( linkElement.firstChild, 0 ); // Start at the beginning of the link text
-			range.setEndAfter( linkElement.firstChild );
+			// Covers every child, so a link holding nested markup is selected in
+			// full rather than up to its first child.
+			range.selectNodeContents( linkElement );
 			const sel = ownerDocument.getSelection();
 			if ( sel ) {
 				sel.removeAllRanges();
