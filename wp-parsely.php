@@ -225,6 +225,20 @@ function init_content_helper_editor_sidebar(): void {
 	$GLOBALS['parsely_editor_sidebar']->run();
 }
 
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\init_content_helper_canvas_styles' );
+/**
+ * Inserts the PCH Editor Sidebar styles that need to reach the Editor canvas.
+ *
+ * @since 3.24.0
+ */
+function init_content_helper_canvas_styles(): void {
+	if ( ! isset( $GLOBALS['parsely_editor_sidebar'] ) ) {
+		return;
+	}
+
+	$GLOBALS['parsely_editor_sidebar']->run_canvas_styles();
+}
+
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
 /**
