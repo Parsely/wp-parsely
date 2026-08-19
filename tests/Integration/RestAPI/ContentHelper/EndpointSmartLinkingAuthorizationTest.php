@@ -20,6 +20,7 @@ use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
 use Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking;
 use Parsely\Tests\Integration\TestCase;
 use WP_Error;
+use WP_Post;
 use WP_REST_Request;
 
 /**
@@ -51,6 +52,27 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 	 * @var int
 	 */
 	private int $other_users_post_id;
+
+	/**
+	 * A private post owned by another user.
+	 *
+	 * @var int
+	 */
+	private int $other_users_private_post_id;
+
+	/**
+	 * A scheduled post owned by another user.
+	 *
+	 * @var int
+	 */
+	private int $other_users_scheduled_post_id;
+
+	/**
+	 * A private post owned by the current user.
+	 *
+	 * @var int
+	 */
+	private int $own_private_post_id;
 
 	/**
 	 * Sets up the test environment.
@@ -102,7 +124,76 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 		);
 		$this->other_users_post_id = $other_users_post_id;
 
+		// Non-public posts get a slug generated from their title, which makes
+		// them addressable by URL. Drafts and pending posts do not.
+		$this->other_users_private_post_id = $this->create_post(
+			array(
+				'post_author' => $other_user_id,
+				'post_status' => 'private',
+				'post_title'  => 'Private by other',
+			)
+		);
+
+		$this->other_users_scheduled_post_id = $this->create_post(
+			array(
+				'post_author' => $other_user_id,
+				'post_status' => 'future',
+				'post_date'   => '2099-01-01 00:00:00',
+				'post_title'  => 'Scheduled by other',
+			)
+		);
+
+		$this->own_private_post_id = $this->create_post(
+			array(
+				'post_author' => $author_user_id,
+				'post_status' => 'private',
+				'post_title'  => 'Private by author',
+			)
+		);
+
 		wp_set_current_user( $author_user_id );
+	}
+
+	/**
+	 * Creates a post and returns its ID.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @param array<string, mixed> $args The post's fields.
+	 * @return int The new post's ID.
+	 */
+	private function create_post( array $args ): int {
+		/** @var int */
+		return self::factory()->post->create( $args );
+	}
+
+	/**
+	 * Returns the post IDs that get_post_meta_for_urls() describes for the
+	 * given posts' URLs.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @param int ...$post_ids The posts to request meta for.
+	 * @return array<int> The post IDs present in the response.
+	 */
+	private function get_post_meta_ids( int ...$post_ids ): array {
+		$urls = array();
+
+		foreach ( $post_ids as $post_id ) {
+			$post = get_post( $post_id );
+			self::assertInstanceOf( WP_Post::class, $post );
+			self::assertNotSame( '', $post->post_name, 'Fixture is wrong: the post has no slug.' );
+
+			$urls[] = home_url( '/' . $post->post_name . '/' );
+		}
+
+		$request = new WP_REST_Request( 'POST' );
+		$request->set_param( 'urls', $urls );
+
+		/** @var array{data: array<array{id: int}>} $data */
+		$data = $this->endpoint->get_post_meta_for_urls( $request )->get_data();
+
+		return array_column( $data['data'], 'id' );
 	}
 
 	/**
@@ -188,6 +279,74 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 				$this->get_request( $this->other_users_post_id )
 			),
 			'An Editor should retain Smart Linking access to another user\'s post.'
+		);
+	}
+
+	/**
+	 * Verifies that get_post_meta_for_urls() does not describe another user's
+	 * non-public posts.
+	 *
+	 * The route takes URLs rather than post IDs, so the permission callback's
+	 * per-post check cannot cover it. URLs resolve by slug irrespective of post
+	 * status, which makes private and scheduled posts addressable.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_post_meta_for_urls
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
+	 */
+	public function test_post_meta_omits_another_users_non_public_posts(): void {
+		self::assertFalse(
+			current_user_can( 'read_post', $this->other_users_private_post_id ),
+			'Fixture is wrong: the user can read the other user\'s private post.'
+		);
+
+		self::assertSame(
+			array(),
+			$this->get_post_meta_ids(
+				$this->other_users_private_post_id,
+				$this->other_users_scheduled_post_id
+			),
+			'Meta for another user\'s non-public posts was disclosed.'
+		);
+	}
+
+	/**
+	 * Verifies that get_post_meta_for_urls() still describes the posts the user
+	 * can read.
+	 *
+	 * Guards against the read_post check being too restrictive: linking to
+	 * other users' published posts is the feature's purpose.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_post_meta_for_urls
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
+	 */
+	public function test_post_meta_includes_readable_posts(): void {
+		self::assertSame(
+			array( $this->other_users_post_id, $this->own_private_post_id ),
+			$this->get_post_meta_ids( $this->other_users_post_id, $this->own_private_post_id ),
+			'Meta for readable posts should be returned.'
+		);
+	}
+
+	/**
+	 * Verifies that an Editor still gets meta for another user's non-public
+	 * posts, which the read_private_posts capability allows.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_post_meta_for_urls
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
+	 */
+	public function test_post_meta_includes_another_users_private_post_for_editor(): void {
+		TestCase::set_current_user_to( 'sl_meta_editor', 'editor' );
+
+		self::assertSame(
+			array( $this->other_users_private_post_id ),
+			$this->get_post_meta_ids( $this->other_users_private_post_id ),
+			'An Editor should still get meta for another user\'s private post.'
 		);
 	}
 }
