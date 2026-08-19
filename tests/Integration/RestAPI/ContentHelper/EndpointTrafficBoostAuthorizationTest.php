@@ -677,6 +677,127 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that discard_suggestion does not delete the record of a link
+	 * that is applied to a source post the current user cannot edit.
+	 *
+	 * Deleting the record leaves the applied link's anchor in the source post
+	 * with nothing left to remove it by, so the check belongs here too.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::discard_suggestion
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 */
+	public function test_discard_suggestion_denies_inaccessible_source_post(): void {
+		$smart_link_id = $this->seed_applied_link( $this->private_post_id );
+
+		self::assertWPError(
+			$this->endpoint->discard_suggestion( $this->get_discard_request( $smart_link_id ) ),
+			'Discarding a link applied to an inaccessible source post should be denied.'
+		);
+
+		self::assertInstanceOf(
+			WP_Post::class,
+			get_post( $smart_link_id ),
+			'The Smart Link record should have survived the denied discard.'
+		);
+	}
+
+	/**
+	 * Verifies that discard_suggestion still works on a source post the user
+	 * owns.
+	 *
+	 * Guards against the authorization check being too restrictive.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::discard_suggestion
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 */
+	public function test_discard_suggestion_succeeds_on_own_source_post(): void {
+		$smart_link_id = $this->seed_applied_link( $this->own_post_id );
+
+		self::assertInstanceOf(
+			WP_REST_Response::class,
+			$this->endpoint->discard_suggestion( $this->get_discard_request( $smart_link_id ) ),
+			'Discarding a link applied to an editable source post should succeed.'
+		);
+
+		self::assertNull(
+			get_post( $smart_link_id ),
+			'The Smart Link record should have been deleted.'
+		);
+	}
+
+	/**
+	 * Builds a discard request for the given Smart Link.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @param int $smart_link_id The Smart Link's ID.
+	 * @return WP_REST_Request The request object.
+	 */
+	private function get_discard_request( int $smart_link_id ): WP_REST_Request {
+		$request = new WP_REST_Request( 'DELETE' );
+		$request->set_param( 'post_id', $this->destination_post_id );
+
+		// Mirrors the route's validate_callback, which sets the `inbound_link`
+		// param.
+		$this->endpoint->validate_smart_link_id( $smart_link_id, $request );
+
+		return $request;
+	}
+
+	/**
+	 * Seeds a Smart Link applied to the given source post, as the post's owner
+	 * would have.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @param int $source_post_id The source post to apply the link to.
+	 * @return int The Smart Link's ID.
+	 */
+	private function seed_applied_link( int $source_post_id ): int {
+		$post = get_post( $source_post_id );
+		self::assertInstanceOf( WP_Post::class, $post );
+
+		$current_user_id = get_current_user_id();
+		wp_set_current_user( (int) $post->post_author );
+
+		$link = new Inbound_Smart_Link(
+			(string) get_permalink( $this->destination_post_id ),
+			'Destination post',
+			self::LINK_TEXT,
+			0,
+			$source_post_id
+		);
+		$link->set_destination_post_id( $this->destination_post_id );
+		$link->set_status( Smart_Link_Status::PENDING );
+		$link->set_context( 'traffic_boost' );
+		$link->save();
+		$link->apply();
+
+		wp_set_current_user( $current_user_id );
+
+		self::assertStringContainsString(
+			'data-smartlink',
+			$this->get_stored_content( $source_post_id ),
+			'Fixture is wrong: the link was not applied to the source post.'
+		);
+
+		/** @var array{smart_link_id: int} $link_data */
+		$link_data = $link->to_array();
+
+		return $link_data['smart_link_id'];
+	}
+
+	/**
 	 * Asserts that the full generate/accept flow succeeds for the given source
 	 * post, and that the smart link is persisted to it.
 	 *
