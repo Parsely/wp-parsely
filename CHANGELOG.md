@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add remaining per-post permission checks in Content Intelligence ([#4533](https://github.com/Parsely/wp-parsely/pull/4533))
 
-
 ## [3.23.6](https://github.com/Parsely/wp-parsely/compare/3.23.5...3.23.6) - 2026-08-18
 
 ### Fixed
