@@ -15,7 +15,7 @@ import {
 import { useInstanceId } from '@wordpress/compose';
 import { select as wpSelect, subscribe, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 import { count } from '@wordpress/wordcount';
@@ -282,10 +282,18 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 	const { editPost } = useDispatch( editorStore );
 	const { createSuccessNotice } = useDispatch( noticesStore );
 
+	// Closing the popover flushes every pending setting in one commit, with no
+	// re-render in between, so `settings` is stale for all but the first flush.
+	const settingsRef = useRef( settings );
+	useEffect( () => {
+		settingsRef.current = settings;
+	} );
+
 	/**
 	 * Handles changes to the excerpt suggestions settings.
 	 *
 	 * @since 3.17.0
+	 * @since 3.24.0 Merges into the latest settings rather than the rendered ones.
 	 *
 	 * @param {keyof ExcerptSuggestionsSettingsType} key   The setting key that changed.
 	 * @param {string|boolean|number}                value The new value of the setting.
@@ -294,11 +302,17 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 		key: keyof ExcerptSuggestionsSettingsType,
 		value: string | boolean | number
 	) => {
-		setSettings( {
-			ExcerptSuggestions: {
-				...settings.ExcerptSuggestions,
-				[ key ]: value },
-		} );
+		const excerptSuggestions = {
+			...settingsRef.current.ExcerptSuggestions,
+			[ key ]: value,
+		};
+
+		settingsRef.current = {
+			...settingsRef.current,
+			ExcerptSuggestions: excerptSuggestions,
+		};
+
+		setSettings( { ExcerptSuggestions: excerptSuggestions } );
 	};
 
 	// Get the current excerpt, post content, and post title.
