@@ -95,6 +95,28 @@ let pendingGeneration: PendingGeneration | null = null;
 let isGenerating = false;
 
 /**
+ * Setters of the mounted panels, notified whenever `isGenerating` changes.
+ *
+ * A request outlives the panel that started it, so a panel mounting mid-request
+ * must be told when that request finishes.
+ *
+ * @since 3.24.0
+ */
+const generatingListeners = new Set<( value: boolean ) => void>();
+
+/**
+ * Sets whether a generation request is in flight.
+ *
+ * @since 3.24.0
+ *
+ * @param {boolean} value Whether a request is in flight.
+ */
+const setGenerating = ( value: boolean ): void => {
+	isGenerating = value;
+	generatingListeners.forEach( ( listener ) => listener( value ) );
+};
+
+/**
  * The active save subscription, and the last observed saving state.
  *
  * @since 3.24.0
@@ -232,6 +254,17 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 	const [ isLoading, setLoading ] = useState<boolean>( isGenerating );
 	const [ popoverAnchor, setPopoverAnchor ] = useState<HTMLElement | null>( null );
 
+	// Track the shared generation state, as a request started by a previous
+	// panel can still be in flight.
+	useEffect( () => {
+		generatingListeners.add( setLoading );
+		setLoading( isGenerating );
+
+		return () => {
+			generatingListeners.delete( setLoading );
+		};
+	}, [] );
+
 	const popoverTitle = __( 'Excerpt Suggestions settings', 'wp-parsely' );
 	const helpId = `wp-parsely-excerpt-generate-help-${ useInstanceId( PostExcerptSuggestions ) }`;
 
@@ -330,8 +363,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 			return;
 		}
 
-		isGenerating = true;
-		setLoading( true );
+		setGenerating( true );
 		setError( undefined );
 
 		try {
@@ -398,8 +430,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 				console.error( err ); // eslint-disable-line no-console
 			}
 		} finally {
-			isGenerating = false;
-			setLoading( false );
+			setGenerating( false );
 		}
 	};
 
