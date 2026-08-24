@@ -149,10 +149,10 @@ const stopWatchingSaves = (): void => {
  * Starts watching for post saves, attributing the pending generation's
  * outcome once a non-autosave save succeeds.
  *
- * With no explicit Accept button, acceptance is inferred at save time: a
- * generated excerpt that is still in the post when the user saves counts as
- * accepted (with a `modified` flag when it was edited first), while an
- * excerpt reverted through the editor history or cleared counts as discarded.
+ * With no explicit Accept button, the outcome is inferred at save time: a
+ * generated excerpt still intact when the user saves counts as accepted, while
+ * one reverted through the editor history or cleared counts as discarded.
+ * Anything else is left unreported.
  *
  * Preview and trash saves are ignored, as neither expresses an outcome. The
  * subscription is scoped to the editor store and is torn down as soon as the
@@ -217,12 +217,13 @@ const watchSavesForGenerationOutcome = (): void => {
 
 			stopWatchingSaves();
 
+			// A saved excerpt matching neither was either rewritten by the
+			// author or altered by the server on save. Leave it unreported:
+			// under-counting beats counting a rejection as an acceptance.
 			if ( savedExcerpt === generated ) {
 				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: false } );
 			} else if ( savedExcerpt === previous || '' === savedExcerpt ) {
 				Telemetry.trackEvent( 'excerpt_generator_discarded', { via: 'editor_undo' } );
-			} else {
-				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: true } );
 			}
 
 			return;
