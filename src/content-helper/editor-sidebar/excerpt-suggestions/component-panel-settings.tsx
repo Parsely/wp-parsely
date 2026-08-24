@@ -103,8 +103,12 @@ const useDebouncedSetting = <T extends string | number>(
 	const onChangeRef = useRef( onChange );
 	const savedRef = useRef<T>( value );
 
-	draftRef.current = draft;
-	onChangeRef.current = onChange;
+	// Sync after commit rather than during render, so a discarded render
+	// cannot leave the refs pointing at values that were never committed.
+	useEffect( () => {
+		draftRef.current = draft;
+		onChangeRef.current = onChange;
+	} );
 
 	const save = useCallback( ( newValue: T ) => {
 		savedRef.current = newValue;
