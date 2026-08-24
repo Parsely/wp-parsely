@@ -23,9 +23,9 @@ import {
 	PARSELY_TONES,
 	ToneProp,
 } from '../../common/components/tone-selector';
+import { MAX_CUSTOM_VALUE_LENGTH } from '../../common/utils/constants';
 import {
 	CUSTOM_VALUE,
-	MAX_CUSTOM_VALUE_LENGTH,
 	MAX_EXCERPT_LENGTH,
 	MIN_EXCERPT_LENGTH,
 	SETTINGS_SAVE_DELAY,
