@@ -401,6 +401,12 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 					settings.ExcerptSuggestions.Length
 				);
 
+			// `editPost` always targets the current post, so discard a response
+			// that arrives after the editor moved on to another one.
+			if ( editor.getCurrentPostId() !== postId ) {
+				return;
+			}
+
 			editPost( { excerpt: requestedExcerpt } );
 			setGenerationCount( ( prev ) => prev + 1 );
 
