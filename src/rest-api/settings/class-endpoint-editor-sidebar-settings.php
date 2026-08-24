@@ -20,17 +20,37 @@ namespace Parsely\REST_API\Settings;
  */
 class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	/**
-	 * The allowed range for the desired excerpt length, in characters.
+	 * The minimum desired excerpt length, in characters.
 	 *
-	 * Kept in sync with the MIN_EXCERPT_LENGTH/MAX_EXCERPT_LENGTH constants
-	 * of the Excerpt Suggestions component.
+	 * Kept in sync with MIN_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
 	 *
 	 * @since 3.24.0
 	 *
 	 * @var int
 	 */
-	public const MIN_EXCERPT_LENGTH     = 50;
-	public const MAX_EXCERPT_LENGTH     = 300;
+	public const MIN_EXCERPT_LENGTH = 50;
+
+	/**
+	 * The maximum desired excerpt length, in characters.
+	 *
+	 * Kept in sync with MAX_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const MAX_EXCERPT_LENGTH = 300;
+
+	/**
+	 * The default desired excerpt length, in characters.
+	 *
+	 * Kept in sync with DEFAULT_EXCERPT_LENGTH in
+	 * excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
 	public const DEFAULT_EXCERPT_LENGTH = 160;
 
 	/**
