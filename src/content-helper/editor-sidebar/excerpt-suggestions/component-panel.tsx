@@ -155,8 +155,9 @@ const stopWatchingSaves = (): void => {
  * Anything else is left unreported.
  *
  * Preview and trash saves are ignored, as neither expresses an outcome. The
- * subscription is scoped to the editor store and is torn down as soon as the
- * generation is attributed or can no longer be attributed.
+ * subscription is torn down as soon as the generation is attributed or can no
+ * longer be attributed. Its editor store argument is ignored before WP 6.2,
+ * where the listener runs on every store change instead.
  *
  * @since 3.24.0
  */

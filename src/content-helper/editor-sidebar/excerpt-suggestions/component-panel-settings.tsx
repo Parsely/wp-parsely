@@ -156,9 +156,10 @@ type CustomizableSelectProps = {
  * selected.
  *
  * The selected option and the custom text are held in local state, so that
- * typing a value that happens to match a predefined key (such as `formal`)
- * neither collapses the text field nor loses keyboard focus. Changes to the
- * custom text are debounced, as each change is persisted with a REST request.
+ * typing a value matching a predefined key (such as `formal`) neither collapses
+ * the text field nor loses keyboard focus. That only holds while the popover
+ * stays open, as reopening it re-derives the selection from the stored value.
+ * Changes to the custom text are debounced, as each one costs a REST request.
  *
  * @since 3.24.0
  *
