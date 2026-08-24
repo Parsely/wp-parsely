@@ -357,6 +357,54 @@ describe( 'PCH Excerpt Suggestions panel', () => {
 		} );
 	} );
 
+	describe( 'snackbar undo', () => {
+		test( 'should restore the excerpt the author started with', async () => {
+			const trackEvent = mockTrackEvent();
+			mockEditorState.excerpt = 'Author excerpt.';
+			mockGenerateExcerpt();
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+			await clickUndo();
+
+			expect( mockEditPost ).toHaveBeenLastCalledWith( { excerpt: 'Author excerpt.' } );
+			expect( trackEvent ).toHaveBeenCalledWith(
+				'excerpt_generator_discarded', { via: 'snackbar' }
+			);
+		} );
+
+		test( 'should restore the original excerpt after regenerating', async () => {
+			mockEditorState.excerpt = 'Author excerpt.';
+			mockGenerateExcerpt();
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+			await clickGenerate();
+			await clickUndo();
+
+			expect( mockEditPost ).toHaveBeenLastCalledWith( { excerpt: 'Author excerpt.' } );
+		} );
+
+		test( 'should do nothing once the notice outlives its generation', async () => {
+			const trackEvent = mockTrackEvent();
+			mockGenerateExcerpt();
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			// The notice stays on screen after the editor moves to another
+			// post, whose excerpt must be left alone.
+			mockEditorState.postId = 2;
+			await notifySaveListeners();
+
+			mockEditPost.mockClear();
+			await clickUndo();
+
+			expect( mockEditPost ).not.toHaveBeenCalled();
+			expect( reportedOutcomes( trackEvent ) ).toEqual( [] );
+		} );
+	} );
+
 	/**
 	 * Stubs the excerpt generation request.
 	 *
@@ -437,6 +485,23 @@ describe( 'PCH Excerpt Suggestions panel', () => {
 	async function clickGenerate(): Promise<void> {
 		await act( async () => {
 			getGenerateButton().click();
+		} );
+	}
+
+	/**
+	 * Activates the Undo action of the most recent snackbar notice.
+	 *
+	 * The notice is rendered by the editor rather than the panel, so the
+	 * action is taken from the recorded createSuccessNotice call.
+	 *
+	 * @since 3.24.0
+	 */
+	async function clickUndo(): Promise<void> {
+		const notices = mockCreateSuccessNotice.mock.calls;
+		const { actions } = notices[ notices.length - 1 ][ 1 ];
+
+		await act( async () => {
+			actions[ 0 ].onClick();
 		} );
 	}
 
