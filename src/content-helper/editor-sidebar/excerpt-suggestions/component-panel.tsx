@@ -498,8 +498,11 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 				}
 			>
 				<Flex justify="flex-start" gap={ 2 } wrap ref={ setPopoverAnchor }>
+					{ /* Focusable while disabled, so the help text is announced and focus
+					     is kept. `accessibleWhenDisabled` supersedes it, but needs WP 6.3. */ }
 					<Button
 						__next40pxDefaultSize
+						__experimentalIsFocusable
 						aria-describedby={ ! postContent ? `${ helpId }__help` : undefined }
 						variant="secondary"
 						icon={ AiIcon }
@@ -518,6 +521,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 								variant="tertiary"
 								onClick={ onToggle }
 								aria-expanded={ isOpen }
+								aria-haspopup="dialog"
 								aria-label={ popoverTitle }
 							>
 								{ __( 'Settings', 'wp-parsely' ) }
