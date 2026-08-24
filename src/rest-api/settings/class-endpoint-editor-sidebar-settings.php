@@ -54,6 +54,28 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	public const DEFAULT_EXCERPT_LENGTH = 160;
 
 	/**
+	 * The default persona used when generating excerpts.
+	 *
+	 * Kept in sync with DEFAULT_PERSONA in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_EXCERPT_PERSONA = 'journalist';
+
+	/**
+	 * The default tone used when generating excerpts.
+	 *
+	 * Kept in sync with DEFAULT_TONE in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_EXCERPT_TONE = 'neutral';
+
+	/**
 	 * Returns the endpoint's name.
 	 *
 	 * @since 3.17.0
@@ -97,8 +119,8 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 				),
 				'default' => array(
 					'Length'  => self::DEFAULT_EXCERPT_LENGTH,
-					'Persona' => 'journalist',
-					'Tone'    => 'neutral',
+					'Persona' => self::DEFAULT_EXCERPT_PERSONA,
+					'Tone'    => self::DEFAULT_EXCERPT_TONE,
 				),
 			),
 			'InitialTabName'     => array(
