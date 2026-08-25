@@ -155,6 +155,7 @@ class ComposerStaticInite12b2cf12ec9ec741d5e9323329c8f28
         'Parsely\\Content_Helper\\Editor_Sidebar\\Smart_Linking' => __DIR__ . '/../..' . '/src/content-helper/editor-sidebar/smart-linking/class-smart-linking.php',
         'Parsely\\Content_Helper\\Excerpt_Suggestions' => __DIR__ . '/../..' . '/src/content-helper/editor-sidebar/excerpt-suggestions/class-excerpt-suggestions.php',
         'Parsely\\Content_Helper\\Post_List_Stats' => __DIR__ . '/../..' . '/src/content-helper/post-list-stats/class-post-list-stats.php',
+        'Parsely\\Content_Helper\\Suggestion_Defaults' => __DIR__ . '/../..' . '/src/content-helper/common/class-suggestion-defaults.php',
         'Parsely\\Dashboard_Link' => __DIR__ . '/../..' . '/src/class-dashboard-link.php',
         'Parsely\\Endpoints\\GraphQL_Metadata' => __DIR__ . '/../..' . '/src/Endpoints/class-graphql-metadata.php',
         'Parsely\\Endpoints\\Metadata_Endpoint' => __DIR__ . '/../..' . '/src/Endpoints/class-metadata-endpoint.php',
