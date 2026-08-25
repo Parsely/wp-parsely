@@ -779,6 +779,92 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that a feature's generation defaults survive the Content
+	 * Intelligence sanitizer, which coerces every scalar into a boolean.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::sanitize_option_array
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @dataProvider provide_generation_defaults_data
+	 *
+	 * @group ui
+	 *
+	 * @param array<string, mixed> $submitted The submitted defaults.
+	 * @param array<string, mixed> $expected  The expected stored defaults.
+	 */
+	public function test_generation_defaults_are_validated( array $submitted, array $expected ): void {
+		$options = $this->transform_pch_options_for_validation( self::$parsely->get_options() );
+
+		/** @var array<string, mixed> $feature */
+		$feature = $options['content_helper']['excerpt_suggestions'] ?? array();
+		$options['content_helper']['excerpt_suggestions'] = array_merge( $feature, $submitted );
+
+		// @phpstan-ignore argument.type
+		$actual = self::$settings_page->validate_options( $options );
+
+		/** @var array<string, mixed> $stored */
+		$stored = $actual['content_helper']['excerpt_suggestions'] ?? array();
+
+		foreach ( $expected as $key => $value ) {
+			self::assertSame( $value, $stored[ $key ], "Unexpected value for $key." );
+		}
+	}
+
+	/**
+	 * Provides data for testing the generation defaults validation.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @return iterable<array<mixed>> The test data.
+	 */
+	public function provide_generation_defaults_data(): iterable {
+		$shipped = array(
+			'default_length'  => 160,
+			'default_tone'    => 'neutral',
+			'default_persona' => 'journalist',
+		);
+
+		yield 'valid values' => array(
+			array(
+				'default_length'  => '200',
+				'default_tone'    => 'humorous',
+				'default_persona' => 'techAnalyst',
+			),
+			array(
+				'default_length'  => 200,
+				'default_tone'    => 'humorous',
+				'default_persona' => 'techAnalyst',
+			),
+		);
+
+		// A length that is not an integer is invalid, rather than something to
+		// truncate.
+		yield 'fractional length'      => array( array( 'default_length' => '50.9' ), $shipped );
+		yield 'exponent length'        => array( array( 'default_length' => '1e2' ), $shipped );
+		yield 'out-of-range length'    => array( array( 'default_length' => '9999' ), $shipped );
+		yield 'array length'           => array( array( 'default_length' => array( 200 ) ), $shipped );
+
+		// Tones and personas are an allowlist, so anything else is discarded.
+		yield 'unknown tone'           => array( array( 'default_tone' => 'bogus' ), $shipped );
+		yield 'markup as a tone'       => array( array( 'default_tone' => '<script>x</script>' ), $shipped );
+		yield 'array as a persona'     => array( array( 'default_persona' => array( 'techAnalyst' ) ), $shipped );
+
+		// Nothing submitted, as happens when the fieldset is disabled because
+		// the options are managed.
+		yield 'nothing submitted'      => array( array(), $shipped );
+	}
+
+	/**
 	 * Provides data for the test_managed_option_title_html_is_correct test.
 	 *
 	 * @since 3.9.0
