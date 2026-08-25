@@ -169,7 +169,12 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 	 *
 	 * Retrieves the settings for the current user.
 	 *
+	 * The stored value is resolved against the current specifications, so that
+	 * a setting added after the user's last save still reaches them.
+	 *
 	 * @since 3.17.0
+	 * @since 3.24.0 The stored value is resolved against the current
+	 *               specifications.
 	 *
 	 * @return WP_REST_Response The response object.
 	 */
@@ -177,11 +182,10 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 		$meta_key = $this->get_meta_key();
 		$settings = get_user_meta( $this->current_user_id, $meta_key, true );
 
-		if ( ! is_array( $settings ) || 0 === count( $settings ) ) {
-			$settings = $this->default_value;
-		}
-
-		return new WP_REST_Response( $settings, 200 );
+		return new WP_REST_Response(
+			$this->sanitize_value( is_array( $settings ) ? $settings : array() ),
+			200
+		);
 	}
 
 	/**
