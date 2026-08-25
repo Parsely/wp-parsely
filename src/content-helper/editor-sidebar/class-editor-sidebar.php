@@ -196,9 +196,10 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			'before'
 		);
 
-		// Inject the site-wide generation defaults. The stored settings carry
-		// them already, but not once a user's own value is the custom sentinel,
-		// which is exactly when the editor needs them.
+		// Inject the site-wide tone and persona. The stored settings carry them
+		// already, but not once a user's own value is the custom sentinel,
+		// which is exactly when the editor needs them. The desired length has
+		// no sentinel, so it is not needed here.
 		$excerpt_options = Suggestion_Defaults::get_feature_options( $this->parsely, 'excerpt_suggestions' );
 		$title_options   = Suggestion_Defaults::get_feature_options( $this->parsely, 'title_suggestions' );
 
@@ -207,7 +208,6 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			'window.wpParselyContentHelperDefaults = ' . wp_json_encode(
 				array(
 					'excerptSuggestions' => array(
-						'length'  => Suggestion_Defaults::get_default_length( $excerpt_options ),
 						'persona' => Suggestion_Defaults::get_default_persona( $excerpt_options ),
 						'tone'    => Suggestion_Defaults::get_default_tone( $excerpt_options ),
 					),

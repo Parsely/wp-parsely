@@ -182,6 +182,34 @@ describe( 'PCH Excerpt Suggestions panel', () => {
 			);
 		} );
 
+		test( 'should send a length other than the default', async () => {
+			const generate = mockGenerateExcerpt();
+			mockSettings.ExcerptSuggestions.Length = 220;
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			expect( generate ).toHaveBeenCalledWith(
+				'Post title.', 'Post content.', DEFAULT_PERSONA, DEFAULT_TONE, 220
+			);
+		} );
+
+		test( 'should send the length untouched when the tone falls back', async () => {
+			const generate = mockGenerateExcerpt();
+			window.wpParselyContentHelperDefaults = {
+				excerptSuggestions: { persona: 'techAnalyst', tone: 'analytical' },
+			};
+			mockSettings.ExcerptSuggestions.Length = 220;
+			mockSettings.ExcerptSuggestions.Tone = 'custom';
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			expect( generate ).toHaveBeenCalledWith(
+				'Post title.', 'Post content.', DEFAULT_PERSONA, 'analytical', 220
+			);
+		} );
+
 		test( 'should use the shipped defaults when the site injects none', async () => {
 			const generate = mockGenerateExcerpt();
 			mockSettings.ExcerptSuggestions.Persona = 'custom';
