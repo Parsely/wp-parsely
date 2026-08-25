@@ -295,7 +295,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 					<Button
 						variant="secondary"
 						isBusy={ loading }
-						disabled={ loading || tone === 'custom' || persona === 'custom' }
+						disabled={ loading }
 						onClick={ generateOnClickHandler }
 					>
 						{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
