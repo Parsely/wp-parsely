@@ -17,6 +17,19 @@ use Parsely\Parsely;
  */
 final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	/**
+	 * Teardown method called after each test.
+	 *
+	 * @since 3.24.0
+	 */
+	public function tear_down(): void {
+		// The injection test configures the site's defaults, which would
+		// otherwise leak into the tests that follow.
+		self::set_options();
+
+		parent::tear_down();
+	}
+
+	/**
 	 * Asserts the enqueueing status of the feature's assets according to the
 	 * passed filter values.
 	 *
