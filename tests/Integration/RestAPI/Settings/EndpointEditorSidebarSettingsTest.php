@@ -43,6 +43,19 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	}
 
 	/**
+	 * Teardown method called after each test.
+	 *
+	 * @since 3.24.0
+	 */
+	public function tear_down(): void {
+		// Tests here configure the site's defaults. The next test's endpoint
+		// snapshots them in its constructor, before its own set_up runs.
+		self::set_options();
+
+		parent::tear_down();
+	}
+
+	/**
 	 * Returns the endpoint to be used in tests.
 	 *
 	 * @since 3.17.0
