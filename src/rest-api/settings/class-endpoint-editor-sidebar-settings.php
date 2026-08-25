@@ -103,8 +103,8 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	 * @return array<string, Subvalue_Spec>
 	 */
 	protected function get_subvalues_specs(): array {
-		$excerpt_options = $this->get_feature_options( 'excerpt_suggestions' );
-		$title_options   = $this->get_feature_options( 'title_suggestions' );
+		$excerpt_options = Suggestion_Defaults::get_feature_options( $this->parsely, 'excerpt_suggestions' );
+		$title_options   = Suggestion_Defaults::get_feature_options( $this->parsely, 'title_suggestions' );
 
 		return array(
 			'ExcerptSuggestions' => array(
@@ -193,7 +193,7 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 				$value > self::MAX_EXCERPT_LENGTH
 			) {
 				return Suggestion_Defaults::get_default_length(
-					$this->get_feature_options( 'excerpt_suggestions' )
+					Suggestion_Defaults::get_feature_options( $this->parsely, 'excerpt_suggestions' )
 				);
 			}
 
@@ -201,20 +201,5 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 		}
 
 		return parent::sanitize_subvalue( $composite_key, $value );
-	}
-
-	/**
-	 * Returns the site-wide options of a Content Intelligence feature.
-	 *
-	 * @since 3.24.0
-	 *
-	 * @param string $feature_id The feature's name.
-	 * @return array<string, mixed> The feature's options.
-	 */
-	private function get_feature_options( string $feature_id ): array {
-		/** @var array<string, mixed> $options */
-		$options = $this->parsely->get_options()['content_helper'][ $feature_id ] ?? array();
-
-		return $options;
 	}
 }

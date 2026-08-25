@@ -11,12 +11,14 @@ import type {
 	ExcerptSuggestionsSettings,
 } from '../../../src/content-helper/common/settings';
 import {
+	DEFAULT_PERSONA,
+	DEFAULT_TONE,
+} from '../../../src/content-helper/common/utils/constants';
+import {
 	PostExcerptSuggestions,
 } from '../../../src/content-helper/editor-sidebar/excerpt-suggestions/component-panel';
 import {
 	DEFAULT_EXCERPT_LENGTH,
-	DEFAULT_PERSONA,
-	DEFAULT_TONE,
 	SETTINGS_SAVE_DELAY,
 } from '../../../src/content-helper/editor-sidebar/excerpt-suggestions/constants';
 import {
@@ -164,6 +166,7 @@ describe( 'PCH Excerpt Suggestions panel', () => {
 		mockEditorState.postId = -1;
 		await notifySaveListeners();
 
+		delete window.wpParselyContentHelperDefaults;
 		jest.clearAllMocks();
 	} );
 
@@ -179,7 +182,35 @@ describe( 'PCH Excerpt Suggestions panel', () => {
 			);
 		} );
 
-		test( 'should send the defaults when tone and persona are the custom sentinel', async () => {
+		test( 'should send a length other than the default', async () => {
+			const generate = mockGenerateExcerpt();
+			mockSettings.ExcerptSuggestions.Length = 220;
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			expect( generate ).toHaveBeenCalledWith(
+				'Post title.', 'Post content.', DEFAULT_PERSONA, DEFAULT_TONE, 220
+			);
+		} );
+
+		test( 'should send the length untouched when the tone falls back', async () => {
+			const generate = mockGenerateExcerpt();
+			window.wpParselyContentHelperDefaults = {
+				excerptSuggestions: { persona: 'techAnalyst', tone: 'analytical' },
+			};
+			mockSettings.ExcerptSuggestions.Length = 220;
+			mockSettings.ExcerptSuggestions.Tone = 'custom';
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			expect( generate ).toHaveBeenCalledWith(
+				'Post title.', 'Post content.', DEFAULT_PERSONA, 'analytical', 220
+			);
+		} );
+
+		test( 'should use the shipped defaults when the site injects none', async () => {
 			const generate = mockGenerateExcerpt();
 			mockSettings.ExcerptSuggestions.Persona = 'custom';
 			mockSettings.ExcerptSuggestions.Tone = 'custom';
@@ -189,6 +220,38 @@ describe( 'PCH Excerpt Suggestions panel', () => {
 
 			expect( generate ).toHaveBeenCalledWith(
 				'Post title.', 'Post content.', DEFAULT_PERSONA, DEFAULT_TONE, DEFAULT_EXCERPT_LENGTH
+			);
+		} );
+
+		test( 'should use the site defaults for an empty custom value', async () => {
+			const generate = mockGenerateExcerpt();
+			window.wpParselyContentHelperDefaults = {
+				excerptSuggestions: { persona: 'techAnalyst', tone: 'analytical' },
+			};
+			mockSettings.ExcerptSuggestions.Persona = 'custom';
+			mockSettings.ExcerptSuggestions.Tone = 'custom';
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			expect( generate ).toHaveBeenCalledWith(
+				'Post title.', 'Post content.', 'techAnalyst', 'analytical', DEFAULT_EXCERPT_LENGTH
+			);
+		} );
+
+		test( 'should keep a tone and persona the author entered', async () => {
+			const generate = mockGenerateExcerpt();
+			window.wpParselyContentHelperDefaults = {
+				excerptSuggestions: { persona: 'techAnalyst', tone: 'analytical' },
+			};
+			mockSettings.ExcerptSuggestions.Persona = 'editorialWriter';
+			mockSettings.ExcerptSuggestions.Tone = 'snarky';
+
+			render( <PostExcerptSuggestions /> );
+			await clickGenerate();
+
+			expect( generate ).toHaveBeenCalledWith(
+				'Post title.', 'Post content.', 'editorialWriter', 'snarky', DEFAULT_EXCERPT_LENGTH
 			);
 		} );
 

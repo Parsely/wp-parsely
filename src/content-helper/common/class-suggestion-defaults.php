@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Parsely;
+
 /**
  * Holds the vocabulary and the site-wide generation defaults shared by the
  * suggestion features.
@@ -22,32 +24,76 @@ namespace Parsely\Content_Helper;
  */
 class Suggestion_Defaults {
 	/**
-	 * The allowed range and default for the desired excerpt length, in
-	 * characters. Applies to Excerpt Suggestions only.
+	 * The minimum desired excerpt length, in characters.
 	 *
-	 * Kept in sync with MIN_EXCERPT_LENGTH, MAX_EXCERPT_LENGTH and
-	 * DEFAULT_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
+	 * Kept in sync with MIN_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
 	 *
 	 * @since 3.24.0
 	 *
 	 * @var int
 	 */
-	public const MIN_LENGTH     = 50;
-	public const MAX_LENGTH     = 300;
+	public const MIN_LENGTH = 50;
+
+	/**
+	 * The maximum desired excerpt length, in characters.
+	 *
+	 * Kept in sync with MAX_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const MAX_LENGTH = 300;
+
+	/**
+	 * The default desired excerpt length, in characters.
+	 *
+	 * Kept in sync with DEFAULT_EXCERPT_LENGTH in
+	 * excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
 	public const DEFAULT_LENGTH = 160;
 
 	/**
-	 * The tone and persona used when none is configured.
+	 * The tone used when none is configured.
 	 *
-	 * Kept in sync with DEFAULT_TONE and DEFAULT_PERSONA in
-	 * excerpt-suggestions/constants.ts.
+	 * Kept in sync with DEFAULT_TONE in common/utils/constants.ts.
 	 *
 	 * @since 3.24.0
 	 *
 	 * @var string
 	 */
-	public const DEFAULT_TONE    = 'neutral';
+	public const DEFAULT_TONE = 'neutral';
+
+	/**
+	 * The persona used when none is configured.
+	 *
+	 * Kept in sync with DEFAULT_PERSONA in common/utils/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
 	public const DEFAULT_PERSONA = 'journalist';
+
+	/**
+	 * Returns a Content Intelligence feature's site-wide options.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param Parsely $parsely    The Parsely instance holding the options.
+	 * @param string  $feature_id The feature's name.
+	 * @return array<string, mixed> The feature's options.
+	 */
+	public static function get_feature_options( Parsely $parsely, string $feature_id ): array {
+		/** @var array<string, mixed> $options */
+		$options = $parsely->get_options()['content_helper'][ $feature_id ] ?? array();
+
+		return $options;
+	}
 
 	/**
 	 * Returns the predefined tones, keyed by their stored value.
