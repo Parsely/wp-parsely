@@ -37,13 +37,6 @@ export const MIN_EXCERPT_LENGTH = 50;
 export const MAX_EXCERPT_LENGTH = 300;
 
 /**
- * The key denoting that a free-text (custom) tone or persona is in use.
- *
- * @since 3.24.0
- */
-export const CUSTOM_VALUE = 'custom';
-
-/**
  * The delay before persisting a settings change, in milliseconds.
  *
  * Settings are saved with a REST request per change, so continuous controls

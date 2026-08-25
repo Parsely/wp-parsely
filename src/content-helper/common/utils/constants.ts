@@ -14,6 +14,13 @@ export const PUBLIC_API_BASE_URL = 'https://api.parsely.com/v2';
 export const MAX_CUSTOM_VALUE_LENGTH = 32;
 
 /**
+ * The key denoting that a free-text (custom) tone or persona is in use.
+ *
+ * @since 3.24.0
+ */
+export const CUSTOM_VALUE = 'custom';
+
+/**
  * Periods that are available in Content Intelligence.
  *
  * @since 3.10.0
