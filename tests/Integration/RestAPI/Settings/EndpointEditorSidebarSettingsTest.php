@@ -63,7 +63,7 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 		// Note: Array keys should be sorted alphabetically.
 		return array(
 			'ExcerptSuggestions' => array(
-				'Open'    => false,
+				'Length'  => 160,
 				'Persona' => 'journalist',
 				'Tone'    => 'neutral',
 			),
@@ -258,6 +258,77 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 		);
 
 		self::assertSame( $expected, $value );
+	}
+
+	/**
+	 * Verifies that out-of-range or non-integer excerpt lengths are replaced
+	 * with the default value.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param mixed $length   The Length value to send in the PUT request.
+	 * @param int   $expected The expected stored Length value.
+	 *
+	 * @covers \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_full_endpoint
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
+	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_route_prefix
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_nested_specs
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @dataProvider provide_excerpt_length_data
+	 */
+	public function test_excerpt_length_is_validated( $length, int $expected ): void {
+		$data = $this->get_default_value();
+		assert( is_array( $data['ExcerptSuggestions'] ) );
+		$data['ExcerptSuggestions']['Length'] = $length;
+
+		$value = $this->send_put_request( $data );
+		assert( is_array( $value['ExcerptSuggestions'] ) );
+
+		self::assertSame( $expected, $value['ExcerptSuggestions']['Length'] );
+	}
+
+	/**
+	 * Provides data for testing the excerpt length validation.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @return array<string, array<mixed>> The test data.
+	 */
+	public function provide_excerpt_length_data(): array {
+		$default = Endpoint_Editor_Sidebar_Settings::DEFAULT_EXCERPT_LENGTH;
+
+		return array(
+			'in range'       => array( 200, 200 ),
+			'minimum'        => array( Endpoint_Editor_Sidebar_Settings::MIN_EXCERPT_LENGTH, Endpoint_Editor_Sidebar_Settings::MIN_EXCERPT_LENGTH ),
+			'maximum'        => array( Endpoint_Editor_Sidebar_Settings::MAX_EXCERPT_LENGTH, Endpoint_Editor_Sidebar_Settings::MAX_EXCERPT_LENGTH ),
+			'below minimum'  => array( 10, $default ),
+			'above maximum'  => array( 99999, $default ),
+			'negative'       => array( -5, $default ),
+			'string'         => array( 'abc', $default ),
+			'numeric string' => array( '200', $default ),
+			'boolean'        => array( true, $default ),
+		);
 	}
 
 	/**

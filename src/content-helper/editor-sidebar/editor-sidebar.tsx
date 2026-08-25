@@ -30,6 +30,13 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
+import {
+	DEFAULT_EXCERPT_LENGTH,
+	DEFAULT_PERSONA,
+	DEFAULT_TONE,
+	MAX_EXCERPT_LENGTH,
+	MIN_EXCERPT_LENGTH,
+} from './excerpt-suggestions/constants';
 import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
@@ -102,9 +109,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			Persona: 'journalist',
 		},
 		ExcerptSuggestions: {
-			Open: false,
-			Persona: 'journalist',
-			Tone: 'neutral',
+			Length: DEFAULT_EXCERPT_LENGTH,
+			Persona: DEFAULT_PERSONA,
+			Tone: DEFAULT_TONE,
 		},
 	};
 
@@ -176,8 +183,12 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( typeof mergedSettings.ExcerptSuggestions !== 'object' ) {
 		mergedSettings.ExcerptSuggestions = defaultSettings.ExcerptSuggestions;
 	}
-	if ( typeof mergedSettings.ExcerptSuggestions.Open !== 'boolean' ) {
-		mergedSettings.ExcerptSuggestions.Open = defaultSettings.ExcerptSuggestions.Open;
+	if (
+		! Number.isInteger( mergedSettings.ExcerptSuggestions.Length ) ||
+		mergedSettings.ExcerptSuggestions.Length < MIN_EXCERPT_LENGTH ||
+		mergedSettings.ExcerptSuggestions.Length > MAX_EXCERPT_LENGTH
+	) {
+		mergedSettings.ExcerptSuggestions.Length = defaultSettings.ExcerptSuggestions.Length;
 	}
 	if ( typeof mergedSettings.ExcerptSuggestions.Tone !== 'string' ) {
 		mergedSettings.ExcerptSuggestions.Tone = defaultSettings.ExcerptSuggestions.Tone;

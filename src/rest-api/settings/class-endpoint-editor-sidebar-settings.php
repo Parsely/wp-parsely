@@ -20,6 +20,62 @@ namespace Parsely\REST_API\Settings;
  */
 class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	/**
+	 * The minimum desired excerpt length, in characters.
+	 *
+	 * Kept in sync with MIN_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const MIN_EXCERPT_LENGTH = 50;
+
+	/**
+	 * The maximum desired excerpt length, in characters.
+	 *
+	 * Kept in sync with MAX_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const MAX_EXCERPT_LENGTH = 300;
+
+	/**
+	 * The default desired excerpt length, in characters.
+	 *
+	 * Kept in sync with DEFAULT_EXCERPT_LENGTH in
+	 * excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const DEFAULT_EXCERPT_LENGTH = 160;
+
+	/**
+	 * The default persona used when generating excerpts.
+	 *
+	 * Kept in sync with DEFAULT_PERSONA in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_EXCERPT_PERSONA = 'journalist';
+
+	/**
+	 * The default tone used when generating excerpts.
+	 *
+	 * Kept in sync with DEFAULT_TONE in excerpt-suggestions/constants.ts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_EXCERPT_TONE = 'neutral';
+
+	/**
 	 * Returns the endpoint's name.
 	 *
 	 * @since 3.17.0
@@ -47,6 +103,9 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	 *
 	 * @since 3.13.0
 	 * @since 3.17.0 Moved from Editor_Sidebar_Settings_Endpoint.
+	 * @since 3.24.0 Added the ExcerptSuggestions `Length` setting.
+	 * @since 3.24.0 Removed the ExcerptSuggestions `Open` setting, as the panel's
+	 *               collapsed state is now persisted by the block editor itself.
 	 *
 	 * @return array<string, Subvalue_Spec>
 	 */
@@ -54,14 +113,14 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 		return array(
 			'ExcerptSuggestions' => array(
 				'values'  => array(
-					'Open'    => array( true, false ),
+					'Length'  => array(),
 					'Persona' => array(),
 					'Tone'    => array(),
 				),
 				'default' => array(
-					'Open'    => false,
-					'Persona' => 'journalist',
-					'Tone'    => 'neutral',
+					'Length'  => self::DEFAULT_EXCERPT_LENGTH,
+					'Persona' => self::DEFAULT_EXCERPT_PERSONA,
+					'Tone'    => self::DEFAULT_EXCERPT_TONE,
 				),
 			),
 			'InitialTabName'     => array(
@@ -117,5 +176,32 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 				),
 			),
 		);
+	}
+
+	/**
+	 * Sanitizes the passed subvalue.
+	 *
+	 * Extends the parent implementation with a range check for the desired
+	 * excerpt length, which the enumerated valid values cannot express.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param string $composite_key The subvalue's key.
+	 * @param mixed  $value         The value to sanitize.
+	 * @return mixed The sanitized subvalue.
+	 */
+	protected function sanitize_subvalue( string $composite_key, $value ) {
+		if ( 'ExcerptSuggestions.Length' === $composite_key ) {
+			if ( ! is_int( $value ) ||
+				$value < self::MIN_EXCERPT_LENGTH ||
+				$value > self::MAX_EXCERPT_LENGTH
+			) {
+				return self::DEFAULT_EXCERPT_LENGTH;
+			}
+
+			return $value;
+		}
+
+		return parent::sanitize_subvalue( $composite_key, $value );
 	}
 }
