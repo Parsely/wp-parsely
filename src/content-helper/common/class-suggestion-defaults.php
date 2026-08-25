@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Parsely;
+
 /**
  * Holds the vocabulary and the site-wide generation defaults shared by the
  * suggestion features.
@@ -48,6 +50,22 @@ class Suggestion_Defaults {
 	 */
 	public const DEFAULT_TONE    = 'neutral';
 	public const DEFAULT_PERSONA = 'journalist';
+
+	/**
+	 * Returns a Content Intelligence feature's site-wide options.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @param Parsely $parsely    The Parsely instance holding the options.
+	 * @param string  $feature_id The feature's name.
+	 * @return array<string, mixed> The feature's options.
+	 */
+	public static function get_feature_options( Parsely $parsely, string $feature_id ): array {
+		/** @var array<string, mixed> $options */
+		$options = $parsely->get_options()['content_helper'][ $feature_id ] ?? array();
+
+		return $options;
+	}
 
 	/**
 	 * Returns the predefined tones, keyed by their stored value.

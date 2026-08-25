@@ -24,6 +24,10 @@ declare global {
 		},
 
 		wpParselyAdminUrl: string;
+		wpParselyContentHelperDefaults?: {
+			excerptSuggestions?: { length?: number, persona?: string, tone?: string },
+			titleSuggestions?: { persona?: string, tone?: string },
+		};
 		wpParselyContentHelperPermissions: string;
 		wpParselyContentHelperPersonas?: Record<string, string>;
 		wpParselyContentHelperSettings: string;
