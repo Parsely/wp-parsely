@@ -7,6 +7,13 @@ export const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
 export const PUBLIC_API_BASE_URL = 'https://api.parsely.com/v2';
 
 /**
+ * The maximum length of a free-text (custom) tone or persona, in characters.
+ *
+ * @since 3.24.0
+ */
+export const MAX_CUSTOM_VALUE_LENGTH = 32;
+
+/**
  * Periods that are available in Content Intelligence.
  *
  * @since 3.10.0
