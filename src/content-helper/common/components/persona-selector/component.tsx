@@ -17,6 +17,7 @@ import { Icon, pencil } from '@wordpress/icons';
  * Internal dependencies
  */
 import { MoreArrow } from '../../icons/more-arrow';
+import { MAX_CUSTOM_VALUE_LENGTH } from '../../utils/constants';
 import { toMetadata, VocabularyEntry } from '../../utils/vocabulary';
 
 /**
@@ -122,9 +123,8 @@ const CustomPersona = (
 						setCustomPersona( '' );
 						return;
 					}
-					// Truncate the persona to 32 characters.
-					if ( newPersona.length > 32 ) {
-						newPersona = newPersona.slice( 0, 32 );
+					if ( newPersona.length > MAX_CUSTOM_VALUE_LENGTH ) {
+						newPersona = newPersona.slice( 0, MAX_CUSTOM_VALUE_LENGTH );
 					}
 					debouncedOnChange( newPersona );
 					setCustomPersona( newPersona );

@@ -1,6 +1,6 @@
 {
 	"name": "wp-parsely",
-	"version": "3.23.5",
+	"version": "3.23.7",
 	"private": true,
 	"description": "The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.",
 	"author": "parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, acicovic, mehmoodak, vaurdan",
@@ -77,7 +77,7 @@
 		"@wordpress/scripts": "^27.9.0",
 		"@wordpress/url": "^4.37.0",
 		"@wordpress/wordcount": "^4.37.0",
-		"concurrently": "^10.0.3",
+		"concurrently": "^10.0.5",
 		"eslint-plugin-jest": "^28.14.0",
 		"husky": "^9.1.7",
 		"lodash.debounce": "^4.0.8",

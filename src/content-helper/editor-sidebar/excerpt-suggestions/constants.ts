@@ -44,13 +44,6 @@ export const MAX_EXCERPT_LENGTH = 300;
 export const CUSTOM_VALUE = 'custom';
 
 /**
- * The maximum length of a custom tone or persona, in characters.
- *
- * @since 3.24.0
- */
-export const MAX_CUSTOM_VALUE_LENGTH = 32;
-
-/**
  * The delay before persisting a settings change, in milliseconds.
  *
  * Settings are saved with a REST request per change, so continuous controls

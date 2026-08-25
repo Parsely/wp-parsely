@@ -17,6 +17,7 @@ import { Icon, pencil } from '@wordpress/icons';
  * Internal dependencies
  */
 import { MoreArrow } from '../../icons/more-arrow';
+import { MAX_CUSTOM_VALUE_LENGTH } from '../../utils/constants';
 import { toMetadata, VocabularyEntry } from '../../utils/vocabulary';
 
 /**
@@ -122,9 +123,8 @@ const CustomTone = (
 						setCustomTone( '' );
 						return;
 					}
-					// Truncate the tone to 32 characters.
-					if ( newTone.length > 32 ) {
-						newTone = newTone.slice( 0, 32 );
+					if ( newTone.length > MAX_CUSTOM_VALUE_LENGTH ) {
+						newTone = newTone.slice( 0, MAX_CUSTOM_VALUE_LENGTH );
 					}
 					debouncedOnChange( newTone );
 					setCustomTone( newTone );

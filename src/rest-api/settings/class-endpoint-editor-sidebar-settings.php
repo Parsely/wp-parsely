@@ -22,18 +22,49 @@ use Parsely\Content_Helper\Suggestion_Defaults;
  */
 class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	/**
-	 * The allowed range for the desired excerpt length, in characters.
-	 *
-	 * Kept in sync with the MIN_EXCERPT_LENGTH/MAX_EXCERPT_LENGTH constants
-	 * of the Excerpt Suggestions component.
+	 * The minimum desired excerpt length, in characters.
 	 *
 	 * @since 3.24.0
 	 *
 	 * @var int
 	 */
-	public const MIN_EXCERPT_LENGTH     = Suggestion_Defaults::MIN_LENGTH;
-	public const MAX_EXCERPT_LENGTH     = Suggestion_Defaults::MAX_LENGTH;
+	public const MIN_EXCERPT_LENGTH = Suggestion_Defaults::MIN_LENGTH;
+
+	/**
+	 * The maximum desired excerpt length, in characters.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
+	public const MAX_EXCERPT_LENGTH = Suggestion_Defaults::MAX_LENGTH;
+
+	/**
+	 * The default desired excerpt length, in characters.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var int
+	 */
 	public const DEFAULT_EXCERPT_LENGTH = Suggestion_Defaults::DEFAULT_LENGTH;
+
+	/**
+	 * The default persona used when generating excerpts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_EXCERPT_PERSONA = Suggestion_Defaults::DEFAULT_PERSONA;
+
+	/**
+	 * The default tone used when generating excerpts.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @var string
+	 */
+	public const DEFAULT_EXCERPT_TONE = Suggestion_Defaults::DEFAULT_TONE;
 
 	/**
 	 * Returns the endpoint's name.

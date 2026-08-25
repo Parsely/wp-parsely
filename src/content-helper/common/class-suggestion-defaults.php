@@ -25,6 +25,9 @@ class Suggestion_Defaults {
 	 * The allowed range and default for the desired excerpt length, in
 	 * characters. Applies to Excerpt Suggestions only.
 	 *
+	 * Kept in sync with MIN_EXCERPT_LENGTH, MAX_EXCERPT_LENGTH and
+	 * DEFAULT_EXCERPT_LENGTH in excerpt-suggestions/constants.ts.
+	 *
 	 * @since 3.24.0
 	 *
 	 * @var int
@@ -35,6 +38,9 @@ class Suggestion_Defaults {
 
 	/**
 	 * The tone and persona used when none is configured.
+	 *
+	 * Kept in sync with DEFAULT_TONE and DEFAULT_PERSONA in
+	 * excerpt-suggestions/constants.ts.
 	 *
 	 * @since 3.24.0
 	 *

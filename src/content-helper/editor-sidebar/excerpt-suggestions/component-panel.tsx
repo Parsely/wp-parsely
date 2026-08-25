@@ -15,7 +15,7 @@ import {
 import { useInstanceId } from '@wordpress/compose';
 import { select as wpSelect, subscribe, useDispatch, useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 import { count } from '@wordpress/wordcount';
@@ -95,6 +95,28 @@ let pendingGeneration: PendingGeneration | null = null;
 let isGenerating = false;
 
 /**
+ * Setters of the mounted panels, notified whenever `isGenerating` changes.
+ *
+ * A request outlives the panel that started it, so a panel mounting mid-request
+ * must be told when that request finishes.
+ *
+ * @since 3.24.0
+ */
+const generatingListeners = new Set<( value: boolean ) => void>();
+
+/**
+ * Sets whether a generation request is in flight.
+ *
+ * @since 3.24.0
+ *
+ * @param {boolean} value Whether a request is in flight.
+ */
+const setGenerating = ( value: boolean ): void => {
+	isGenerating = value;
+	generatingListeners.forEach( ( listener ) => listener( value ) );
+};
+
+/**
  * The active save subscription, and the last observed saving state.
  *
  * @since 3.24.0
@@ -127,14 +149,15 @@ const stopWatchingSaves = (): void => {
  * Starts watching for post saves, attributing the pending generation's
  * outcome once a non-autosave save succeeds.
  *
- * With no explicit Accept button, acceptance is inferred at save time: a
- * generated excerpt that is still in the post when the user saves counts as
- * accepted (with a `modified` flag when it was edited first), while an
- * excerpt reverted through the editor history or cleared counts as discarded.
+ * With no explicit Accept button, the outcome is inferred at save time: a
+ * generated excerpt still intact when the user saves counts as accepted, while
+ * one reverted through the editor history or cleared counts as discarded.
+ * Anything else is left unreported.
  *
  * Preview and trash saves are ignored, as neither expresses an outcome. The
- * subscription is scoped to the editor store and is torn down as soon as the
- * generation is attributed or can no longer be attributed.
+ * subscription is torn down as soon as the generation is attributed or can no
+ * longer be attributed. Its editor store argument is ignored before WP 6.2,
+ * where the listener runs on every store change instead.
  *
  * @since 3.24.0
  */
@@ -195,12 +218,13 @@ const watchSavesForGenerationOutcome = (): void => {
 
 			stopWatchingSaves();
 
+			// A saved excerpt matching neither was either rewritten by the
+			// author or altered by the server on save. Leave it unreported:
+			// under-counting beats counting a rejection as an acceptance.
 			if ( savedExcerpt === generated ) {
 				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: false } );
 			} else if ( savedExcerpt === previous || '' === savedExcerpt ) {
 				Telemetry.trackEvent( 'excerpt_generator_discarded', { via: 'editor_undo' } );
-			} else {
-				Telemetry.trackEvent( 'excerpt_generator_accepted', { modified: true } );
 			}
 
 			return;
@@ -232,6 +256,17 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 	const [ isLoading, setLoading ] = useState<boolean>( isGenerating );
 	const [ popoverAnchor, setPopoverAnchor ] = useState<HTMLElement | null>( null );
 
+	// Track the shared generation state, as a request started by a previous
+	// panel can still be in flight.
+	useEffect( () => {
+		generatingListeners.add( setLoading );
+		setLoading( isGenerating );
+
+		return () => {
+			generatingListeners.delete( setLoading );
+		};
+	}, [] );
+
 	const popoverTitle = __( 'Excerpt Suggestions settings', 'wp-parsely' );
 	const helpId = `wp-parsely-excerpt-generate-help-${ useInstanceId( PostExcerptSuggestions ) }`;
 
@@ -249,10 +284,18 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 	const { editPost } = useDispatch( editorStore );
 	const { createSuccessNotice } = useDispatch( noticesStore );
 
+	// Closing the popover flushes every pending setting in one commit, with no
+	// re-render in between, so `settings` is stale for all but the first flush.
+	const settingsRef = useRef( settings );
+	useEffect( () => {
+		settingsRef.current = settings;
+	} );
+
 	/**
 	 * Handles changes to the excerpt suggestions settings.
 	 *
 	 * @since 3.17.0
+	 * @since 3.24.0 Merges into the latest settings rather than the rendered ones.
 	 *
 	 * @param {keyof ExcerptSuggestionsSettingsType} key   The setting key that changed.
 	 * @param {string|boolean|number}                value The new value of the setting.
@@ -261,11 +304,17 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 		key: keyof ExcerptSuggestionsSettingsType,
 		value: string | boolean | number
 	) => {
-		setSettings( {
-			ExcerptSuggestions: {
-				...settings.ExcerptSuggestions,
-				[ key ]: value },
-		} );
+		const excerptSuggestions = {
+			...settingsRef.current.ExcerptSuggestions,
+			[ key ]: value,
+		};
+
+		settingsRef.current = {
+			...settingsRef.current,
+			ExcerptSuggestions: excerptSuggestions,
+		};
+
+		setSettings( { ExcerptSuggestions: excerptSuggestions } );
 	};
 
 	// Get the current excerpt, post content, and post title.
@@ -330,8 +379,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 			return;
 		}
 
-		isGenerating = true;
-		setLoading( true );
+		setGenerating( true );
 		setError( undefined );
 
 		try {
@@ -353,6 +401,12 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 					forRequest( settings.ExcerptSuggestions.Tone, DEFAULT_TONE ),
 					settings.ExcerptSuggestions.Length
 				);
+
+			// `editPost` always targets the current post, so discard a response
+			// that arrives after the editor moved on to another one.
+			if ( editor.getCurrentPostId() !== postId ) {
+				return;
+			}
 
 			editPost( { excerpt: requestedExcerpt } );
 			setGenerationCount( ( prev ) => prev + 1 );
@@ -398,8 +452,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 				console.error( err ); // eslint-disable-line no-console
 			}
 		} finally {
-			isGenerating = false;
-			setLoading( false );
+			setGenerating( false );
 		}
 	};
 
@@ -446,8 +499,11 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 				}
 			>
 				<Flex justify="flex-start" gap={ 2 } wrap ref={ setPopoverAnchor }>
+					{ /* Focusable while disabled, so the help text is announced and focus
+					     is kept. `accessibleWhenDisabled` supersedes it, but needs WP 6.3. */ }
 					<Button
 						__next40pxDefaultSize
+						__experimentalIsFocusable
 						aria-describedby={ ! postContent ? `${ helpId }__help` : undefined }
 						variant="secondary"
 						icon={ AiIcon }
@@ -466,6 +522,7 @@ export const PostExcerptSuggestions = (): React.JSX.Element => {
 								variant="tertiary"
 								onClick={ onToggle }
 								aria-expanded={ isOpen }
+								aria-haspopup="dialog"
 								aria-label={ popoverTitle }
 							>
 								{ __( 'Settings', 'wp-parsely' ) }

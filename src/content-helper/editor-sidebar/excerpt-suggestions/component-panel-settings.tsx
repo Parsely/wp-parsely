@@ -23,9 +23,9 @@ import {
 	PARSELY_TONES,
 	ToneProp,
 } from '../../common/components/tone-selector';
+import { MAX_CUSTOM_VALUE_LENGTH } from '../../common/utils/constants';
 import {
 	CUSTOM_VALUE,
-	MAX_CUSTOM_VALUE_LENGTH,
 	MAX_EXCERPT_LENGTH,
 	MIN_EXCERPT_LENGTH,
 	SETTINGS_SAVE_DELAY,
@@ -103,8 +103,12 @@ const useDebouncedSetting = <T extends string | number>(
 	const onChangeRef = useRef( onChange );
 	const savedRef = useRef<T>( value );
 
-	draftRef.current = draft;
-	onChangeRef.current = onChange;
+	// Sync after commit rather than during render, so a discarded render
+	// cannot leave the refs pointing at values that were never committed.
+	useEffect( () => {
+		draftRef.current = draft;
+		onChangeRef.current = onChange;
+	} );
 
 	const save = useCallback( ( newValue: T ) => {
 		savedRef.current = newValue;
@@ -152,9 +156,10 @@ type CustomizableSelectProps = {
  * selected.
  *
  * The selected option and the custom text are held in local state, so that
- * typing a value that happens to match a predefined key (such as `formal`)
- * neither collapses the text field nor loses keyboard focus. Changes to the
- * custom text are debounced, as each change is persisted with a REST request.
+ * typing a value matching a predefined key (such as `formal`) neither collapses
+ * the text field nor loses keyboard focus. That only holds while the popover
+ * stays open, as reopening it re-derives the selection from the stored value.
+ * Changes to the custom text are debounced, as each one costs a REST request.
  *
  * @since 3.24.0
  *
