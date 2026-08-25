@@ -25,6 +25,8 @@ import {
 	useSettings,
 } from '../common/settings';
 import {
+	DEFAULT_PERSONA,
+	DEFAULT_TONE,
 	Metric,
 	Period,
 	isInEnum,
@@ -32,8 +34,6 @@ import {
 import { getContentHelperPermissions } from '../common/utils/permissions';
 import {
 	DEFAULT_EXCERPT_LENGTH,
-	DEFAULT_PERSONA,
-	DEFAULT_TONE,
 	MAX_EXCERPT_LENGTH,
 	MIN_EXCERPT_LENGTH,
 } from './excerpt-suggestions/constants';
@@ -105,8 +105,8 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		},
 		TitleSuggestions: {
 			Open: false,
-			Tone: 'neutral',
-			Persona: 'journalist',
+			Tone: DEFAULT_TONE,
+			Persona: DEFAULT_PERSONA,
 		},
 		ExcerptSuggestions: {
 			Length: DEFAULT_EXCERPT_LENGTH,

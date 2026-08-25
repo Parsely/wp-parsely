@@ -11,12 +11,14 @@ import type {
 	ExcerptSuggestionsSettings,
 } from '../../../src/content-helper/common/settings';
 import {
+	DEFAULT_PERSONA,
+	DEFAULT_TONE,
+} from '../../../src/content-helper/common/utils/constants';
+import {
 	PostExcerptSuggestions,
 } from '../../../src/content-helper/editor-sidebar/excerpt-suggestions/component-panel';
 import {
 	DEFAULT_EXCERPT_LENGTH,
-	DEFAULT_PERSONA,
-	DEFAULT_TONE,
 	SETTINGS_SAVE_DELAY,
 } from '../../../src/content-helper/editor-sidebar/excerpt-suggestions/constants';
 import {

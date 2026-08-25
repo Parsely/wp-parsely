@@ -9,20 +9,6 @@
 export const DEFAULT_EXCERPT_LENGTH = 160;
 
 /**
- * The default persona used when generating excerpts.
- *
- * @since 3.24.0
- */
-export const DEFAULT_PERSONA = 'journalist';
-
-/**
- * The default tone used when generating excerpts.
- *
- * @since 3.24.0
- */
-export const DEFAULT_TONE = 'neutral';
-
-/**
  * The minimum desired excerpt length, in characters.
  *
  * @since 3.24.0

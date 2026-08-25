@@ -34,9 +34,9 @@ import {
 	SidebarSettings,
 	useSettings,
 } from '../../common/settings';
+import { DEFAULT_PERSONA, DEFAULT_TONE } from '../../common/utils/constants';
 import { forGeneration } from '../../common/utils/defaults';
 import { ExcerptSuggestionsSettings } from './component-panel-settings';
-import { DEFAULT_PERSONA, DEFAULT_TONE } from './constants';
 import { ExcerptSuggestionsProvider } from './provider';
 
 /**
