@@ -42,7 +42,7 @@ class Suggestion_Defaults {
 	 * The tone and persona used when none is configured.
 	 *
 	 * Kept in sync with DEFAULT_TONE and DEFAULT_PERSONA in
-	 * excerpt-suggestions/constants.ts.
+	 * common/utils/constants.ts.
 	 *
 	 * @since 3.24.0
 	 *
