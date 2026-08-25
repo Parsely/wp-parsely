@@ -54,7 +54,9 @@ export class TitleSuggestionsProvider extends BaseProvider {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v2/content-helper/title-suggestions/generate', {
 				limit,
-				tone: getToneLabel( tone ),
+				// The endpoint names this `style`. Sending `tone` left it
+				// unregistered, so it was dropped and the tone never applied.
+				style: getToneLabel( tone ),
 				persona: getPersonaLabel( persona ),
 			} ),
 			data: {
