@@ -15,6 +15,8 @@ describe( 'getSettingsFromJson', () => {
 	 * The settings endpoint resolves stored values against its specifications,
 	 * so a payload it produced needs no further repair here. These cases cover
 	 * the payload not being one.
+	 *
+	 * @since 3.24.0
 	 */
 	test( 'should return the defaults when the payload is unparseable', () => {
 		const settings = getSettingsFromJson( 'not json' );
