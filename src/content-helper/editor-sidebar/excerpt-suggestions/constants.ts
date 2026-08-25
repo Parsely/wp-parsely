@@ -9,20 +9,6 @@
 export const DEFAULT_EXCERPT_LENGTH = 160;
 
 /**
- * The default persona used when generating excerpts.
- *
- * @since 3.24.0
- */
-export const DEFAULT_PERSONA = 'journalist';
-
-/**
- * The default tone used when generating excerpts.
- *
- * @since 3.24.0
- */
-export const DEFAULT_TONE = 'neutral';
-
-/**
  * The minimum desired excerpt length, in characters.
  *
  * @since 3.24.0
@@ -35,13 +21,6 @@ export const MIN_EXCERPT_LENGTH = 50;
  * @since 3.24.0
  */
 export const MAX_EXCERPT_LENGTH = 300;
-
-/**
- * The key denoting that a free-text (custom) tone or persona is in use.
- *
- * @since 3.24.0
- */
-export const CUSTOM_VALUE = 'custom';
 
 /**
  * The delay before persisting a settings change, in milliseconds.

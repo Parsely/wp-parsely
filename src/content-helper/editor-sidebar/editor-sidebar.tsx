@@ -25,15 +25,13 @@ import {
 	useSettings,
 } from '../common/settings';
 import {
+	DEFAULT_PERSONA,
+	DEFAULT_TONE,
 	Metric,
 	Period,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
-import {
-	DEFAULT_EXCERPT_LENGTH,
-	DEFAULT_PERSONA,
-	DEFAULT_TONE,
-} from './excerpt-suggestions/constants';
+import { DEFAULT_EXCERPT_LENGTH } from './excerpt-suggestions/constants';
 import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
@@ -102,8 +100,8 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		},
 		TitleSuggestions: {
 			Open: false,
-			Tone: 'neutral',
-			Persona: 'journalist',
+			Tone: DEFAULT_TONE,
+			Persona: DEFAULT_PERSONA,
 		},
 		ExcerptSuggestions: {
 			Length: DEFAULT_EXCERPT_LENGTH,
