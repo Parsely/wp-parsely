@@ -22,7 +22,7 @@ describe( 'PCH Title Suggestions provider', () => {
 	} );
 
 	/**
-	 * Returns the query parameters of the request that was sent.
+	 * Parses the query string off the path the provider requested.
 	 *
 	 * @since 3.24.0
 	 *
@@ -42,17 +42,35 @@ describe( 'PCH Title Suggestions provider', () => {
 
 		// Unregistered arguments are dropped silently, so asserting that `style`
 		// is present does not on its own prove `tone` is gone.
-		expect( params.get( 'style' ) ).toBe( 'Formal' );
+		expect( params.get( 'style' ) ).toBe( 'formal' );
 		expect( params.has( 'tone' ) ).toBe( false );
 	} );
 
-	test( 'should send the persona and the limit', async () => {
+	test( 'should send the stored keys rather than the display labels', async () => {
 		await TitleSuggestionsProvider.getInstance()
-			.generateTitles( 'Post content.', 5, 'formal', 'techAnalyst' );
+			.generateTitles( 'Post content.', 3, 'formal', 'techAnalyst' );
 
 		const params = requestedParams();
 
-		expect( params.get( 'persona' ) ).toBe( 'Tech Analyst' );
-		expect( params.get( 'limit' ) ).toBe( '5' );
+		// `techAnalyst` differs from its label `Tech Analyst` by more than case.
+		expect( params.get( 'persona' ) ).toBe( 'techAnalyst' );
+		expect( params.get( 'style' ) ).toBe( 'formal' );
+	} );
+
+	test( 'should pass a typed custom tone and persona through unchanged', async () => {
+		await TitleSuggestionsProvider.getInstance()
+			.generateTitles( 'Post content.', 3, 'snarky', 'war reporter' );
+
+		const params = requestedParams();
+
+		expect( params.get( 'style' ) ).toBe( 'snarky' );
+		expect( params.get( 'persona' ) ).toBe( 'war reporter' );
+	} );
+
+	test( 'should send the limit', async () => {
+		await TitleSuggestionsProvider.getInstance()
+			.generateTitles( 'Post content.', 5, 'formal', 'techAnalyst' );
+
+		expect( requestedParams().get( 'limit' ) ).toBe( '5' );
 	} );
 } );
