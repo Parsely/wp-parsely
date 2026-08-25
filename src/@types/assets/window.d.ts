@@ -25,7 +25,9 @@ declare global {
 
 		wpParselyAdminUrl: string;
 		wpParselyContentHelperPermissions: string;
+		wpParselyContentHelperPersonas?: Record<string, string>;
 		wpParselyContentHelperSettings: string;
+		wpParselyContentHelperTones?: Record<string, string>;
 		wpParselyDependencies: { [key: string]: string };
 		wpParselyDisableAutotrack?: boolean;
 		wpParselyEmptyCredentialsMessage: string;

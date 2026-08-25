@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\RestAPI\Settings;
 
+use Parsely\Content_Helper\Suggestion_Defaults;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
 use Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings;
 
@@ -39,6 +40,19 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 		$this->endpoint       = new Endpoint_Editor_Sidebar_Settings( $this->api_controller );
 
 		parent::set_up();
+	}
+
+	/**
+	 * Teardown method called after each test.
+	 *
+	 * @since 3.24.0
+	 */
+	public function tear_down(): void {
+		// Tests here configure the site's defaults. The next test's endpoint
+		// snapshots them in its constructor, before its own set_up runs.
+		self::set_options();
+
+		parent::tear_down();
 	}
 
 	/**
@@ -306,6 +320,235 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 		assert( is_array( $value['ExcerptSuggestions'] ) );
 
 		self::assertSame( $expected, $value['ExcerptSuggestions']['Length'] );
+	}
+
+	/**
+	 * Verifies that the ExcerptSuggestions defaults come from the site-wide
+	 * settings of the Excerpt Suggestions feature.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @covers \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @covers \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @covers \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @dataProvider provide_site_default_data
+	 *
+	 * @param array<string, mixed> $feature_options The feature's stored options.
+	 * @param array<string, mixed> $expected        The expected defaults.
+	 */
+	public function test_excerpt_defaults_come_from_site_settings(
+		array $feature_options,
+		array $expected
+	): void {
+		// Only the feature under test is stored. Parsely::get_options() fills
+		// in the remaining Content Intelligence features from its defaults.
+		$options                   = self::DEFAULT_OPTIONS;
+		$options['content_helper'] = array( 'excerpt_suggestions' => $feature_options );
+		update_option( \Parsely\Parsely::OPTIONS_KEY, $options );
+
+		$this->set_current_user_to_admin();
+		delete_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar'
+		);
+
+		// The base endpoint snapshots the specs, and therefore the defaults,
+		// in its constructor. Build the endpoint after the options are stored,
+		// as a real request would.
+		$endpoint = new Endpoint_Editor_Sidebar_Settings( $this->api_controller );
+		$value    = $endpoint->get_settings()->get_data();
+
+		assert( is_array( $value ) && is_array( $value['ExcerptSuggestions'] ) );
+		self::assertSame( $expected, $value['ExcerptSuggestions'] );
+	}
+
+	/**
+	 * Verifies that a stored value saved before a setting existed is resolved
+	 * against the current specifications, rather than returned as it stands.
+	 *
+	 * Users who saved settings before 3.24.0 have no `Length`, and their
+	 * `ExcerptSuggestions` still carries the `Open` setting that was removed.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_a_pre_3_24_0_stored_value_takes_the_current_defaults(): void {
+		$options                   = self::DEFAULT_OPTIONS;
+		$options['content_helper'] = array(
+			'excerpt_suggestions' => array(
+				'default_length'  => 220,
+				'default_tone'    => 'analytical',
+				'default_persona' => 'techAnalyst',
+			),
+		);
+		update_option( \Parsely\Parsely::OPTIONS_KEY, $options );
+
+		$this->set_current_user_to_admin();
+		update_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			array(
+				'InitialTabName'     => 'tools',
+				'ExcerptSuggestions' => array(
+					'Open'    => true,
+					'Persona' => 'journalist',
+					'Tone'    => 'neutral',
+				),
+			)
+		);
+
+		// init() is what sets the endpoint's current user, so the stored value
+		// is read rather than the one belonging to user 0.
+		$endpoint = new Endpoint_Editor_Sidebar_Settings( $this->api_controller );
+		$endpoint->init();
+		$value = $endpoint->get_settings()->get_data();
+
+		assert( is_array( $value ) && is_array( $value['ExcerptSuggestions'] ) );
+
+		// The site's length reaches the user, rather than the shipped default.
+		self::assertSame( 220, $value['ExcerptSuggestions']['Length'] );
+
+		// The user's own choices stand.
+		self::assertSame( 'journalist', $value['ExcerptSuggestions']['Persona'] );
+		self::assertSame( 'neutral', $value['ExcerptSuggestions']['Tone'] );
+
+		// The removed setting is dropped.
+		self::assertArrayNotHasKey( 'Open', $value['ExcerptSuggestions'] );
+
+		// Settings absent from the stored value are filled in.
+		self::assertArrayHasKey( 'SmartLinking', $value );
+		self::assertArrayHasKey( 'TitleSuggestions', $value );
+	}
+
+	/**
+	 * Verifies that invalid stored values are repaired on read.
+	 *
+	 * The Editor Sidebar bundle relies on this, as it no longer validates the
+	 * payload it is given.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_invalid_stored_values_are_repaired_on_read(): void {
+		$this->set_current_user_to_admin();
+		update_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			array(
+				'InitialTabName'     => 'nonexistent',
+				'PerformanceStats'   => array(
+					'Period'        => '99d',
+					'VisiblePanels' => array( 'overview', 'bogus' ),
+				),
+				'RelatedPosts'       => array(
+					'Metric' => 'bogus',
+					'Open'   => 'not-a-boolean',
+				),
+				'ExcerptSuggestions' => array( 'Length' => 99999 ),
+			)
+		);
+
+		$endpoint = new Endpoint_Editor_Sidebar_Settings( $this->api_controller );
+		$endpoint->init();
+		$value = $endpoint->get_settings()->get_data();
+
+		assert(
+			is_array( $value ) &&
+			is_array( $value['PerformanceStats'] ) &&
+			is_array( $value['RelatedPosts'] ) &&
+			is_array( $value['ExcerptSuggestions'] )
+		);
+
+		self::assertSame( 'tools', $value['InitialTabName'] );
+		self::assertSame( '7d', $value['PerformanceStats']['Period'] );
+		self::assertSame( array( 'overview' ), $value['PerformanceStats']['VisiblePanels'] );
+		self::assertSame( 'views', $value['RelatedPosts']['Metric'] );
+		self::assertFalse( $value['RelatedPosts']['Open'] );
+		self::assertSame(
+			Suggestion_Defaults::DEFAULT_LENGTH,
+			$value['ExcerptSuggestions']['Length']
+		);
+	}
+
+	/**
+	 * Provides data for testing the site-wide defaults.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @return array<string, array<mixed>> The test data.
+	 */
+	public function provide_site_default_data(): array {
+		$shipped = array(
+			'Length'  => Suggestion_Defaults::DEFAULT_LENGTH,
+			'Persona' => Suggestion_Defaults::DEFAULT_PERSONA,
+			'Tone'    => Suggestion_Defaults::DEFAULT_TONE,
+		);
+
+		return array(
+			'configured defaults'      => array(
+				array(
+					'default_length'  => 220,
+					'default_tone'    => 'analytical',
+					'default_persona' => 'techAnalyst',
+				),
+				array(
+					'Length'  => 220,
+					'Persona' => 'techAnalyst',
+					'Tone'    => 'analytical',
+				),
+			),
+			'missing keys'             => array( array(), $shipped ),
+			'out-of-range length'      => array( array( 'default_length' => 99999 ), $shipped ),
+			'non-integer length'       => array( array( 'default_length' => 'abc' ), $shipped ),
+			'unknown tone and persona' => array(
+				array(
+					'default_tone'    => 'bogus',
+					'default_persona' => 'bogus',
+				),
+				$shipped,
+			),
+		);
 	}
 
 	/**

@@ -132,6 +132,7 @@ return array(
     'Parsely\\Content_Helper\\Editor_Sidebar\\Smart_Linking' => $baseDir . '/src/content-helper/editor-sidebar/smart-linking/class-smart-linking.php',
     'Parsely\\Content_Helper\\Excerpt_Suggestions' => $baseDir . '/src/content-helper/editor-sidebar/excerpt-suggestions/class-excerpt-suggestions.php',
     'Parsely\\Content_Helper\\Post_List_Stats' => $baseDir . '/src/content-helper/post-list-stats/class-post-list-stats.php',
+    'Parsely\\Content_Helper\\Suggestion_Defaults' => $baseDir . '/src/content-helper/common/class-suggestion-defaults.php',
     'Parsely\\Dashboard_Link' => $baseDir . '/src/class-dashboard-link.php',
     'Parsely\\Endpoints\\GraphQL_Metadata' => $baseDir . '/src/Endpoints/class-graphql-metadata.php',
     'Parsely\\Endpoints\\Metadata_Endpoint' => $baseDir . '/src/Endpoints/class-metadata-endpoint.php',
