@@ -79,7 +79,10 @@ use const Parsely\PARSELY_FILE;
  *
  * @phpstan-type Parsely_Settings_Options_Content_Helper_Feature array{
  *   enabled?: bool,
- *   allowed_user_roles?: array<string, string>|array<string, bool>
+ *   allowed_user_roles?: array<string, string>|array<string, bool>,
+ *   default_length?: mixed,
+ *   default_tone?: mixed,
+ *   default_persona?: mixed
  * }
  *
  * @phpstan-import-type Parsely_Options from Parsely
@@ -1693,9 +1696,14 @@ final class Settings_Page {
 
 			// Only Excerpt Suggestions has a desired length.
 			if ( Excerpt_Suggestions::get_feature_name() === $feature_id ) {
-				$length                     = $submitted['default_length'] ?? $stored['default_length'] ?? null;
+				$length = $submitted['default_length'] ?? $stored['default_length'] ?? null;
+
+				// Anything that is not an integer is invalid, rather than
+				// something to coerce into one.
+				$length = is_scalar( $length ) ? filter_var( $length, FILTER_VALIDATE_INT ) : false;
+
 				$defaults['default_length'] = Suggestion_Defaults::get_default_length(
-					array( 'default_length' => is_numeric( $length ) ? (int) $length : null )
+					array( 'default_length' => false === $length ? null : $length )
 				);
 			}
 
