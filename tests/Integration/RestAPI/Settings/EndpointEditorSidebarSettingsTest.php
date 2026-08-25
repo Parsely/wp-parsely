@@ -35,10 +35,6 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	 * @since 3.17.0
 	 */
 	public function set_up(): void {
-		// The endpoint snapshots the site's defaults in its constructor, so a
-		// preceding test's options would otherwise leak into the snapshot.
-		self::set_options();
-
 		// Initialize the specific endpoint for this test class.
 		$this->api_controller = new Content_Helper_Controller( $this->parsely );
 		$this->endpoint       = new Endpoint_Editor_Sidebar_Settings( $this->api_controller );
