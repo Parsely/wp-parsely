@@ -814,6 +814,74 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	}
 
 	/**
+	 * Verifies that a stored value which sanitization rejects does not count as
+	 * a setting the user has set.
+	 *
+	 * Such a value is resolved to the setting's default on read, and the sidebar
+	 * sends that default straight back.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::is_stored_override
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::strip_inherited_values
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_feature_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::merge_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_legacy_defaults
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_a_rejected_stored_value_is_not_treated_as_set(): void {
+		$this->set_current_user_to_admin();
+		$this->set_suggestion_defaults( array( 'default_length' => 220 ) );
+
+		// An out-of-range length, which get_settings() repairs to the site's.
+		update_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			array( 'ExcerptSuggestions' => array( 'Length' => 99999 ) )
+		);
+
+		$endpoint = $this->get_initialized_endpoint();
+		$settings = $this->get_endpoint_settings( $endpoint );
+		assert( is_array( $settings['ExcerptSuggestions'] ) );
+		self::assertSame( 220, $settings['ExcerptSuggestions']['Length'] );
+
+		// The author saves an unrelated setting, sending the repaired value back.
+		$settings['InitialTabName'] = 'performance';
+		$this->send_endpoint_put_request( $endpoint, $settings );
+
+		$this->set_suggestion_defaults( array( 'default_length' => 90 ) );
+		$value = $this->get_endpoint_settings( $this->get_initialized_endpoint() );
+
+		assert( is_array( $value['ExcerptSuggestions'] ) );
+		self::assertSame( 90, $value['ExcerptSuggestions']['Length'] );
+	}
+
+	/**
 	 * Stores the passed site-wide generation defaults.
 	 *
 	 * @since 3.24.1

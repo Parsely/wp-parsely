@@ -373,7 +373,7 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 		foreach ( $this->get_inheritable_keys() as $composite_key ) {
 			$keys = explode( '.', $composite_key );
 
-			if ( $this->has_path_value( $stored, $keys ) ||
+			if ( $this->is_stored_override( $stored, $composite_key ) ||
 				$this->get_path_value( $settings, $keys ) !== $this->get_default( $keys )
 			) {
 				continue;
@@ -383,6 +383,24 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * Returns whether the user set the passed setting.
+	 *
+	 * A value that sanitization rejects resolves to the setting's default on
+	 * read, so treating it as set would pin the user to that default.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @param array<string, mixed> $stored        The settings as they are stored.
+	 * @param string               $composite_key The setting's composite key.
+	 * @return bool
+	 */
+	protected function is_stored_override( array $stored, string $composite_key ): bool {
+		$value = $this->get_path_value( $stored, explode( '.', $composite_key ) );
+
+		return null !== $value && $this->sanitize_subvalue( $composite_key, $value ) === $value;
 	}
 
 	/**
@@ -670,19 +688,6 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 		}
 
 		return $current;
-	}
-
-	/**
-	 * Returns whether the passed path holds a value.
-	 *
-	 * @since 3.24.1
-	 *
-	 * @param array<string, mixed> $settings The settings to look in.
-	 * @param array<string>        $keys     The path to the setting.
-	 * @return bool
-	 */
-	protected function has_path_value( array $settings, array $keys ): bool {
-		return null !== $this->get_path_value( $settings, $keys );
 	}
 
 	/**
