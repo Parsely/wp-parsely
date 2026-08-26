@@ -13,6 +13,8 @@ namespace Parsely\Tests\Integration\RestAPI\Settings;
 use Parsely\Content_Helper\Suggestion_Defaults;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
 use Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings;
+use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * Integration tests for the Endpoint_Editor_Sidebar_Settings class.
@@ -377,12 +379,17 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	 * Verifies that a stored value saved before a setting existed is resolved
 	 * against the current specifications, rather than returned as it stands.
 	 *
-	 * Users who saved settings before 3.24.0 have no `Length`, and their
-	 * `ExcerptSuggestions` still carries the `Open` setting that was removed.
+	 * Users who saved settings before 3.24.0 have no `Length`, their
+	 * `ExcerptSuggestions` still carries the `Open` setting that was removed,
+	 * and their tone and persona hold the defaults of the day.
 	 *
 	 * @since 3.24.0
+	 * @since 3.24.1 The stored legacy tone and persona take the site's defaults.
 	 *
 	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @covers \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @covers \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_legacy_defaults
 	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
 	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
 	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
@@ -431,12 +438,11 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 
 		assert( is_array( $value ) && is_array( $value['ExcerptSuggestions'] ) );
 
-		// The site's length reaches the user, rather than the shipped default.
+		// The site's defaults reach the user: the stored tone and persona are
+		// the defaults of the day, so they express no choice to preserve.
 		self::assertSame( 220, $value['ExcerptSuggestions']['Length'] );
-
-		// The user's own choices stand.
-		self::assertSame( 'journalist', $value['ExcerptSuggestions']['Persona'] );
-		self::assertSame( 'neutral', $value['ExcerptSuggestions']['Tone'] );
+		self::assertSame( 'techAnalyst', $value['ExcerptSuggestions']['Persona'] );
+		self::assertSame( 'analytical', $value['ExcerptSuggestions']['Tone'] );
 
 		// The removed setting is dropped.
 		self::assertArrayNotHasKey( 'Open', $value['ExcerptSuggestions'] );
@@ -509,6 +515,466 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 			Suggestion_Defaults::DEFAULT_LENGTH,
 			$value['ExcerptSuggestions']['Length']
 		);
+	}
+
+	/**
+	 * Verifies that a site-wide default keeps reaching a setting that the user
+	 * has never set, even after saving other settings.
+	 *
+	 * The Editor Sidebar sends the whole settings tree on every change, so the
+	 * defaults it was served come back as if they had been chosen.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::strip_inherited_values
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_feature_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::merge_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_an_unset_setting_keeps_following_the_site_default(): void {
+		$this->set_current_user_to_admin();
+		$this->set_suggestion_defaults(
+			array(
+				'default_persona' => 'techAnalyst',
+				'default_tone'    => 'analytical',
+			),
+			array(
+				'default_persona' => 'businessAnalyst',
+				'default_tone'    => 'serious',
+			)
+		);
+
+		// Save an unrelated setting, sending the whole tree as the sidebar does.
+		$endpoint = $this->get_initialized_endpoint();
+		$settings = $this->get_endpoint_settings( $endpoint );
+
+		$settings['InitialTabName'] = 'performance';
+		$this->send_endpoint_put_request( $endpoint, $settings );
+
+		// The tab is stored, but the defaults that came along with it are not.
+		$stored         = $this->get_stored_settings();
+		$stored_excerpt = $stored['ExcerptSuggestions'] ?? array();
+		$stored_title   = $stored['TitleSuggestions'] ?? array();
+		assert( is_array( $stored_excerpt ) && is_array( $stored_title ) );
+
+		self::assertSame( 'performance', $stored['InitialTabName'] ?? null );
+		self::assertArrayNotHasKey( 'Persona', $stored_excerpt );
+		self::assertArrayNotHasKey( 'Tone', $stored_excerpt );
+		self::assertArrayNotHasKey( 'Persona', $stored_title );
+		self::assertArrayNotHasKey( 'Tone', $stored_title );
+
+		$this->set_suggestion_defaults(
+			array(
+				'default_persona' => 'journalist',
+				'default_tone'    => 'humorous',
+			),
+			array(
+				'default_persona' => 'politicalAnalyst',
+				'default_tone'    => 'skeptical',
+			)
+		);
+		$value = $this->get_endpoint_settings( $this->get_initialized_endpoint() );
+
+		assert( is_array( $value['ExcerptSuggestions'] ) && is_array( $value['TitleSuggestions'] ) );
+		self::assertSame( 'journalist', $value['ExcerptSuggestions']['Persona'] );
+		self::assertSame( 'humorous', $value['ExcerptSuggestions']['Tone'] );
+		self::assertSame( 'politicalAnalyst', $value['TitleSuggestions']['Persona'] );
+		self::assertSame( 'skeptical', $value['TitleSuggestions']['Tone'] );
+		self::assertSame( 'performance', $value['InitialTabName'] );
+	}
+
+	/**
+	 * Verifies that a setting the user has set is not moved by a later change
+	 * to the site-wide default, including one that moves onto their value.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::strip_inherited_values
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_feature_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::merge_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_a_set_setting_is_not_moved_by_the_site_default(): void {
+		$this->set_current_user_to_admin();
+		$this->set_suggestion_defaults( array( 'default_tone' => 'analytical' ) );
+
+		$endpoint = $this->get_initialized_endpoint();
+		$settings = $this->get_endpoint_settings( $endpoint );
+		assert( is_array( $settings['ExcerptSuggestions'] ) );
+
+		$settings['ExcerptSuggestions']['Tone'] = 'formal';
+		$this->send_endpoint_put_request( $endpoint, $settings );
+
+		// The site's default moves onto the user's choice, and they then save
+		// an unrelated setting. Their choice must not dissolve into the default.
+		$this->set_suggestion_defaults( array( 'default_tone' => 'formal' ) );
+		$endpoint = $this->get_initialized_endpoint();
+		$settings = $this->get_endpoint_settings( $endpoint );
+
+		$settings['InitialTabName'] = 'performance';
+		$this->send_endpoint_put_request( $endpoint, $settings );
+
+		$this->set_suggestion_defaults( array( 'default_tone' => 'humorous' ) );
+		$value = $this->get_endpoint_settings( $this->get_initialized_endpoint() );
+
+		assert( is_array( $value['ExcerptSuggestions'] ) );
+		self::assertSame( 'formal', $value['ExcerptSuggestions']['Tone'] );
+	}
+
+	/**
+	 * Verifies that settings absent from a PUT request keep their value, rather
+	 * than being reset to their default.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::merge_settings
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_feature_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_nested_specs
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::strip_inherited_values
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_settings_absent_from_a_put_request_keep_their_value(): void {
+		$this->set_current_user_to_admin();
+		update_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			array(
+				'PerformanceStats' => array( 'VisibleDataPoints' => array( 'views' ) ),
+				'RelatedPosts'     => array( 'Period' => '30d' ),
+				'SmartLinking'     => array( 'MaxLinks' => 25 ),
+			)
+		);
+
+		$value = $this->send_endpoint_put_request(
+			$this->get_initialized_endpoint(),
+			array( 'InitialTabName' => 'performance' )
+		);
+
+		assert(
+			is_array( $value['PerformanceStats'] ) &&
+			is_array( $value['RelatedPosts'] ) &&
+			is_array( $value['SmartLinking'] )
+		);
+
+		self::assertSame( 'performance', $value['InitialTabName'] );
+		self::assertSame( '30d', $value['RelatedPosts']['Period'] );
+		self::assertSame( 25, $value['SmartLinking']['MaxLinks'] );
+
+		// A setting holding a list is replaced rather than merged into.
+		self::assertSame( array( 'views' ), $value['PerformanceStats']['VisibleDataPoints'] );
+	}
+
+	/**
+	 * Verifies that stored settings are normalized only once, so that a choice
+	 * matching a later site-wide default is not mistaken for an untouched one.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::normalize_stored_settings
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_feature_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_legacy_defaults
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_stored_settings_are_normalized_only_once(): void {
+		$this->set_current_user_to_admin();
+		$this->set_suggestion_defaults(
+			array(
+				'default_persona' => 'techAnalyst',
+				'default_tone'    => 'analytical',
+			)
+		);
+
+		// A pre-3.24.0 value holding a real choice alongside a legacy default.
+		update_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			array(
+				'ExcerptSuggestions' => array(
+					'Persona' => 'journalist',
+					'Tone'    => 'formal',
+				),
+			)
+		);
+
+		$value = $this->get_endpoint_settings( $this->get_initialized_endpoint() );
+		assert( is_array( $value['ExcerptSuggestions'] ) );
+
+		self::assertSame( 'formal', $value['ExcerptSuggestions']['Tone'] );
+		self::assertSame( 'techAnalyst', $value['ExcerptSuggestions']['Persona'] );
+
+		// Normalizing again would drop the choice, as it now matches the site's
+		// default. A later change to that default must still not move the user.
+		$this->set_suggestion_defaults( array( 'default_tone' => 'formal' ) );
+		$this->get_endpoint_settings( $this->get_initialized_endpoint() );
+
+		$this->set_suggestion_defaults( array( 'default_tone' => 'humorous' ) );
+		$value = $this->get_endpoint_settings( $this->get_initialized_endpoint() );
+
+		assert( is_array( $value['ExcerptSuggestions'] ) );
+		self::assertSame( 'formal', $value['ExcerptSuggestions']['Tone'] );
+	}
+
+	/**
+	 * Verifies that a stored value which sanitization rejects does not count as
+	 * a setting the user has set.
+	 *
+	 * Such a value is resolved to the setting's default on read, and the sidebar
+	 * sends that default straight back.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::is_stored_override
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::strip_inherited_values
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_feature_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_default
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_stored_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_valid_values
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::init
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::merge_settings
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::register_routes
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::sanitize_value
+	 * @uses \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_endpoint_name
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_inheritable_keys
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_legacy_defaults
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_meta_key
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::get_subvalues_specs
+	 * @uses \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings::sanitize_subvalue
+	 */
+	public function test_a_rejected_stored_value_is_not_treated_as_set(): void {
+		$this->set_current_user_to_admin();
+		$this->set_suggestion_defaults( array( 'default_length' => 220 ) );
+
+		// An out-of-range length, which get_settings() repairs to the site's.
+		update_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			array( 'ExcerptSuggestions' => array( 'Length' => 99999 ) )
+		);
+
+		$endpoint = $this->get_initialized_endpoint();
+		$settings = $this->get_endpoint_settings( $endpoint );
+		assert( is_array( $settings['ExcerptSuggestions'] ) );
+		self::assertSame( 220, $settings['ExcerptSuggestions']['Length'] );
+
+		// The author saves an unrelated setting, sending the repaired value back.
+		$settings['InitialTabName'] = 'performance';
+		$this->send_endpoint_put_request( $endpoint, $settings );
+
+		$this->set_suggestion_defaults( array( 'default_length' => 90 ) );
+		$value = $this->get_endpoint_settings( $this->get_initialized_endpoint() );
+
+		assert( is_array( $value['ExcerptSuggestions'] ) );
+		self::assertSame( 90, $value['ExcerptSuggestions']['Length'] );
+	}
+
+	/**
+	 * Stores the passed site-wide generation defaults.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @param array<string, mixed> $excerpt_options The Excerpt Suggestions options.
+	 * @param array<string, mixed> $title_options   The Title Suggestions options.
+	 */
+	private function set_suggestion_defaults(
+		array $excerpt_options,
+		array $title_options = array()
+	): void {
+		$options                   = self::DEFAULT_OPTIONS;
+		$options['content_helper'] = array(
+			'excerpt_suggestions' => $excerpt_options,
+			'title_suggestions'   => $title_options,
+		);
+
+		update_option( \Parsely\Parsely::OPTIONS_KEY, $options );
+	}
+
+	/**
+	 * Returns an endpoint built against the site's current options, as a real
+	 * request would, with the current user set.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @return Endpoint_Editor_Sidebar_Settings The endpoint.
+	 */
+	private function get_initialized_endpoint(): Endpoint_Editor_Sidebar_Settings {
+		$endpoint = new Endpoint_Editor_Sidebar_Settings( $this->api_controller );
+		$endpoint->init();
+
+		return $endpoint;
+	}
+
+	/**
+	 * Returns the settings that the passed endpoint responds with.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @param Endpoint_Editor_Sidebar_Settings $endpoint The endpoint to query.
+	 * @return array<string, mixed> The settings.
+	 */
+	private function get_endpoint_settings(
+		Endpoint_Editor_Sidebar_Settings $endpoint
+	): array {
+		$value = $endpoint->get_settings()->get_data();
+		assert( is_array( $value ) );
+
+		return $value;
+	}
+
+	/**
+	 * Sends a PUT request to the passed endpoint.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @param Endpoint_Editor_Sidebar_Settings $endpoint The endpoint to send to.
+	 * @param array<string, mixed>             $data     The settings to send.
+	 * @return array<string, mixed> The settings the endpoint responds with.
+	 */
+	private function send_endpoint_put_request(
+		Endpoint_Editor_Sidebar_Settings $endpoint,
+		array $data
+	): array {
+		$request = new WP_REST_Request( 'PUT', '/' );
+		$request->set_body( $this->wp_json_encode( $data ) );
+		$request->set_header( 'content-type', 'application/json' );
+
+		$response = $endpoint->set_settings( $request );
+		self::assertInstanceOf( WP_REST_Response::class, $response );
+
+		$value = $response->get_data();
+		assert( is_array( $value ) );
+
+		return $value;
+	}
+
+	/**
+	 * Returns the current user's stored settings, as they are stored.
+	 *
+	 * @since 3.24.1
+	 *
+	 * @return array<string, mixed> The stored settings.
+	 */
+	private function get_stored_settings(): array {
+		$settings = get_user_meta(
+			get_current_user_id(),
+			'parsely_content_helper_settings_editor_sidebar',
+			true
+		);
+
+		return is_array( $settings ) ? $settings : array();
 	}
 
 	/**
