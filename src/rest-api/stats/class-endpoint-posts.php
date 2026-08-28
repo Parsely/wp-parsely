@@ -322,6 +322,17 @@ class Endpoint_Posts extends Base_Endpoint {
 			$params['urls'] = $new_urls;
 		}
 
+		if ( isset( $params['urls'] ) && is_array( $params['urls'] ) ) {
+			/**
+			 * Allow adjustments to post URLs before request. Useful for testing non-local URLs, or mirroring site content.
+			 *
+			 * @since 3.19.1
+			 *
+			 * @param array<string> $urls The URLs to be used in the request.
+			 */
+			$params['urls'] = apply_filters( 'wp_parsely_stats_posts_urls', $params['urls'] );
+		}
+
 		// Build the request params.
 		$request_params = array(
 			'period_start'   => $params['period_start'] ?? null,
