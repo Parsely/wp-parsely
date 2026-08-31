@@ -1,7 +1,7 @@
 # Parse.ly
 
-Stable tag: 3.23.3  
-Requires at least: 6.0  
+Stable tag: 3.24.1  
+Requires at least: 6.1  
 Tested up to: 6.9  
 Requires PHP: 7.4  
 License: GPLv2 or later  
@@ -42,10 +42,10 @@ The plugin automatically inserts the Parse.ly metadata and JavaScript in all pub
 - The [Engagement Boost](https://docs.wpvip.com/parse-ly/parsely-features/engagement-boost/) feature - Helps you increase page views and engagement by strategically placing links to key content within high-performing articles on your site.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-intelligence/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Title Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
-  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
   - [Smart Linking](https://docs.wpvip.com/parse-ly/parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
   - [Related Posts](https://docs.parse.ly/plugin-content-intelligence/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
   - [Performance Stats](https://docs.parse.ly/plugin-content-intelligence/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
+- [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited, from the Excerpt panel of the Post Editor's settings.
 
 #### The Parse.ly Recommendations Block
 
@@ -127,7 +127,7 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![Parse.ly Editor Sidebar - Related Posts](.wordpress-org/screenshot-6.png)
 7. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.  
    ![Parse.ly Editor Sidebar - Performance Stats](.wordpress-org/screenshot-7.png)
-8. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.  
+8. The Parse.ly Excerpt Suggestions in the Post Editor's settings.  
    ![Parse.ly Excerpt Suggestions](.wordpress-org/screenshot-8.png)
 9. The Recommendations Block, showcasing links to related content on your site.  
    ![Parse.ly Recommendations Block](.wordpress-org/screenshot-9.png)
