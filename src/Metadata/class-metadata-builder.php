@@ -382,6 +382,15 @@ abstract class Metadata_Builder {
 		}
 
 		/**
+		 * Attempt to get primary term if it's set by Yoast SEO plugin.
+		 */
+		$primary_category = self::get_primary_term_from_yoast( $post_obj, $parsely_options['custom_taxonomy_section'] );
+
+		if ( '' !== $primary_category ) {
+			$category_name = $primary_category;
+		}
+
+		/**
 		 * Filters the constructed category name.
 		 *
 		 * @since 1.8.0
@@ -686,5 +695,22 @@ abstract class Metadata_Builder {
 		}
 
 		return $all_values;
+	}
+
+	/**
+	 * Attempt to get primary term of given taxonomy if its set by Yoast SEO plugin.
+	 *
+	 * @since 3.21.3 -- supposed to be change when merged.
+	 *
+	 * @param WP_Post $post The post object.
+	 * @param string  $taxonomy The taxonomy name.
+	 *
+	 * @return string Primary category name or empty string.
+	 */
+	private static function get_primary_term_from_yoast( WP_Post $post, string $taxonomy = 'category' ): string {
+		if ( ! function_exists( 'yoast_get_primary_term' ) ) {
+			return '';
+		}
+		return yoast_get_primary_term( $taxonomy, $post );
 	}
 }
