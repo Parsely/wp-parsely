@@ -649,4 +649,199 @@ class EndpointStatsPostTest extends BaseEndpointTest {
 			$response_data['data']
 		);
 	}
+
+	/**
+	 * Verifies that the canonical URL saved to post meta uses the https scheme
+	 * when the site supports https, even when the Parse.ly API returns an
+	 * http URL.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::get_post_details
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_canonical_url
+	 * @uses \Parsely\Parsely::get_dash_url
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_url_with_itm_source
+	 * @uses \Parsely\Parsely::set_canonical_url
+	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_default_access_capability
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_full_endpoint
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
+	 * @uses \Parsely\REST_API\Stats\Endpoint_Post::__construct
+	 * @uses \Parsely\REST_API\Stats\Endpoint_Post::get_endpoint_name
+	 * @uses \Parsely\REST_API\Stats\Endpoint_Post::register_routes
+	 * @uses \Parsely\REST_API\Stats\Post_Data_Trait::extract_post_data
+	 * @uses \Parsely\REST_API\Stats\Post_Data_Trait::get_itm_source_param_args
+	 * @uses \Parsely\REST_API\Stats\Post_Data_Trait::set_itm_source_from_request
+	 * @uses \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
+	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
+	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::register_rest_route_with_post_id
+	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::get_formatted_duration
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
+	 * @uses \Parsely\Utils\Utils::parsely_is_https_supported
+	 */
+	public function test_get_details_stores_canonical_url_with_https_scheme(): void {
+		$test_post_id = $this->create_test_post();
+		$route        = $this->get_endpoint()->get_full_endpoint( '/' . $test_post_id . '/details' );
+
+		TestCase::set_options(
+			array(
+				'apikey'     => 'example.com',
+				'api_secret' => 'test-secret',
+			)
+		);
+		$this->set_current_user_to_admin();
+
+		// Make the site https, so that Utils::parsely_is_https_supported()
+		// returns true.
+		$https_filter = function (): string {
+			return 'https://example.org';
+		};
+		add_filter( 'option_home', $https_filter );
+		add_filter( 'option_siteurl', $https_filter );
+
+		// Return an http URL from the API, as happens for sites that Parse.ly
+		// first crawled before an https migration.
+		add_filter(
+			'pre_http_request',
+			$http_request_filter = function () use ( $test_post_id ): array {
+				return array(
+					'body' => '
+						{"data":[{
+							"metrics": { "views": 1 },
+							"url": "http://example.org/?p=' . $test_post_id . '"
+						}]}
+					',
+				);
+			}
+		);
+
+		rest_get_server()->dispatch( new WP_REST_Request( 'GET', $route ) );
+
+		$stored_canonical_url = get_post_meta( $test_post_id, '_parsely_canonical_url', true );
+
+		remove_filter( 'pre_http_request', $http_request_filter );
+		remove_filter( 'option_siteurl', $https_filter );
+		remove_filter( 'option_home', $https_filter );
+
+		self::assertIsString( $stored_canonical_url );
+		self::assertStringStartsWith( 'https://', $stored_canonical_url );
+	}
+
+	/**
+	 * Verifies that the canonical URL saved to post meta keeps the http scheme
+	 * when the site does not support https.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::get_post_details
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_canonical_url
+	 * @uses \Parsely\Parsely::get_dash_url
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_url_with_itm_source
+	 * @uses \Parsely\Parsely::set_canonical_url
+	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_default_access_capability
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_full_endpoint
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
+	 * @uses \Parsely\REST_API\Stats\Endpoint_Post::__construct
+	 * @uses \Parsely\REST_API\Stats\Endpoint_Post::get_endpoint_name
+	 * @uses \Parsely\REST_API\Stats\Endpoint_Post::register_routes
+	 * @uses \Parsely\REST_API\Stats\Post_Data_Trait::extract_post_data
+	 * @uses \Parsely\REST_API\Stats\Post_Data_Trait::get_itm_source_param_args
+	 * @uses \Parsely\REST_API\Stats\Post_Data_Trait::set_itm_source_from_request
+	 * @uses \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
+	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
+	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::register_rest_route_with_post_id
+	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::get_formatted_duration
+	 * @uses \Parsely\Utils\Utils::get_post_id_by_url
+	 * @uses \Parsely\Utils\Utils::parsely_is_https_supported
+	 */
+	public function test_get_details_keeps_http_canonical_url_without_https_support(): void {
+		$test_post_id = $this->create_test_post();
+		$route        = $this->get_endpoint()->get_full_endpoint( '/' . $test_post_id . '/details' );
+
+		TestCase::set_options(
+			array(
+				'apikey'     => 'example.com',
+				'api_secret' => 'test-secret',
+			)
+		);
+		$this->set_current_user_to_admin();
+
+		// Make the site http-only, so that Utils::parsely_is_https_supported()
+		// returns false and no scheme rewriting should occur.
+		$http_filter = function (): string {
+			return 'http://example.org';
+		};
+		add_filter( 'option_home', $http_filter );
+		add_filter( 'option_siteurl', $http_filter );
+
+		add_filter(
+			'pre_http_request',
+			$http_request_filter = function () use ( $test_post_id ): array {
+				return array(
+					'body' => '
+						{"data":[{
+							"metrics": { "views": 1 },
+							"url": "http://example.org/?p=' . $test_post_id . '"
+						}]}
+					',
+				);
+			}
+		);
+
+		rest_get_server()->dispatch( new WP_REST_Request( 'GET', $route ) );
+
+		$stored_canonical_url = get_post_meta( $test_post_id, '_parsely_canonical_url', true );
+
+		remove_filter( 'pre_http_request', $http_request_filter );
+		remove_filter( 'option_siteurl', $http_filter );
+		remove_filter( 'option_home', $http_filter );
+
+		self::assertIsString( $stored_canonical_url );
+		self::assertStringStartsWith( 'http://', $stored_canonical_url );
+	}
 }
