@@ -81,7 +81,7 @@
 		"eslint-plugin-jest": "^28.14.0",
 		"husky": "^9.1.7",
 		"lodash.debounce": "^4.0.8",
-		"prettier": "^3.7.4",
+		"prettier": "^3.9.6",
 		"react-router": "^7.18.1",
 		"ts-loader": "^9.5.4",
 		"typescript": "^5.9.3"
