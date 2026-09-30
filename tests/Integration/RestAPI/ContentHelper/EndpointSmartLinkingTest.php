@@ -385,6 +385,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 			'http URL with query' => array( 'http://example.com/?p=42', true ),
 			'relative path'       => array( '/relative/path/', true ),
 			'fragment'            => array( '#anchor', true ),
+			'fragment with colon' => array( '#section:details', false ),
 			'javascript scheme'   => array( 'javascript:alert(document.cookie)', false ),
 			'mixed-case script'   => array( 'JaVaScRiPt:alert(1)', false ),
 			'script with tab'     => array( "java\tscript:alert(1)", false ),

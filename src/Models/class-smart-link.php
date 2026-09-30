@@ -732,9 +732,10 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Determines whether an href is valid for a Smart Link.
 	 *
-	 * Only web URLs are accepted. Relative paths and fragments pass, as they
-	 * resolve against the site's own URL. `esc_url_raw()` is used instead of a
-	 * scheme comparison, as it also catches case and whitespace variations.
+	 * Only web URLs are accepted. Scheme-less references such as `/path/` or
+	 * `#anchor` also pass, unless they contain a colon, which WordPress reads
+	 * as a scheme delimiter. `esc_url_raw()` is used instead of a scheme
+	 * comparison, as it also catches case and whitespace variations.
 	 *
 	 * @since 3.24.2
 	 *
