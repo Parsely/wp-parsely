@@ -597,6 +597,10 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			return false;
 		}
 
+		if ( ! Smart_Link::is_valid_href( $params['href']['raw'] ) ) {
+			return false;
+		}
+
 		// Try to get the smart link from the UID.
 		$smart_link = Smart_Link::get_smart_link( $params['uid'], intval( $post_id ) );
 		if ( $smart_link->exists() ) {
