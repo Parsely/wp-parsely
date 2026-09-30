@@ -318,6 +318,84 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	}
 
 	/**
+	 * Verifies that only web URLs are accepted as Smart Link hrefs.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::validate_smart_link_params
+	 * @covers \Parsely\Models\Smart_Link::is_valid_href
+	 *
+	 * @dataProvider data_smart_link_hrefs
+	 *
+	 * @param string $href       The href to submit.
+	 * @param bool   $is_allowed Whether the href should be accepted.
+	 */
+	public function test_add_smart_link_validates_href_scheme( string $href, bool $is_allowed ): void {
+		$post = WP_UnitTestCase_Base::factory()->post->create_and_get();
+		self::assertNotWPError( $post );
+		$post_id = $post->ID; // @phpstan-ignore-line
+
+		$uid     = md5( $href );
+		$request = new WP_REST_Request( 'POST', $this->get_endpoint()->get_full_endpoint( $post_id . '/add' ) );
+		$request->set_param(
+			'link',
+			array(
+				'uid'    => $uid,
+				'href'   => array( 'raw' => $href ),
+				'title'  => 'Example',
+				'text'   => 'Example',
+				'offset' => 0,
+			)
+		);
+
+		$response = rest_get_server()->dispatch( $request );
+
+		if ( ! $is_allowed ) {
+			self::assertSame( 400, $response->get_status() );
+			return;
+		}
+
+		self::assertSame( 200, $response->get_status() );
+
+		/**
+		 * The response data.
+		 *
+		 * @var array<mixed,array<mixed>> $data The response data.
+		 */
+		$data = $response->get_data();
+
+		self::assertArrayHasKey( 'data', $data );
+		self::assertIsObject( $data['data'] );
+
+		// The href must be kept exactly as submitted, as it is matched against
+		// the anchors in the post's content.
+		self::assertSame( $href, $data['data']->href->raw );
+	}
+
+	/**
+	 * Provides hrefs for the href scheme validation test.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return array<string, array{string, bool}>
+	 */
+	public function data_smart_link_hrefs(): array {
+		return array(
+			'https URL'           => array( 'https://example.com/post-name/', true ),
+			'http URL with query' => array( 'http://example.com/?p=42', true ),
+			'relative path'       => array( '/relative/path/', true ),
+			'fragment'            => array( '#anchor', true ),
+			'fragment with colon' => array( '#section:details', false ),
+			'javascript scheme'   => array( 'javascript:alert(document.cookie)', false ),
+			'mixed-case script'   => array( 'JaVaScRiPt:alert(1)', false ),
+			'script with tab'     => array( "java\tscript:alert(1)", false ),
+			'data scheme'         => array( 'data:text/html;base64,PHN2Zz4=', false ),
+			'vbscript scheme'     => array( 'vbscript:msgbox(1)', false ),
+			'non-web scheme'      => array( 'mailto:someone@example.com', false ),
+		);
+	}
+
+	/**
 	 * Tests that the add_multiple_smart_links method returns a valid response when adding multiple smart links.
 	 *
 	 * @since 3.17.0
