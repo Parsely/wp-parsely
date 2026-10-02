@@ -25,8 +25,10 @@ function getTestsPort(): string {
 	);
 }
 
-const baseURL: string =
-	process.env.WP_BASE_URL ?? `http://localhost:${ getTestsPort() }`;
+// Specs append paths to the base URL, so drop any trailing slash.
+const baseURL: string = (
+	process.env.WP_BASE_URL ?? `http://localhost:${ getTestsPort() }`
+).replace( /\/+$/, '' );
 
 // The base config reads WP_BASE_URL when it loads, so set it first.
 process.env.WP_BASE_URL = baseURL;

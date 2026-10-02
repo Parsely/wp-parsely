@@ -195,8 +195,8 @@ class Utils {
 }
 
 /**
- * Returns the URL with its forward slashes escaped, as they appear in the
- * JSON-LD metadata.
+ * Returns the URL with its backslashes and forward slashes escaped, as they
+ * appear in the JSON-LD metadata.
  *
  * @since 3.24.2
  *
@@ -205,5 +205,5 @@ class Utils {
  * @return {string} The escaped URL.
  */
 function escapeSlashes( url = '' ): string {
-	return url.replace( /\//g, '\\/' );
+	return url.replace( /\\/g, '\\\\' ).replace( /\//g, '\\/' );
 }
