@@ -45,7 +45,7 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert JSON-LD on homepage', async ( { admin, page } ) => {
+	test( 'Should insert JSON-LD on homepage', async ( { admin, baseURL, page } ) => {
 		const utils = new Utils( admin );
 		await utils.setMetadataFormat( 'json_ld' );
 
@@ -57,7 +57,7 @@ test.describe( 'Front end metadata insertion', () => {
 		expect( content ).toContain( '"@context":"https:\\/\\/schema.org"' );
 		expect( content ).toContain( '"@type":"WebPage"' );
 		expect( content ).toContain( '"headline":"wp-parsely"' );
-		expect( content ).toContain( '"url":"http:\\/\\/localhost:8889"' );
+		expect( content ).toContain( `"url":"${ escapeSlashes( baseURL ) }"` );
 		expect( content ).not.toContain( '<meta name="parsely-title"' );
 	} );
 
@@ -66,13 +66,13 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert JSON-LD on post', async ( { page } ) => {
+	test( 'Should insert JSON-LD on post', async ( { baseURL, page } ) => {
 		await page.goto( '/?p=1' );
 
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
-		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"http:\\/\\/localhost:8889\\/?p=1","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?p=1"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
+		expect( content ).toContain( `{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"${ escapeSlashes( baseURL ) }\\/?p=1","mainEntityOfPage":{"@type":"WebPage","@id":"${ escapeSlashes( baseURL ) }\\/?p=1"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"` );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
@@ -81,13 +81,13 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert JSON-LD on page', async ( { page } ) => {
+	test( 'Should insert JSON-LD on page', async ( { baseURL, page } ) => {
 		await page.goto( '/?p=2' );
 
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
-		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"http:\\/\\/localhost:8889\\/?page_id=2","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?page_id=2"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
+		expect( content ).toContain( `{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"${ escapeSlashes( baseURL ) }\\/?page_id=2","mainEntityOfPage":{"@type":"WebPage","@id":"${ escapeSlashes( baseURL ) }\\/?page_id=2"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"` );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
@@ -97,7 +97,7 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert repeated metas on homepage', async ( { admin, page } ) => {
+	test( 'Should insert repeated metas on homepage', async ( { admin, baseURL, page } ) => {
 		const utils = new Utils( admin );
 		await utils.setMetadataFormat( 'repeated_metas' );
 
@@ -106,7 +106,7 @@ test.describe( 'Front end metadata insertion', () => {
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="wp-parsely">' );
-		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889">' );
+		expect( content ).toContain( `<meta name="parsely-link" content="${ baseURL }">` );
 		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
@@ -119,13 +119,13 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert repeated metas on post', async ( { page } ) => {
+	test( 'Should insert repeated metas on post', async ( { baseURL, page } ) => {
 		await page.goto( '/?p=1' );
 
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="Hello world!">' );
-		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889/?p=1">' );
+		expect( content ).toContain( `<meta name="parsely-link" content="${ baseURL }/?p=1">` );
 		expect( content ).toContain( '<meta name="parsely-type" content="post">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
@@ -138,13 +138,13 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert repeated metas on page', async ( { page } ) => {
+	test( 'Should insert repeated metas on page', async ( { baseURL, page } ) => {
 		await page.goto( '/?p=2' );
 
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="Sample Page">' );
-		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889/?page_id=2">' );
+		expect( content ).toContain( `<meta name="parsely-link" content="${ baseURL }/?page_id=2">` );
 		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
@@ -192,4 +192,18 @@ class Utils {
 		await page.locator( `#meta_type_${ format }` ).click();
 		await page.getByRole( 'button', { name: 'Save Changes' } ).click();
 	}
+}
+
+/**
+ * Returns the URL with its forward slashes escaped, as they appear in the
+ * JSON-LD metadata.
+ *
+ * @since 3.24.2
+ *
+ * @param {string} [url] The URL to escape.
+ *
+ * @return {string} The escaped URL.
+ */
+function escapeSlashes( url = '' ): string {
+	return url.replace( /\//g, '\\/' );
 }
