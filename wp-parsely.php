@@ -61,6 +61,8 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 
 // Load Telemetry classes.
 require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
+// Load Abilities registrations (safe if Abilities API is not present).
+require_once __DIR__ . '/src/Abilities/register-abilities.php';
 
 /**
  * Gets the Parsely object.
