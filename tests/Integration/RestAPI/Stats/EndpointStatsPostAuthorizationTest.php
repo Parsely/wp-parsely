@@ -236,13 +236,17 @@ class EndpointStatsPostAuthorizationTest extends TestCase {
 	 * @param int $post_id The post whose URL the reply names.
 	 */
 	private function mock_upstream_naming_post( int $post_id ): void {
-		$url = (string) get_permalink( $post_id );
+		$url       = (string) get_permalink( $post_id );
+		$caller_id = get_current_user_id();
 
+		// URLs only resolve to posts the user can see, so check as the author.
+		wp_set_current_user( (int) get_post_field( 'post_author', $post_id ) );
 		self::assertSame(
 			$post_id,
 			Utils::get_post_id_by_url( $url ),
 			'Fixture is wrong: the URL does not resolve back to the post.'
 		);
+		wp_set_current_user( $caller_id );
 
 		$this->mock_upstream_naming_url( $url );
 	}
@@ -613,9 +617,8 @@ class EndpointStatsPostAuthorizationTest extends TestCase {
 	 * Verifies that a foreign-host URL naming a local post's slug does not get
 	 * stored as that post's canonical URL.
 	 *
-	 * `Utils::get_post_id_by_url()` falls back to matching the last path
-	 * segment against post slugs, on any host, so a URL on another host can
-	 * resolve to a local post.
+	 * `Utils::get_post_id_by_url()` matches slugs only on this site's URLs, so a
+	 * URL on another host resolves to no post.
 	 *
 	 * @since 3.24.2
 	 *
@@ -630,12 +633,6 @@ class EndpointStatsPostAuthorizationTest extends TestCase {
 		self::assertInstanceOf( WP_Post::class, $post );
 
 		$foreign_url = 'https://foreign.example/' . $post->post_name;
-
-		self::assertSame(
-			$this->restricted_private_post_id,
-			Utils::get_post_id_by_url( $foreign_url ),
-			'Fixture is wrong: the foreign URL should resolve to the local post.'
-		);
 
 		$this->mock_upstream_naming_url( $foreign_url );
 
