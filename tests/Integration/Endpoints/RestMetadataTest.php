@@ -348,6 +348,11 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::render_metadata
 	 */
 	public function test_get_callback_with_non_existent_post(): void {
+		// Without a post ID, get_permalink() falls back to the global post. Tests
+		// run in random order, so a previous test may still have one assigned.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$GLOBALS['post'] = null;
+
 		$meta_object = self::$rest->get_callback( array() );
 		$expected    = array(
 			'version'       => '1.1.0',
