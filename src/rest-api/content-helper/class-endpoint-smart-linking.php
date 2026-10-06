@@ -197,6 +197,8 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				'urls' => array(
 					'required'    => true,
 					'type'        => 'array',
+					'items'       => array( 'type' => 'string' ),
+					'maxItems'    => 500,
 					'description' => __( 'The URLs to get meta information for.', 'wp-parsely' ),
 				),
 			)
@@ -567,13 +569,18 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 * The callback sets the smart link object in the request object if the parameters are valid.
 	 *
 	 * @since 3.16.0
+	 * @since 3.24.2 Rejects non-arrays.
 	 * @access private
 	 *
-	 * @param array<mixed>    $params  The parameters.
+	 * @param mixed           $params  The raw parameter value, as validation runs before type checks.
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameters are valid.
 	 */
-	public function validate_smart_link_params( array $params, WP_REST_Request $request ): bool {
+	public function validate_smart_link_params( $params, WP_REST_Request $request ): bool {
+		if ( ! is_array( $params ) ) {
+			return false;
+		}
+
 		$required_params = array( 'uid', 'href', 'title', 'text', 'offset' );
 
 		foreach ( $required_params as $param ) {
@@ -643,13 +650,18 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 * The callback sets the smart links object in the request object if the parameters are valid.
 	 *
 	 * @since 3.16.0
+	 * @since 3.24.2 Rejects non-arrays.
 	 * @access private
 	 *
-	 * @param array<array<mixed>> $param   The parameter value.
-	 * @param WP_REST_Request     $request The request object.
+	 * @param mixed           $param   The raw parameter value, as validation runs before type checks.
+	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	public function validate_multiple_smart_links( array $param, WP_REST_Request $request ): bool {
+	public function validate_multiple_smart_links( $param, WP_REST_Request $request ): bool {
+		if ( ! is_array( $param ) ) {
+			return false;
+		}
+
 		$smart_links = array();
 
 		foreach ( $param as $link ) {
