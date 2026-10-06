@@ -369,6 +369,7 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	 * @since 3.24.2
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::register_routes
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::validate_url
 	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
 	 * @dataProvider provide_invalid_parameters
 	 *
@@ -398,6 +399,9 @@ class EndpointRelatedTest extends BaseEndpointTest {
 		$url = 'https://example.com/a-post';
 
 		yield 'URL without a scheme' => array( array( 'url' => 'not a url' ) );
+		yield 'URL without a host' => array( array( 'url' => 'https://?q=1' ) );
+		yield 'URL with an empty host' => array( array( 'url' => 'https:///a-post' ) );
+		yield 'array URL' => array( array( 'url' => array( $url ) ) );
 		yield 'mailto: URL' => array( array( 'url' => 'mailto:someone@example.com' ) );
 		yield 'FTP URL' => array( array( 'url' => 'ftp://example.com/a-post' ) );
 		yield 'array itm_source' => array(
@@ -480,6 +484,39 @@ class EndpointRelatedTest extends BaseEndpointTest {
 		yield 'score, sent by the Block and the Widget' => array( 'score' );
 		yield '_score, the previous default' => array( '_score' );
 		yield 'pub_date' => array( 'pub_date' );
+	}
+
+	/**
+	 * Verifies that URLs with a host are accepted.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::validate_url
+	 * @dataProvider provide_urls_with_a_host
+	 *
+	 * @param string $url The URL.
+	 */
+	public function test_urls_with_a_host_are_accepted( string $url ): void {
+		$upstream_urls = array();
+		$this->mock_upstream( $this->get_upstream_items(), $upstream_urls );
+
+		$response = $this->dispatch_logged_out( array( 'url' => $url ) );
+
+		self::assertSame( 200, $response->get_status() );
+		self::assertCount( 1, $upstream_urls );
+	}
+
+	/**
+	 * Provides URLs with a host.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return iterable<string, array{0: string}>
+	 */
+	public static function provide_urls_with_a_host(): iterable {
+		yield 'Port' => array( 'http://localhost:8889/?p=1' );
+		yield 'IPv6 host' => array( 'https://[2001:db8::1]/a-post' );
+		yield 'Non-ASCII host' => array( 'https://bücher.example/a-post' );
 	}
 
 	/**
