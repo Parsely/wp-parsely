@@ -564,6 +564,45 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	}
 
 	/**
+	 * Verifies that non-string upstream fields are returned as empty strings.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_of_url
+	 */
+	public function test_non_string_upstream_fields_are_returned_as_empty_strings(): void {
+		$upstream_urls = array();
+		$this->mock_upstream(
+			array(
+				array(
+					'image_url'        => 123,
+					'thumb_url_medium' => false,
+					'title'            => array( 'text' => 'Nested title' ),
+					'url'              => 'https://example.com/other-fields',
+				),
+			),
+			$upstream_urls
+		);
+
+		$response = $this->dispatch_logged_out( array( 'url' => 'https://example.com/a-post' ) );
+
+		/** @var array<string, mixed> $data */
+		$data = $response->get_data();
+		self::assertSame( 200, $response->get_status() );
+		self::assertSame(
+			array(
+				array(
+					'image_url'        => '',
+					'thumb_url_medium' => '',
+					'title'            => '',
+					'url'              => 'https://example.com/other-fields',
+				),
+			),
+			$data['data']
+		);
+	}
+
+	/**
 	 * Dispatches a request to the endpoint while logged out.
 	 *
 	 * @since 3.24.2

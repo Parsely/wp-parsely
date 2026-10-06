@@ -108,7 +108,7 @@ trait Related_Posts_Trait {
 	 * Get related posts for a given URL.
 	 *
 	 * @since 3.17.0
-	 * @since 3.24.2 Skips upstream items without a URL.
+	 * @since 3.24.2 Skips upstream items without a URL, and replaces non-string fields with empty strings.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @param string          $url The URL to get related posts for.
@@ -151,9 +151,9 @@ trait Related_Posts_Trait {
 			}
 
 			$related_posts[] = array(
-				'image_url'        => $item['image_url'] ?? '',
-				'thumb_url_medium' => $item['thumb_url_medium'] ?? '',
-				'title'            => $item['title'] ?? '',
+				'image_url'        => is_string( $item['image_url'] ?? null ) ? $item['image_url'] : '',
+				'thumb_url_medium' => is_string( $item['thumb_url_medium'] ?? null ) ? $item['thumb_url_medium'] : '',
+				'title'            => is_string( $item['title'] ?? null ) ? $item['title'] : '',
 				'url'              => Parsely::get_url_with_itm_source( $item['url'], $this->itm_source ),
 			);
 		}
