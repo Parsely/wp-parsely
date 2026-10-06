@@ -451,4 +451,99 @@ final class PermissionsTest extends TestCase {
 		);
 		remove_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_false' );
 	}
+
+	/**
+	 * Verifies that the permissions filter cannot grant access to a post the
+	 * user cannot edit.
+	 *
+	 * The filter overrides the plugin's own feature gating, but the features
+	 * read and modify the post, so the WordPress capability still applies.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 */
+	public function test_filter_cannot_grant_access_to_an_uneditable_post(): void {
+		$pch_options = Permissions::build_pch_permissions_settings_array(
+			true,
+			array( 'administrator', 'author' )
+		);
+
+		$other_user_id = TestCase::create_test_user( 'perm_other_user', 'administrator' );
+
+		/** @var int $restricted_post_id */
+		$restricted_post_id = self::factory()->post->create(
+			array(
+				'post_author' => $other_user_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		TestCase::set_current_user_to( 'perm_author', 'author' );
+
+		self::assertFalse(
+			current_user_can( 'edit_post', $restricted_post_id ),
+			'Fixture is wrong: the user can edit the post.'
+		);
+
+		add_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_true' );
+
+		foreach ( $this->features_to_test as $feature ) {
+			self::assertFalse(
+				Permissions::current_user_can_use_pch_feature(
+					$feature,
+					$pch_options,
+					$restricted_post_id
+				),
+				"The filter should not grant $feature access to an uneditable post."
+			);
+		}
+
+		remove_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_true' );
+	}
+
+	/**
+	 * Verifies that the permissions filter still grants access to a post the
+	 * user can edit.
+	 *
+	 * Guards against the capability check above disabling the filter outright.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 */
+	public function test_filter_still_grants_access_to_an_editable_post(): void {
+		// Features disabled, so only the filter can grant access.
+		$pch_options = Permissions::build_pch_permissions_settings_array( false, array() );
+
+		$author_user_id = TestCase::create_test_user( 'perm_filter_author', 'author' );
+		wp_set_current_user( $author_user_id );
+
+		/** @var int $own_post_id */
+		$own_post_id = self::factory()->post->create(
+			array(
+				'post_author' => $author_user_id,
+				'post_status' => 'draft',
+			)
+		);
+
+		add_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_true' );
+
+		foreach ( $this->features_to_test as $feature ) {
+			self::assertTrue(
+				Permissions::current_user_can_use_pch_feature(
+					$feature,
+					$pch_options,
+					$own_post_id
+				),
+				"The filter should still grant $feature access to the user's own post."
+			);
+		}
+
+		remove_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_true' );
+	}
 }
