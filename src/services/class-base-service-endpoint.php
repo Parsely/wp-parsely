@@ -208,16 +208,34 @@ abstract class Base_Service_Endpoint {
 		$response = wp_safe_remote_request( $request_url, $request_options );
 
 		if ( is_wp_error( $response ) ) {
-			$result = new WP_Error(
-				$response->get_error_code(),
-				$response->get_error_message(),
-				array( 'status' => 500 )
-			);
-		} else {
-			$result = $this->process_response( $response );
+			return $this->get_relayable_transport_error( $response );
 		}
 
+		$result = $this->process_response( $response );
+
 		return is_wp_error( $result ) ? $this->strip_credentials_from_error( $result ) : $result;
+	}
+
+	/**
+	 * Returns a transport error reduced to its code and first message, without
+	 * the credentials.
+	 *
+	 * Its other messages and data are dropped, as `pre_http_request` and other
+	 * filters can attach anything to it, including the request headers.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param WP_Error $error The transport error.
+	 * @return WP_Error The error to relay to the caller.
+	 */
+	protected function get_relayable_transport_error( WP_Error $error ): WP_Error {
+		return $this->strip_credentials_from_error(
+			new WP_Error(
+				$error->get_error_code(),
+				$error->get_error_message(),
+				array( 'status' => 500 )
+			)
+		);
 	}
 
 	/**
@@ -235,18 +253,19 @@ abstract class Base_Service_Endpoint {
 			return $response;
 		}
 
+		$body    = wp_remote_retrieve_body( $response );
+		$decoded = json_decode( $body, true );
+
 		// A parseable body does not mean the request succeeded.
 		$status_code = (int) wp_remote_retrieve_response_code( $response );
 		if ( 0 !== $status_code && ( $status_code < 200 || $status_code >= 300 ) ) {
-			return new WP_Error(
-				$status_code,
-				__( 'The upstream API returned an unsuccessful response', 'wp-parsely' ),
-				array( 'status' => $status_code )
-			);
-		}
+			// The upstream message is kept, as request() strips the credentials.
+			$message = is_array( $decoded ) && isset( $decoded['message'] ) && is_string( $decoded['message'] ) && '' !== $decoded['message']
+				? $decoded['message']
+				: __( 'The upstream API returned an unsuccessful response', 'wp-parsely' );
 
-		$body    = wp_remote_retrieve_body( $response );
-		$decoded = json_decode( $body, true );
+			return new WP_Error( $status_code, $message, array( 'status' => $status_code ) );
+		}
 
 		if ( ! is_array( $decoded ) ) {
 			return new WP_Error( 400, __( 'Unable to decode upstream API response', 'wp-parsely' ) );
@@ -288,7 +307,43 @@ abstract class Base_Service_Endpoint {
 			$message = str_replace( $secret, '', $message );
 		}
 
+		// An encoded copy, such as a URL encoded by a filter, can't be stripped in place.
+		if ( $this->has_encoded_credentials( $message, $secret ) ) {
+			return __( 'The upstream API request failed.', 'wp-parsely' );
+		}
+
 		return $message;
+	}
+
+	/**
+	 * Returns whether the URL-decoded or JSON-unescaped forms of a message
+	 * still contain a credential.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param string $message The message, already stripped of its plain credentials.
+	 * @param string $secret  The API Secret.
+	 * @return bool Whether the message holds an encoded credential.
+	 */
+	private function has_encoded_credentials( string $message, string $secret ): bool {
+		$decoded = $message;
+
+		// Up to triple encoding, as each layer of code relaying a URL can encode it again.
+		for ( $i = 0; $i < 3; $i++ ) {
+			$decoded = str_replace( '\\/', '/', rawurldecode( $decoded ) );
+
+			if ( '' !== $secret && false !== strpos( $decoded, $secret ) ) {
+				return true;
+			}
+
+			foreach ( self::CREDENTIAL_QUERY_ARGS as $arg ) {
+				if ( 1 === preg_match( '/[?&]' . preg_quote( $arg, '/' ) . '=/i', $decoded ) ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -72,6 +72,10 @@ class Endpoint_Check_Auth extends Suggestions_API_Base_Endpoint {
 		/** @var WP_HTTP_Response|WP_Error $response */
 		$response = wp_safe_remote_request( $request_url, $request_options );
 
+		if ( is_wp_error( $response ) ) {
+			return $this->get_relayable_transport_error( $response );
+		}
+
 		$result = $this->process_response( $response );
 
 		return is_wp_error( $result ) ? $this->strip_credentials_from_error( $result ) : $result;
