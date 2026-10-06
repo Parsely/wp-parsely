@@ -307,7 +307,7 @@ class ValidationSideEffectsTest extends TestCase {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery
 
-		return md5( (string) wp_json_encode( $rows ) );
+		return hash( 'sha256', (string) wp_json_encode( $rows ) );
 	}
 
 	/**
