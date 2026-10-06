@@ -61,6 +61,18 @@ class UpstreamErrorMessagesTest extends TestCase {
 	}
 
 	/**
+	 * Tears down the test environment.
+	 *
+	 * @since 3.24.2
+	 */
+	public function tear_down(): void {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		$GLOBALS['wp_rest_server'] = null;
+
+		parent::tear_down();
+	}
+
+	/**
 	 * Replaces outbound requests with the error WordPress returns when external
 	 * HTTP is blocked.
 	 *
