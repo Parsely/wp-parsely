@@ -536,6 +536,10 @@ class EndpointRelatedTest extends BaseEndpointTest {
 					'url'   => 'https://example.com/no-images',
 				),
 				array( 'title' => 'No URL' ),
+				array(
+					'title' => 'Empty URL',
+					'url'   => '',
+				),
 				'not an item',
 			),
 			$upstream_urls

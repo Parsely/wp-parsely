@@ -146,7 +146,7 @@ trait Related_Posts_Trait {
 
 		foreach ( $related_posts_request as $item ) {
 			// Partial upstream replies can omit any key.
-			if ( ! is_array( $item ) || ! isset( $item['url'] ) || ! is_string( $item['url'] ) ) {
+			if ( ! is_array( $item ) || ! isset( $item['url'] ) || ! is_string( $item['url'] ) || '' === $item['url'] ) {
 				continue;
 			}
 
