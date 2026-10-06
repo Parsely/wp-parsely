@@ -343,4 +343,329 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	public function test_is_available_to_current_user_returns_error_api_secret_not_set(): void {
 		self::assertTrue( true );
 	}
+
+	/**
+	 * Verifies that the related posts arguments are registered as arguments of
+	 * the route, so that they get validated.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::register_routes
+	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
+	 */
+	public function test_related_posts_arguments_are_registered(): void {
+		$routes = rest_get_server()->get_routes();
+		$args   = $routes[ $this->get_endpoint()->get_full_endpoint( '/' ) ][0]['args'];
+
+		self::assertSame(
+			array( 'url', 'sort', 'limit', 'pub_date_start', 'pub_date_end', 'page', 'section', 'tag', 'author', 'itm_source' ),
+			array_keys( $args )
+		);
+	}
+
+	/**
+	 * Verifies that invalid parameters are rejected before any upstream request.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::register_routes
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::validate_url
+	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
+	 * @dataProvider provide_invalid_parameters
+	 *
+	 * @param array<string, mixed> $params The request parameters.
+	 */
+	public function test_invalid_parameters_are_rejected( array $params ): void {
+		$upstream_urls = array();
+		$this->mock_upstream( $this->get_upstream_items(), $upstream_urls );
+
+		$response = $this->dispatch_logged_out( $params );
+
+		/** @var array<string, mixed> $data */
+		$data = $response->get_data();
+		self::assertSame( 400, $response->get_status() );
+		self::assertSame( 'rest_invalid_param', $data['code'] );
+		self::assertSame( array(), $upstream_urls );
+	}
+
+	/**
+	 * Provides parameters that the endpoint must reject.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return iterable<string, array{0: array<string, mixed>}>
+	 */
+	public static function provide_invalid_parameters(): iterable {
+		$url = 'https://example.com/a-post';
+
+		yield 'URL without a scheme' => array( array( 'url' => 'not a url' ) );
+		yield 'URL without a host' => array( array( 'url' => 'https://?q=1' ) );
+		yield 'URL with an empty host' => array( array( 'url' => 'https:///a-post' ) );
+		yield 'array URL' => array( array( 'url' => array( $url ) ) );
+		yield 'mailto: URL' => array( array( 'url' => 'mailto:someone@example.com' ) );
+		yield 'FTP URL' => array( array( 'url' => 'ftp://example.com/a-post' ) );
+		yield 'array itm_source' => array(
+			array(
+				'url'        => $url,
+				'itm_source' => array( 'a' ),
+			),
+		);
+		yield 'zero limit' => array(
+			array(
+				'url'   => $url,
+				'limit' => 0,
+			),
+		);
+		yield 'limit over the maximum' => array(
+			array(
+				'url'   => $url,
+				'limit' => 101,
+			),
+		);
+		yield 'non-numeric limit' => array(
+			array(
+				'url'   => $url,
+				'limit' => 'abc',
+			),
+		);
+		yield 'zero page' => array(
+			array(
+				'url'  => $url,
+				'page' => 0,
+			),
+		);
+		yield 'unknown sort' => array(
+			array(
+				'url'  => $url,
+				'sort' => 'bogus',
+			),
+		);
+	}
+
+	/**
+	 * Verifies that the requests the Recommendations Block and other clients
+	 * send are accepted.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::get_related_posts
+	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
+	 * @dataProvider provide_valid_sorts
+	 *
+	 * @param string $sort The sort parameter.
+	 */
+	public function test_client_requests_are_accepted( string $sort ): void {
+		$upstream_urls = array();
+		$this->mock_upstream( $this->get_upstream_items(), $upstream_urls );
+
+		$response = $this->dispatch_logged_out(
+			array(
+				'url'        => 'https://example.com/a-post?utm_source=x',
+				'limit'      => 3,
+				'sort'       => $sort,
+				'itm_source' => 'wp-parsely-recommendations-block',
+			)
+		);
+
+		self::assertSame( 200, $response->get_status() );
+		self::assertCount( 1, $upstream_urls );
+		self::assertStringContainsString( 'limit=3', $upstream_urls[0] );
+		self::assertStringContainsString( 'sort=' . $sort, $upstream_urls[0] );
+	}
+
+	/**
+	 * Provides the sort values that clients send.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return iterable<string, array{0: string}>
+	 */
+	public static function provide_valid_sorts(): iterable {
+		yield 'score, sent by the Block and the Widget' => array( 'score' );
+		yield '_score, the previous default' => array( '_score' );
+		yield 'pub_date' => array( 'pub_date' );
+	}
+
+	/**
+	 * Verifies that URLs with a host are accepted.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::validate_url
+	 * @dataProvider provide_urls_with_a_host
+	 *
+	 * @param string $url The URL.
+	 */
+	public function test_urls_with_a_host_are_accepted( string $url ): void {
+		$upstream_urls = array();
+		$this->mock_upstream( $this->get_upstream_items(), $upstream_urls );
+
+		$response = $this->dispatch_logged_out( array( 'url' => $url ) );
+
+		self::assertSame( 200, $response->get_status() );
+		self::assertCount( 1, $upstream_urls );
+	}
+
+	/**
+	 * Provides URLs with a host.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return iterable<string, array{0: string}>
+	 */
+	public static function provide_urls_with_a_host(): iterable {
+		yield 'Port' => array( 'http://localhost:8889/?p=1' );
+		yield 'IPv6 host' => array( 'https://[2001:db8::1]/a-post' );
+		yield 'Non-ASCII host' => array( 'https://bücher.example/a-post' );
+	}
+
+	/**
+	 * Verifies that partial upstream items neither raise warnings nor break
+	 * the response.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_of_url
+	 */
+	public function test_partial_upstream_items_are_handled(): void {
+		$upstream_urls = array();
+		$this->mock_upstream(
+			array(
+				array(
+					'title' => 'No images',
+					'url'   => 'https://example.com/no-images',
+				),
+				array( 'title' => 'No URL' ),
+				array(
+					'title' => 'Empty URL',
+					'url'   => '',
+				),
+				'not an item',
+			),
+			$upstream_urls
+		);
+
+		$response = $this->dispatch_logged_out( array( 'url' => 'https://example.com/a-post' ) );
+
+		/** @var array<string, mixed> $data */
+		$data = $response->get_data();
+		self::assertSame( 200, $response->get_status() );
+		self::assertSame(
+			array(
+				array(
+					'image_url'        => '',
+					'thumb_url_medium' => '',
+					'title'            => 'No images',
+					'url'              => 'https://example.com/no-images',
+				),
+			),
+			$data['data']
+		);
+	}
+
+	/**
+	 * Verifies that non-string upstream fields are returned as empty strings.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_of_url
+	 */
+	public function test_non_string_upstream_fields_are_returned_as_empty_strings(): void {
+		$upstream_urls = array();
+		$this->mock_upstream(
+			array(
+				array(
+					'image_url'        => 123,
+					'thumb_url_medium' => false,
+					'title'            => array( 'text' => 'Nested title' ),
+					'url'              => 'https://example.com/other-fields',
+				),
+			),
+			$upstream_urls
+		);
+
+		$response = $this->dispatch_logged_out( array( 'url' => 'https://example.com/a-post' ) );
+
+		/** @var array<string, mixed> $data */
+		$data = $response->get_data();
+		self::assertSame( 200, $response->get_status() );
+		self::assertSame(
+			array(
+				array(
+					'image_url'        => '',
+					'thumb_url_medium' => '',
+					'title'            => '',
+					'url'              => 'https://example.com/other-fields',
+				),
+			),
+			$data['data']
+		);
+	}
+
+	/**
+	 * Dispatches a request to the endpoint while logged out.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param array<string, mixed> $params The request parameters.
+	 * @return \WP_REST_Response The response.
+	 */
+	private function dispatch_logged_out( array $params ): \WP_REST_Response {
+		TestCase::set_options(
+			array(
+				'apikey'     => 'example.com',
+				'api_secret' => 'test-secret',
+			)
+		);
+		wp_set_current_user( 0 );
+
+		$request = new WP_REST_Request( 'GET', $this->get_endpoint()->get_full_endpoint( '/' ) );
+		foreach ( $params as $key => $value ) {
+			$request->set_param( $key, $value );
+		}
+
+		return rest_get_server()->dispatch( $request );
+	}
+
+	/**
+	 * Mocks the upstream API, returning the passed items.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param array<mixed>      $items The items to return.
+	 * @param array<int,string> $urls  Receives the URLs of the upstream requests.
+	 */
+	private function mock_upstream( array $items, array &$urls ): void {
+		add_filter(
+			'pre_http_request',
+			static function ( $preempt, array $args, string $url ) use ( &$urls, $items ): array {
+				$urls[] = $url;
+
+				return array(
+					'body'     => (string) wp_json_encode( array( 'data' => $items ) ),
+					'response' => array( 'code' => 200 ),
+				);
+			},
+			10,
+			3
+		);
+	}
+
+	/**
+	 * Returns a complete upstream item.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return array<int, array<string, string>> The items.
+	 */
+	private function get_upstream_items(): array {
+		return array(
+			array(
+				'image_url'        => 'https://example.com/img.png',
+				'thumb_url_medium' => 'https://example.com/thumb.png',
+				'title'            => 'something',
+				'url'              => 'https://example.com',
+			),
+		);
+	}
 }
