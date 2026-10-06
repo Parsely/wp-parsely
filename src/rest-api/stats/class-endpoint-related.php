@@ -63,6 +63,7 @@ class Endpoint_Related extends Base_Endpoint {
 	 * Registers the routes for the endpoint.
 	 *
 	 * @since 3.17.0
+	 * @since 3.24.2 Registered the related posts arguments, and required an HTTP(S) URL.
 	 */
 	public function register_routes(): void {
 		/**
@@ -73,13 +74,16 @@ class Endpoint_Related extends Base_Endpoint {
 			'/',
 			array( 'GET' ),
 			array( $this, 'get_related_posts' ),
-			array(
-				'url' => array(
-					'description' => __( 'The URL of the post.', 'wp-parsely' ),
-					'type'        => 'string',
-					'required'    => true,
+			array_merge(
+				array(
+					'url' => array(
+						'description' => __( 'The URL of the post.', 'wp-parsely' ),
+						'type'        => 'string',
+						'pattern'     => '^https?://\S+$',
+						'required'    => true,
+					),
 				),
-				$this->get_related_posts_param_args(),
+				$this->get_related_posts_param_args()
 			)
 		);
 	}
