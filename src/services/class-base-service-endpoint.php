@@ -157,6 +157,7 @@ abstract class Base_Service_Endpoint {
 	 * Returns the full URL for the API request, including the endpoint and query arguments.
 	 *
 	 * @since 3.17.0
+	 * @since 3.24.2 Encodes the query argument values.
 	 *
 	 * @param array<mixed> $query_args The query arguments to send to the remote API.
 	 * @return string The full URL for the API request.
@@ -168,8 +169,18 @@ abstract class Base_Service_Endpoint {
 		// Append the endpoint to the base URL.
 		$base_url .= $this->get_endpoint();
 
+		$query_args = $this->get_query_args( $query_args );
+
+		// add_query_arg() doesn't encode values, so `&` or `#` in one would alter the query.
+		// Decoding first keeps already-encoded values, like non-Latin permalinks, from being encoded twice.
+		foreach ( $query_args as $key => $value ) {
+			if ( is_string( $value ) ) {
+				$query_args[ $key ] = rawurlencode( rawurldecode( $value ) );
+			}
+		}
+
 		// Append any necessary query arguments.
-		$endpoint = add_query_arg( $this->get_query_args( $query_args ), $base_url );
+		$endpoint = add_query_arg( $query_args, $base_url );
 
 		return $endpoint;
 	}
