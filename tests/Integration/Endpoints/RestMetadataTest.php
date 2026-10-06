@@ -16,6 +16,8 @@ use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for the REST API Metadata Endpoint.
+ *
+ * @covers \Parsely\Endpoints\Rest_Metadata
  */
 final class RestMetadataTest extends TestCase {
 	/**
@@ -203,16 +205,11 @@ final class RestMetadataTest extends TestCase {
 		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
 
 		$expected = array(
-			'version'                         => '1.1.0',
-			'canonical_url'                   => $canonical_url,
-			'smart_links'                     => array(
-				'inbound'  => 0,
-				'outbound' => 0,
-			),
-			'traffic_boost_suggestions_count' => 0,
-			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
-			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'version'       => '1.1.0',
+			'canonical_url' => $canonical_url,
+			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
+			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -266,15 +263,10 @@ final class RestMetadataTest extends TestCase {
 		$canonical_url = \Parsely\Parsely::get_canonical_url( (string) $this->get_permalink( $post_id ) );
 
 		$expected = array(
-			'version'                         => '1.1.0',
-			'canonical_url'                   => $canonical_url,
-			'smart_links'                     => array(
-				'inbound'  => 0,
-				'outbound' => 0,
-			),
-			'traffic_boost_suggestions_count' => 0,
-			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'tracker_url'                     => 'https://cdn.parsely.com/keys/testkey/p.js',
+			'version'       => '1.1.0',
+			'canonical_url' => $canonical_url,
+			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -332,15 +324,10 @@ final class RestMetadataTest extends TestCase {
 		$canonical_url = \Parsely\Parsely::get_canonical_url( $permalink );
 
 		$expected = array(
-			'version'                         => '1.1.0',
-			'canonical_url'                   => $canonical_url,
-			'smart_links'                     => array(
-				'inbound'  => 0,
-				'outbound' => 0,
-			),
-			'traffic_boost_suggestions_count' => 0,
-			'meta'                            => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'                        => self::$rest->get_rendered_meta( 'json_ld' ),
+			'version'       => '1.1.0',
+			'canonical_url' => $canonical_url,
+			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
+			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -363,16 +350,30 @@ final class RestMetadataTest extends TestCase {
 	public function test_get_callback_with_non_existent_post(): void {
 		$meta_object = self::$rest->get_callback( array() );
 		$expected    = array(
-			'version'                         => '1.1.0',
-			'canonical_url'                   => 'no permalink',
-			'smart_links'                     => array(
-				'inbound'  => 0,
-				'outbound' => 0,
-			),
-			'traffic_boost_suggestions_count' => 0,
+			'version'       => '1.1.0',
+			'canonical_url' => 'no permalink',
 		);
 
 		self::assertSame( $expected, $meta_object );
+	}
+
+	/**
+	 * Verifies that the `parsely` object doesn't include the Smart Link and
+	 * Traffic Boost suggestion counts, for existing and non-existent posts.
+	 *
+	 * @since 3.24.2
+	 */
+	public function test_get_callback_omits_smart_link_counts(): void {
+		self::set_options( array( 'apikey' => 'testkey' ) );
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create();
+
+		foreach ( array( $this->get_post_in_array( $post_id ), array() ) as $object_data ) {
+			$meta_object = self::$rest->get_callback( $object_data );
+
+			self::assertArrayNotHasKey( 'smart_links', $meta_object );
+			self::assertArrayNotHasKey( 'traffic_boost_suggestions_count', $meta_object );
+		}
 	}
 
 	/**
