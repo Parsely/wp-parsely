@@ -39,7 +39,7 @@ final class RemoteRequestHostsTest extends TestCase {
 		yield 'Uppercase host' => array( 'https://API.PARSELY.COM/v2/related', true );
 		yield 'Longer host' => array( 'https://dash.parsely.com.example.org/', false );
 		yield 'HTTP' => array( 'http://api.parsely.com/v2/related', false );
-		yield 'Other host' => array( 'https://example.org/', false );
+		yield 'Other host' => array( 'https://other.example/', false );
 	}
 
 	/**
