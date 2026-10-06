@@ -752,8 +752,11 @@ class Smart_Link extends Base_Model {
 	 * Invalid hrefs are ignored. Callers accepting user input should validate
 	 * with `is_valid_href()` first, to report the rejection.
 	 *
+	 * No canonical URL is stored, as this runs during REST argument
+	 * validation, which must not have side effects.
+	 *
 	 * @since 3.16.0
-	 * @since 3.24.2 Invalid hrefs are ignored.
+	 * @since 3.24.2 Invalid hrefs are ignored, and no canonical URL is stored.
 	 *
 	 * @param string $href The href of the smart link.
 	 */
@@ -766,8 +769,7 @@ class Smart_Link extends Base_Model {
 		$destination_post_id = Utils::get_post_id_by_url( $href );
 
 		if ( 0 !== $destination_post_id ) {
-			// Set the destination post ID, and update the canonical URL.
-			$this->set_destination_post_id( $destination_post_id, $href );
+			$this->set_destination_post_id( $destination_post_id );
 		}
 	}
 
