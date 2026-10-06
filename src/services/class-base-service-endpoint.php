@@ -64,6 +64,17 @@ abstract class Base_Service_Endpoint {
 	protected const TRUNCATE_CONTENT_LENGTH = 25000;
 
 	/**
+	 * The query arguments removed from relayed messages.
+	 *
+	 * The Site ID isn't listed, as it's public and aids diagnosis.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @var array<string>
+	 */
+	private const CREDENTIAL_QUERY_ARGS = array( 'secret' );
+
+	/**
 	 * Initializes the class.
 	 *
 	 * @since 3.17.0
@@ -166,6 +177,8 @@ abstract class Base_Service_Endpoint {
 	/**
 	 * Sends a request to the remote API.
 	 *
+	 * Any error returned has its credentials stripped.
+	 *
 	 * @since 3.17.0
 	 *
 	 * @param string       $method The HTTP method to use for the request.
@@ -194,13 +207,24 @@ abstract class Base_Service_Endpoint {
 		/** @var WP_HTTP_Response|WP_Error $response */
 		$response = wp_safe_remote_request( $request_url, $request_options );
 
-		return $this->process_response( $response );
+		if ( is_wp_error( $response ) ) {
+			$result = new WP_Error(
+				$response->get_error_code(),
+				$response->get_error_message(),
+				array( 'status' => 500 )
+			);
+		} else {
+			$result = $this->process_response( $response );
+		}
+
+		return is_wp_error( $result ) ? $this->strip_credentials_from_error( $result ) : $result;
 	}
 
 	/**
 	 * Processes the response from the remote API.
 	 *
 	 * @since 3.17.0
+	 * @since 3.24.2 Added the upstream status code check.
 	 *
 	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 * @return array<mixed>|WP_Error The processed response.
@@ -211,6 +235,16 @@ abstract class Base_Service_Endpoint {
 			return $response;
 		}
 
+		// A parseable body does not mean the request succeeded.
+		$status_code = (int) wp_remote_retrieve_response_code( $response );
+		if ( 0 !== $status_code && ( $status_code < 200 || $status_code >= 300 ) ) {
+			return new WP_Error(
+				$status_code,
+				__( 'The upstream API returned an unsuccessful response', 'wp-parsely' ),
+				array( 'status' => $status_code )
+			);
+		}
+
 		$body    = wp_remote_retrieve_body( $response );
 		$decoded = json_decode( $body, true );
 
@@ -219,6 +253,72 @@ abstract class Base_Service_Endpoint {
 		}
 
 		return $decoded;
+	}
+
+	/**
+	 * Removes the credentials from a message relayed to the caller.
+	 *
+	 * Arguments are dropped by name rather than by value, so values altered by
+	 * the URL builder are covered too.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param string $message The message to strip.
+	 * @return string The message, without the credentials.
+	 */
+	protected function strip_credentials( string $message ): string {
+		if ( '' === $message ) {
+			return $message;
+		}
+
+		foreach ( self::CREDENTIAL_QUERY_ARGS as $arg ) {
+			$arg = preg_quote( $arg, '/' );
+
+			// Keeps the separator when arguments follow, drops it when trailing.
+			$message = (string) preg_replace(
+				array( '/([?&])' . $arg . '=[^&\s]*&/i', '/[?&]' . $arg . '=[^&\s]*/i' ),
+				array( '$1', '' ),
+				$message
+			);
+		}
+
+		// Also catches the secret outside a query string.
+		$secret = $this->get_parsely()->get_api_secret();
+		if ( '' !== $secret ) {
+			$message = str_replace( $secret, '', $message );
+		}
+
+		return $message;
+	}
+
+	/**
+	 * Removes the credentials from every message held by an error.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param WP_Error $error The error to strip.
+	 * @return WP_Error The error, without the credentials.
+	 */
+	protected function strip_credentials_from_error( WP_Error $error ): WP_Error {
+		$codes = $error->get_error_codes();
+
+		if ( 0 === count( $codes ) ) {
+			return $error;
+		}
+
+		$stripped = new WP_Error();
+
+		foreach ( $codes as $code ) {
+			foreach ( $error->get_error_messages( $code ) as $message ) {
+				$stripped->add(
+					$code,
+					$this->strip_credentials( $message ),
+					$error->get_error_data( $code )
+				);
+			}
+		}
+
+		return $stripped;
 	}
 
 	/**
