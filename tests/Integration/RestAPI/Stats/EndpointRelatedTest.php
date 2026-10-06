@@ -20,6 +20,8 @@ use WP_REST_Request;
  * Integration test for the related endpoint, Endpoint_Related class.
  *
  * @since 3.17.0
+ *
+ * @covers \Parsely\REST_API\Stats\Endpoint_Related
  */
 class EndpointRelatedTest extends BaseEndpointTest {
 	/**
@@ -287,6 +289,46 @@ class EndpointRelatedTest extends BaseEndpointTest {
 			),
 			$response_data['data']
 		);
+	}
+
+	/**
+	 * Verifies that the upstream request omits the API Secret and uses a
+	 * 5-second timeout.
+	 *
+	 * @since 3.24.2
+	 */
+	public function test_upstream_request_omits_api_secret_and_uses_short_timeout(): void {
+		TestCase::set_options(
+			array(
+				'apikey'     => 'test-api-key',
+				'api_secret' => 'test-secret',
+			)
+		);
+		wp_set_current_user( 0 );
+
+		$upstream_url  = '';
+		$upstream_args = array();
+
+		add_filter(
+			'pre_http_request',
+			function ( bool $preempt, array $args, string $url ) use ( &$upstream_url, &$upstream_args ): array {
+				$upstream_url  = $url;
+				$upstream_args = $args;
+
+				return array( 'body' => '{"data":[]}' );
+			},
+			10,
+			3
+		);
+
+		$request = new WP_REST_Request( 'GET', $this->get_endpoint()->get_full_endpoint( '/' ) );
+		$request->set_param( 'url', 'https://example.com/a-post' );
+		$response = rest_get_server()->dispatch( $request );
+
+		self::assertSame( 200, $response->get_status() );
+		self::assertStringContainsString( 'apikey=test-api-key', $upstream_url );
+		self::assertStringNotContainsString( 'secret', $upstream_url );
+		self::assertSame( 5, $upstream_args['timeout'] ?? null );
 	}
 
 	/**

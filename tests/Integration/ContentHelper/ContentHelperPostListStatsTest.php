@@ -1010,6 +1010,54 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	}
 
 	/**
+	 * Verifies that the response for a blocked API request omits the API
+	 * Secret.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::run
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @uses \Parsely\Services\Base_Service_Endpoint::request
+	 * @uses \Parsely\Services\Base_Service_Endpoint::strip_credentials
+	 */
+	public function test_parsely_stats_response_omits_api_secret(): void {
+		$api_secret = 'TEST-APISECRET-fixture';
+		TestCase::set_options(
+			array(
+				'apikey'           => 'test',
+				'api_secret'       => $api_secret,
+				'track_post_types' => array( 'post' ),
+			)
+		);
+		set_current_screen( 'edit-post' );
+
+		// WordPress embeds the full request URL when external requests are blocked.
+		add_filter(
+			'pre_http_request',
+			static function ( $preempt, array $args, string $url ) {
+				return new WP_Error( 'http_request_not_executed', "User has blocked requests through HTTP to the URL: $url." );
+			},
+			10,
+			3
+		);
+
+		$obj = $this->init_post_list_stats();
+
+		ob_start();
+		$this->show_content_on_parsely_stats_column( $this->set_and_get_posts_data( 1 ), 'post' );
+		ob_get_clean();
+
+		$res = $obj->get_parsely_stats_response();
+
+		self::assertStringContainsString( 'User has blocked requests through HTTP', $res['error']['message'] ?? '' );
+		self::assertStringNotContainsString( $api_secret, (string) wp_json_encode( $res ) );
+	}
+
+	/**
 	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
