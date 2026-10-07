@@ -10,14 +10,42 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Parsely;
+
 /**
  * Integration tests for the Parse.ly hosts that remote requests can reach.
  *
  * @since 3.24.2
  *
  * @covers \Parsely\Parsely::allow_parsely_remote_requests
+ * @uses \Parsely\Parsely::__construct
+ * @uses \Parsely\Parsely::are_credentials_managed
+ * @uses \Parsely\Parsely::set_managed_options
+ * @uses \Parsely\Services\Content_API\Content_API_Service::get_base_url
+ * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_base_url
  */
 final class RemoteRequestHostsTest extends TestCase {
+	/**
+	 * Internal variable.
+	 *
+	 * @since 3.24.3
+	 *
+	 * @var Parsely $parsely Holds the Parsely object.
+	 */
+	private static $parsely; // @phpstan-ignore property.onlyWritten
+
+	/**
+	 * Setup method called before each test.
+	 *
+	 * @since 3.24.3
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		// The constructor registers the filter under test.
+		self::$parsely = new Parsely();
+	}
+
 	/**
 	 * Provides request URLs, and whether their host should be allowed.
 	 *
