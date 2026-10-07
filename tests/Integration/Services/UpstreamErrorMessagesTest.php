@@ -289,12 +289,11 @@ class UpstreamErrorMessagesTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the credentials check, which overrides request(), strips
-	 * its errors too.
+	 * Verifies that the credentials check strips its errors too.
 	 *
 	 * @since 3.24.2
 	 *
-	 * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Check_Auth::request
+	 * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Check_Auth::get_request_options
 	 * @uses \Parsely\Services\Base_API_Service::get_endpoint
 	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_check_auth
 	 */
