@@ -194,6 +194,48 @@ abstract class BaseSettingsEndpointTest extends BaseEndpointTest {
 	}
 
 	/**
+	 * Verifies that the settings are those of the user making the request,
+	 * rather than of the user logged in when the endpoint was initialized.
+	 *
+	 * Authentication methods like Application Passwords only set the current
+	 * user after the plugin has initialized.
+	 *
+	 * @since 3.24.3
+	 *
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::is_available_to_current_user
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::get_settings
+	 * @covers \Parsely\REST_API\Settings\Base_Settings_Endpoint::set_settings
+	 */
+	public function test_settings_belong_to_the_requesting_user(): void {
+		// The endpoint was initialized while the administrator was logged in.
+		$admin_id = get_current_user_id();
+		/** @var int $author_id */
+		$author_id = self::factory()->user->create( array( 'role' => 'author' ) );
+		$settings  = $this->generate_json( 'avg_engaged', '1h' );
+
+		wp_set_current_user( $author_id );
+
+		$request = new WP_REST_Request( 'PUT', $this->get_endpoint()->get_full_endpoint( '/set' ) );
+		$request->set_header( 'Content-Type', 'application/json' );
+		$request->set_body( $this->wp_json_encode( $settings ) );
+		$set = rest_do_request( $request );
+		$get = rest_do_request( new WP_REST_Request( 'GET', $this->get_endpoint()->get_full_endpoint( '/get' ) ) );
+
+		self::assertSame( 200, $set->get_status() );
+		self::assertSame( 200, $get->get_status() );
+		self::assertSame( $this->wp_json_encode( $settings ), $this->wp_json_encode( $get->get_data() ) );
+
+		wp_set_current_user( $admin_id );
+		$admin_get = rest_do_request( new WP_REST_Request( 'GET', $this->get_endpoint()->get_full_endpoint( '/get' ) ) );
+
+		self::assertSame(
+			$this->wp_json_encode( $this->get_default_value() ),
+			$this->wp_json_encode( $admin_get->get_data() ),
+			'The administrator\'s settings were changed.'
+		);
+	}
+
+	/**
 	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
 	 * This test is disabled since the endpoint does not require an API Secret.
