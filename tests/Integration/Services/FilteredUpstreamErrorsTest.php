@@ -31,7 +31,7 @@ use WP_REST_Request;
  * @covers \Parsely\Services\Base_Service_Endpoint::strip_credentials
  * @covers \Parsely\Services\Base_Service_Endpoint::has_encoded_credentials
  * @covers \Parsely\Services\Base_Service_Endpoint::process_response
- * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Check_Auth::request
+ * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Check_Auth::get_request_options
  */
 class FilteredUpstreamErrorsTest extends TestCase {
 	/**

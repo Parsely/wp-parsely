@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.24.3](https://github.com/Parsely/wp-parsely/compare/3.24.2...3.24.3) - 2026-10-12
+
+### Changed
+
+- Make the shared Parse.ly API request method final ([#4676](https://github.com/Parsely/wp-parsely/pull/4676))
+- Create the Engagement Boost preview changeset only on its page ([#4674](https://github.com/Parsely/wp-parsely/pull/4674))
+
+### Fixed
+
+- Fix inbound link details and settings with Application Passwords ([#4673](https://github.com/Parsely/wp-parsely/pull/4673))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.24.3+label%3ADeps).
+
 ## [3.24.2](https://github.com/Parsely/wp-parsely/compare/3.24.1...3.24.2) - 2026-10-06
 
 ### Fixed
