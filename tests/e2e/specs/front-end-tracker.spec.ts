@@ -33,7 +33,7 @@ test.describe( 'Front-end tracking code injection', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should work as expected when only Site ID is provided', async ( { page } ) => {
+	test( 'Should work as expected when only Site ID is provided', async ( { baseURL, page } ) => {
 		const utils = new Utils();
 		await setSiteKeys( page, VALID_SITE_ID, '' );
 
@@ -55,7 +55,7 @@ test.describe( 'Front-end tracking code injection', () => {
 		await expect( loaderScript ).toHaveCount( 1 );
 		await expect( loaderScript ).toHaveAttribute(
 			'src',
-			`http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }`
+			`${ baseURL }/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }`
 		);
 
 		await expect( page.locator( 'script#wp-parsely-loader-js-before' ) ).toHaveCount( 0 );
@@ -68,7 +68,7 @@ test.describe( 'Front-end tracking code injection', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should work as expected when a Site ID and API Secret are provided', async ( { page } ) => {
+	test( 'Should work as expected when a Site ID and API Secret are provided', async ( { baseURL, page } ) => {
 		const utils = new Utils();
 		await setSiteKeys( page, VALID_SITE_ID, VALID_API_SECRET );
 
@@ -90,7 +90,7 @@ test.describe( 'Front-end tracking code injection', () => {
 		await expect( loaderScript ).toHaveCount( 1 );
 		await expect( loaderScript ).toHaveAttribute(
 			'src',
-			`http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }`
+			`${ baseURL }/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }`
 		);
 
 		const loaderInlineScript = page.locator( 'script#wp-parsely-loader-js-before' );

@@ -307,6 +307,7 @@ final class ScriptsTest extends TestCase {
 	 */
 	public function test_enqueue_js_api_with_secret(): void {
 		global $wp_scripts;
+		$expected_inline_script = "window.wpParselySiteId = '" . self::VALID_SITE_ID . "';";
 
 		$this->go_to_new_post();
 		self::$scripts->register_scripts();
@@ -315,12 +316,12 @@ final class ScriptsTest extends TestCase {
 
 		$this->assert_is_script_registered( 'wp-parsely-tracker' );
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
 		// The variable should be inlined before the script.
-		self::assertSame(
-			"window.wpParselySiteId = '" . self::VALID_SITE_ID . "';",
-			$wp_scripts->registered['wp-parsely-loader']->extra['before'][1]
-		);
+		self::assertIsArray( $wp_scripts->registered['wp-parsely-loader']->extra['before'] );
+		self::assertContains( $expected_inline_script, $wp_scripts->registered['wp-parsely-loader']->extra['before'] );
 	}
 
 	/**
