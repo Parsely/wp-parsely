@@ -1,19 +1,24 @@
 name: End-to-end Tests
 
 on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Exact source commit to check
+        type: string
+        required: false
+        default: ''
   # Run on all pull requests.
   pull_request:
   push:
     branches:
       - trunk
-  workflow_call:
 
 # Cancels all previous workflow runs for pull requests that have not completed.
 concurrency:
-  # The concurrency group contains the workflow name and the branch name for pull requests
-  # or the commit hash for any other events.
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
-  cancel-in-progress: true
+  group: e2e-tests-${{ inputs.ref || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ inputs.ref == '' }}
 
 jobs:
   test:
@@ -23,12 +28,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
-      - name: Refresh Composer autoload files
-        run: composer dump-autoload --classmap-authoritative
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v4
 
       - name: Read .nvmrc
-        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v6
