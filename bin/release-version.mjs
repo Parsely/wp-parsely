@@ -8,7 +8,7 @@ export function parseVersion(version) {
 	if (!semver.test(version)) {
 		throw new Error(`Invalid release version: ${version}`);
 	}
-	return version.split('.').map((part) => BigInt(part));
+	return version.split('.').map(BigInt);
 }
 
 export function nextVersion(version, type) {
@@ -58,7 +58,7 @@ export function releaseMetadata(previousVersion = '', directory = '.') {
 	}
 	const sections = read('CHANGELOG.md').split(/(?=^## \[)/m);
 	const notes = sections.find((section) => section.startsWith(`## [${version}]`));
-	if (!notes || !notes.split('\n').slice(1).join('\n').trim()) {
+	if (!notes?.split('\n').slice(1).join('\n').trim()) {
 		throw new Error(`Missing changelog for ${version}.`);
 	}
 	return { version, release: true, notes: notes.trim() };

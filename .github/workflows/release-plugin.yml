@@ -119,7 +119,7 @@ jobs:
         with:
           ref: ${{ needs.resolve.outputs.sha }}
           fetch-depth: 0
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: '7.4'
       - uses: actions/setup-node@v6
@@ -146,7 +146,7 @@ jobs:
             git checkout --detach "$VERSION"
             echo 'existing=true' >> "$GITHUB_OUTPUT"
           else
-            npm ci
+            npm ci --ignore-scripts
             npm run build
             composer install --no-dev --prefer-dist --optimize-autoloader --classmap-authoritative --no-interaction
             # Preserve built release tags for existing consumers without using

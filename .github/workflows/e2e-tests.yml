@@ -32,7 +32,7 @@ jobs:
           ref: ${{ inputs.ref || github.sha }}
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v4
+        uses: ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6 # v4
 
       - name: Read .nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
