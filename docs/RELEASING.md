@@ -47,8 +47,9 @@ bumping the plugin version.
 Rerun a failed release's jobs, or dispatch **Release wp-parsely** with the
 original source SHA and `dry_run` disabled. Real releases require a commit
 reachable from `trunk` with the current trunk version, preventing branch
-releases and stale-version rollbacks. Releases are serialized and never
-automatically cancelled in progress. There is no skip-tests option.
+releases and stale-version rollbacks. Publications are serialized and never
+automatically cancelled in progress. Dry runs and ordinary no-release pushes
+cannot displace a pending publication. There is no skip-tests option.
 
 An existing tag is reused only when its built snapshot has that exact source
 SHA as its parent and `Release-Source:` trailer. Tags are never replaced. If

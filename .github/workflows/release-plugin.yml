@@ -21,11 +21,6 @@ on:
 permissions:
   contents: read
 
-# Never interrupt an in-flight SVN commit or GitHub publication.
-concurrency:
-  group: release-wp-parsely
-  cancel-in-progress: false
-
 jobs:
   resolve:
     runs-on: ubuntu-24.04
@@ -107,6 +102,11 @@ jobs:
   publish:
     needs: [resolve, lint, unit, javascript, integration, e2e]
     runs-on: ubuntu-24.04
+    # Only real publications share the queue. Dry runs and ordinary trunk
+    # changes must not displace a release waiting for publication.
+    concurrency:
+      group: release-wp-parsely-${{ inputs.dry_run && github.run_id || 'publish' }}
+      cancel-in-progress: false
     permissions:
       contents: write
     env:

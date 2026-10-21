@@ -54,8 +54,15 @@ jobs:
           CURRENT_VERSION=$(node --input-type=module -e \
             "import { pluginVersion } from './bin/release-version.mjs'; console.log(pluginVersion());")
           NEW_VERSION=$(node bin/release-version.mjs next "$RELEASE_TYPE")
+          gh api --paginate "repos/$GITHUB_REPOSITORY/milestones?state=open" \
+            --jq '.[].title' > "$RUNNER_TEMP/milestones.txt"
+          if ! grep -Fxq "$NEW_VERSION" "$RUNNER_TEMP/milestones.txt"; then
+            echo "Create an open milestone named $NEW_VERSION before preparing this release." >&2
+            exit 1
+          fi
           # Keep the existing milestone/label-based changelog generator.
-          printf 'n\n' | php bin/release.php "$CURRENT_VERSION" "$NEW_VERSION"
+          # Notes are read from the committed changelog, not exported as env.
+          printf 'n\n' | env -u GITHUB_ENV php bin/release.php "$CURRENT_VERSION" "$NEW_VERSION"
           node bin/release-version.mjs metadata "$CURRENT_VERSION" > "$RUNNER_TEMP/release.json"
           test "$(git branch --show-current)" = "update/wp-parsely-version-to-$NEW_VERSION"
           test "$(node -p "require(process.env.RUNNER_TEMP + '/release.json').version")" = "$NEW_VERSION"
