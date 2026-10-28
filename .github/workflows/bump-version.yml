@@ -1,124 +1,98 @@
-name: Bump wp-parsely version
-run-name: Bump wp-parsely version to ${{ github.event.inputs.new_version }}
+name: Create wp-parsely release PR
+run-name: Prepare wp-parsely ${{ inputs.release_type }} release
 
 on:
   workflow_dispatch:
     inputs:
-      new_version:
-        description: 'The new plugin version'
+      release_type:
+        description: Version bump to release
         required: true
-        type: string
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
-env:
-  NEW_VERSION: ${{ github.event.inputs.new_version }}
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: prepare-wp-parsely-release
+  cancel-in-progress: false
 
 jobs:
-  validate_version:
-    name: Validate the new version
-    runs-on: ubuntu-24.04
-    outputs:
-      current_version: ${{ steps.get_current_version.outputs.current_version }}
-
-    steps:
-      - name: Checks if the new version is valid
-        run: |
-          if [[ ! ${{ env.NEW_VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Invalid version format. Please use the format x.y.z"
-            exit 1
-          fi
-
-      - name: Setup PHP 8.4
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, json
-
-      - name: Checkout ${{ github.ref_name }} branch
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 0
-
-      - name: Get the current version
-        id: get_current_version
-        run: |
-          CURRENT_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
-          echo "Current version is $CURRENT_VERSION"
-          echo "New version is ${{ env.NEW_VERSION }}"
-
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
-
-      - name: Check if the new version is greater than the current version
-        run: |
-          php -r '
-          $current = "${{ env.CURRENT_VERSION }}";
-          $new = "${{ env.NEW_VERSION }}";
-          if ( version_compare( $new, $current, "==" ) ) {
-                echo "The new version (${new}) is the same as the current version (${current}).\n";
-              exit( 1 );
-          }
-          if ( ! version_compare( $new, $current, ">" ) ) {
-              echo "The new version (${new}) must be greater than the current version (${current}).\n";
-              exit( 1 );
-          }
-          echo "The new version is greater.\n";
-          '
-
-  run_release_php_script:
-    name: Bump the version and create the PR
-    needs: validate_version
+  prepare:
     runs-on: ubuntu-24.04
     env:
-      CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
       GH_TOKEN: ${{ github.token }}
+      RELEASE_TYPE: ${{ inputs.release_type }}
     steps:
-      - name: Setup PHP 8.4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, json
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
 
       - name: Configure Git
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Checkout ${{ github.ref_name }} branch
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 0
-
-      - name: Install Composer dependencies
-        run: composer install --optimize-autoloader --classmap-authoritative
-
-      - name: Run bin/release.php script
+      - name: Prepare version and changelog
+        id: release
         run: |
-         echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
-         echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
-         if [ $? -ne 0 ]; then
-           echo "Failed to run the release script"
-           exit 1
-         fi
-         git push --set-upstream origin update/wp-parsely-version-to-${{ env.NEW_VERSION }}
+          CURRENT_VERSION=$(node --input-type=module -e \
+            "import { pluginVersion } from './bin/release-version.mjs'; console.log(pluginVersion());")
+          NEW_VERSION=$(node bin/release-version.mjs next "$RELEASE_TYPE")
+          gh api --paginate "repos/$GITHUB_REPOSITORY/milestones?state=open" \
+            --jq '.[].title' > "$RUNNER_TEMP/milestones.txt"
+          if ! grep -Fxq "$NEW_VERSION" "$RUNNER_TEMP/milestones.txt"; then
+            echo "Create an open milestone named $NEW_VERSION before preparing this release." >&2
+            exit 1
+          fi
+          # Keep the existing milestone/label-based changelog generator.
+          # Notes are read from the committed changelog, not exported as env.
+          printf 'n\n' | env -u GITHUB_ENV php bin/release.php "$CURRENT_VERSION" "$NEW_VERSION"
+          node bin/release-version.mjs metadata "$CURRENT_VERSION" > "$RUNNER_TEMP/release.json"
+          test "$(git branch --show-current)" = "update/wp-parsely-version-to-$NEW_VERSION"
+          test "$(node -p "require(process.env.RUNNER_TEMP + '/release.json').version")" = "$NEW_VERSION"
+          test "$(node -p "require(process.env.RUNNER_TEMP + '/release.json').release")" = true
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "branch=update/wp-parsely-version-to-$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Format the version changelog
+      - name: Push release branch and open PR
+        env:
+          NEW_VERSION: ${{ steps.release.outputs.version }}
+          RELEASE_BRANCH: ${{ steps.release.outputs.branch }}
+          BASE_BRANCH: ${{ github.ref_name }}
         run: |
-          PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g' | sed 's/^[[:space:]]*//')
-          echo $PARSELY_RELEASE_LOG
-          # Write the multiline variable to $GITHUB_ENV using the correct syntax
-          echo "PARSELY_RELEASE_LOG<<EOF" >> $GITHUB_ENV
-          echo "$PARSELY_RELEASE_LOG" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-      - name: Create PR
-        run: |
-          gh pr create \
-            --title "Update version number and changelog for ${{ env.NEW_VERSION }} release" \
-            --body "This PR updates the plugin's version number and changelog in preparation for the ${{ env.NEW_VERSION }} release.
+          git push --set-upstream origin "$RELEASE_BRANCH"
+          node --input-type=module <<'JS' > "$RUNNER_TEMP/release-pr.md"
+          import { readFileSync } from 'node:fs';
+          const release = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/release.json`));
+          console.log(`Prepares wp-parsely ${release.version}.\n\n${release.notes}\n\nMerging the version change into trunk automatically tests, builds, and publishes to GitHub and WordPress.org.`);
+          JS
+          gh pr create --base "$BASE_BRANCH" --head "$RELEASE_BRANCH" \
+            --title "Release wp-parsely $NEW_VERSION" \
+            --body-file "$RUNNER_TEMP/release-pr.md" \
+            --assignee "$GITHUB_ACTOR" --milestone "$NEW_VERSION"
 
-            $PARSELY_RELEASE_LOG" \
-            --base ${{ github.ref_name }} \
-            --head update/wp-parsely-version-to-${{ env.NEW_VERSION }} \
-            --assignee ${{ github.actor }} \
-            --milestone ${{ env.NEW_VERSION }}
+      # PRs created with GITHUB_TOKEN do not trigger pull_request workflows.
+      # Explicit workflow_dispatch events do, and retain the existing check names.
+      - name: Run checks on the generated PR
+        env:
+          RELEASE_BRANCH: ${{ steps.release.outputs.branch }}
+        run: |
+          for workflow in cs-lint.yml unit-tests.yml node.js.yml integration-tests.yml e2e-tests.yml; do
+            gh workflow run "$workflow" --ref "$RELEASE_BRANCH"
+          done
