@@ -430,7 +430,7 @@ final class OptionsTest extends TestCase {
 	 */
 	public function test_set_managed_options_override_all_other_option_types(): void {
 		$default_options = self::$parsely->get_default_options();
-		self::assertSame( 'json_ld', $default_options['meta_type'] );
+		self::assertSame( 'repeated_metas', $default_options['meta_type'] );
 
 		add_filter(
 			'wp_parsely_managed_options',
@@ -474,7 +474,7 @@ final class OptionsTest extends TestCase {
 	 */
 	public function test_null_managed_options_get_their_value_from_the_database_or_defaults(): void {
 		$default_options = self::$parsely->get_default_options();
-		self::assertSame( 'json_ld', $default_options['meta_type'] );
+		self::assertSame( 'repeated_metas', $default_options['meta_type'] );
 
 		add_filter(
 			'wp_parsely_managed_options',
