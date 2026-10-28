@@ -5,6 +5,13 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { nextVersion, parseVersion, releaseMetadata } from '../../bin/release-version.mjs';
 
+/**
+ * Create a minimal plugin checkout with consistent release markers and notes.
+ *
+ * @param {import('node:test').TestContext} t Test context used to clean up the checkout.
+ * @param {string} version Stable version to write into the fixture files.
+ * @return {string} The temporary plugin source directory.
+ */
 function fixture(t, version = '3.24.4') {
 	const directory = mkdtempSync(join(tmpdir(), 'parsely-release-'));
 	t.after(() => rmSync(directory, { recursive: true, force: true }));

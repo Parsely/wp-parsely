@@ -4,6 +4,13 @@ import { pathToFileURL } from 'node:url';
 
 const semver = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
+/**
+ * Parse a stable release version without losing integer precision.
+ *
+ * @param {string} version Bare major.minor.patch version.
+ * @return {bigint[]} The major, minor, and patch components.
+ * @throws {Error} If the version is malformed or includes a prerelease suffix.
+ */
 export function parseVersion(version) {
 	if (!semver.test(version)) {
 		throw new Error(`Invalid release version: ${version}`);
@@ -11,6 +18,14 @@ export function parseVersion(version) {
 	return version.split('.').map(BigInt);
 }
 
+/**
+ * Increment a version component and reset all lower components to zero.
+ *
+ * @param {string} version Current stable release version.
+ * @param {'major'|'minor'|'patch'} type Component to increment.
+ * @return {string} The next stable release version.
+ * @throws {Error} If the version or release type is invalid.
+ */
 export function nextVersion(version, type) {
 	const parts = parseVersion(version);
 	const index = ['major', 'minor', 'patch'].indexOf(type);
@@ -21,6 +36,13 @@ export function nextVersion(version, type) {
 	return parts.map((part, i) => (i > index ? 0n : part)).join('.');
 }
 
+/**
+ * Read and validate the version declared in the plugin's PHP header.
+ *
+ * @param {string} directory Plugin source directory, relative to the current directory.
+ * @return {string} The plugin's stable release version.
+ * @throws {Error} If the header is missing or its version is invalid.
+ */
 export function pluginVersion(directory = '.') {
 	const plugin = readFileSync(resolve(directory, 'wp-parsely.php'), 'utf8');
 	const version = plugin.match(/^ \* Version:\s+(\S+)/m)?.[1];
@@ -28,6 +50,17 @@ export function pluginVersion(directory = '.') {
 	return version;
 }
 
+/**
+ * Detect a release and validate its version markers and changelog.
+ *
+ * An unchanged version skips release-only validation. Omitting the previous
+ * version validates the current release for manual retries and dry runs.
+ *
+ * @param {string} previousVersion Previous plugin version, or empty for full validation.
+ * @param {string} directory Plugin source directory, relative to the current directory.
+ * @return {{version: string, release: boolean, notes?: string}} Release decision and notes.
+ * @throws {Error} If the version decreases, a marker disagrees, or release notes are missing.
+ */
 export function releaseMetadata(previousVersion = '', directory = '.') {
 	const version = pluginVersion(directory);
 	if (previousVersion === version) {
