@@ -30,6 +30,7 @@ The wp-parsely plugin is packed with features that allow for a seamless integrat
 #### Automated integration
 
 The plugin automatically inserts the Parse.ly metadata and JavaScript in all published pages and posts (Custom Post Types are supported). It also provides a settings page to customize your integration, with options including:
+
 - Output Parse.ly metadata as [JSON-LD](https://docs.parse.ly/metadata-jsonld/) or [repeated meta tags](https://docs.parse.ly/metatags/).
 - Choose whether logged-in users should be tracked.
 - Define how to track every Post Type (as Post, Non-Post or no tracking).
@@ -37,6 +38,7 @@ The plugin automatically inserts the Parse.ly metadata and JavaScript in all pub
 #### Parse.ly Content Intelligence
 
 [Content Intelligence](https://docs.parse.ly/plugin-content-intelligence/) is a set of content insight tools including:
+
 - The [Parse.ly Dashboard Widget](https://docs.parse.ly/plugin-content-intelligence/#h-dashboard) - Displays the site's top posts in the WordPress Dashboard.
 - The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-intelligence/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
 - The [Engagement Boost](https://docs.wpvip.com/parse-ly/parsely-features/engagement-boost/) feature - Helps you increase page views and engagement by strategically placing links to key content within high-performing articles on your site.
@@ -54,6 +56,7 @@ The plugin includes a [Recommendations Block](https://docs.parse.ly/recommendati
 #### Advanced integrations support
 
 While the plugin works out of the box for basic integrations, it offers a host of features that easily allow for advanced integration scenarios:
+
 - Support for [Google Tag Manager, AMP, Google Web Stories and Cloudflare](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-amp-or-google-web-stories) is included.
 - The plugin exposes the `wpParselyOnLoad` and `wpParselyOnReady` JavaScript hooks that allow for advanced integrations requiring JavaScript, such as [Dynamic Tracking](https://docs.parse.ly/plugin-dynamic-tracking/).
 - Support for WordPress [network/multisite](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-wordpress-network-multisite) and [decoupled/headless](https://docs.parse.ly/decoupled-set-up/) (GraphQL and WP Rest API) setups is included.
