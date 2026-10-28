@@ -74,7 +74,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -125,7 +125,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -166,7 +166,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -210,7 +210,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -257,7 +257,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\Validator::sanitize_site_id
 	 * @uses \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -296,7 +296,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\Validator::sanitize_site_id
 	 * @uses \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -344,7 +344,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\Validator::sanitize_site_id
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
