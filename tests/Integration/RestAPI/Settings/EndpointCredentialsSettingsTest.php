@@ -220,6 +220,25 @@ class EndpointCredentialsSettingsTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that a Site ID stored as it was typed, as earlier versions of
+	 * the settings page stored it, counts as the same once sanitized.
+	 *
+	 * @since 3.25.0
+	 */
+	public function test_succeeds_when_the_same_site_id_is_stored_unsanitized(): void {
+		TestCase::set_options( array( 'apikey' => '  Example.COM ' ) );
+		$expected = $this->get_stored_options();
+		$writes   = $this->count_option_writes();
+
+		$response = $this->send_request( array( 'site_id' => 'example.com' ) );
+
+		self::assertSame( 200, $response->get_status() );
+		self::assertSame( array( 'site_id' => '  Example.COM ' ), $response->get_data() );
+		self::assertSame( $expected, $this->get_stored_options() );
+		self::assertSame( $writes, $this->count_option_writes() );
+	}
+
+	/**
 	 * Verifies that a different Site ID than the one stored is refused.
 	 *
 	 * @since 3.25.0
@@ -230,7 +249,7 @@ class EndpointCredentialsSettingsTest extends TestCase {
 		$this->assert_refused(
 			array( 'site_id' => 'example.com' ),
 			409,
-			'site_id_conflict'
+			'parsely_site_id_conflict'
 		);
 	}
 
@@ -256,7 +275,30 @@ class EndpointCredentialsSettingsTest extends TestCase {
 		$this->assert_refused(
 			array( 'site_id' => 'example.com' ),
 			409,
-			'credentials_managed'
+			'parsely_credentials_managed'
+		);
+	}
+
+	/**
+	 * Verifies that a write that doesn't stick is reported, for the caller to
+	 * retry.
+	 *
+	 * @since 3.25.0
+	 */
+	public function test_reports_a_site_id_that_was_not_saved(): void {
+		add_filter(
+			'pre_update_option_' . Parsely::OPTIONS_KEY,
+			static function ( $value, $old_value ) {
+				return $old_value;
+			},
+			10,
+			2
+		);
+
+		$this->assert_refused(
+			array( 'site_id' => 'example.com' ),
+			500,
+			'parsely_site_id_not_saved'
 		);
 	}
 
@@ -270,7 +312,7 @@ class EndpointCredentialsSettingsTest extends TestCase {
 	 * @param array<string, mixed> $body The request body.
 	 */
 	public function test_refuses_an_invalid_site_id( array $body ): void {
-		$this->assert_refused( $body, 400, 'invalid_site_id' );
+		$this->assert_refused( $body, 400, 'parsely_invalid_site_id' );
 	}
 
 	/**

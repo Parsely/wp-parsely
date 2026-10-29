@@ -74,7 +74,7 @@ class Endpoint_Credentials_Settings extends Base_Endpoint {
 		// Managed credentials override the stored ones, so a write would be ignored.
 		if ( $this->parsely->are_credentials_managed ) {
 			return new WP_Error(
-				'credentials_managed',
+				'parsely_credentials_managed',
 				__( 'The Parse.ly credentials are managed by the hosting platform and cannot be changed.', 'wp-parsely' ),
 				array( 'status' => 409 )
 			);
@@ -85,17 +85,18 @@ class Endpoint_Credentials_Settings extends Base_Endpoint {
 
 		if ( '' === $site_id ) {
 			return new WP_Error(
-				'invalid_site_id',
+				'parsely_invalid_site_id',
 				__( 'A valid Parse.ly Site ID is required.', 'wp-parsely' ),
 				array( 'status' => 400 )
 			);
 		}
 
-		$stored_site_id = $this->parsely->get_site_id();
+		// Sanitized, because a Site ID saved on the settings page before 3.25.0 is stored as it was typed.
+		$stored_site_id = Validator::sanitize_site_id( $this->parsely->get_site_id() );
 
 		if ( '' !== $stored_site_id && $site_id !== $stored_site_id ) {
 			return new WP_Error(
-				'site_id_conflict',
+				'parsely_site_id_conflict',
 				__( 'A different Parse.ly Site ID is already set.', 'wp-parsely' ),
 				array( 'status' => 409 )
 			);
@@ -103,7 +104,7 @@ class Endpoint_Credentials_Settings extends Base_Endpoint {
 
 		if ( '' === $stored_site_id && ! $this->store_site_id( $site_id ) ) {
 			return new WP_Error(
-				'site_id_not_saved',
+				'parsely_site_id_not_saved',
 				__( 'The Parse.ly Site ID could not be saved.', 'wp-parsely' ),
 				array( 'status' => 500 )
 			);
@@ -115,8 +116,8 @@ class Endpoint_Credentials_Settings extends Base_Endpoint {
 	/**
 	 * Stores the passed Site ID in the plugin's options.
 	 *
-	 * Only the Site ID changes in stored options. If none are stored yet, they
-	 * are created from the defaults, as the settings page does.
+	 * If no options are stored yet, they are created from the defaults, as the
+	 * settings page does.
 	 *
 	 * @since 3.25.0
 	 *
