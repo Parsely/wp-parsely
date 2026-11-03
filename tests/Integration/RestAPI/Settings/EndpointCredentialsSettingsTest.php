@@ -342,6 +342,14 @@ class EndpointCredentialsSettingsTest extends TestCase {
 	public function test_refuses_users_without_manage_options(): void {
 		self::set_current_user_to( 'test_editor', 'editor' );
 
+		// The capability filters don't apply to this endpoint.
+		add_filter(
+			'wp_parsely_user_capability_for_all_private_apis',
+			static function () {
+				return 'exist';
+			}
+		);
+
 		$this->assert_refused(
 			array( 'site_id' => 'example.com' ),
 			403,
