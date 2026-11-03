@@ -91,7 +91,8 @@ class Endpoint_Credentials_Settings extends Base_Endpoint {
 			);
 		}
 
-		// Sanitized, because a Site ID saved on the settings page before 3.25.0 is stored as it was typed.
+		// Sanitized, because a Site ID saved on the settings page before 3.25.0
+		// may be stored as it was typed.
 		$stored_site_id = Validator::sanitize_site_id( $this->parsely->get_site_id() );
 
 		if ( '' !== $stored_site_id && $site_id !== $stored_site_id ) {
