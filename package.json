@@ -84,7 +84,7 @@
 		"prettier": "^3.7.4",
 		"react-router": "^7.18.1",
 		"ts-loader": "^9.5.4",
-		"typescript": "^5.9.3"
+		"typescript": "^7.0.2"
 	},
 	"devDependenciesComments": {
 		"@wordpress/babel-preset-default": "Don't upgrade to v8 or greater until the plugin requires WordPress 6.6. See https://github.com/WordPress/gutenberg/pull/62265/files",
