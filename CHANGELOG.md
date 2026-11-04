@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add a REST endpoint to set the Site ID ([#4752](https://github.com/Parsely/wp-parsely/pull/4752))
 
-
 ## [3.24.4](https://github.com/Parsely/wp-parsely/compare/3.24.3...3.24.4) - 2026-10-27
 
 ### Fixed
