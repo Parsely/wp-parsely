@@ -161,4 +161,23 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( setCurrentPage ).toHaveBeenCalledTimes( 1 );
 		expect( trackEvent ).not.toHaveBeenCalled();
 	} );
+	it( 'consumes the rejection when the Tracks script never loads', async () => {
+		await renderPage();
+		const blocked = Promise.reject( new Error( 'Telemetry library not loaded' ) );
+		const consume = jest.spyOn( blocked, 'catch' );
+		trackEvent.mockReturnValueOnce( blocked ).mockReturnValueOnce( blocked );
+
+		fireEvent.click( getNavButtons()[ 1 ] );
+		await waitForLoad();
+		fireEvent.change( screen.getByRole( 'searchbox' ), {
+			target: { value: 'hello' },
+		} );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await waitForLoad();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
+		expect( consume ).toHaveBeenCalledTimes( 2 );
+	} );
 } );

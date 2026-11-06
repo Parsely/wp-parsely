@@ -9,10 +9,25 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Telemetry } from '../../../../js/telemetry/telemetry';
+import { EventProps, Telemetry } from '../../../../js/telemetry/telemetry';
 import { PageBody, PageContainer, PageHeader, PostsTable } from '../../components';
 import { PageChangeMethod } from '../../components/posts-table/component';
 import './traffic-boost.scss';
+
+/**
+ * Tracks a Traffic Boost event without waiting for it.
+ *
+ * Telemetry.trackEvent() rejects when the Tracks script never loads (an ad
+ * blocker, for instance), so the rejection is consumed here.
+ *
+ * @since 3.26.0
+ *
+ * @param {string}     eventName  The name of the event to track.
+ * @param {EventProps} properties The properties of the event to track.
+ */
+const trackTrafficBoostEvent = ( eventName: string, properties: EventProps ): void => {
+	Promise.resolve( Telemetry.trackEvent( eventName, properties ) ).catch( () => {} );
+};
 
 /**
  * Tracks a page change made through the posts table pagination.
@@ -22,7 +37,7 @@ import './traffic-boost.scss';
  * @param {PageChangeMethod} method How the user changed the page.
  */
 const trackPageChange = ( method: PageChangeMethod ): void => {
-	Telemetry.trackEvent( 'traffic_boost_page_changed', { method } );
+	trackTrafficBoostEvent( 'traffic_boost_page_changed', { method } );
 };
 
 /**
@@ -42,7 +57,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	const debouncedSetSearchQuery = useDebounce( ( value: string ) => {
 		setSearchQuery( value );
 		setCurrentPage( 1 );
-		Telemetry.trackEvent( 'traffic_boost_searched', { query_length: value.length } );
+		trackTrafficBoostEvent( 'traffic_boost_searched', { query_length: value.length } );
 	}, 300 );
 
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
