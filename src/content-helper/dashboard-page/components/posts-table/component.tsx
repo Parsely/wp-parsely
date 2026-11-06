@@ -25,6 +25,13 @@ import { DashboardProvider } from '../../provider';
 import { SinglePostRow } from './components/single-post-row';
 
 /**
+ * The ways a user can change the PostsTable page.
+ *
+ * @since 3.26.0
+ */
+export type PageChangeMethod = 'previous' | 'next' | 'input';
+
+/**
  * TablePagination component.
  *
  * Represents the pagination controls for the PostsTable.
@@ -38,6 +45,7 @@ import { SinglePostRow } from './components/single-post-row';
  * @param {number}   props.totalPages     The total number of pages.
  * @param {Function} props.onPrevious     The function to handle the previous button click.
  * @param {Function} props.onNext         The function to handle the next button click.
+ * @param {Function} props.onPageChange   Optional. Called when the user changes the page.
  */
 const TablePagination = ( {
 	isLoading,
@@ -46,6 +54,7 @@ const TablePagination = ( {
 	totalPages,
 	onPrevious,
 	onNext,
+	onPageChange,
 }: {
 	isLoading: boolean;
 	currentPage: number;
@@ -53,6 +62,7 @@ const TablePagination = ( {
 	totalPages: number;
 	onPrevious: () => void;
 	onNext: () => void;
+	onPageChange?: ( method: PageChangeMethod ) => void;
 } ): React.JSX.Element => {
 	return (
 		<div className="posts-table-pagination-controls">
@@ -71,6 +81,10 @@ const TablePagination = ( {
 						}
 
 						setCurrentPage( selectedPage );
+
+						if ( selectedPage !== currentPage ) {
+							onPageChange?.( 'input' );
+						}
 					} }
 					min={ 1 }
 					max={ totalPages }
@@ -104,6 +118,7 @@ type PostsTableType = {
 	noResultsMessage?: React.ReactNode;
 	className?: string;
 	onPostClick?: ( post: HydratedPost ) => void;
+	onPageChange?: ( method: PageChangeMethod ) => void;
 };
 
 /**
@@ -128,6 +143,7 @@ export const PostsTable = ( {
 	noResultsMessage = __( 'No posts found.', 'wp-parsely' ),
 	className,
 	onPostClick,
+	onPageChange,
 }: PostsTableType ): React.JSX.Element => {
 	// TODO: Add a global state to store the posts for faster loading.
 	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
@@ -236,6 +252,7 @@ export const PostsTable = ( {
 	 */
 	const handlePrevious = () => {
 		setCurrentPage( ( prev ) => Math.max( prev - 1, 1 ) );
+		onPageChange?.( 'previous' );
 	};
 
 	/**
@@ -245,6 +262,7 @@ export const PostsTable = ( {
 	 */
 	const handleNext = () => {
 		setCurrentPage( ( prev ) => prev + 1 );
+		onPageChange?.( 'next' );
 	};
 
 	/**
@@ -347,6 +365,7 @@ export const PostsTable = ( {
 					totalPages={ totalPages }
 					onPrevious={ handlePrevious }
 					onNext={ handleNext }
+					onPageChange={ onPageChange }
 				/>
 			) }
 		</div>
