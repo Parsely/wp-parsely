@@ -119,6 +119,7 @@ type PostsTableType = {
 	className?: string;
 	onPostClick?: ( post: HydratedPost ) => void;
 	onPageChange?: ( method: PageChangeMethod ) => void;
+	onPostsLoaded?: ( search: string, totalItems: number ) => void;
 };
 
 /**
@@ -144,6 +145,7 @@ export const PostsTable = ( {
 	className,
 	onPostClick,
 	onPageChange,
+	onPostsLoaded,
 }: PostsTableType ): React.JSX.Element => {
 	// TODO: Add a global state to store the posts for faster loading.
 	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
@@ -158,6 +160,10 @@ export const PostsTable = ( {
 	const [ error, setError ] = useState<ContentHelperError>();
 
 	const didFirstSearch = useRef( false );
+
+	// The latest onPostsLoaded, so a new callback doesn't refetch the posts.
+	const onPostsLoadedRef = useRef( onPostsLoaded );
+	onPostsLoadedRef.current = onPostsLoaded;
 
 	/**
 	 * Fetches posts from the API, using the query and pagination.
@@ -191,6 +197,7 @@ export const PostsTable = ( {
 				setPosts( fetchedPosts.data );
 				setTotalPages( fetchedPosts.total_pages );
 				didFirstSearch.current = true;
+				onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
 			} catch ( fetchError: unknown ) {
 				console.error( fetchError ); // eslint-disable-line no-console
 

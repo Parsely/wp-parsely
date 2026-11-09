@@ -47,6 +47,7 @@ describe( 'Traffic Boost page telemetry', () => {
 		getPostsMock.mockReset();
 		getPostsMock.mockResolvedValue( {
 			data: [ { id: 1 }, { id: 2 } ],
+			total_items: 42,
 			total_pages: 5,
 		} );
 		( DashboardProvider.getInstance as jest.Mock ).mockReturnValue( {
@@ -74,6 +75,28 @@ describe( 'Traffic Boost page telemetry', () => {
 		render( <TrafficBoostPage /> );
 		await screen.findByText( 'Post 1' );
 		await waitForLoad();
+	};
+
+	/**
+	 * Types a search and lets the posts table apply it and load the results.
+	 *
+	 * @param {string} value The search to type.
+	 */
+	const search = async ( value: string ): Promise<void> => {
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await waitForLoad();
+	};
+
+	/**
+	 * Lets the search tracking delay pass.
+	 */
+	const settle = (): void => {
+		act( () => {
+			jest.advanceTimersByTime( 1000 );
+		} );
 	};
 
 	/**
@@ -123,23 +146,58 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
-	it( 'tracks searches with the query length only', async () => {
+	it( 'tracks a search with its length and result count, never the query', async () => {
 		await renderPage();
 
-		fireEvent.change( screen.getByRole( 'searchbox' ), {
-			target: { value: 'hello' },
-		} );
+		await search( 'hello' );
 		expect( trackEvent ).not.toHaveBeenCalled();
-
-		act( () => {
-			jest.advanceTimersByTime( 300 );
-		} );
-		await waitForLoad();
+		settle();
 
 		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
 		expect( trackEvent ).toHaveBeenCalledWith(
-			'traffic_boost_searched', { query_length: 5 }
+			'traffic_boost_searched', { query_length: 5, result_count: 42 }
 		);
+	} );
+
+	it( 'tracks one search when the user pauses partway through typing', async () => {
+		await renderPage();
+
+		await search( 'g' );
+		await search( 'garde' );
+		await search( 'garden' );
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 6, result_count: 42 }
+		);
+	} );
+
+	it( 'does not track a search again when paging through its results', async () => {
+		await renderPage();
+
+		await search( 'hello' );
+		settle();
+		fireEvent.click( getNavButtons()[ 1 ] );
+		await waitForLoad();
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			1, 'traffic_boost_searched', { query_length: 5, result_count: 42 }
+		);
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			2, 'traffic_boost_page_changed', { method: 'next' }
+		);
+	} );
+
+	it( 'does not track an empty search', async () => {
+		await renderPage();
+
+		await search( '   ' );
+		settle();
+
+		expect( trackEvent ).not.toHaveBeenCalled();
 	} );
 
 	it( 'keeps a pending search when the page changes before it applies', async () => {
@@ -155,13 +213,14 @@ describe( 'Traffic Boost page telemetry', () => {
 			jest.advanceTimersByTime( 300 );
 		} );
 		await waitForLoad();
+		settle();
 
 		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
 		expect( trackEvent ).toHaveBeenNthCalledWith(
 			1, 'traffic_boost_page_changed', { method: 'next' }
 		);
 		expect( trackEvent ).toHaveBeenNthCalledWith(
-			2, 'traffic_boost_searched', { query_length: 5 }
+			2, 'traffic_boost_searched', { query_length: 5, result_count: 42 }
 		);
 		expect( getPostsMock ).toHaveBeenLastCalledWith(
 			expect.objectContaining( { search: 'hello' } )
@@ -195,13 +254,8 @@ describe( 'Traffic Boost page telemetry', () => {
 
 		fireEvent.click( getNavButtons()[ 1 ] );
 		await waitForLoad();
-		fireEvent.change( screen.getByRole( 'searchbox' ), {
-			target: { value: 'hello' },
-		} );
-		act( () => {
-			jest.advanceTimersByTime( 300 );
-		} );
-		await waitForLoad();
+		await search( 'hello' );
+		settle();
 
 		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
 		expect( consume ).toHaveBeenCalledTimes( 2 );

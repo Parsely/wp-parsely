@@ -3,7 +3,7 @@
  */
 import { SearchControl } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { useCallback, useState } from '@wordpress/element';
+import { useCallback, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -60,9 +60,29 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	const applySearch = useCallback( ( value: string ) => {
 		setSearchQuery( value );
 		setCurrentPage( 1 );
-		trackTrafficBoostEvent( 'traffic_boost_searched', { query_length: value.length } );
 	}, [] );
 	const debouncedSetSearchQuery = useDebounce( applySearch, 300 );
+
+	// Results show 300 ms after typing stops, which also catches pauses partway
+	// through a word. A search is only tracked once its results have stayed up
+	// for a second, and not again until the query changes. Only its length and
+	// the number of results are sent, never the query.
+	const lastTrackedSearch = useRef<string>( '' );
+	const trackSearch = useCallback( ( search: string, resultCount: number ) => {
+		const query = search.trim();
+
+		if ( '' === query || query === lastTrackedSearch.current ) {
+			lastTrackedSearch.current = query;
+			return;
+		}
+
+		lastTrackedSearch.current = query;
+		trackTrafficBoostEvent( 'traffic_boost_searched', {
+			query_length: query.length,
+			result_count: resultCount,
+		} );
+	}, [] );
+	const debouncedTrackSearch = useDebounce( trackSearch, 1000 );
 
 	// The page input changes on every keystroke, so only track it once the user
 	// pauses. The callback must be stable, or each re-render cancels the debounce.
@@ -96,6 +116,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 					currentPage={ currentPage }
 					setCurrentPage={ setCurrentPage }
 					onPageChange={ handlePageChange }
+					onPostsLoaded={ debouncedTrackSearch }
 					query={ {
 						status: 'publish',
 						per_page: 10,
