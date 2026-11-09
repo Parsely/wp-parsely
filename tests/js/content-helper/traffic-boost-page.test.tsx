@@ -191,6 +191,33 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
+	it( 'does not track a search the user resumes typing over', async () => {
+		await renderPage();
+
+		await search( 'foo' );
+		act( () => {
+			jest.advanceTimersByTime( 800 );
+		} );
+		fireEvent.change( screen.getByRole( 'searchbox' ), {
+			target: { value: 'foob' },
+		} );
+		act( () => {
+			jest.advanceTimersByTime( 250 );
+		} );
+		expect( trackEvent ).not.toHaveBeenCalled();
+
+		act( () => {
+			jest.advanceTimersByTime( 50 );
+		} );
+		await waitForLoad();
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 4, result_count: 42 }
+		);
+	} );
+
 	it( 'does not track an empty search', async () => {
 		await renderPage();
 
@@ -246,6 +273,7 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( setCurrentPage ).toHaveBeenCalledTimes( 1 );
 		expect( trackEvent ).not.toHaveBeenCalled();
 	} );
+
 	it( 'consumes the rejection when the Tracks script never loads', async () => {
 		await renderPage();
 		const blocked = Promise.reject( new Error( 'Telemetry library not loaded' ) );

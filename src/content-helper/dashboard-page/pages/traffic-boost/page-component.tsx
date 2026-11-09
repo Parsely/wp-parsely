@@ -84,6 +84,15 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	}, [] );
 	const debouncedTrackSearch = useDebounce( trackSearch, 1000 );
 
+	// Typing again means the search on screen wasn't the one the user wanted,
+	// so its pending tracking is dropped. If they type back to that same query,
+	// the list doesn't reload and that search goes untracked; that's rarer than
+	// counting a pause as a search.
+	const handleSearchChange = useCallback( ( value: string ) => {
+		debouncedTrackSearch.cancel();
+		debouncedSetSearchQuery( value );
+	}, [ debouncedSetSearchQuery, debouncedTrackSearch ] );
+
 	// The page input changes on every keystroke, so only track it once the user
 	// pauses. The callback must be stable, or each re-render cancels the debounce.
 	const debouncedTrackPageInput = useDebounce( trackPageInput, 1000 );
@@ -106,7 +115,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 				<div className="traffic-boost-search-container">
 					<SearchControl
 						value={ searchQuery }
-						onChange={ debouncedSetSearchQuery }
+						onChange={ handleSearchChange }
 						label={ __( 'Search', 'wp-parsely' ) }
 						placeholder={ __( 'Search', 'wp-parsely' ) }
 						__nextHasNoMarginBottom
