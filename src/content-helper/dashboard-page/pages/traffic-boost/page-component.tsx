@@ -54,13 +54,15 @@ const trackPageInput = (): void => trackPageChange( 'input' );
  */
 export const TrafficBoostPage = (): React.JSX.Element => {
 	const [ searchQuery, setSearchQuery ] = useState<string>( '' );
-	const debouncedSetSearchQuery = useDebounce( ( value: string ) => {
+	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
+
+	// Stable, so a re-render (a page change, say) doesn't cancel a pending search.
+	const applySearch = useCallback( ( value: string ) => {
 		setSearchQuery( value );
 		setCurrentPage( 1 );
 		trackTrafficBoostEvent( 'traffic_boost_searched', { query_length: value.length } );
-	}, 300 );
-
-	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
+	}, [] );
+	const debouncedSetSearchQuery = useDebounce( applySearch, 300 );
 
 	// The page input changes on every keystroke, so only track it once the user
 	// pauses. The callback must be stable, or each re-render cancels the debounce.

@@ -142,6 +142,32 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
+	it( 'keeps a pending search when the page changes before it applies', async () => {
+		await renderPage();
+
+		fireEvent.change( screen.getByRole( 'searchbox' ), {
+			target: { value: 'hello' },
+		} );
+		fireEvent.click( getNavButtons()[ 1 ] );
+		await waitForLoad();
+
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await waitForLoad();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			1, 'traffic_boost_page_changed', { method: 'next' }
+		);
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			2, 'traffic_boost_searched', { query_length: 5 }
+		);
+		expect( getPostsMock ).toHaveBeenLastCalledWith(
+			expect.objectContaining( { search: 'hello' } )
+		);
+	} );
+
 	it( 'does not track page changes from tables without onPageChange', async () => {
 		const setCurrentPage = jest.fn();
 		const query = { per_page: 10 };
