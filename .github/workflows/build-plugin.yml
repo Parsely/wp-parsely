@@ -16,8 +16,6 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-      pull-requests: write
-      issues: write
     steps:
       - name: Setup BUILT_BRANCH env
         run: echo "BUILT_BRANCH=${SOURCE_REF}-built" >> $GITHUB_ENV
