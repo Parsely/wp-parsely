@@ -31,6 +31,9 @@ env:
   SKIP_TESTS: ${{ github.event.inputs.skip_tests == 'true' }}
   VERSION: ${{ github.event.inputs.version }}
 
+permissions:
+  contents: read
+
 jobs:
   validate_version:
     name: Validate Version and Branch
@@ -122,6 +125,8 @@ jobs:
     needs: [ validate_version, integration_tests, e2e_tests ]
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
@@ -213,6 +218,8 @@ jobs:
     needs: tag_and_release
     if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - name: Deploy Details
         run: |
