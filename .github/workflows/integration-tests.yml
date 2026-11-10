@@ -77,12 +77,14 @@ jobs:
         run: composer prepare-ci --no-interaction
 
       - name: Run integration tests
+        id: single-site
         run: composer testwp --no-interaction
 
+      # Multisite runs even if single-site tests fail, but not if setup failed.
       - name: Run integration tests (multisite)
-        if: ${{ matrix.coverage != 'pcov' }}
+        if: ${{ !cancelled() && steps.single-site.outcome != 'skipped' && matrix.coverage != 'pcov' }}
         run: composer testwp-ms --no-interaction
 
       - name: Run integration tests (multisite with code coverage)
-        if: ${{ matrix.coverage == 'pcov' }}
+        if: ${{ !cancelled() && steps.single-site.outcome != 'skipped' && matrix.coverage == 'pcov' }}
         run: composer coveragewp-ci --no-interaction
