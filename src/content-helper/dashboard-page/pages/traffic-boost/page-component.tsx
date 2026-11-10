@@ -3,7 +3,7 @@
  */
 import { SearchControl } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { useCallback, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -65,8 +65,9 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 
 	// Results show 300 ms after typing stops, which also catches pauses partway
 	// through a word. A search is only tracked once its results have stayed up
-	// for a second, and not again until the query changes. Only its length and
-	// the number of results are sent, never the query.
+	// for a second (or the user leaves the page first), and not again until the
+	// query changes. Only its length and the number of results are sent, never
+	// the query.
 	const lastTrackedSearch = useRef<string>( '' );
 	const trackSearch = useCallback( ( search: string, resultCount: number ) => {
 		const query = search.trim();
@@ -82,16 +83,49 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 			result_count: resultCount,
 		} );
 	}, [] );
-	const debouncedTrackSearch = useDebounce( trackSearch, 1000 );
+
+	// A plain timer rather than useDebounce, which cancels on unmount: a search
+	// still pending when the user leaves (clicking a result, say) is sent then.
+	const searchInput = useRef<string>( '' );
+	const pendingSearch = useRef<{ search: string; resultCount: number } | null>( null );
+	const searchTimer = useRef<ReturnType<typeof setTimeout>>();
+
+	const cancelSearchTracking = useCallback( (): void => {
+		clearTimeout( searchTimer.current );
+		pendingSearch.current = null;
+	}, [] );
+
+	const flushSearchTracking = useCallback( (): void => {
+		const pending = pendingSearch.current;
+		cancelSearchTracking();
+
+		if ( pending ) {
+			trackSearch( pending.search, pending.resultCount );
+		}
+	}, [ cancelSearchTracking, trackSearch ] );
+
+	useEffect( () => flushSearchTracking, [ flushSearchTracking ] );
+
+	const handlePostsLoaded = useCallback( ( search: string, resultCount: number ): void => {
+		// A response for a search the user has since typed over.
+		if ( search !== searchInput.current ) {
+			return;
+		}
+
+		clearTimeout( searchTimer.current );
+		pendingSearch.current = { search, resultCount };
+		searchTimer.current = setTimeout( flushSearchTracking, 1000 );
+	}, [ flushSearchTracking ] );
 
 	// Typing again means the search on screen wasn't the one the user wanted,
 	// so its pending tracking is dropped. If they type back to that same query,
 	// the list doesn't reload and that search goes untracked; that's rarer than
 	// counting a pause as a search.
 	const handleSearchChange = useCallback( ( value: string ) => {
-		debouncedTrackSearch.cancel();
+		searchInput.current = value;
+		cancelSearchTracking();
 		debouncedSetSearchQuery( value );
-	}, [ debouncedSetSearchQuery, debouncedTrackSearch ] );
+	}, [ cancelSearchTracking, debouncedSetSearchQuery ] );
 
 	// The page input changes on every keystroke, so only track it once the user
 	// pauses. The callback must be stable, or each re-render cancels the debounce.
@@ -125,7 +159,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 					currentPage={ currentPage }
 					setCurrentPage={ setCurrentPage }
 					onPageChange={ handlePageChange }
-					onPostsLoaded={ debouncedTrackSearch }
+					onPostsLoaded={ handlePostsLoaded }
 					query={ {
 						status: 'publish',
 						per_page: 10,

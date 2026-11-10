@@ -180,7 +180,11 @@ export const PostsTable = ( {
 					page: currentPage,
 				} );
 
-				if ( ! hideStats ) {
+				// Reported before the stats request, so a search is known about even
+				// when stats fail.
+				onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
+
+				if ( ! hideStats && fetchedPosts.data.length > 0 ) {
 					// Fetch the stats for the posts.
 					const fetchedStats = await StatsProvider.getInstance().getStatsForPosts( fetchedPosts.data, {
 						limit: fetchedPosts.data.length,
@@ -191,13 +195,15 @@ export const PostsTable = ( {
 					} );
 
 					setStats( fetchedStats );
+				} else if ( ! hideStats ) {
+					// No posts, so nothing to request stats for.
+					setStats( [] );
 				}
 
 				// Set the posts and total pages after fetching the stats.
 				setPosts( fetchedPosts.data );
 				setTotalPages( fetchedPosts.total_pages );
 				didFirstSearch.current = true;
-				onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
 			} catch ( fetchError: unknown ) {
 				console.error( fetchError ); // eslint-disable-line no-console
 

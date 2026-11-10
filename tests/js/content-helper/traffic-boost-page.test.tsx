@@ -32,9 +32,11 @@ jest.mock( '../../../src/content-helper/dashboard-page/provider', () => ( {
 	DashboardProvider: { getInstance: jest.fn() },
 } ) );
 
+const mockGetStatsForPosts = jest.fn();
+
 jest.mock( '../../../src/content-helper/common/providers/stats-provider', () => ( {
 	StatsProvider: {
-		getInstance: () => ( { getStatsForPosts: jest.fn().mockResolvedValue( [] ) } ),
+		getInstance: () => ( { getStatsForPosts: mockGetStatsForPosts } ),
 	},
 } ) );
 
@@ -45,6 +47,8 @@ describe( 'Traffic Boost page telemetry', () => {
 		jest.useFakeTimers();
 		trackEvent.mockClear();
 		getPostsMock.mockReset();
+		mockGetStatsForPosts.mockReset();
+		mockGetStatsForPosts.mockResolvedValue( [] );
 		getPostsMock.mockResolvedValue( {
 			data: [ { id: 1 }, { id: 2 } ],
 			total_items: 42,
@@ -71,10 +75,11 @@ describe( 'Traffic Boost page telemetry', () => {
 	/**
 	 * Renders the Traffic Boost page and waits for the first posts load.
 	 */
-	const renderPage = async (): Promise<void> => {
-		render( <TrafficBoostPage /> );
+	const renderPage = async (): Promise<ReturnType<typeof render>> => {
+		const rendered = render( <TrafficBoostPage /> );
 		await screen.findByText( 'Post 1' );
 		await waitForLoad();
+		return rendered;
 	};
 
 	/**
@@ -215,6 +220,78 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
 		expect( trackEvent ).toHaveBeenCalledWith(
 			'traffic_boost_searched', { query_length: 4, result_count: 42 }
+		);
+	} );
+
+	it( 'tracks a search with no results, without requesting stats', async () => {
+		await renderPage();
+		mockGetStatsForPosts.mockClear();
+		getPostsMock.mockResolvedValue( { data: [], total_items: 0, total_pages: 0 } );
+
+		await search( 'zzz' );
+		settle();
+
+		expect( mockGetStatsForPosts ).not.toHaveBeenCalled();
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 3, result_count: 0 }
+		);
+	} );
+
+	it( 'tracks a search even when the stats request fails', async () => {
+		await renderPage();
+		mockGetStatsForPosts.mockRejectedValue( new Error( 'Forbidden' ) );
+
+		await search( 'hello' );
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 5, result_count: 42 }
+		);
+
+		// The table logs the failed stats request.
+		expect( console ).toHaveErrored();
+	} );
+
+	it( 'ignores a slow response for a search the user has typed over', async () => {
+		await renderPage();
+		let resolveSlow: ( value: unknown ) => void = () => {};
+		getPostsMock.mockImplementation( ( { search: query }: { search: string } ) => {
+			if ( 'gar' === query ) {
+				return new Promise( ( resolve ) => {
+					resolveSlow = resolve;
+				} );
+			}
+			return Promise.resolve( { data: [ { id: 1 } ], total_items: 5, total_pages: 1 } );
+		} );
+
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'gar' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await search( 'garden' );
+		await act( async () => {
+			resolveSlow( { data: [ { id: 1 } ], total_items: 9, total_pages: 1 } );
+		} );
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 6, result_count: 5 }
+		);
+	} );
+
+	it( 'sends a pending search when the user leaves the page', async () => {
+		const { unmount } = await renderPage();
+
+		await search( 'hello' );
+		expect( trackEvent ).not.toHaveBeenCalled();
+		unmount();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 5, result_count: 42 }
 		);
 	} );
 
