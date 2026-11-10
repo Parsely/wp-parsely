@@ -1,19 +1,25 @@
 name: Integration Tests
 
 on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Exact source commit to check
+        type: string
+        required: false
+        default: ''
   # Run on all pushes and on all pull requests.
   # Prevent the "push" build from running when there are only irrelevant changes.
   push:
     paths-ignore:
       - '**.md'
   pull_request:
-  workflow_call:
 
 # Cancels all previous workflow runs for the same branch that have not yet completed.
 concurrency:
-  # The concurrency group contains the workflow name and the branch name.
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: integration-tests-${{ inputs.ref || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ inputs.ref == '' }}
 
 jobs:
   test:
@@ -47,6 +53,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2

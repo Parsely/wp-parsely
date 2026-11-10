@@ -4,6 +4,14 @@
 name: Node.js CI
 
 on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Exact source commit to check
+        type: string
+        required: false
+        default: ''
   pull_request:
   push:
     paths:
@@ -13,25 +21,31 @@ on:
 
 # Cancels all previous workflow runs for the same branch that have not yet completed.
 concurrency:
-  # The concurrency group contains the workflow name and the branch name.
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: node.js-${{ inputs.ref || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ inputs.ref == '' }}
 
 jobs:
   build:
     runs-on: ubuntu-24.04
+    env:
+      TZ: UTC
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Read .nvmrc
-        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+
+      - name: Test release tooling
+        run: node --test tests/release/*.test.mjs
 
       - name: Install JavaScript dependencies
         run: npm ci
@@ -50,7 +64,7 @@ jobs:
 
       - name: Confirm the build is up-to-date
         run: |
-          REPOSTATUS=`git status --porcelain 2>/dev/null`;
+          REPOSTATUS=$(git status --porcelain);
           if [[ -n "$REPOSTATUS" ]]; then
             echo "Repo is not clean. Did you forget to commit changes to the /build dir?";
             echo "$REPOSTATUS";
