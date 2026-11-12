@@ -178,7 +178,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	private function get_placement_request( ?int $source_post_id = null ): WP_REST_Request {
 		$request = new WP_REST_Request( 'POST' );
 
-		// Mirrors the route's validate_callback, which sets the `post` param.
+		// Mirrors the route's validate_callback.
 		$this->endpoint->validate_post_id( (string) $this->destination_post_id, $request );
 
 		$request->set_param( 'post_id', $this->destination_post_id );
@@ -447,6 +447,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	private function get_generate_request(): WP_REST_Request {
 		$request = new WP_REST_Request( 'POST' );
 
+		// Mirrors the route's validate_callback.
 		$this->endpoint->validate_post_id( (string) $this->destination_post_id, $request );
 
 		$request->set_param( 'post_id', $this->destination_post_id );

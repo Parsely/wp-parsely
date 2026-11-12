@@ -45,11 +45,14 @@ test.describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 		// Intercept the Related Posts API request to ensure the loading message
 		// stays visible long enough for the assertion. Without this, the fetch
 		// may complete before the check runs, causing a timeout on the transient
-		// loading state.
-		await admin.page.route( /\/wp-parsely\/v2\/stats\/posts/, async ( route ) => {
-			await new Promise( ( resolve ) => setTimeout( resolve, 2000 ) );
-			await route.continue();
-		} );
+		// loading state. Plain permalinks pass the route encoded in `rest_route`.
+		await admin.page.route(
+			( url ) => ( url.searchParams.get( 'rest_route' ) ?? url.pathname ).includes( '/wp-parsely/v2/stats/posts' ),
+			async ( route ) => {
+				await new Promise( ( resolve ) => setTimeout( resolve, 2000 ) );
+				await route.continue();
+			}
+		);
 
 		expect( await getRelatedPostsMessage(
 			admin, '.related-posts-loading-message'

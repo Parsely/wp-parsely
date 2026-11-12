@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Suggestions API Service class test.
+ * Integration tests for the Content_API_Service class.
  *
  * @package Parsely
  * @since   3.17.0
@@ -8,25 +8,28 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\Services\SuggestionsAPI;
+namespace Parsely\Tests\Integration\Services\ContentAPI;
 
 use Parsely\Parsely;
 use Parsely\Services\Base_Service_Endpoint;
-use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Brief;
-use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline;
-use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference;
-use Parsely\Services\Suggestions_API\Suggestions_API_Service;
+use Parsely\Services\Cached_Service_Endpoint;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Post_Details;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Posts;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Referrers_Post_Detail;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Related;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Validate;
 use Parsely\Tests\Integration\Services\BaseAPIServiceTestCase;
 use Parsely\Tests\Traits\TestsReflection;
 
 /**
- * Integration tests for the Suggestions_API_Service class.
+ * Integration tests for the Content_API_Service class.
  *
  * @since 3.17.0
  *
- * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service
+ * @covers \Parsely\Services\Content_API\Content_API_Service
  */
-class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
+class ContentApiServiceTest extends BaseAPIServiceTestCase {
 	use TestsReflection;
 
 	/**
@@ -44,7 +47,7 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	 * @since 3.17.0
 	 */
 	public static function initialize(): void {
-		self::$api_service = new Suggestions_API_Service( new Parsely() );
+		self::$api_service = new Content_API_Service( new Parsely() );
 
 		// Get the endpoints from the protected $endpoints property using reflection.
 		$endpoints_prop = self::get_property( 'endpoints', self::$api_service );
@@ -68,17 +71,25 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	 */
 	public function data_registered_endpoints(): iterable {
 		return array(
-			'suggest-linked-reference' => array(
-				'endpoint' => '/suggest-linked-reference',
-				'class'    => Endpoint_Suggest_Linked_Reference::class,
+			'analytics/posts'        => array(
+				'endpoint' => '/analytics/posts',
+				'class'    => Endpoint_Analytics_Posts::class,
 			),
-			'suggest-brief'            => array(
-				'endpoint' => '/suggest-brief',
-				'class'    => Endpoint_Suggest_Brief::class,
+			'analytics/post/details' => array(
+				'endpoint' => '/analytics/post/detail',
+				'class'    => Endpoint_Analytics_Post_Details::class,
 			),
-			'suggest-headline'         => array(
-				'endpoint' => '/suggest-headline',
-				'class'    => Endpoint_Suggest_Headline::class,
+			'related'                => array(
+				'endpoint' => '/related',
+				'class'    => Endpoint_Related::class,
+			),
+			'referrers/post/details' => array(
+				'endpoint' => '/referrers/post/detail',
+				'class'    => Endpoint_Referrers_Post_Detail::class,
+			),
+			'validate/secret'        => array(
+				'endpoint' => '/validate/secret',
+				'class'    => Endpoint_Validate::class,
 			),
 		);
 	}
@@ -95,13 +106,13 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	}
 
 	/**
-	 * Tests that the endpoint is registered and is an instance of the expected
-	 * class.
+	 * Tests that the endpoint is registered and is an instance of the expected class.
 	 *
 	 * @since 3.17.0
 	 *
 	 * @dataProvider data_registered_endpoints
 	 * @covers \Parsely\Services\Base_API_Service::get_endpoint
+	 * @uses \Parsely\Services\Cached_Service_Endpoint::get_uncached_endpoint
 	 *
 	 * @param string       $endpoint The endpoint's name to check.
 	 * @param class-string $class_name The endpoint's expected class.
@@ -110,6 +121,13 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 		// Check that the endpoint exists and is an instance of the expected class.
 		self::assertArrayHasKey( $endpoint, self::$endpoints, "Endpoint $endpoint is not registered." );
 		$endpoint = self::$api_service->get_endpoint( $endpoint );
-		self::assertInstanceOf( $class_name, $endpoint );
+		self::assertInstanceOf( Base_Service_Endpoint::class, $endpoint );
+
+		// If the endpoint is cached, check the inner endpoint.
+		if ( $endpoint instanceof Cached_Service_Endpoint ) {
+			self::assertInstanceOf( $class_name, $endpoint->get_uncached_endpoint() );
+		} else {
+			self::assertInstanceOf( $class_name, $endpoint );
+		}
 	}
 }
