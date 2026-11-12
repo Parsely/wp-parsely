@@ -12,6 +12,9 @@ on:
 env:
   NEW_VERSION: ${{ github.event.inputs.new_version }}
 
+permissions:
+  contents: read
+
 jobs:
   validate_version:
     name: Validate the new version
@@ -69,6 +72,10 @@ jobs:
     name: Bump the version and create the PR
     needs: validate_version
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     env:
       CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
       GH_TOKEN: ${{ github.token }}

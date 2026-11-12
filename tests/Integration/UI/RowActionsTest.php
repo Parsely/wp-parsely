@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\UI;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Row_Actions;
 
@@ -153,6 +154,131 @@ final class RowActionsTest extends TestCase {
 		self::assertSame(
 			'<a href="' . $url . '" aria-label="' . $aria_label . '">Parse.ly&nbsp;Stats</a>',
 			$actions['find_in_parsely']
+		);
+	}
+
+	/**
+	 * Verifies that the Engagement Boost action is not offered for a post the
+	 * user cannot edit.
+	 *
+	 * The action links to a dashboard view whose REST calls are authorized per
+	 * post, so offering it here would only lead to a denied request.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\UI\Row_Actions::row_actions_add_engagement_boost_link
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\UI\Row_Actions::generate_aria_label_for_post
+	 * @uses \Parsely\UI\Row_Actions::generate_link_to_engagement_boost
+	 *
+	 * @group ui
+	 */
+	public function test_engagement_boost_action_is_gated_per_post(): void {
+		$this->set_engagement_boost_options();
+
+		$other_user_id = self::create_test_user( 'ra_other_user', 'administrator' );
+		$author_id     = self::create_test_user( 'ra_author', 'author' );
+
+		/** @var int $other_users_post_id */
+		$other_users_post_id = self::factory()->post->create(
+			array(
+				'post_author' => $other_user_id,
+				'post_status' => 'publish',
+			)
+		);
+
+		/** @var int $own_post_id */
+		$own_post_id = self::factory()->post->create(
+			array(
+				'post_author' => $author_id,
+				'post_status' => 'publish',
+			)
+		);
+
+		wp_set_current_user( $author_id );
+
+		self::assertArrayNotHasKey(
+			'engagement_boost',
+			self::$row_actions->row_actions_add_engagement_boost_link(
+				array(),
+				$this->get_post( $other_users_post_id )
+			),
+			'An Author should not be offered Engagement Boost for another user\'s post.'
+		);
+
+		self::assertArrayHasKey(
+			'engagement_boost',
+			self::$row_actions->row_actions_add_engagement_boost_link(
+				array(),
+				$this->get_post( $own_post_id )
+			),
+			'An Author should be offered Engagement Boost for their own post.'
+		);
+	}
+
+	/**
+	 * Verifies that an Editor is still offered the Engagement Boost action for
+	 * another user's post, which the edit_others_posts capability allows.
+	 *
+	 * @since 3.23.7
+	 *
+	 * @covers \Parsely\UI\Row_Actions::row_actions_add_engagement_boost_link
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\UI\Row_Actions::generate_aria_label_for_post
+	 * @uses \Parsely\UI\Row_Actions::generate_link_to_engagement_boost
+	 *
+	 * @group ui
+	 */
+	public function test_engagement_boost_action_is_offered_to_editor(): void {
+		$this->set_engagement_boost_options();
+
+		$other_user_id = self::create_test_user( 'ra_eb_other_user', 'administrator' );
+
+		/** @var int $other_users_post_id */
+		$other_users_post_id = self::factory()->post->create(
+			array(
+				'post_author' => $other_user_id,
+				'post_status' => 'publish',
+			)
+		);
+
+		self::set_current_user_to( 'ra_editor', 'editor' );
+
+		self::assertArrayHasKey(
+			'engagement_boost',
+			self::$row_actions->row_actions_add_engagement_boost_link(
+				array(),
+				$this->get_post( $other_users_post_id )
+			),
+			'An Editor should be offered Engagement Boost for another user\'s post.'
+		);
+	}
+
+	/**
+	 * Enables Engagement Boost for every role having the edit_posts capability.
+	 *
+	 * @since 3.23.7
+	 */
+	private function set_engagement_boost_options(): void {
+		self::set_options(
+			array(
+				'apikey'         => 'somekey',
+				'content_helper' => array(
+					'ai_features_enabled' => true,
+					'traffic_boost'       => array(
+						'enabled'            => true,
+						'allowed_user_roles' => array_keys(
+							Permissions::get_user_roles_with_edit_posts_cap()
+						),
+					),
+				),
+			)
 		);
 	}
 }
