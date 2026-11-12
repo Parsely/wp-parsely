@@ -14,6 +14,10 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 
+use Parsely\Content_Helper\Editor_Sidebar;
+use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
+use Parsely\Models\Inbound_Smart_Link;
+use Parsely\Models\Smart_Link_Status;
 use Parsely\Parsely;
 use Parsely\Permissions;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
@@ -22,6 +26,7 @@ use Parsely\Tests\Integration\TestCase;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;
+use WP_REST_Response;
 
 /**
  * Integration tests for object-level authorization in the Endpoint_Smart_Linking
@@ -32,6 +37,12 @@ use WP_REST_Request;
  * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
  */
 class EndpointSmartLinkingAuthorizationTest extends TestCase {
+	/**
+	 * Anchor text of the seeded Smart Links, used to detect the source post's
+	 * content in responses.
+	 */
+	private const LINK_TEXT = 'INBOUND-SOURCE-CONTENT-MARKER';
+
 	/**
 	 * The endpoint instance.
 	 *
@@ -68,6 +79,20 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 	private int $other_users_scheduled_post_id;
 
 	/**
+	 * A password-protected published post owned by another user.
+	 *
+	 * @var int
+	 */
+	private int $other_users_protected_post_id;
+
+	/**
+	 * A published post of a non-public post type, owned by another user.
+	 *
+	 * @var int
+	 */
+	private int $other_users_hidden_cpt_post_id;
+
+	/**
 	 * A private post owned by the current user.
 	 *
 	 * @var int
@@ -82,9 +107,12 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 	public function set_up(): void {
 		parent::set_up();
 
-		$this->endpoint = new Endpoint_Smart_Linking(
-			new Content_Helper_Controller( new Parsely() )
-		);
+		$parsely        = new Parsely();
+		$this->endpoint = new Endpoint_Smart_Linking( new Content_Helper_Controller( $parsely ) );
+
+		// Register the parsely_smart_link post type and its taxonomies, which
+		// the Smart Link models persist to.
+		( new Smart_Linking( new Editor_Sidebar( $parsely ) ) )->run();
 
 		// Enable Smart Linking for every role having edit_posts.
 		TestCase::set_options(
@@ -140,6 +168,33 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 				'post_status' => 'future',
 				'post_date'   => '2099-01-01 00:00:00',
 				'post_title'  => 'Scheduled by other',
+			)
+		);
+
+		$this->other_users_protected_post_id = $this->create_post(
+			array(
+				'post_author'   => $other_user_id,
+				'post_status'   => 'publish',
+				'post_password' => 'secret-pw',
+				'post_title'    => 'Protected by other',
+			)
+		);
+
+		register_post_type(
+			'sl_hidden_cpt',
+			array(
+				'public'       => false,
+				'show_in_rest' => false,
+				'label'        => 'Hidden',
+			)
+		);
+
+		$this->other_users_hidden_cpt_post_id = $this->create_post(
+			array(
+				'post_author' => $other_user_id,
+				'post_status' => 'publish',
+				'post_type'   => 'sl_hidden_cpt',
+				'post_title'  => 'Hidden CPT by other',
 			)
 		);
 
@@ -347,6 +402,260 @@ class EndpointSmartLinkingAuthorizationTest extends TestCase {
 			array( $this->other_users_private_post_id ),
 			$this->get_post_meta_ids( $this->other_users_private_post_id ),
 			'An Editor should still get meta for another user\'s private post.'
+		);
+	}
+
+	/**
+	 * Stores an applied inbound Smart Link, pointing from the source post to
+	 * the current user's own post.
+	 *
+	 * Saved as the source post's author, mirroring how the link would really be
+	 * created.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param int $source_post_id The post holding the link.
+	 */
+	private function seed_inbound_link( int $source_post_id ): void {
+		$source_post = get_post( $source_post_id );
+		self::assertInstanceOf( WP_Post::class, $source_post );
+
+		// The anchor text has to be present for the link to be applied.
+		wp_update_post(
+			array(
+				'ID'           => $source_post_id,
+				'post_content' => '<!-- wp:paragraph --><p>A ' . self::LINK_TEXT .
+					' in the source post.</p><!-- /wp:paragraph -->',
+			)
+		);
+
+		$current_user_id = get_current_user_id();
+		wp_set_current_user( (int) $source_post->post_author );
+
+		$link = new Inbound_Smart_Link(
+			(string) get_permalink( $this->own_post_id ),
+			'Own post',
+			self::LINK_TEXT,
+			0,
+			$source_post_id
+		);
+		$link->set_destination_post_id( $this->own_post_id );
+		$link->set_status( Smart_Link_Status::PENDING );
+		$link->set_context( 'smart_linking' );
+		$link->save();
+		$link->apply();
+
+		wp_set_current_user( $current_user_id );
+	}
+
+	/**
+	 * Returns the source post IDs of the inbound links that
+	 * get_smart_links() reports for the current user's own post.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @return array{ids: array<int>, json: string, inbound: array<mixed>} The source IDs, raw response and entries.
+	 */
+	private function get_inbound_sources(): array {
+		$response = $this->endpoint->get_smart_links( $this->get_request( $this->own_post_id ) );
+		self::assertInstanceOf( WP_REST_Response::class, $response );
+
+		/** @var array{data: array{inbound: array<array{source: array{post_id: int}}>}} $data */
+		$data = $response->get_data();
+
+		return array(
+			'ids'     => array_column(
+				array_column( $data['data']['inbound'], 'source' ),
+				'post_id'
+			),
+			'json'    => (string) wp_json_encode( $data ),
+			'inbound' => $data['data']['inbound'],
+		);
+	}
+
+	/**
+	 * Verifies that inbound links sourced from a post the user cannot see are
+	 * omitted, along with that post's title and content.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_links
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_inbound_links_omit_inaccessible_source_posts(): void {
+		$this->seed_inbound_link( $this->other_users_private_post_id );
+
+		self::assertFalse(
+			current_user_can( 'edit_post', $this->other_users_private_post_id ),
+			'Fixture is wrong: the user can edit the source post.'
+		);
+
+		$inbound = $this->get_inbound_sources();
+
+		self::assertNotContains(
+			$this->other_users_private_post_id,
+			$inbound['ids'],
+			'An inbound link from an inaccessible source post should be omitted.'
+		);
+		self::assertStringNotContainsString(
+			'Private by other',
+			$inbound['json'],
+			'The inaccessible source post\'s title was included.'
+		);
+		self::assertStringNotContainsString(
+			self::LINK_TEXT,
+			$inbound['json'],
+			'The inaccessible source post\'s content was included.'
+		);
+	}
+
+	/**
+	 * Verifies that inbound links sourced from a post the user can edit are
+	 * still reported.
+	 *
+	 * Guards against the check being too restrictive, which would empty the
+	 * editor sidebar's inbound list.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_links
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_inbound_links_include_accessible_source_posts(): void {
+		$this->seed_inbound_link( $this->own_private_post_id );
+
+		self::assertSame(
+			array( $this->own_private_post_id ),
+			$this->get_inbound_sources()['ids'],
+			'An inbound link from the user\'s own post should be reported.'
+		);
+	}
+
+	/**
+	 * Verifies that an Editor still sees inbound links from another user's
+	 * non-public post.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_links
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_inbound_links_include_another_users_post_for_editor(): void {
+		$this->seed_inbound_link( $this->other_users_private_post_id );
+
+		TestCase::set_current_user_to( 'sl_inbound_editor', 'editor' );
+
+		self::assertSame(
+			array( $this->other_users_private_post_id ),
+			$this->get_inbound_sources()['ids'],
+			'An Editor should still see the inbound link.'
+		);
+	}
+
+	/**
+	 * Verifies that an inbound link from another user's published post is still
+	 * reported, with its paragraph.
+	 *
+	 * Guards against the check being too restrictive.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_links
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_inbound_links_include_another_users_published_post(): void {
+		$this->seed_inbound_link( $this->other_users_post_id );
+
+		self::assertFalse(
+			current_user_can( 'edit_post', $this->other_users_post_id ),
+			'Fixture is wrong: the user can edit the source post.'
+		);
+
+		$inbound = $this->get_inbound_sources();
+
+		self::assertSame(
+			array( $this->other_users_post_id ),
+			$inbound['ids'],
+			'An inbound link from a published post should be reported.'
+		);
+		self::assertStringContainsString(
+			self::LINK_TEXT,
+			$inbound['json'],
+			'The paragraph of a published source post should be included.'
+		);
+	}
+
+	/**
+	 * Verifies that a password-protected source post is reported without its
+	 * paragraph.
+	 *
+	 * WordPress withholds a protected post's content from users who cannot edit
+	 * it, while its title stays public.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_links
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_inbound_links_omit_the_paragraph_of_a_protected_source_post(): void {
+		$this->seed_inbound_link( $this->other_users_protected_post_id );
+
+		self::assertTrue(
+			post_password_required( $this->other_users_protected_post_id ),
+			'Fixture is wrong: the source post is not protected.'
+		);
+
+		$inbound = $this->get_inbound_sources();
+
+		self::assertSame(
+			array( $this->other_users_protected_post_id ),
+			$inbound['ids'],
+			'The inbound link itself should still be reported.'
+		);
+		self::assertStringNotContainsString(
+			self::LINK_TEXT,
+			$inbound['json'],
+			'The protected source post\'s content was included.'
+		);
+	}
+
+	/**
+	 * Verifies that a source post of a non-public post type is omitted.
+	 *
+	 * Such a post is readable per `read_post`, but the core REST API does not
+	 * serve it, so its content is not public information.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_links
+	 * @uses \Parsely\Models\Inbound_Smart_Link
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_inbound_links_omit_a_non_public_post_type_source(): void {
+		$this->seed_inbound_link( $this->other_users_hidden_cpt_post_id );
+
+		self::assertTrue(
+			current_user_can( 'read_post', $this->other_users_hidden_cpt_post_id ),
+			'Fixture is wrong: read_post should allow this post, which is why ' .
+			'public viewability is checked instead.'
+		);
+
+		$inbound = $this->get_inbound_sources();
+
+		self::assertNotContains(
+			$this->other_users_hidden_cpt_post_id,
+			$inbound['ids'],
+			'A non-public post type source should be omitted.'
+		);
+		self::assertStringNotContainsString(
+			self::LINK_TEXT,
+			$inbound['json'],
+			'The non-public source post\'s content was included.'
 		);
 	}
 }
