@@ -66,13 +66,15 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert JSON-LD on post', async ( { baseURL, page } ) => {
+	test( 'Should insert JSON-LD on post', async ( { page } ) => {
 		await page.goto( '/?p=1' );
 
+		// The permalink depends on the permalink structure, so read it after any redirect.
+		const permalink = page.url();
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
-		expect( content ).toContain( `{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"${ escapeSlashes( baseURL ) }\\/?p=1","mainEntityOfPage":{"@type":"WebPage","@id":"${ escapeSlashes( baseURL ) }\\/?p=1"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"` );
+		expect( content ).toContain( `{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"${ escapeSlashes( permalink ) }","mainEntityOfPage":{"@type":"WebPage","@id":"${ escapeSlashes( permalink ) }"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"` );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
@@ -81,13 +83,14 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert JSON-LD on page', async ( { baseURL, page } ) => {
+	test( 'Should insert JSON-LD on page', async ( { page } ) => {
 		await page.goto( '/?p=2' );
 
+		const permalink = page.url();
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
-		expect( content ).toContain( `{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"${ escapeSlashes( baseURL ) }\\/?page_id=2","mainEntityOfPage":{"@type":"WebPage","@id":"${ escapeSlashes( baseURL ) }\\/?page_id=2"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"` );
+		expect( content ).toContain( `{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"${ escapeSlashes( permalink ) }","mainEntityOfPage":{"@type":"WebPage","@id":"${ escapeSlashes( permalink ) }"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"` );
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
@@ -119,13 +122,14 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert repeated metas on post', async ( { baseURL, page } ) => {
+	test( 'Should insert repeated metas on post', async ( { page } ) => {
 		await page.goto( '/?p=1' );
 
+		const permalink = page.url();
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="Hello world!">' );
-		expect( content ).toContain( `<meta name="parsely-link" content="${ baseURL }/?p=1">` );
+		expect( content ).toContain( `<meta name="parsely-link" content="${ permalink }">` );
 		expect( content ).toContain( '<meta name="parsely-type" content="post">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
@@ -138,13 +142,14 @@ test.describe( 'Front end metadata insertion', () => {
 	 *
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	test( 'Should insert repeated metas on page', async ( { baseURL, page } ) => {
+	test( 'Should insert repeated metas on page', async ( { page } ) => {
 		await page.goto( '/?p=2' );
 
+		const permalink = page.url();
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="Sample Page">' );
-		expect( content ).toContain( `<meta name="parsely-link" content="${ baseURL }/?page_id=2">` );
+		expect( content ).toContain( `<meta name="parsely-link" content="${ permalink }">` );
 		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
