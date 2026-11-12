@@ -96,7 +96,9 @@ trait Use_Post_ID_Parameter_Trait {
 	 * @return WP_Post|null The post object, or null if it doesn't exist.
 	 */
 	protected function get_request_post( WP_REST_Request $request ): ?WP_Post {
-		$post_id = (int) $request->get_param( 'post_id' );
+		/** @var int|string|null $post_id */
+		$post_id = $request->get_param( 'post_id' );
+		$post_id = (int) $post_id;
 
 		return $post_id > 0 ? get_post( $post_id ) : null;
 	}
@@ -121,7 +123,9 @@ trait Use_Post_ID_Parameter_Trait {
 			return $endpoint_access;
 		}
 
-		$post_id = (int) $request->get_param( 'post_id' );
+		/** @var int|string|null $post_id */
+		$post_id = $request->get_param( 'post_id' );
+		$post_id = (int) $post_id;
 
 		if ( $post_id > 0 && ! current_user_can( 'edit_post', $post_id ) ) {
 			return new WP_Error(

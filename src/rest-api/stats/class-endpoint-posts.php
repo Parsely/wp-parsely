@@ -329,8 +329,11 @@ class Endpoint_Posts extends Base_Endpoint {
 			$use_campaign_params = true;
 		}
 
+		/** @var bool $use_wp_permalink */
+		$use_wp_permalink = $params['use_wp_permalink'] ?? false;
+
 		// If we are using the WordPress permalink, generate a canonical URL for each URL.
-		if ( isset( $params['use_wp_permalink'] ) && $params['use_wp_permalink'] && isset( $params['urls'] ) && is_array( $params['urls'] ) ) {
+		if ( $use_wp_permalink && isset( $params['urls'] ) && is_array( $params['urls'] ) ) {
 			$new_urls = array();
 
 			foreach ( $params['urls'] as $url ) {

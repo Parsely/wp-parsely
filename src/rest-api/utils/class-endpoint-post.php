@@ -64,6 +64,7 @@ class Endpoint_Post extends Base_Endpoint {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function get_rest_route( WP_REST_Request $request ) {
+		/** @var int $post_id */
 		$post_id         = $request->get_param( 'post_id' );
 		$post_rest_route = rest_get_route_for_post( $post_id );
 

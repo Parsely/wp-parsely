@@ -198,11 +198,17 @@ class Endpoint_Post extends Base_Endpoint {
 		// Set the itm_source parameter.
 		$this->set_itm_source_from_request( $request );
 
+		/** @var string|null $period_start */
+		$period_start = $request->get_param( 'period_start' );
+
+		/** @var string|null $period_end */
+		$period_end = $request->get_param( 'period_end' );
+
 		// Get the data from the API.
 		$analytics_request = $this->content_api->get_post_details(
 			$permalink,
-			$request->get_param( 'period_start' ),
-			$request->get_param( 'period_end' )
+			$period_start,
+			$period_end
 		);
 
 		if ( is_wp_error( $analytics_request ) ) {
@@ -260,6 +266,7 @@ class Endpoint_Post extends Base_Endpoint {
 		$this->set_itm_source_from_request( $request );
 
 		// Get the total views.
+		/** @var int|string $total_views */
 		$total_views = $request->get_param( 'total_views' ) ?? 0;
 
 		if ( is_string( $total_views ) ) {
@@ -268,11 +275,17 @@ class Endpoint_Post extends Base_Endpoint {
 
 		$this->total_views = $total_views;
 
+		/** @var string|null $period_start */
+		$period_start = $request->get_param( 'period_start' );
+
+		/** @var string|null $period_end */
+		$period_end = $request->get_param( 'period_end' );
+
 		// Get the data from the API.
 		$analytics_request = $this->content_api->get_post_referrers(
 			$permalink,
-			$request->get_param( 'period_start' ),
-			$request->get_param( 'period_end' )
+			$period_start,
+			$period_end
 		);
 
 		if ( is_wp_error( $analytics_request ) ) {
