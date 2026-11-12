@@ -305,12 +305,15 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function generate_link_suggestions( WP_REST_Request $request ) {
-		/**
-		 * The post object.
-		 *
-		 * @var WP_Post $post
-		 */
-		$post = $request->get_param( 'post' );
+		$post = $this->get_request_post( $request );
+
+		if ( ! $post instanceof WP_Post ) {
+			return new WP_Error(
+				'invalid_post',
+				__( 'Invalid post.', 'wp-parsely' ),
+				array( 'status' => 404 )
+			);
+		}
 
 		/**
 		 * The maximum number of suggestions to return.
@@ -351,6 +354,10 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		if ( is_wp_error( $inbound_suggestions ) ) {
 			return $inbound_suggestions;
 		}
+
+		$inbound_suggestions = $this->filter_accessible_links(
+			$inbound_suggestions
+		);
 
 		$discard_result = null;
 
@@ -398,12 +405,16 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function generate_placement_suggestions( WP_REST_Request $request ) {
-		/**
-		 * The destination post, that the inbound link links to.
-		 *
-		 * @var WP_Post $destination_post
-		 */
-		$destination_post = $request->get_param( 'post' );
+		// The destination post, that the inbound link links to.
+		$destination_post = $this->get_request_post( $request );
+
+		if ( ! $destination_post instanceof WP_Post ) {
+			return new WP_Error(
+				'invalid_post',
+				__( 'Invalid post.', 'wp-parsely' ),
+				array( 'status' => 404 )
+			);
+		}
 
 		/**
 		 * The source post ID, where the inbound link will be placed.
@@ -445,6 +456,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				'parsely_invalid_source_post',
 				__( 'Invalid source post.', 'wp-parsely' )
 			);
+		}
+
+		$source_post_access = $this->validate_source_post_access(
+			$source_post->ID
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
 		}
 
 		$suggestions = $this->suggestions_api->get_inbound_link_positions(
@@ -524,7 +542,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	public function get_existing_suggestions( WP_REST_Request $request ) {
 		$post_id = $request->get_param( 'post_id' );
 
-		$suggestions = Inbound_Smart_Link::get_existing_suggestions( $post_id );
+		$suggestions = $this->filter_accessible_links(
+			Inbound_Smart_Link::get_existing_suggestions( $post_id )
+		);
 
 		// Convert the inbound smart links to an array.
 		$suggestions = array_map(
@@ -567,7 +587,12 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$post_id = $request->get_param( 'post_id' );
 
 		// Get the inbound smart links for the post.
-		$inbound_links = Inbound_Smart_Link::get_inbound_smart_links( $post_id, Smart_Link_Status::APPLIED );
+		$inbound_links = $this->filter_accessible_links(
+			Inbound_Smart_Link::get_inbound_smart_links(
+				$post_id,
+				Smart_Link_Status::APPLIED
+			)
+		);
 
 		// Convert the inbound smart links to an array.
 		$inbound_links = array_map(
@@ -606,7 +631,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @since 3.19.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function discard_suggestion( WP_REST_Request $request ) {
 		/**
@@ -615,6 +640,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 * @var Inbound_Smart_Link $inbound_link
 		 */
 		$inbound_link = $request->get_param( 'inbound_link' );
+
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
 
 		$deleted = $inbound_link->delete();
 
@@ -645,6 +677,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 * @var bool $restore_original_link
 		 */
 		$restore_original_link = $request->get_param( 'restore_original' );
+
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
 
 		$deleted = $inbound_link->remove( $restore_original_link );
 
@@ -701,6 +740,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		 * @var bool $restore_original_link
 		 */
 		$restore_original_link = (bool) $request->get_param( 'restore_original' );
+
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
 
 		$updated = $inbound_link->update_link_text( $text, $offset, $restore_original_link );
 
@@ -780,6 +826,13 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 			);
 		}
 
+		$source_post_access = $this->validate_source_post_access(
+			$inbound_link->source_post_id
+		);
+		if ( is_wp_error( $source_post_access ) ) {
+			return $source_post_access;
+		}
+
 		$applied = $inbound_link->apply();
 
 		if ( is_wp_error( $applied ) ) {
@@ -806,6 +859,55 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 				),
 			),
 			200
+		);
+	}
+
+	/**
+	 * Removes Smart Links whose source post the current user cannot use the
+	 * feature on.
+	 *
+	 * Also stops the list endpoints from returning data about source posts the
+	 * user has no access to.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @param array<Inbound_Smart_Link> $links The Smart Links to filter.
+	 * @return array<Inbound_Smart_Link> The accessible Smart Links.
+	 */
+	private function filter_accessible_links( array $links ): array {
+		return array_values(
+			array_filter(
+				$links,
+				function ( Inbound_Smart_Link $link ): bool {
+					return $this->is_pch_feature_enabled_for_user(
+						$link->source_post_id
+					);
+				}
+			)
+		);
+	}
+
+	/**
+	 * Validates that the current user can use the feature on the source post.
+	 *
+	 * The source post is the post that gets read and modified when a placement
+	 * is generated or accepted. It is not always known at permission callback
+	 * time, as it can be derived from a stored Smart Link.
+	 *
+	 * @since 3.23.6
+	 *
+	 * @param int $source_post_id The ID of the source post.
+	 * @return bool|WP_Error True if access is allowed, WP_Error otherwise.
+	 */
+	private function validate_source_post_access( int $source_post_id ) {
+		if ( $this->is_pch_feature_enabled_for_user( $source_post_id ) ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'parsely_cannot_access_source_post',
+			__( 'You are not allowed to modify the source post.', 'wp-parsely' ),
+			array( 'status' => 403 )
 		);
 	}
 
