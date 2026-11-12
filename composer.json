@@ -96,9 +96,6 @@
 		"testwp": [
 			"@php ./vendor/bin/phpunit --no-coverage --order-by=random -c phpunit-integration.xml.dist"
 		],
-		"testwp-experimental": [
-			"@php ./vendor/bin/phpunit --no-coverage --order-by=random -c phpunit-experimental.xml.dist"
-		],
 		"testwp-ms": [
 			"@putenv WP_MULTISITE=1",
 			"@composer testwp"

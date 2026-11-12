@@ -185,6 +185,41 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			'before'
 		);
 
+		// Inject the tones and personas, so that PHP stays their single source
+		// and the settings page can offer the same choices as the editor.
+		wp_add_inline_script(
+			static::get_script_id(),
+			'window.wpParselyContentHelperTones = ' .
+				wp_json_encode( Suggestion_Defaults::get_tones() ) . ';' .
+			'window.wpParselyContentHelperPersonas = ' .
+				wp_json_encode( Suggestion_Defaults::get_personas() ) . ';',
+			'before'
+		);
+
+		// Inject the site-wide tone and persona. The stored settings carry them
+		// already, but not once a user's own value is the custom sentinel,
+		// which is exactly when the editor needs them. The desired length has
+		// no sentinel, so it is not needed here.
+		$excerpt_options = Suggestion_Defaults::get_feature_options( $this->parsely, 'excerpt_suggestions' );
+		$title_options   = Suggestion_Defaults::get_feature_options( $this->parsely, 'title_suggestions' );
+
+		wp_add_inline_script(
+			static::get_script_id(),
+			'window.wpParselyContentHelperDefaults = ' . wp_json_encode(
+				array(
+					'excerptSuggestions' => array(
+						'persona' => Suggestion_Defaults::get_default_persona( $excerpt_options ),
+						'tone'    => Suggestion_Defaults::get_default_tone( $excerpt_options ),
+					),
+					'titleSuggestions'   => array(
+						'persona' => Suggestion_Defaults::get_default_persona( $title_options ),
+						'tone'    => Suggestion_Defaults::get_default_tone( $title_options ),
+					),
+				)
+			) . ';',
+			'before'
+		);
+
 		$use_category_slugs_in_searches = apply_filters( 'wp_parsely_use_category_slugs_in_searches', false );
 		wp_add_inline_script(
 			static::get_script_id(),
