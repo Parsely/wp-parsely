@@ -191,20 +191,27 @@ export const PostsTable = ( {
 					onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
 				}
 
+				let fetchedStats: PostStats[] = [];
+
 				if ( ! hideStats && fetchedPosts.data.length > 0 ) {
 					// Fetch the stats for the posts.
-					const fetchedStats = await StatsProvider.getInstance().getStatsForPosts( fetchedPosts.data, {
+					fetchedStats = await StatsProvider.getInstance().getStatsForPosts( fetchedPosts.data, {
 						limit: fetchedPosts.data.length,
 						period_start: '30d',
 						page: 1,
 						campaign_id: 'wp-parsely',
 						campaign_medium: 'smart-link',
 					} );
+				}
 
+				// A newer query may have superseded this one while the stats
+				// request was in flight, so re-check before applying results.
+				if ( ! isActive ) {
+					return;
+				}
+
+				if ( ! hideStats ) {
 					setStats( fetchedStats );
-				} else if ( ! hideStats ) {
-					// No posts, so nothing to request stats for.
-					setStats( [] );
 				}
 
 				// Set the posts and total pages after fetching the stats.
@@ -213,6 +220,10 @@ export const PostsTable = ( {
 				didFirstSearch.current = true;
 			} catch ( fetchError: unknown ) {
 				console.error( fetchError ); // eslint-disable-line no-console
+
+				if ( ! isActive ) {
+					return;
+				}
 
 				if ( fetchError instanceof ContentHelperError ) {
 					setError( fetchError );
@@ -225,8 +236,10 @@ export const PostsTable = ( {
 					);
 				}
 			} finally {
-				setIsLoading( false );
-				setIsLoadingStats( false );
+				if ( isActive ) {
+					setIsLoading( false );
+					setIsLoadingStats( false );
+				}
 			}
 		};
 

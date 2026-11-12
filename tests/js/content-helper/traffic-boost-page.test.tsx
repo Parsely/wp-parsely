@@ -3,6 +3,7 @@
 /**
  * External dependencies
  */
+import '@testing-library/jest-dom';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 /**
@@ -263,7 +264,7 @@ describe( 'Traffic Boost page telemetry', () => {
 					resolveSlow = resolve;
 				} );
 			}
-			return Promise.resolve( { data: [ { id: 1 } ], total_items: 5, total_pages: 1 } );
+			return Promise.resolve( { data: [ { id: 2 } ], total_items: 5, total_pages: 1 } );
 		} );
 
 		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'gar' } } );
@@ -280,6 +281,11 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( trackEvent ).toHaveBeenCalledWith(
 			'traffic_boost_searched', { query_length: 6, result_count: 5 }
 		);
+
+		// The newer ("garden") results stay on screen; the slow ("gar")
+		// response that resolved afterwards must not overwrite them.
+		expect( screen.getByText( 'Post 2' ) ).toBeInTheDocument();
+		expect( screen.queryByText( 'Post 1' ) ).not.toBeInTheDocument();
 	} );
 
 	it( 'sends a pending search when the user leaves the page', async () => {
