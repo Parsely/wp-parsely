@@ -51,6 +51,7 @@ trait Post_Data_Trait {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	private function set_itm_source_from_request( WP_REST_Request $request ): void {
+		/** @var string|null $source */
 		$source = $request->get_param( 'itm_source' );
 		if ( null !== $source ) {
 			$this->set_itm_source( $source );

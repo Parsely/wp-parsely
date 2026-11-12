@@ -533,6 +533,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function get_post_meta_for_urls( WP_REST_Request $request ): WP_REST_Response {
+		/** @var array<string> $urls */
 		$urls       = $request->get_param( 'urls' );
 		$posts_meta = array();
 
