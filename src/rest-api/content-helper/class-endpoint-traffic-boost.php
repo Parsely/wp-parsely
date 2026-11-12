@@ -318,9 +318,10 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		/**
 		 * The maximum number of suggestions to return.
 		 *
-		 * @var int $max_items
+		 * @var int|string $max_items
 		 */
-		$max_items = (int) $request->get_param( 'max_items' );
+		$max_items = $request->get_param( 'max_items' );
+		$max_items = (int) $max_items;
 
 		/**
 		 * Whether to save the suggestions.
@@ -540,6 +541,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function get_existing_suggestions( WP_REST_Request $request ) {
+		/** @var int $post_id */
 		$post_id = $request->get_param( 'post_id' );
 
 		$suggestions = $this->filter_accessible_links(
@@ -584,6 +586,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function get_inbound_smart_links( WP_REST_Request $request ) {
+		/** @var int $post_id */
 		$post_id = $request->get_param( 'post_id' );
 
 		// Get the inbound smart links for the post.
@@ -616,6 +619,7 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function discard_suggestions( WP_REST_Request $request ) {
+		/** @var int $post_id */
 		$post_id = $request->get_param( 'post_id' );
 
 		$result = Inbound_Smart_Link::delete_pending_suggestions( $post_id );
@@ -940,7 +944,9 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 		$request->set_param( 'inbound_link', $inbound_link );
 
 		// Validate if the smart link is associated with the post.
-		$post_id = intval( $request->get_param( 'post_id' ) );
+		/** @var array<mixed>|scalar|null $post_id */
+		$post_id = $request->get_param( 'post_id' );
+		$post_id = intval( $post_id );
 
 		if ( $inbound_link->destination_post_id !== $post_id ) {
 			return new WP_Error(
