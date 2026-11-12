@@ -295,6 +295,28 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
+	it( 'does not track a search that resolves after the page is left', async () => {
+		const { unmount } = await renderPage();
+
+		let resolveSearch: ( value: unknown ) => void = () => {};
+		getPostsMock.mockImplementation( () => new Promise( ( resolve ) => {
+			resolveSearch = resolve;
+		} ) );
+
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'hello' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+
+		unmount();
+		await act( async () => {
+			resolveSearch( { data: [ { id: 1 } ], total_items: 7, total_pages: 1 } );
+		} );
+		settle();
+
+		expect( trackEvent ).not.toHaveBeenCalled();
+	} );
+
 	it( 'does not track an empty search', async () => {
 		await renderPage();
 

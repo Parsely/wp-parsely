@@ -171,6 +171,11 @@ export const PostsTable = ( {
 	 * @since 3.19.0
 	 */
 	useEffect( () => {
+		// Set false on cleanup, so a response that resolves after unmount (or
+		// after a newer query replaces this one) doesn't report a search the
+		// user never saw.
+		let isActive = true;
+
 		const fetchPosts = async () => {
 			try {
 				const fetchedPosts = await DashboardProvider.getInstance().getPosts( {
@@ -182,7 +187,9 @@ export const PostsTable = ( {
 
 				// Reported before the stats request, so a search is known about even
 				// when stats fail.
-				onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
+				if ( isActive ) {
+					onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
+				}
 
 				if ( ! hideStats && fetchedPosts.data.length > 0 ) {
 					// Fetch the stats for the posts.
@@ -227,6 +234,10 @@ export const PostsTable = ( {
 		setIsLoadingStats( true );
 
 		fetchPosts();
+
+		return () => {
+			isActive = false;
+		};
 	}, [ currentPage, itemsPerPage, query, hideStats ] );
 
 	/**
