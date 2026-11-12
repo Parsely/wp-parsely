@@ -333,4 +333,97 @@ class EndpointPostsTest extends BaseEndpointTest {
 			$response_data['params']
 		);
 	}
+
+	/**
+	 * Verifies that each URL's canonical version is added to the `urls`
+	 * parameter only when `use_wp_permalink` is enabled.
+	 *
+	 * @dataProvider data_get_posts_use_wp_permalink
+	 *
+	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::get_posts
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_canonical_url
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_default_access_capability
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
+	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 *
+	 * @param bool|null     $use_wp_permalink The parameter's value, or null to omit it.
+	 * @param array<string> $expected_urls    The URLs expected in the response's parameters.
+	 */
+	public function test_get_posts_use_wp_permalink( ?bool $use_wp_permalink, array $expected_urls ): void {
+		TestCase::set_options(
+			array(
+				'apikey'     => 'example.com',
+				'api_secret' => 'test-secret',
+			)
+		);
+		$this->set_current_user_to_admin();
+
+		add_filter(
+			'pre_http_request',
+			function (): array {
+				return array( 'body' => '{"data":[]}' );
+			}
+		);
+		add_filter(
+			'wp_parsely_canonical_url_domain',
+			function (): string {
+				return 'canonical.example';
+			}
+		);
+
+		$rest_request = new WP_REST_Request( 'GET', '/wp-parsely/v2/stats/posts' );
+		$rest_request->set_param( 'urls', array( 'https://blog.parse.ly/a/' ) );
+		if ( null !== $use_wp_permalink ) {
+			$rest_request->set_param( 'use_wp_permalink', $use_wp_permalink );
+		}
+
+		$response = rest_get_server()->dispatch( $rest_request );
+
+		/**
+		 * The response data.
+		 *
+		 * @var array{params: array{urls: array<string>}} $response_data
+		 */
+		$response_data = $response->get_data();
+
+		self::assertSame( 200, $response->get_status() );
+		self::assertSame( $expected_urls, $response_data['params']['urls'] );
+	}
+
+	/**
+	 * Provides the `use_wp_permalink` values and the URLs they produce.
+	 *
+	 * @return array<string, array{bool|null, array<string>}> The parameter's value and the expected URLs.
+	 */
+	public function data_get_posts_use_wp_permalink(): array {
+		$url       = 'https://blog.parse.ly/a/';
+		$canonical = 'https://canonical.example/a/';
+
+		return array(
+			'enabled'  => array( true, array( $canonical, $url ) ),
+			'disabled' => array( false, array( $url ) ),
+			'omitted'  => array( null, array( $url ) ),
+		);
+	}
 }
