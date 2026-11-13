@@ -70,7 +70,7 @@ test.describe( 'Front end metadata insertion', () => {
 		await page.goto( '/?p=1' );
 
 		// The permalink depends on the permalink structure, so read it after any redirect.
-		const permalink = page.url();
+		const permalink = forceHttps( page.url() );
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
@@ -86,7 +86,7 @@ test.describe( 'Front end metadata insertion', () => {
 	test( 'Should insert JSON-LD on page', async ( { page } ) => {
 		await page.goto( '/?p=2' );
 
-		const permalink = page.url();
+		const permalink = forceHttps( page.url() );
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json" class="wp-parsely-metadata">' );
@@ -125,7 +125,7 @@ test.describe( 'Front end metadata insertion', () => {
 	test( 'Should insert repeated metas on post', async ( { page } ) => {
 		await page.goto( '/?p=1' );
 
-		const permalink = page.url();
+		const permalink = forceHttps( page.url() );
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="Hello world!">' );
@@ -145,7 +145,7 @@ test.describe( 'Front end metadata insertion', () => {
 	test( 'Should insert repeated metas on page', async ( { page } ) => {
 		await page.goto( '/?p=2' );
 
-		const permalink = page.url();
+		const permalink = forceHttps( page.url() );
 		const content = await page.content();
 
 		expect( content ).toContain( '<meta name="parsely-title" content="Sample Page">' );
@@ -211,4 +211,18 @@ class Utils {
  */
 function escapeSlashes( url = '' ): string {
 	return url.replace( /\\/g, '\\\\' ).replace( /\//g, '\\/' );
+}
+
+/**
+ * Returns the URL with an https scheme, as the metadata outputs post and page
+ * URLs by default. The front page URL keeps the home URL's scheme.
+ *
+ * @since 3.26.0
+ *
+ * @param {string} url The URL to convert.
+ *
+ * @return {string} The URL with an https scheme.
+ */
+function forceHttps( url: string ): string {
+	return url.replace( /^http:\/\//, 'https://' );
 }

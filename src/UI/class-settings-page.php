@@ -351,7 +351,7 @@ final class Settings_Page {
 		$field_args = array(
 			'title'         => __( 'Metadata Format', 'wp-parsely' ),
 			'option_key'    => $field_id,
-			'help_text'     => __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://docs.parse.ly/metadata-jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' ),
+			'help_text'     => __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with the default <a href="https://docs.parse.ly/metatags/">repeated meta tags</a>, but if you prefer to use <a href="https://docs.parse.ly/metadata-jsonld/">JSON-LD</a> then you can do so here.', 'wp-parsely' ),
 			'radio_options' => array(
 				'json_ld'        => 'json_ld',
 				'repeated_metas' => 'repeated_metas',
@@ -843,7 +843,7 @@ final class Settings_Page {
 					'true'  => __( 'Yes, force <code>https</code> canonical URLs by default.', 'wp-parsely' ),
 					'false' => __( 'No, I want to use <code>http</code>.', 'wp-parsely' ),
 				),
-				'help_text'     => __( 'Note: the plugin uses <code>http</code> by default, and this is fine for most publishers. It is unlikely you will have to change this unless directed to do so by a Parse.ly support representative.', 'wp-parsely' ),
+				'help_text'     => __( 'Note: the plugin uses <code>https</code> by default, and this is fine for most publishers. It is unlikely you will have to change this unless directed to do so by a Parse.ly support representative.', 'wp-parsely' ),
 			)
 		);
 	}
