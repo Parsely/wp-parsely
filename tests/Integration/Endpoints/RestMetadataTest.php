@@ -208,7 +208,7 @@ final class RestMetadataTest extends TestCase {
 			'version'       => '1.1.0',
 			'canonical_url' => $canonical_url,
 			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
+			'rendered'      => self::$rest->get_rendered_meta( 'repeated_metas' ),
 			'tracker_url'   => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
@@ -327,7 +327,7 @@ final class RestMetadataTest extends TestCase {
 			'version'       => '1.1.0',
 			'canonical_url' => $canonical_url,
 			'meta'          => $metadata->construct_metadata( $this->get_post( $post_id ) ),
-			'rendered'      => self::$rest->get_rendered_meta( 'json_ld' ),
+			'rendered'      => self::$rest->get_rendered_meta( 'repeated_metas' ),
 		);
 
 		self::assertSame( $expected, $meta_object );
@@ -442,7 +442,7 @@ final class RestMetadataTest extends TestCase {
 		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
-		$expected    = '<script type="application/ld+json" class="wp-parsely-metadata">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
+		$expected    = '<script type="application/ld+json" class="wp-parsely-metadata">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"https:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
 		self::assertSame( $expected, $meta_string );
 	}
 
@@ -511,7 +511,7 @@ final class RestMetadataTest extends TestCase {
 
 		$meta_string = self::$rest->get_rendered_meta( 'repeated_metas' );
 		$expected    = '<meta name="parsely-title" content="My test_get_rendered_repeated_metas title" />
-<meta name="parsely-link" content="http://example.org/?p=' . $post_id . '" />
+<meta name="parsely-link" content="https://example.org/?p=' . $post_id . '" />
 <meta name="parsely-type" content="post" />
 <meta name="parsely-pub-date" content="' . $date . '" />
 <meta name="parsely-section" content="Uncategorized" />';

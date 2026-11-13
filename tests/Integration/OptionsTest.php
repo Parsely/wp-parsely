@@ -435,20 +435,20 @@ final class OptionsTest extends TestCase {
 		add_filter(
 			'wp_parsely_managed_options',
 			function () {
-				return array( 'meta_type' => 'repeated_metas' );
+				return array( 'meta_type' => 'json_ld' );
 			}
 		);
 
 		// Options aren't saved. Default meta_type value should be overridden.
 		self::assertSame(
-			'repeated_metas',
+			'json_ld',
 			( new Parsely() )->get_options()['meta_type']
 		);
 
 		// Options are saved. Saved meta_type value should be overridden.
 		add_option( Parsely::OPTIONS_KEY, $default_options );
 		self::assertSame(
-			'repeated_metas',
+			'json_ld',
 			( new Parsely() )->get_options()['meta_type']
 		);
 	}
@@ -485,16 +485,16 @@ final class OptionsTest extends TestCase {
 
 		// No options are saved. Should get the value from option defaults.
 		self::assertSame(
-			'json_ld',
+			'repeated_metas',
 			( new Parsely() )->get_options()['meta_type']
 		);
 
 		// Options are saved. Should get the value from saved option.
 		$options              = $default_options;
-		$options['meta_type'] = 'repeated_metas';
+		$options['meta_type'] = 'json_ld';
 		add_option( Parsely::OPTIONS_KEY, $options );
 		self::assertSame(
-			'repeated_metas',
+			'json_ld',
 			( new Parsely() )->get_options()['meta_type']
 		);
 	}
@@ -580,7 +580,7 @@ final class OptionsTest extends TestCase {
 
 		self::assertSame( 'category', $options['custom_taxonomy_section'] );
 		self::assertSame( false, $options['disable_javascript'] );
-		self::assertSame( 'json_ld', $options['meta_type'] );
+		self::assertSame( 'repeated_metas', $options['meta_type'] );
 		self::assertSame( false, $options['use_top_level_cats'] );
 	}
 
