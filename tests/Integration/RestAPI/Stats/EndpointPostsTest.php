@@ -338,6 +338,8 @@ class EndpointPostsTest extends BaseEndpointTest {
 	 * Verifies that each URL's canonical version is added to the `urls`
 	 * parameter only when `use_wp_permalink` is enabled.
 	 *
+	 * @since 3.26.0
+	 *
 	 * @dataProvider data_get_posts_use_wp_permalink
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::get_posts
@@ -413,6 +415,8 @@ class EndpointPostsTest extends BaseEndpointTest {
 
 	/**
 	 * Provides the `use_wp_permalink` values and the URLs they produce.
+	 *
+	 * @since 3.26.0
 	 *
 	 * @return array<string, array{bool|null, array<string>}> The parameter's value and the expected URLs.
 	 */
