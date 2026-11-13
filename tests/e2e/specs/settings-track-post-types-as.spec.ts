@@ -158,14 +158,9 @@ test.describe( 'Track Post Types as', () => {
 
 		await utils.saveSettingsAndHardRefresh();
 
-		// Scroll to table to make it easier to view when debugging.
-		await page.evaluate( () => {
-			document.querySelector( '#track-post-types' )?.scrollIntoView();
-		} );
-
-		// Make adjustments to values using keys and save.
-		await page.locator( '#track-post-types' ).focus();
-		await page.keyboard.press( 'Tab' );
+		// Make adjustments to values using keys and save, starting from the
+		// first group's checked radio, which is where Tab enters the table.
+		await page.locator( radioPostAsNone ).focus();
 		await page.keyboard.press( 'ArrowLeft' );
 		await page.keyboard.press( 'ArrowLeft' );
 		await page.keyboard.press( 'ArrowRight' );

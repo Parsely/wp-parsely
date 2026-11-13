@@ -15,6 +15,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: PHP ${{ matrix.php }}
@@ -29,24 +32,24 @@ jobs:
       # - coverage: Whether to run the tests with code coverage.
       # - experimental: Whether the build is "allowed to fail".
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2', '8.3']
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
         wp: ['latest']
         coverage: [none]
         experimental: [false]
         include:
-          - php: '8.4'
+          - php: '8.5'
             coverage: pcov
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             experimental: false
-          - php: '8.5'
+          - php: '8.6'
             wp: 'trunk'
             experimental: true
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -63,7 +66,7 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
 
       - name: Install Subversion
         run: |
@@ -77,17 +80,14 @@ jobs:
         run: composer prepare-ci --no-interaction
 
       - name: Run integration tests
-        if: ${{ !matrix.experimental && matrix.coverage == 'none' }}
+        id: single-site
         run: composer testwp --no-interaction
 
+      # Multisite runs even if single-site tests fail, but not if setup failed.
       - name: Run integration tests (multisite)
-        if: ${{ !matrix.experimental && matrix.coverage == 'none' }}
+        if: ${{ !cancelled() && steps.single-site.outcome != 'skipped' && matrix.coverage != 'pcov' }}
         run: composer testwp-ms --no-interaction
 
-      - name: Run integration tests (experimental)
-        if: ${{ matrix.experimental }}
-        run: composer testwp-experimental --no-interaction
-
       - name: Run integration tests (multisite with code coverage)
-        if: ${{ matrix.coverage == 'pcov' }}
+        if: ${{ !cancelled() && steps.single-site.outcome != 'skipped' && matrix.coverage == 'pcov' }}
         run: composer coveragewp-ci --no-interaction

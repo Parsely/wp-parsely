@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.23.1
+ * Version:           3.25.1
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -19,7 +19,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
  * Requires PHP:      7.4
- * Requires WP:       6.0.0
+ * Requires WP:       6.1.0
  */
 
 declare(strict_types=1);
@@ -50,7 +50,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION             = '3.23.1';
+const PARSELY_VERSION             = '3.25.1';
 const PARSELY_FILE                = __FILE__;
 const PARSELY_DATA_SCHEMA_VERSION = '1';
 const PARSELY_CACHE_GROUP         = 'wp-parsely';
@@ -119,7 +119,7 @@ function parsely_admin_init_register(): void {
 	( new Dashboard_Widget( $parsely ) )->run();
 }
 
-add_action( 'admin_init', __NAMESPACE__ . '\\create_engagement_boost_changeset_post' );
+add_action( 'load-toplevel_page_parsely-dashboard-page', __NAMESPACE__ . '\\create_engagement_boost_changeset_post' );
 /**
  * Creates a predefined changeset post in order to make the Engagement Boost
  * preview work for non-administrator user roles.
@@ -133,9 +133,11 @@ add_action( 'admin_init', __NAMESPACE__ . '\\create_engagement_boost_changeset_p
  *
  * By creating a predefined changeset post with a known UUID that we use in
  * `iFrameSrc()`, we guarantee that the preview will work for all authorized
- * user roles.
+ * user roles. The preview only appears on the Engagement Boost page, so the
+ * post is created when that page loads.
  *
  * @since 3.20.7
+ * @since 3.24.3 Runs only when the Engagement Boost page loads.
  */
 function create_engagement_boost_changeset_post(): void {
 	if ( ! function_exists( 'post_exists' ) ) {
@@ -223,6 +225,20 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helpe
  */
 function init_content_helper_editor_sidebar(): void {
 	$GLOBALS['parsely_editor_sidebar']->run();
+}
+
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\\init_content_helper_canvas_styles' );
+/**
+ * Inserts the PCH Editor Sidebar styles that need to reach the Editor canvas.
+ *
+ * @since 3.24.0
+ */
+function init_content_helper_canvas_styles(): void {
+	if ( ! isset( $GLOBALS['parsely_editor_sidebar'] ) ) {
+		return;
+	}
+
+	$GLOBALS['parsely_editor_sidebar']->run_canvas_styles();
 }
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
@@ -314,7 +330,7 @@ function parsely_check_data_schema_updates(): void {
 		$smart_links_without_status = get_posts(
 			array(
 				'post_type'      => 'parsely_smart_link',
-				'posts_per_page' => -1,
+				'posts_per_page' => -1, // phpcs:ignore WordPressVIPMinimum.Performance.NoPaging.posts_per_page_posts_per_page
 				'fields'         => 'ids',
 				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 				'tax_query'      => array(

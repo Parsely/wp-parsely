@@ -51,6 +51,7 @@ trait Post_Data_Trait {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	private function set_itm_source_from_request( WP_REST_Request $request ): void {
+		/** @var string|null $source */
 		$source = $request->get_param( 'itm_source' );
 		if ( null !== $source ) {
 			$this->set_itm_source( $source );
@@ -146,8 +147,8 @@ trait Post_Data_Trait {
 			$post_id  = Utils::get_post_id_by_url( $item['url'] );
 			$post_url = Parsely::get_url_with_itm_source( $item['url'], null );
 
-			// If we have a post ID, update the post canonical URL.
-			if ( 0 !== $post_id ) {
+			// Only updates the canonical URL of posts the current user can edit.
+			if ( 0 !== $post_id && current_user_can( 'edit_post', $post_id ) ) {
 				Parsely::set_canonical_url( $post_id, $post_url );
 			}
 
