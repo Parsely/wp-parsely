@@ -64,6 +64,21 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
 		$this->set_current_user_to_admin();
+
+		// Hook assertions match any callback, and WordPress 7.2 hooks
+		// admin_footer, so empty these hooks (restored after each test).
+		$hooks = array(
+			'current_screen',
+			'manage_posts_columns',
+			'manage_pages_columns',
+			'manage_posts_custom_column',
+			'manage_pages_custom_column',
+			'admin_footer',
+		);
+
+		foreach ( $hooks as $hook ) {
+			remove_all_filters( $hook );
+		}
 	}
 
 	/**

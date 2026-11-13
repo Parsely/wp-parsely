@@ -100,6 +100,7 @@ class Endpoint_Related extends Base_Endpoint {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_related_posts( WP_REST_Request $request ) {
+		/** @var string $url */
 		$url = $request->get_param( 'url' );
 
 		$related_posts = $this->get_related_posts_of_url( $request, $url );

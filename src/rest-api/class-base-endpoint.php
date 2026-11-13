@@ -152,10 +152,16 @@ abstract class Base_Endpoint {
 		// Create the full route for the endpoint.
 		$route = static::get_endpoint_name() . '/' . $route;
 
+		/** @var non-falsy-string $route_namespace */
+		$route_namespace = $this->api_controller->get_full_namespace();
+
+		/** @var non-falsy-string $prefixed_route */
+		$prefixed_route = $this->api_controller->prefix_route( $route );
+
 		// Register the route.
 		register_rest_route(
-			$this->api_controller->get_full_namespace(),
-			$this->api_controller->prefix_route( $route ),
+			$route_namespace,
+			$prefixed_route,
 			array(
 				array(
 					'methods'             => $methods,
