@@ -430,25 +430,25 @@ final class OptionsTest extends TestCase {
 	 */
 	public function test_set_managed_options_override_all_other_option_types(): void {
 		$default_options = self::$parsely->get_default_options();
-		self::assertSame( 'json_ld', $default_options['meta_type'] );
+		self::assertSame( 'repeated_metas', $default_options['meta_type'] );
 
 		add_filter(
 			'wp_parsely_managed_options',
 			function () {
-				return array( 'meta_type' => 'repeated_metas' );
+				return array( 'meta_type' => 'json_ld' );
 			}
 		);
 
 		// Options aren't saved. Default meta_type value should be overridden.
 		self::assertSame(
-			'repeated_metas',
+			'json_ld',
 			( new Parsely() )->get_options()['meta_type']
 		);
 
 		// Options are saved. Saved meta_type value should be overridden.
 		add_option( Parsely::OPTIONS_KEY, $default_options );
 		self::assertSame(
-			'repeated_metas',
+			'json_ld',
 			( new Parsely() )->get_options()['meta_type']
 		);
 	}
@@ -474,7 +474,7 @@ final class OptionsTest extends TestCase {
 	 */
 	public function test_null_managed_options_get_their_value_from_the_database_or_defaults(): void {
 		$default_options = self::$parsely->get_default_options();
-		self::assertSame( 'json_ld', $default_options['meta_type'] );
+		self::assertSame( 'repeated_metas', $default_options['meta_type'] );
 
 		add_filter(
 			'wp_parsely_managed_options',
@@ -485,16 +485,16 @@ final class OptionsTest extends TestCase {
 
 		// No options are saved. Should get the value from option defaults.
 		self::assertSame(
-			'json_ld',
+			'repeated_metas',
 			( new Parsely() )->get_options()['meta_type']
 		);
 
 		// Options are saved. Should get the value from saved option.
 		$options              = $default_options;
-		$options['meta_type'] = 'repeated_metas';
+		$options['meta_type'] = 'json_ld';
 		add_option( Parsely::OPTIONS_KEY, $options );
 		self::assertSame(
-			'repeated_metas',
+			'json_ld',
 			( new Parsely() )->get_options()['meta_type']
 		);
 	}
@@ -580,7 +580,7 @@ final class OptionsTest extends TestCase {
 
 		self::assertSame( 'category', $options['custom_taxonomy_section'] );
 		self::assertSame( false, $options['disable_javascript'] );
-		self::assertSame( 'json_ld', $options['meta_type'] );
+		self::assertSame( 'repeated_metas', $options['meta_type'] );
 		self::assertSame( false, $options['use_top_level_cats'] );
 	}
 
