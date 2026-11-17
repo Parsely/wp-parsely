@@ -132,23 +132,26 @@ class Endpoint_Post extends Base_Endpoint {
 			'/referrers',
 			array( 'GET' ),
 			array( $this, 'get_post_referrers' ),
-			array(
-				'period_start' => array(
-					'description' => __( 'The start of the period.', 'wp-parsely' ),
-					'type'        => 'string',
-					'required'    => false,
+			array_merge(
+				array(
+					'period_start' => array(
+						'description' => __( 'The start of the period.', 'wp-parsely' ),
+						'type'        => 'string',
+						'required'    => false,
+					),
+					'period_end'   => array(
+						'description' => __( 'The end of the period.', 'wp-parsely' ),
+						'type'        => 'string',
+						'required'    => false,
+					),
+					'total_views'  => array(
+						'description' => __( 'The total views of the post.', 'wp-parsely' ),
+						'type'        => 'string',
+						'required'    => false,
+						'default'     => '0',
+					),
 				),
-				'period_end'   => array(
-					'description' => __( 'The end of the period.', 'wp-parsely' ),
-					'type'        => 'string',
-					'required'    => false,
-				),
-				'total_views'  => array(
-					'description' => __( 'The total views of the post.', 'wp-parsely' ),
-					'type'        => 'string',
-					'required'    => false,
-					'default'     => '0',
-				),
+				$this->get_itm_source_param_args()
 			)
 		);
 

@@ -920,13 +920,17 @@ class Endpoint_Traffic_Boost extends Base_Endpoint {
 	 *
 	 * @since 3.19.0
 	 *
-	 * @param int             $smart_link_id The smart link ID.
-	 * @param WP_REST_Request $request The request object.
-	 * @return bool|WP_Error True if the smart link ID is valid, WP_Error on failure.
+	 * @param array<mixed>|scalar|null $smart_link_id The raw parameter value.
+	 * @param WP_REST_Request          $request The request object.
+	 * @return bool|WP_Error True if the smart link ID is valid, false or WP_Error on failure.
 	 */
-	public function validate_smart_link_id( int $smart_link_id, WP_REST_Request $request ) {
+	public function validate_smart_link_id( $smart_link_id, WP_REST_Request $request ) {
+		if ( ! rest_is_integer( $smart_link_id ) ) {
+			return false;
+		}
+
 		/** @var Inbound_Smart_Link|false $inbound_link */
-		$inbound_link = Inbound_Smart_Link::get_smart_link_by_id( $smart_link_id );
+		$inbound_link = Inbound_Smart_Link::get_smart_link_by_id( intval( $smart_link_id ) );
 
 		if ( false === $inbound_link ) {
 			return new WP_Error(

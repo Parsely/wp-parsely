@@ -117,7 +117,7 @@ class Endpoint_Related extends Base_Endpoint {
 	 *
 	 * @since 3.24.2
 	 *
-	 * @param mixed $url The raw parameter value, as validation runs before type checks.
+	 * @param mixed $url The raw parameter value.
 	 * @return true|WP_Error
 	 */
 	public function validate_url( $url ) {
