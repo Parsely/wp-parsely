@@ -337,7 +337,7 @@ final class Dashboard_Page {
 
 		wp_add_inline_script(
 			'parsely-dashboard-page',
-			"window.wpParselyContentHelperPermissions = '$permissions_json';",
+			'window.wpParselyContentHelperPermissions = ' . wp_json_encode( $permissions_json ) . ';',
 			'before'
 		);
 	}
@@ -363,11 +363,12 @@ final class Dashboard_Page {
 			$settings = array();
 		}
 
-		$settings = wp_json_encode( $settings );
+		// The script parses the settings from a JSON string.
+		$settings = (string) wp_json_encode( $settings );
 
 		wp_add_inline_script(
 			'parsely-dashboard-page',
-			"window.wpParselyContentHelperSettings = '$settings';",
+			'window.wpParselyContentHelperSettings = ' . wp_json_encode( $settings ) . ';',
 			'before'
 		);
 	}

@@ -563,6 +563,30 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Returns the values that a script's "before" inline scripts assign to
+	 * window properties, each decoded from JSON.
+	 *
+	 * Each inline script must make a single assignment. A value that isn't
+	 * valid JSON is returned as null.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @param string $handle The script's handle.
+	 * @return array<string, mixed> The decoded values, by property name.
+	 */
+	public function get_inline_script_values( string $handle ): array {
+		$values = array();
+
+		foreach ( (array) wp_scripts()->get_data( $handle, 'before' ) as $script ) {
+			if ( is_string( $script ) && 1 === preg_match( '/^window\.(\w+) = (.+);$/s', $script, $matches ) ) {
+				$values[ $matches[1] ] = json_decode( $matches[2], true );
+			}
+		}
+
+		return $values;
+	}
+
+	/**
 	 * Asserts that a passed style is not registered.
 	 *
 	 * @param string $handle Style handle to test.
