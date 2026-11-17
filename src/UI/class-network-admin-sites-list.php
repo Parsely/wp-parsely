@@ -69,7 +69,7 @@ final class Network_Admin_Sites_List {
 			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
 			esc_url( esc_url( Parsely::get_settings_url( $_blog_id ) ) ),
 			esc_attr( self::generate_aria_label_for_blog_id( $_blog_id ) ),
-			__( 'Parse.ly Settings', 'wp-parsely' )
+			esc_html__( 'Parse.ly Settings', 'wp-parsely' )
 		);
 
 		return $actions;
@@ -104,7 +104,7 @@ final class Network_Admin_Sites_List {
 	 * @return array<string, mixed> The list of columns to display in the network admin table including ours.
 	 */
 	public static function add_site_id_column( array $sites_columns ): array {
-		$sites_columns[ self::COLUMN_NAME ] = __( 'Parse.ly Site ID', 'wp-parsely' );
+		$sites_columns[ self::COLUMN_NAME ] = esc_html__( 'Parse.ly Site ID', 'wp-parsely' );
 		return $sites_columns;
 	}
 
