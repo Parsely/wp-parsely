@@ -177,7 +177,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
 		if ( $this->is_tracked_as_post_type() ) {
-			$columns['parsely-stats'] = __( 'Parse.ly (7d)', 'wp-parsely' );
+			$columns['parsely-stats'] = esc_html__( 'Parse.ly (7d)', 'wp-parsely' );
 		}
 
 		return $columns;
