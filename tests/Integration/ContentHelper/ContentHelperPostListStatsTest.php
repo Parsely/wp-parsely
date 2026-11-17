@@ -763,7 +763,42 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$output = (string) ob_get_clean();
 
-		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = \'[]\';', $output );
+		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = "[]";', $output );
+	}
+
+	/**
+	 * Verifies that the Parse.ly Stats script data is assigned as a string
+	 * literal that keeps its exact contents, including quotes.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::run
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 */
+	public function test_script_data_of_parsely_stats_keeps_quotes(): void {
+		$response = array(
+			'data'  => null,
+			'error' => array(
+				'code'        => 500,
+				'message'     => 'The API couldn\'t respond to "post" requests.',
+				'htmlMessage' => '<p>The API couldn\'t respond to "post" requests.</p>',
+			),
+		);
+
+		$this->set_valid_conditions_for_parsely_stats();
+		$this->mock_parsely_stats_response( $response );
+		$this->assert_parsely_stats_admin_script( true );
+
+		$values = $this->get_inline_script_values( 'post-list-stats-script' );
+		wp_deregister_script( 'post-list-stats-script' );
+
+		/** @var string $response_json */
+		$response_json = $values['wpParselyPostsStatsResponse'] ?? '';
+
+		self::assertSame( $response, json_decode( $response_json, true ) );
 	}
 
 	/**
