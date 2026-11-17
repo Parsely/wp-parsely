@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.26.0](https://github.com/Parsely/wp-parsely/compare/3.25.1...3.26.0) - 2026-11-17
+
+### Changed
+
+- Change plugin defaults to repeated_metas and force_https_canonicals ([#4178](https://github.com/Parsely/wp-parsely/pull/4178))
+
+### Fixed
+
+- Escape Content Intelligence error messages ([#4815](https://github.com/Parsely/wp-parsely/pull/4815))
+- Fix inline script data containing quotes ([#4814](https://github.com/Parsely/wp-parsely/pull/4814))
+- Escape translated strings in admin output ([#4813](https://github.com/Parsely/wp-parsely/pull/4813))
+- Improve REST API parameter type validation ([#4812](https://github.com/Parsely/wp-parsely/pull/4812))
+- Remove unnecessary echo from esc_html_e() in settings-page.php ([#3811](https://github.com/Parsely/wp-parsely/pull/3811))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.26.0+label%3ADeps).
+
 ## [3.25.1](https://github.com/Parsely/wp-parsely/compare/3.25.0...3.25.1) - 2026-11-10
 
 ### Fixed
