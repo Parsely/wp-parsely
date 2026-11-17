@@ -119,4 +119,33 @@ final class NetworkAdminSitesListTest extends TestCase {
 			}
 		}
 	}
+
+	/**
+	 * Verifies that the column header and the action link's text are escaped,
+	 * so that markup in their translations is output as text.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\UI\Network_Admin_Sites_List::add_action_link
+	 * @covers \Parsely\UI\Network_Admin_Sites_List::add_site_id_column
+	 * @uses \Parsely\Parsely::get_settings_url
+	 * @uses \Parsely\UI\Network_Admin_Sites_List::generate_aria_label_for_blog_id
+	 */
+	public function test_column_header_and_action_link_text_are_escaped(): void {
+		$this->set_current_user_to_admin();
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+
+		$columns = Network_Admin_Sites_List::add_site_id_column( array() );
+
+		/** @var array<string, string> $actions */
+		$actions = Network_Admin_Sites_List::add_action_link( array(), get_current_blog_id() );
+
+		self::assertSame( '&lt;strong&gt;Parse.ly Site ID&lt;/strong&gt;', $columns['parsely-site-id'] ?? null );
+		self::assertStringEndsWith( '>&lt;strong&gt;Parse.ly Settings&lt;/strong&gt;</a>', $actions['parsely-settings'] ?? '' );
+	}
 }

@@ -186,5 +186,7 @@ final class DateArchiveTest extends TestCase {
 
 		update_option( 'date_format', 'F j, Y' ); // reset to default.
 		update_option( 'time_format', 'g:i a' ); // reset to default.
+
+		parent::tear_down();
 	}
 }
