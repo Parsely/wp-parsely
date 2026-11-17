@@ -573,7 +573,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 * @since 3.24.2 Rejects non-arrays.
 	 * @access private
 	 *
-	 * @param mixed           $params  The raw parameter value, as validation runs before type checks.
+	 * @param mixed           $params  The raw parameter value.
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameters are valid.
 	 */
@@ -589,6 +589,17 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 				return false;
 			}
 		}
+
+		if ( ! is_string( $params['title'] ) || ! is_string( $params['text'] ) ) {
+			return false;
+		}
+
+		if ( ! rest_is_integer( $params['offset'] ) ) {
+			return false;
+		}
+
+		// Form-encoded requests send the offset as a string.
+		$params['offset'] = intval( $params['offset'] );
 
 		$encoded_data = wp_json_encode( $params );
 		if ( false === $encoded_data ) {
@@ -608,7 +619,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			return false;
 		}
 
-		if ( ! is_string( $params['href']['raw'] ) ) {
+		if ( ! isset( $params['href']['raw'] ) || ! is_string( $params['href']['raw'] ) ) {
 			return false;
 		}
 
@@ -654,7 +665,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 * @since 3.24.2 Rejects non-arrays.
 	 * @access private
 	 *
-	 * @param mixed           $param   The raw parameter value, as validation runs before type checks.
+	 * @param mixed           $param   The raw parameter value.
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
