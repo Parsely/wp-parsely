@@ -76,7 +76,7 @@ final class Site_Health {
 				),
 				'description' => sprintf(
 					'<p>%s</p>',
-					__( 'Your Site ID uniquely represents your site within Parse.ly. It is required for the tracking to work correctly.', 'wp-parsely' )
+					esc_html__( 'Your Site ID uniquely represents your site within Parse.ly. It is required for the tracking to work correctly.', 'wp-parsely' )
 				),
 				'test'        => 'loopback_requests',
 			);
@@ -84,10 +84,13 @@ final class Site_Health {
 			if ( $this->parsely->site_id_is_missing() ) {
 				$result['status']  = 'critical';
 				$result['label']   = __( 'You need to provide the Site ID', 'wp-parsely' );
-				$result['actions'] = sprintf(
-					/* translators: %s: URL to the Parse.ly settings page */
-					__( 'The site ID can be set in the <a href="%s">Parse.ly Settings Page</a>.', 'wp-parsely' ),
-					esc_url( Parsely::get_settings_url() )
+				$result['actions'] = wp_kses(
+					sprintf(
+						/* translators: %s: URL to the Parse.ly settings page */
+						__( 'The site ID can be set in the <a href="%s">Parse.ly Settings Page</a>.', 'wp-parsely' ),
+						esc_url( Parsely::get_settings_url() )
+					),
+					array( 'a' => array( 'href' => array() ) )
 				);
 			}
 
@@ -123,7 +126,7 @@ final class Site_Health {
 
 		$args['parsely'] = array(
 			'label'       => __( 'Parse.ly Options', 'wp-parsely' ),
-			'description' => __( 'Shows the options stored in the database used by the wp-parsely plugin.', 'wp-parsely' ),
+			'description' => esc_html__( 'Shows the options stored in the database used by the wp-parsely plugin.', 'wp-parsely' ),
 			'show_count'  => true,
 		);
 

@@ -213,7 +213,7 @@ final class Settings_Page {
 		$suffix = add_submenu_page(
 			'parsely-dashboard-page',
 			__( 'Parse.ly Settings', 'wp-parsely' ),
-			__( 'Settings', 'wp-parsely' ),
+			esc_html__( 'Settings', 'wp-parsely' ),
 			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			Parsely::MENU_SLUG,
 			array( $this, 'display_settings' )
@@ -242,8 +242,8 @@ final class Settings_Page {
 			array(
 				'id'      => 'overview',
 				'title'   => __( 'Overview', 'wp-parsely' ),
-				'content' => '<p>' . __( 'The only required setting on this page is the Site ID. All of the other settings are optional.', 'wp-parsely' ) . '</p>' .
-					'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>',
+				'content' => '<p>' . esc_html__( 'The only required setting on this page is the Site ID. All of the other settings are optional.', 'wp-parsely' ) . '</p>' .
+					'<p>' . esc_html__( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>',
 			)
 		);
 	}
@@ -317,7 +317,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Site ID <em>(required)</em>', 'wp-parsely' ),
+			wp_kses( __( 'Site ID <em>(required)</em>', 'wp-parsely' ), array( 'em' => array() ) ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -338,7 +338,7 @@ final class Settings_Page {
 			);
 			add_settings_field(
 				$field_id,
-				__( 'API Secret', 'wp-parsely' ),
+				esc_html__( 'API Secret', 'wp-parsely' ),
 				array( $this, 'print_text_tag' ),
 				Parsely::MENU_SLUG,
 				$section_key,
@@ -361,7 +361,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Metadata Format', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Metadata Format', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -373,7 +373,7 @@ final class Settings_Page {
 		$field_id   = 'logo';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Logo', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Logo', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_media_single_image' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -389,7 +389,7 @@ final class Settings_Page {
 		$field_id = 'track_authenticated_users';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Track Logged-in Users', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Track Logged-in Users', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -412,7 +412,7 @@ final class Settings_Page {
 		$field_id = 'disable_javascript';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Disable JavaScript', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Disable JavaScript', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -433,7 +433,7 @@ final class Settings_Page {
 			$field_id = 'disable_amp';
 			add_settings_field(
 				$field_id,
-				$this->set_field_label_contents( __( 'Disable AMP Tracking', 'wp-parsely' ), $field_id ),
+				$this->set_field_label_contents( esc_html__( 'Disable AMP Tracking', 'wp-parsely' ), $field_id ),
 				array( $this, 'print_radio_tags' ),
 				Parsely::MENU_SLUG,
 				$section_key,
@@ -475,7 +475,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'AI Features', 'wp-parsely' ),
+			esc_html__( 'AI Features', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -491,7 +491,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Smart Linking', 'wp-parsely' ),
+			esc_html__( 'Smart Linking', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -507,7 +507,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Title Suggestions', 'wp-parsely' ),
+			esc_html__( 'Title Suggestions', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -524,7 +524,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Excerpt Suggestions', 'wp-parsely' ),
+			esc_html__( 'Excerpt Suggestions', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -540,7 +540,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Engagement Boost (beta)', 'wp-parsely' ),
+			esc_html__( 'Engagement Boost (beta)', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -578,7 +578,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Headline Testing', 'wp-parsely' ),
+			esc_html__( 'Headline Testing', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -598,7 +598,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Installation Method', 'wp-parsely' ),
+			esc_html__( 'Installation Method', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -615,7 +615,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Enable Flicker Control', 'wp-parsely' ),
+			esc_html__( 'Enable Flicker Control', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -632,7 +632,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Enable Live Updates', 'wp-parsely' ),
+			esc_html__( 'Enable Live Updates', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -655,7 +655,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Live Update Timeout (ms)', 'wp-parsely' ),
+			esc_html__( 'Live Update Timeout (ms)', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -672,7 +672,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Allow After Content Load', 'wp-parsely' ),
+			esc_html__( 'Allow After Content Load', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -707,7 +707,7 @@ final class Settings_Page {
 		$field_help = __( 'By default, Parse.ly only tracks posts and pages. If you want to track other post types, select how you want to track them here.', 'wp-parsely' );
 		add_settings_field(
 			$field_id,
-			__( 'Track Post Types as', 'wp-parsely' ),
+			esc_html__( 'Track Post Types as', 'wp-parsely' ),
 			array( $this, 'print_track_post_types_table' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -722,7 +722,7 @@ final class Settings_Page {
 		$field_id = 'full_metadata_in_non_posts';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Use Full Metadata in Non-Posts', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Use Full Metadata in Non-Posts', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -749,7 +749,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Content ID Prefix', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Content ID Prefix', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -760,7 +760,7 @@ final class Settings_Page {
 		$field_id = 'use_top_level_cats';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Use Top-Level Categories for Section', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Use Top-Level Categories for Section', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -785,7 +785,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Use Custom Taxonomy for Section', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Use Custom Taxonomy for Section', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_select_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -796,7 +796,7 @@ final class Settings_Page {
 		$field_id = 'cats_as_tags';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Add Categories to Tags', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Add Categories to Tags', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -815,7 +815,7 @@ final class Settings_Page {
 		$field_id = 'lowercase_tags';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Lowercase All Tags', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Lowercase All Tags', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -832,7 +832,7 @@ final class Settings_Page {
 		$field_id = 'force_https_canonicals';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Force HTTPS Canonicals', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Force HTTPS Canonicals', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -878,7 +878,7 @@ final class Settings_Page {
 			);
 			add_settings_field(
 				$field_id,
-				__( 'Metadata Secret', 'wp-parsely' ),
+				esc_html__( 'Metadata Secret', 'wp-parsely' ),
 				array( $this, 'print_text_tag' ),
 				Parsely::MENU_SLUG,
 				$section_key,
@@ -890,7 +890,7 @@ final class Settings_Page {
 		$field_id = 'disable_autotrack';
 		add_settings_field(
 			$field_id,
-			$this->set_field_label_contents( __( 'Disable Autotracking', 'wp-parsely' ), $field_id ),
+			$this->set_field_label_contents( esc_html__( 'Disable Autotracking', 'wp-parsely' ), $field_id ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -1534,7 +1534,7 @@ final class Settings_Page {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',
-					__( 'The Site ID and API Secret weren\'t saved as they failed to authenticate with the Parse.ly API. Try again with different credentials or contact Parse.ly support', 'wp-parsely' )
+					esc_html__( 'The Site ID and API Secret weren\'t saved as they failed to authenticate with the Parse.ly API. Try again with different credentials or contact Parse.ly support', 'wp-parsely' )
 				);
 				$input['apikey']     = $options['apikey'];
 				$input['api_secret'] = $options['api_secret'];
@@ -1562,7 +1562,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'track_authenticated_users',
-				__( 'Value passed for track_authenticated_users must be either "true" or "false".', 'wp-parsely' )
+				esc_html__( 'Value passed for track_authenticated_users must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['track_authenticated_users'] = 'true' === $input['track_authenticated_users'];
@@ -1572,7 +1572,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_javascript',
-				__( 'Value passed for disable_javascript must be either "Yes" or "No".', 'wp-parsely' )
+				esc_html__( 'Value passed for disable_javascript must be either "Yes" or "No".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
@@ -1591,7 +1591,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_amp',
-				__( 'Value passed for disable_amp must be either "true" or "false".', 'wp-parsely' )
+				esc_html__( 'Value passed for disable_amp must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
@@ -1839,7 +1839,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'use_top_level_cats',
-				__( 'Value passed for use_top_level_cats must be either "true" or "false".', 'wp-parsely' )
+				esc_html__( 'Value passed for use_top_level_cats must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['use_top_level_cats'] = 'true' === $input['use_top_level_cats'];
@@ -1866,7 +1866,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'cats_as_tags',
-				__( 'Value passed for cats_as_tags must be either "true" or "false".', 'wp-parsely' )
+				esc_html__( 'Value passed for cats_as_tags must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['cats_as_tags'] = 'true' === $input['cats_as_tags'];
@@ -1886,7 +1886,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'lowercase_tags',
-				__( 'Value passed for lowercase_tags must be either "true" or "false".', 'wp-parsely' )
+				esc_html__( 'Value passed for lowercase_tags must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['lowercase_tags'] = 'true' === $input['lowercase_tags'];
@@ -1905,7 +1905,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'force_https_canonicals',
-				__( 'Value passed for force_https_canonicals must be either "true" or "false".', 'wp-parsely' )
+				esc_html__( 'Value passed for force_https_canonicals must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
@@ -1934,7 +1934,7 @@ final class Settings_Page {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'metadata_secret',
-					__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+					esc_html__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
 				$input['metadata_secret'] = $options['metadata_secret'];
 			}
@@ -1946,7 +1946,7 @@ final class Settings_Page {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_autotrack',
-				__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
+				esc_html__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
