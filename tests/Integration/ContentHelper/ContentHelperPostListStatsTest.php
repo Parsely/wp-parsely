@@ -382,6 +382,33 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	}
 
 	/**
+	 * Verifies that the Parse.ly Stats column header is escaped, so that markup
+	 * in its translation is output as text.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::run
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 */
+	public function test_parsely_stats_column_header_is_escaped(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+
+		self::assertSame(
+			'&lt;strong&gt;Parse.ly (7d)&lt;/strong&gt;',
+			$this->get_admin_columns()['parsely-stats'] ?? null
+		);
+	}
+
+	/**
 	 * Gets Admin Columns.
 	 *
 	 * @return array<string>
