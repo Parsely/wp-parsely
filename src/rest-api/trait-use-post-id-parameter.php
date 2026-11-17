@@ -69,11 +69,11 @@ trait Use_Post_ID_Parameter_Trait {
 	 * @since 3.24.2 Stopped storing the post object in the request object.
 	 * @access private
 	 *
-	 * @param string               $param   The parameter value.
+	 * @param mixed                $param   The raw parameter value.
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	public function validate_post_id( string $param, ?WP_REST_Request $request = null ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+	public function validate_post_id( $param, ?WP_REST_Request $request = null ): bool { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 		if ( ! is_numeric( $param ) ) {
 			return false;
 		}
