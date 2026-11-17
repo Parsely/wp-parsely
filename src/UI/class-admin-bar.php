@@ -96,7 +96,7 @@ final class Admin_Bar {
 				$admin_bar->add_node(
 					array(
 						'id'    => 'parsely-stats',
-						'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
+						'title' => esc_html__( 'Parse.ly Stats', 'wp-parsely' ),
 						'href'  => $href,
 					)
 				);

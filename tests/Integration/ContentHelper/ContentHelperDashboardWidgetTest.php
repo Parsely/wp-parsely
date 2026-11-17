@@ -129,6 +129,52 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	}
 
 	/**
+	 * Verifies that the widget's title is escaped, so that markup in its
+	 * translation is output as text.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
+	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::can_enable_feature
+	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @uses \Parsely\Content_Helper\Dashboard_Widget::__construct
+	 * @uses \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @uses \Parsely\Content_Helper\Dashboard_Widget::get_feature_filter_name
+	 * @uses \Parsely\Content_Helper\Dashboard_Widget::get_script_id
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 *
+	 * @group content-intelligence
+	 */
+	public function test_widget_title_is_escaped(): void {
+		require_once ABSPATH . 'wp-admin/includes/dashboard.php';
+
+		self::set_current_user_to( 'admin', 'administrator' );
+		set_current_screen( 'dashboard' );
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+
+		$widget = new Dashboard_Widget( self::$parsely );
+		$widget->add_dashboard_widget();
+
+		/**
+		 * The registered meta boxes.
+		 *
+		 * @var array<string, array<string, array<string, array<string, array{title: string}>>>> $wp_meta_boxes
+		 */
+		global $wp_meta_boxes;
+
+		self::assertSame(
+			'&lt;strong&gt;Parse.ly Top Posts&lt;/strong&gt;',
+			$wp_meta_boxes['dashboard']['normal']['core'][ $widget::get_script_id() ]['title'] ?? null
+		);
+	}
+
+	/**
 	 * Verifies that the run() method does not enqueue the assets when the
 	 * active page is not the WordPress Dashboard.
 	 *
