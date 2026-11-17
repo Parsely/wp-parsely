@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { select } from '@wordpress/data';
+import { escapeHTML } from '@wordpress/escape-html';
 import { __, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -127,8 +128,8 @@ export class PerformanceStatsProvider extends BaseProvider {
 				sprintf(
 					/* translators: %s: Title of the published post */
 					__( '<strong>%s</strong> has 0 views, or the Parse.ly API returned no data.',
-						'wp-parsely' ), postTitle
-				), ContentHelperErrorCode.ParselyApiReturnedNoData, ''
+						'wp-parsely' ), escapeHTML( postTitle )
+				), ContentHelperErrorCode.ParselyApiReturnedNoData, '', true
 			) );
 		}
 
