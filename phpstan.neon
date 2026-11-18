@@ -1,6 +1,8 @@
 parameters:
   ignoreErrors:
+    # Unmatched with wordpress-stubs >= 6.9.1, which default the WP_REST_Request template.
     - identifier: missingType.generics
+      reportUnmatched: false
   level: 9
   paths:
     - bin/

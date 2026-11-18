@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { render } from '@testing-library/react';
+
+/**
  * Internal dependencies
  */
 import {
@@ -110,4 +115,66 @@ describe( 'ContentHelperError class should set retryFetch to', () => {
 	function getRetryFetch( code: ContentHelperErrorCode ): boolean {
 		return new ContentHelperError( 'message', code ).retryFetch;
 	}
+} );
+
+/**
+ * Verifies that the error message is rendered as text, unless it's HTML
+ * written by the plugin.
+ *
+ * @since 3.26.0
+ */
+describe( 'ContentHelperError message', () => {
+	test( 'is rendered as text when it can come from the server', () => {
+		const { container } = render(
+			new ContentHelperError(
+				'<em>Upstream</em> message',
+				ContentHelperErrorCode.ParselyApiForbidden
+			).Message()
+		);
+
+		expect( container.querySelector( 'em' ) ).toBeNull();
+		expect( container.textContent ).toContain( 'Error: <em>Upstream</em> message' );
+	} );
+
+	test( 'keeps its markup when the plugin passes it as HTML', () => {
+		const { container } = render(
+			new ContentHelperError(
+				'<strong>Title</strong> has 0 views.',
+				ContentHelperErrorCode.ParselyApiReturnedNoData,
+				'',
+				true
+			).Message()
+		);
+
+		expect( container.querySelector( 'strong' )?.textContent ).toBe( 'Title' );
+	} );
+
+	test( 'keeps the link of the opt-in message', () => {
+		const { container } = render(
+			new ContentHelperError(
+				'Forbidden',
+				ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization
+			).Message()
+		);
+
+		expect( container.querySelector( 'a' )?.getAttribute( 'href' ) )
+			.toBe( 'https://wpvip.com/content-helper/#content-helper-form' );
+	} );
+} );
+
+/**
+ * Verifies that the error hint has the class that its styles target.
+ *
+ * @since 3.26.1
+ */
+test( 'ContentHelperError hint has the class that its styles target', () => {
+	const { container } = render(
+		new ContentHelperError(
+			'Forbidden',
+			ContentHelperErrorCode.ParselyApiForbidden
+		).Message()
+	);
+
+	expect( container.querySelector( 'p.content-helper-error-message-hint' )?.textContent )
+		.toContain( 'Hint:' );
 } );

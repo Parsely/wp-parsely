@@ -74,7 +74,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -125,7 +125,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -150,6 +150,48 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that the Site ID is stored sanitized, as the credentials
+	 * endpoint compares it.
+	 *
+	 * @since 3.25.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\Validator::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_credentials
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_site_id_is_stored_sanitized_when_validated(): void {
+		$options = self::$parsely->get_options();
+
+		$options['apikey']     = '  MyDomain.COM ';
+		$options['api_secret'] = 'valid_api_secret';
+
+		$expected           = $options;
+		$expected['apikey'] = 'mydomain.com';
+
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
 	 * Verifies that invalid API credentials are reset to their previous values
 	 * when validated with the Validation API.
 	 *
@@ -166,7 +208,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -210,7 +252,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\Validator::sanitize_site_id
 	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
 	 * @uses   \Parsely\UI\Settings_Page::validate_options
 	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -257,7 +299,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\Validator::sanitize_site_id
 	 * @uses \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -296,7 +338,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\Validator::sanitize_site_id
 	 * @uses \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
@@ -344,7 +386,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
 	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\Validator::sanitize_site_id
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
@@ -371,6 +413,93 @@ final class SettingsPageTest extends TestCase {
 			$this->transform_pch_options_for_validation( $options )
 		);
 		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that settings error messages are escaped, so that markup in
+	 * their translations is output as text.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @covers \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\Validator::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\Validator::validate_metadata_secret
+	 * @uses \Parsely\Validator::validate_api_credentials
+	 * @dataProvider provide_settings_error_data
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 *
+	 * @param string $code  The code of the expected settings error.
+	 * @param string $value The submitted value that causes the error.
+	 */
+	public function test_settings_error_messages_are_escaped( string $code, string $value ): void {
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+
+		$options          = self::$parsely->get_options();
+		$options[ $code ] = $value;
+
+		// Earlier tests leave their errors behind.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$GLOBALS['wp_settings_errors'] = array();
+
+		self::$settings_page->validate_options(
+			// @phpstan-ignore argument.type
+			$this->transform_pch_options_for_validation( $options )
+		);
+
+		$messages = array_column( get_settings_errors( Parsely::OPTIONS_KEY ), 'message', 'code' );
+
+		self::assertArrayHasKey( $code, $messages );
+		self::assertStringStartsWith( '&lt;strong&gt;', $messages[ $code ] );
+	}
+
+	/**
+	 * Provides data for testing the escaping of settings error messages.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @return iterable<array<string>> The test data.
+	 */
+	public function provide_settings_error_data(): iterable {
+		yield 'rejected credentials'    => array( 'api_secret', 'invalid_api_secret' );
+		yield 'invalid metadata secret' => array( 'metadata_secret', 'too_short' );
+
+		$options = array(
+			'track_authenticated_users',
+			'disable_javascript',
+			'disable_amp',
+			'use_top_level_cats',
+			'cats_as_tags',
+			'lowercase_tags',
+			'force_https_canonicals',
+			'disable_autotrack',
+		);
+
+		foreach ( $options as $option ) {
+			yield "invalid {$option}" => array( $option, 'invalid' );
+		}
 	}
 
 	/**
@@ -685,6 +814,110 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that the settings field titles are escaped, so that markup in
+	 * their translations is output as text. The Site ID title keeps only its
+	 * emphasis.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::initialize_advanced_section
+	 * @covers \Parsely\UI\Settings_Page::initialize_basic_section
+	 * @covers \Parsely\UI\Settings_Page::initialize_content_helper_section
+	 * @covers \Parsely\UI\Settings_Page::initialize_headline_testing_section
+	 * @covers \Parsely\UI\Settings_Page::initialize_recrawl_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
+	 * @uses \Parsely\UI\Settings_Page::initialize_settings
+	 * @uses \Parsely\UI\Settings_Page::set_field_label_contents
+	 *
+	 * @group settings-page
+	 */
+	public function test_settings_field_titles_are_escaped(): void {
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+
+		self::$settings_page->initialize_settings();
+
+		/**
+		 * The registered settings fields.
+		 *
+		 * @var array<string, array<string, array<string, array{title: string}>>> $wp_settings_fields
+		 */
+		global $wp_settings_fields;
+
+		$titles = array();
+		foreach ( $wp_settings_fields[ Parsely::MENU_SLUG ] as $fields ) {
+			foreach ( $fields as $id => $field ) {
+				$titles[ $id ] = $field['title'];
+			}
+		}
+
+		self::assertSame( 'Site ID <em>(required)</em>', $titles['apikey'] ?? null );
+		unset( $titles['apikey'] );
+
+		self::assertNotEmpty( $titles );
+		foreach ( $titles as $id => $title ) {
+			self::assertStringStartsWith( '&lt;strong&gt;', $title, "The {$id} title isn't escaped." );
+		}
+	}
+
+	/**
+	 * Verifies that the settings submenu title and the help tab's content are
+	 * escaped, so that markup in their translations is output as text.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::add_help_text
+	 * @covers \Parsely\UI\Settings_Page::add_settings_sub_menu
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 *
+	 * @group settings-page
+	 */
+	public function test_settings_submenu_title_and_help_text_are_escaped(): void {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		$this->set_current_user_to_admin();
+		set_current_screen( 'parse-ly_page_parsely-settings' );
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+
+		self::$settings_page->add_settings_sub_menu();
+		self::$settings_page->add_help_text();
+
+		/**
+		 * The registered submenus.
+		 *
+		 * @var array<string, array<int, array<int, string>>> $submenu
+		 */
+		global $submenu;
+
+		$menu_titles = array_column( $submenu['parsely-dashboard-page'] ?? array(), 0, 2 );
+
+		self::assertSame( '&lt;strong&gt;Settings&lt;/strong&gt;', $menu_titles[ Parsely::MENU_SLUG ] ?? null );
+
+		/** @var \WP_Screen $screen */
+		$screen = get_current_screen();
+
+		/** @var array{content: string}|null $help_tab */
+		$help_tab = $screen->get_help_tab( 'overview' );
+		$content  = $help_tab['content'] ?? '';
+
+		self::assertStringNotContainsString( '<strong>', $content );
+		self::assertSame( 2, substr_count( $content, '&lt;strong&gt;' ) );
+	}
+
+	/**
 	 * Mocks a success response from the API credentials validation endpoint.
 	 *
 	 * @since 3.11.0
@@ -776,6 +1009,92 @@ final class SettingsPageTest extends TestCase {
 		$options['content_helper']['traffic_boost']['allowed_user_roles']       = array( 'administrator' => true );
 
 		return $options;
+	}
+
+	/**
+	 * Verifies that a feature's generation defaults survive the Content
+	 * Intelligence sanitizer, which coerces every scalar into a boolean.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_length
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_persona
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_default_tone
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_personas
+	 * @uses \Parsely\Content_Helper\Suggestion_Defaults::get_tones
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::sanitize_option_array
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @dataProvider provide_generation_defaults_data
+	 *
+	 * @group ui
+	 *
+	 * @param array<string, mixed> $submitted The submitted defaults.
+	 * @param array<string, mixed> $expected  The expected stored defaults.
+	 */
+	public function test_generation_defaults_are_validated( array $submitted, array $expected ): void {
+		$options = $this->transform_pch_options_for_validation( self::$parsely->get_options() );
+
+		/** @var array<string, mixed> $feature */
+		$feature = $options['content_helper']['excerpt_suggestions'] ?? array();
+		$options['content_helper']['excerpt_suggestions'] = array_merge( $feature, $submitted );
+
+		// @phpstan-ignore argument.type
+		$actual = self::$settings_page->validate_options( $options );
+
+		/** @var array<string, mixed> $stored */
+		$stored = $actual['content_helper']['excerpt_suggestions'] ?? array();
+
+		foreach ( $expected as $key => $value ) {
+			self::assertSame( $value, $stored[ $key ], "Unexpected value for $key." );
+		}
+	}
+
+	/**
+	 * Provides data for testing the generation defaults validation.
+	 *
+	 * @since 3.24.0
+	 *
+	 * @return iterable<array<mixed>> The test data.
+	 */
+	public function provide_generation_defaults_data(): iterable {
+		$shipped = array(
+			'default_length'  => 160,
+			'default_tone'    => 'neutral',
+			'default_persona' => 'journalist',
+		);
+
+		yield 'valid values' => array(
+			array(
+				'default_length'  => '200',
+				'default_tone'    => 'humorous',
+				'default_persona' => 'techAnalyst',
+			),
+			array(
+				'default_length'  => 200,
+				'default_tone'    => 'humorous',
+				'default_persona' => 'techAnalyst',
+			),
+		);
+
+		// A length that is not an integer is invalid, rather than something to
+		// truncate.
+		yield 'fractional length'      => array( array( 'default_length' => '50.9' ), $shipped );
+		yield 'exponent length'        => array( array( 'default_length' => '1e2' ), $shipped );
+		yield 'out-of-range length'    => array( array( 'default_length' => '9999' ), $shipped );
+		yield 'array length'           => array( array( 'default_length' => array( 200 ) ), $shipped );
+
+		// Tones and personas are an allowlist, so anything else is discarded.
+		yield 'unknown tone'           => array( array( 'default_tone' => 'bogus' ), $shipped );
+		yield 'markup as a tone'       => array( array( 'default_tone' => '<script>x</script>' ), $shipped );
+		yield 'array as a persona'     => array( array( 'default_persona' => array( 'techAnalyst' ) ), $shipped );
+
+		// Nothing submitted, as happens when the fieldset is disabled because
+		// the options are managed.
+		yield 'nothing submitted'      => array( array(), $shipped );
 	}
 
 	/**

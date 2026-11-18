@@ -65,4 +65,4 @@ export const dispatchCoreEditor = dispatch( 'core/editor' ) as unknown as Gutenb
  *
  * @since 3.16.0
  */
-export const dispatchCoreEditPost = dispatch( 'core/edit-post' );
+export const dispatchCoreEditPost = dispatch( 'core/edit-post' ) as GutenbergFunction;

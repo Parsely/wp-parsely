@@ -128,13 +128,21 @@ abstract class Base_Endpoint {
 	 * Registers a REST route.
 	 *
 	 * @since 3.17.0
+	 * @since 3.24.2 Added the `$permission_callback` parameter.
 	 *
-	 * @param string       $route The route to register.
-	 * @param string[]     $methods Array with the allowed methods.
-	 * @param callable     $callback Callback function to call when the endpoint is hit.
-	 * @param array<mixed> $args The endpoint arguments definition.
+	 * @param string        $route The route to register.
+	 * @param string[]      $methods Array with the allowed methods.
+	 * @param callable      $callback Callback function to call when the endpoint is hit.
+	 * @param array<mixed>  $args The endpoint arguments definition.
+	 * @param callable|null $permission_callback Permission callback to use instead of the default one.
 	 */
-	public function register_rest_route( string $route, array $methods, callable $callback, array $args = array() ): void {
+	public function register_rest_route(
+		string $route,
+		array $methods,
+		callable $callback,
+		array $args = array(),
+		?callable $permission_callback = null
+	): void {
 		// Trim any possible slashes from the route.
 		$route = trim( $route, '/' );
 
@@ -144,15 +152,22 @@ abstract class Base_Endpoint {
 		// Create the full route for the endpoint.
 		$route = static::get_endpoint_name() . '/' . $route;
 
+		/** @var non-falsy-string $route_namespace */
+		$route_namespace = $this->api_controller->get_full_namespace();
+
+		/** @var non-falsy-string $prefixed_route */
+		$prefixed_route = $this->api_controller->prefix_route( $route );
+
 		// Register the route.
 		register_rest_route(
-			$this->api_controller->get_full_namespace(),
-			$this->api_controller->prefix_route( $route ),
+			$route_namespace,
+			$prefixed_route,
 			array(
 				array(
 					'methods'             => $methods,
 					'callback'            => $callback,
-					'permission_callback' => array( $this, 'is_available_to_current_user' ),
+					'permission_callback' => $permission_callback ??
+						array( $this, 'is_available_to_current_user' ),
 					'args'                => $args,
 					'show_in_index'       => ! is_wp_error( $this->is_available_to_current_user() ),
 				),
@@ -242,6 +257,11 @@ abstract class Base_Endpoint {
 	 *
 	 * The default access capability is not passed here by default, to allow for
 	 * a more explicit declaration in child classes.
+	 *
+	 * The result is checked with current_user_can(), so a capability such as
+	 * `exist` makes the endpoint available to everyone, unless other checks
+	 * apply: post-specific routes also require edit access to the post, and
+	 * Content Intelligence routes also check the user's role.
 	 *
 	 * @since 3.14.0
 	 * @since 3.17.0 Moved to the new API structure.
