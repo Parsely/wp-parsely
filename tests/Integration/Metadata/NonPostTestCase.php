@@ -21,7 +21,8 @@ abstract class NonPostTestCase extends TestCase {
 	public function set_up(): void {
 		parent::set_up();
 
-		TestCase::set_options();
+		// Match the http URLs that WordPress builds in tests.
+		TestCase::set_options( array( 'force_https_canonicals' => false ) );
 	}
 
 	/**

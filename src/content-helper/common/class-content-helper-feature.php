@@ -142,7 +142,7 @@ abstract class Content_Helper_Feature {
 		);
 		wp_add_inline_script(
 			static::get_script_id(),
-			"window.wpParselyContentHelperPermissions = '$permissions_json';",
+			'window.wpParselyContentHelperPermissions = ' . wp_json_encode( $permissions_json ) . ';',
 			'before'
 		);
 
@@ -152,7 +152,7 @@ abstract class Content_Helper_Feature {
 
 			wp_add_inline_script(
 				static::get_script_id(),
-				"window.wpParselyEmptyCredentialsMessage = '{$message}';",
+				'window.wpParselyEmptyCredentialsMessage = ' . wp_json_encode( $message ) . ';',
 				'before'
 			);
 		}
@@ -174,11 +174,12 @@ abstract class Content_Helper_Feature {
 				$settings = array();
 			}
 
-			$settings = wp_json_encode( $settings );
+			// The script parses the settings from a JSON string.
+			$settings = (string) wp_json_encode( $settings );
 
 			wp_add_inline_script(
 				static::get_script_id(),
-				"window.wpParselyContentHelperSettings = '$settings';",
+				'window.wpParselyContentHelperSettings = ' . wp_json_encode( $settings ) . ';',
 				'before'
 			);
 		}
@@ -219,7 +220,7 @@ abstract class Content_Helper_Feature {
 			$default_message
 		);
 
-		// Remove unnecessary whitespace to avoid broken output.
+		// Remove unnecessary whitespace.
 		$message = str_replace( array( "\r", "\n", "\t" ), '', $message );
 
 		return wp_kses_post( $message );

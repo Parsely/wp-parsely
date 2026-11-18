@@ -177,7 +177,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
 		if ( $this->is_tracked_as_post_type() ) {
-			$columns['parsely-stats'] = __( 'Parse.ly (7d)', 'wp-parsely' );
+			$columns['parsely-stats'] = esc_html__( 'Parse.ly (7d)', 'wp-parsely' );
 		}
 
 		return $columns;
@@ -246,9 +246,12 @@ class Post_List_Stats extends Content_Helper_Feature {
 			true
 		);
 
+		// The script parses the response from a JSON string.
+		$response_json = (string) wp_json_encode( $parsely_stats_response );
+
 		wp_add_inline_script(
 			static::get_script_id(),
-			"window.wpParselyPostsStatsResponse = '" . wp_json_encode( $parsely_stats_response ) . "';",
+			'window.wpParselyPostsStatsResponse = ' . wp_json_encode( $response_json ) . ';',
 			'before'
 		);
 	}
@@ -286,7 +289,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 					'message'     => __( 'Forbidden.', 'wp-parsely' ),
 					'htmlMessage' => '<p>' .
 						__(
-							'We are unable to retrieve data for Parse.ly Stats. Please contact <a href=\\"mailto:support@parsely.com\\">support@parsely.com</a> for help resolving this issue.',
+							'We are unable to retrieve data for Parse.ly Stats. Please contact <a href="mailto:support@parsely.com">support@parsely.com</a> for help resolving this issue.',
 							'wp-parsely'
 						) .
 					'</p>',

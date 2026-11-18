@@ -12,10 +12,10 @@
 import type { ComponentType } from 'react';
 
 // Import the original Gutenberg components.
-import {
+import type {
 	PluginDocumentSettingPanel as OriginalPluginDocumentSettingPanel,
 	PluginSidebar as OriginalPluginSidebar,
-} from '@wordpress/edit-post';
+} from '@wordpress/editor';
 
 // Define the types for the props of the original Gutenberg components.
 type PluginDocumentSettingPanelProps = React.ComponentProps<typeof OriginalPluginDocumentSettingPanel>;

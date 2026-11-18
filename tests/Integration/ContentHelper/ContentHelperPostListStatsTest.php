@@ -64,6 +64,21 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
 		$this->set_current_user_to_admin();
+
+		// Hook assertions match any callback, and WordPress 7.2 hooks
+		// admin_footer, so empty these hooks (restored after each test).
+		$hooks = array(
+			'current_screen',
+			'manage_posts_columns',
+			'manage_pages_columns',
+			'manage_posts_custom_column',
+			'manage_pages_custom_column',
+			'admin_footer',
+		);
+
+		foreach ( $hooks as $hook ) {
+			remove_all_filters( $hook );
+		}
 	}
 
 	/**
@@ -364,6 +379,28 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		self::assertContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 		$this->assert_hooks_for_parsely_stats_column( true );
+	}
+
+	/**
+	 * Verifies that the Parse.ly Stats column header is escaped, so that markup
+	 * in its translation is output as text.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::run
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 */
+	public function test_parsely_stats_column_header_is_escaped(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+		$this->wrap_translations_in_strong_tags();
+
+		self::assertSame(
+			'&lt;strong&gt;Parse.ly (7d)&lt;/strong&gt;',
+			$this->get_admin_columns()['parsely-stats'] ?? null
+		);
 	}
 
 	/**
@@ -748,7 +785,42 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$output = (string) ob_get_clean();
 
-		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = \'[]\';', $output );
+		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = "[]";', $output );
+	}
+
+	/**
+	 * Verifies that the Parse.ly Stats script data is assigned as a string
+	 * literal that keeps its exact contents, including quotes.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::run
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 */
+	public function test_script_data_of_parsely_stats_keeps_quotes(): void {
+		$response = array(
+			'data'  => null,
+			'error' => array(
+				'code'        => 500,
+				'message'     => 'The API couldn\'t respond to "post" requests.',
+				'htmlMessage' => '<p>The API couldn\'t respond to "post" requests.</p>',
+			),
+		);
+
+		$this->set_valid_conditions_for_parsely_stats();
+		$this->mock_parsely_stats_response( $response );
+		$this->assert_parsely_stats_admin_script( true );
+
+		$values = $this->get_inline_script_values( 'post-list-stats-script' );
+		wp_deregister_script( 'post-list-stats-script' );
+
+		/** @var string $response_json */
+		$response_json = $values['wpParselyPostsStatsResponse'] ?? '';
+
+		self::assertSame( $response, json_decode( $response_json, true ) );
 	}
 
 	/**
@@ -1007,6 +1079,54 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 			),
 			$res['error'] ?? null
 		);
+	}
+
+	/**
+	 * Verifies that the response for a blocked API request omits the API
+	 * Secret.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::run
+	 * @uses \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @uses \Parsely\Services\Base_Service_Endpoint::request
+	 * @uses \Parsely\Services\Base_Service_Endpoint::strip_credentials
+	 */
+	public function test_parsely_stats_response_omits_api_secret(): void {
+		$api_secret = 'TEST-APISECRET-fixture';
+		TestCase::set_options(
+			array(
+				'apikey'           => 'test',
+				'api_secret'       => $api_secret,
+				'track_post_types' => array( 'post' ),
+			)
+		);
+		set_current_screen( 'edit-post' );
+
+		// WordPress embeds the full request URL when external requests are blocked.
+		add_filter(
+			'pre_http_request',
+			static function ( $preempt, array $args, string $url ) {
+				return new WP_Error( 'http_request_not_executed', "User has blocked requests through HTTP to the URL: $url." );
+			},
+			10,
+			3
+		);
+
+		$obj = $this->init_post_list_stats();
+
+		ob_start();
+		$this->show_content_on_parsely_stats_column( $this->set_and_get_posts_data( 1 ), 'post' );
+		ob_get_clean();
+
+		$res = $obj->get_parsely_stats_response();
+
+		self::assertStringContainsString( 'User has blocked requests through HTTP', $res['error']['message'] ?? '' );
+		self::assertStringNotContainsString( $api_secret, (string) wp_json_encode( $res ) );
 	}
 
 	/**

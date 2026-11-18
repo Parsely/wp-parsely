@@ -11,6 +11,7 @@ import {
  * Internal dependencies
  */
 import {
+	VALID_API_SECRET,
 	VALID_SITE_ID,
 	setSiteKeys,
 } from '../utils';
@@ -43,6 +44,17 @@ test.describe( 'Recommended Widget', () => {
 	 */
 	test.afterAll( async ( { requestUtils } ) => {
 		await requestUtils.activateTheme( 'twentytwentyfour' );
+	} );
+
+	/**
+	 * Removes any saved Widgets.
+	 *
+	 * Runs after each test.
+	 *
+	 * @since 3.24.2
+	 */
+	test.afterEach( async ( { requestUtils } ) => {
+		await requestUtils.deleteAllWidgets();
 	} );
 
 	/**
@@ -81,6 +93,70 @@ test.describe( 'Recommended Widget', () => {
 		await expect(
 			page.getByText( deactivatedWidgetMessage, { exact: true } )
 		).toBeVisible();
+	} );
+
+	/**
+	 * Verifies that the Widget requests recommendations with the Site ID but
+	 * without the API Secret, and displays the returned entries.
+	 *
+	 * The Recommendations API is stubbed, as its data for a given URL is not
+	 * part of what's being tested here.
+	 *
+	 * @since 3.24.2
+	 */
+	test( 'Should request recommendations without the API Secret', async ( { admin, page, requestUtils } ) => {
+		const utils = new Utils( admin );
+		const requestedUrls: string[] = [];
+
+		// The Widget calls the Recommendations API from the visitor's browser.
+		await page.route( '**/v2/related**', async ( route ) => {
+			requestedUrls.push( route.request().url() );
+
+			await route.fulfill( {
+				headers: { 'Access-Control-Allow-Origin': '*' },
+				json: {
+					data: [
+						{
+							title: 'First recommendation',
+							url: 'https://example.com/first',
+							image_url: '',
+							thumb_url_medium: '',
+							author: 'Author One',
+						},
+						{
+							title: 'Second recommendation',
+							url: 'https://example.com/second',
+							image_url: '',
+							thumb_url_medium: '',
+							author: 'Author Two',
+						},
+					],
+				},
+			} );
+		} );
+
+		await setSiteKeys( page, VALID_SITE_ID, VALID_API_SECRET );
+		await utils.insertRecommendedWidget();
+		await utils.saveWidgets( 'Recommended posts' );
+
+		// The API Secret must not reach the page's markup.
+		const markup = await ( await page.request.get( '/' ) ).text();
+		expect( markup ).not.toContain( VALID_API_SECRET );
+
+		await page.goto( '/' );
+
+		const entries = page.locator( 'li.parsely-recommended-widget-entry' );
+		await expect( entries ).toHaveCount( 2 );
+		await expect( entries.first() ).toBeVisible();
+		await expect(
+			entries.first().getByRole( 'link', { name: 'First recommendation' } )
+		).toBeVisible();
+
+		expect( requestedUrls ).toHaveLength( 1 );
+		expect( requestedUrls[ 0 ] ).toContain( 'apikey=' + VALID_SITE_ID );
+		expect( requestedUrls[ 0 ] ).not.toContain( 'secret=' );
+
+		await requestUtils.deleteAllWidgets();
 	} );
 } );
 
@@ -127,5 +203,26 @@ class Utils {
 		await page.getByText(
 			'Parse.ly Recommended Widget', { exact: true }
 		).click();
+	}
+
+	/**
+	 * Sets the Widget's title and saves the Widgets screen.
+	 *
+	 * The title is filled in because the Legacy Widget block only builds an
+	 * instance, and so only becomes saveable, once its form changes.
+	 *
+	 * @since 3.24.2
+	 *
+	 * @param {string} title The title to set.
+	 */
+	async saveWidgets( title: string ) {
+		const page = this.admin.page;
+
+		await page.getByLabel( 'Title:' ).fill( title );
+		await page.getByRole( 'button', { name: 'Update' } ).click();
+
+		await expect(
+			page.getByTestId( 'snackbar' ).getByText( 'Widgets saved.', { exact: true } )
+		).toBeVisible();
 	}
 }

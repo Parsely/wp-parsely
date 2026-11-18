@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Content_Helper\Suggestion_Defaults;
+
 /**
  * Class implementing user/role permissions functionality.
  *
@@ -48,6 +50,7 @@ class Permissions {
 	 * specified Content Intelligence feature.
 	 *
 	 * @since 3.16.0
+	 * @since 3.24.2 Post-specific checks always require the `edit_post` capability.
 	 *
 	 * @param string                         $feature_name The feature's name.
 	 * @param Parsely_Options_Content_Helper $pch_options The Content Intelligence options.
@@ -59,6 +62,12 @@ class Permissions {
 		$pch_options,
 		$post_id = false
 	): bool {
+		// Post-specific checks always require edit access, whatever the filter
+		// below returns.
+		if ( (int) $post_id > 0 && ! current_user_can( 'edit_post', (int) $post_id ) ) {
+			return false;
+		}
+
 		if ( isset( $pch_options[ $feature_name ] ) ) {
 			/**
 			 * The feature's options.
@@ -78,6 +87,7 @@ class Permissions {
 		 * Intelligence feature.
 		 *
 		 * This filter can be used to override the default permissions check.
+		 * It cannot grant access to a post that the user cannot edit.
 		 *
 		 * @since 3.16.2
 		 *
@@ -139,11 +149,6 @@ class Permissions {
 			return false;
 		}
 
-		// Check if the user can edit the post.
-		if ( (int) $post_id > 0 ) {
-			return current_user_can( 'edit_post', $post_id );
-		}
-
 		return true;
 	}
 
@@ -201,10 +206,15 @@ class Permissions {
 			'title_suggestions'   => array(
 				'enabled'            => $enabled,
 				'allowed_user_roles' => $allowed_user_roles,
+				'default_tone'       => Suggestion_Defaults::DEFAULT_TONE,
+				'default_persona'    => Suggestion_Defaults::DEFAULT_PERSONA,
 			),
 			'excerpt_suggestions' => array(
 				'enabled'            => $enabled,
 				'allowed_user_roles' => $allowed_user_roles,
+				'default_length'     => Suggestion_Defaults::DEFAULT_LENGTH,
+				'default_tone'       => Suggestion_Defaults::DEFAULT_TONE,
+				'default_persona'    => Suggestion_Defaults::DEFAULT_PERSONA,
 			),
 			'traffic_boost'       => array(
 				'enabled'            => $enabled,
