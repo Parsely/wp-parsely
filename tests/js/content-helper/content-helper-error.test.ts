@@ -161,3 +161,20 @@ describe( 'ContentHelperError message', () => {
 			.toBe( 'https://wpvip.com/content-helper/#content-helper-form' );
 	} );
 } );
+
+/**
+ * Verifies that the error hint has the class that its styles target.
+ *
+ * @since 3.26.1
+ */
+test( 'ContentHelperError hint has the class that its styles target', () => {
+	const { container } = render(
+		new ContentHelperError(
+			'Forbidden',
+			ContentHelperErrorCode.ParselyApiForbidden
+		).Message()
+	);
+
+	expect( container.querySelector( 'p.content-helper-error-message-hint' )?.textContent )
+		.toContain( 'Hint:' );
+} );
