@@ -133,12 +133,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 */
 	public function test_column_header_and_action_link_text_are_escaped(): void {
 		$this->set_current_user_to_admin();
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		$columns = Network_Admin_Sites_List::add_site_id_column( array() );
 

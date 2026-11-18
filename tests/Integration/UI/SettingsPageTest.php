@@ -450,12 +450,7 @@ final class SettingsPageTest extends TestCase {
 	public function test_settings_error_messages_are_escaped( string $code, string $value ): void {
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
 		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		$options          = self::$parsely->get_options();
 		$options[ $code ] = $value;
@@ -835,12 +830,7 @@ final class SettingsPageTest extends TestCase {
 	 * @group settings-page
 	 */
 	public function test_settings_field_titles_are_escaped(): void {
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		self::$settings_page->initialize_settings();
 
@@ -885,12 +875,7 @@ final class SettingsPageTest extends TestCase {
 
 		$this->set_current_user_to_admin();
 		set_current_screen( 'parse-ly_page_parsely-settings' );
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		self::$settings_page->add_settings_sub_menu();
 		self::$settings_page->add_help_text();
