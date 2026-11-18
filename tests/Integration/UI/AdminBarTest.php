@@ -85,12 +85,7 @@ final class AdminBarTest extends TestCase {
 		require_once ABSPATH . 'wp-includes/class-wp-admin-bar.php';
 
 		self::set_options();
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 		$this->go_to_new_post();
 
 		$admin_bar = new WP_Admin_Bar();

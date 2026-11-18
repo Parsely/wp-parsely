@@ -151,12 +151,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 
 		self::set_current_user_to( 'admin', 'administrator' );
 		set_current_screen( 'dashboard' );
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		$widget = new Dashboard_Widget( self::$parsely );
 		$widget->add_dashboard_widget();
