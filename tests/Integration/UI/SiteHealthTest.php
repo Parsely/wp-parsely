@@ -139,12 +139,7 @@ final class SiteHealthTest extends TestCase {
 	 */
 	public function test_texts_output_as_html_are_escaped(): void {
 		self::set_options( array( 'apikey' => '' ) );
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		$tests = self::$site_health->check_site_id( array( 'direct' => array() ) );
 
