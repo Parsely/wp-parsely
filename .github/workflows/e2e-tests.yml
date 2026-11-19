@@ -39,6 +39,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
+      - name: Use npm 11.21.3
+        run: npm install -g --ignore-scripts npm@11.21.3
+
       - name: Npm install
         run: |
           npm ci
