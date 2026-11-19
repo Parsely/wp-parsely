@@ -587,6 +587,21 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Wraps every wp-parsely translation in strong tags, so that tests can
+	 * check that markup in translations is output as text.
+	 *
+	 * @since 3.26.1
+	 */
+	public function wrap_translations_in_strong_tags(): void {
+		add_filter(
+			'gettext_wp-parsely',
+			function ( string $translation ): string {
+				return "<strong>{$translation}</strong>";
+			}
+		);
+	}
+
+	/**
 	 * Asserts that a passed style is not registered.
 	 *
 	 * @param string $handle Style handle to test.

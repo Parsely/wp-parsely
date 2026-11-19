@@ -99,7 +99,7 @@ export const RelatedPostItem = (
 						/>
 						<Button
 							icon={ <LeafIcon /> }
-							iconSize={ 18 }
+							iconSize={ 24 }
 							href={ post.dashUrl }
 							target={ '_blank' }
 							label={ __( 'View in Parse.ly', 'wp-parsely' ) }
