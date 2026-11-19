@@ -56,7 +56,7 @@ jobs:
           cache: npm
 
       - name: Use npm 11.21.3
-        run: npm install -g npm@11.21.3
+        run: npm install -g --ignore-scripts npm@11.21.3
 
       - name: Build
         run: |
