@@ -58,7 +58,8 @@
 		// Allow imports from @wordpress package build-types for TypeScript type definitions.
 		"import/no-unresolved": ["error", {
 			"ignore": [
-				"@wordpress/.*/build-types/.*"
+				"@wordpress/.*/build-types/.*",
+				"@wordpress/e2e-test-utils-playwright"
 			]
 		}]
 	}
