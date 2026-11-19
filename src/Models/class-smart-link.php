@@ -752,8 +752,7 @@ class Smart_Link extends Base_Model {
 	 * Invalid hrefs are ignored. Callers accepting user input should validate
 	 * with `is_valid_href()` first, to report the rejection.
 	 *
-	 * No canonical URL is stored, as this runs during REST argument
-	 * validation, which must not have side effects.
+	 * No canonical URL is stored.
 	 *
 	 * @since 3.16.0
 	 * @since 3.24.2 Invalid hrefs are ignored, and no canonical URL is stored.

@@ -10,11 +10,14 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 
+use Parsely\Content_Helper\Editor_Sidebar;
+use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\RestAPI\BaseEndpointTest;
 use Parsely\Models\Smart_Link;
+use Parsely\Models\Smart_Link_Status;
 use Parsely\Tests\Integration\TestCase;
 use WP_Error;
 use WP_REST_Request;
@@ -527,5 +530,145 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 			self::assertStringContainsString( 'itm_source=smart-linking', $smart_link['href']['itm'] );
 			self::assertStringContainsString( 'itm_term=' . $smart_link['uid'], $smart_link['href']['itm'] );
 		}
+	}
+
+	/**
+	 * Verifies that adding a Smart Link with the UID of a stored one fails,
+	 * unless the request asks to update it.
+	 *
+	 * @since 3.26.1
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::add_smart_link
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_link_from_params
+	 * @uses \Parsely\Models\Smart_Link
+	 */
+	public function test_add_smart_link_with_an_existing_uid_requires_update(): void {
+		$post_id = $this->create_post_for_smart_links();
+		$link    = $this->get_link_params( 'existing' );
+
+		self::assertSame(
+			200,
+			$this->dispatch_add_smart_link( $post_id, $link )->get_status(),
+			'Fixture is wrong: the Smart Link should be added.'
+		);
+
+		$link['text'] = 'Updated text';
+
+		$response = $this->dispatch_add_smart_link( $post_id, $link );
+
+		/** @var array{error: array{name: string}} $data */
+		$data = $response->get_data();
+
+		self::assertSame( 409, $response->get_status() );
+		self::assertSame( 'smart_link_exists', $data['error']['name'] );
+
+		self::assertSame( 200, $this->dispatch_add_smart_link( $post_id, $link, true )->get_status() );
+		self::assertSame( 'Updated text', Smart_Link::get_smart_link( $link['uid'], $post_id )->text );
+	}
+
+	/**
+	 * Verifies that setting a post's Smart Links saves the passed ones, and
+	 * removes the stored ones the request doesn't include.
+	 *
+	 * @since 3.26.1
+	 *
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_smart_link_from_params
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::set_smart_links
+	 * @uses \Parsely\Models\Smart_Link
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::add_multiple_smart_links
+	 */
+	public function test_set_smart_links_saves_and_removes_links(): void {
+		$post_id = $this->create_post_for_smart_links();
+		$links   = array(
+			$this->get_link_params( 'a' ),
+			$this->get_link_params( 'b' ),
+			$this->get_link_params( 'c' ),
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->get_endpoint()->get_full_endpoint( $post_id . '/add-multiple' ) );
+		$request->set_param( 'links', array( $links[0], $links[1] ) );
+
+		self::assertSame(
+			200,
+			rest_get_server()->dispatch( $request )->get_status(),
+			'Fixture is wrong: the Smart Links should be added.'
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->get_endpoint()->get_full_endpoint( $post_id . '/set' ) );
+		$request->set_param( 'links', array( $links[1], $links[2] ) );
+
+		$response = rest_get_server()->dispatch( $request );
+
+		self::assertSame( 200, $response->get_status() );
+
+		/** @var array{data: array{saved: array<array{uid: string}>, removed: array<array{uid: string}>}} $data */
+		$data = $response->get_data();
+
+		self::assertSame( array( $links[1]['uid'], $links[2]['uid'] ), array_column( $data['data']['saved'], 'uid' ) );
+		self::assertSame( array( $links[0]['uid'] ), array_column( $data['data']['removed'], 'uid' ) );
+
+		$stored_uids = array_map(
+			function ( Smart_Link $link ): string {
+				return $link->get_uid();
+			},
+			Smart_Link::get_outbound_smart_links( $post_id, Smart_Link_Status::APPLIED )
+		);
+		sort( $stored_uids );
+
+		$expected_uids = array( $links[1]['uid'], $links[2]['uid'] );
+		sort( $expected_uids );
+
+		self::assertSame( $expected_uids, $stored_uids );
+	}
+
+	/**
+	 * Registers the post type and taxonomies that Smart Links are stored with,
+	 * and creates a post to add them to.
+	 *
+	 * @since 3.26.1
+	 *
+	 * @return int The post's ID.
+	 */
+	private function create_post_for_smart_links(): int {
+		( new Smart_Linking( new Editor_Sidebar( $this->parsely ) ) )->run();
+
+		/** @var int */
+		return self::factory()->post->create();
+	}
+
+	/**
+	 * Returns the parameters of a Smart Link to an external URL.
+	 *
+	 * @since 3.26.1
+	 *
+	 * @param string $name A name that makes the Smart Link unique.
+	 * @return array{uid: string, href: array{raw: string}, title: string, text: string, offset: int} The Smart Link parameters.
+	 */
+	private function get_link_params( string $name ): array {
+		return array(
+			'uid'    => md5( $name ),
+			'href'   => array( 'raw' => 'http://example.com/' . $name ),
+			'title'  => 'Example ' . $name,
+			'text'   => 'Example ' . $name,
+			'offset' => 0,
+		);
+	}
+
+	/**
+	 * Dispatches a request to add a Smart Link to a post.
+	 *
+	 * @since 3.26.1
+	 *
+	 * @param int          $post_id The post's ID.
+	 * @param array<mixed> $link    The Smart Link parameters.
+	 * @param bool         $update  Whether to update a stored Smart Link with the same UID.
+	 * @return WP_REST_Response The response.
+	 */
+	private function dispatch_add_smart_link( int $post_id, array $link, bool $update = false ): WP_REST_Response {
+		$request = new WP_REST_Request( 'POST', $this->get_endpoint()->get_full_endpoint( $post_id . '/add' ) );
+		$request->set_param( 'link', $link );
+		$request->set_param( 'update', $update );
+
+		return rest_get_server()->dispatch( $request );
 	}
 }
