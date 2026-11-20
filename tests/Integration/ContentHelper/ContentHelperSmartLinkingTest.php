@@ -51,8 +51,8 @@ final class ContentHelperSmartLinkingTest extends TestCase {
 	public function test_deleting_a_post_deletes_its_smart_links(): void {
 		/** @var int $destination_post_id */
 		$destination_post_id = self::factory()->post->create();
-		$deleted_link        = $this->create_post_linking_to( $destination_post_id, md5( 'deleted' ) );
-		$kept_link           = $this->create_post_linking_to( $destination_post_id, md5( 'kept' ) );
+		$deleted_link        = $this->create_post_linking_to( $destination_post_id );
+		$kept_link           = $this->create_post_linking_to( $destination_post_id );
 
 		wp_delete_post( $deleted_link['post_id'], true );
 		wp_cache_flush();
@@ -76,7 +76,7 @@ final class ContentHelperSmartLinkingTest extends TestCase {
 	public function test_deleting_a_post_keeps_the_smart_link_term_with_its_id( string $taxonomy, string $post_type ): void {
 		/** @var int $destination_post_id */
 		$destination_post_id = self::factory()->post->create();
-		$link                = $this->create_post_linking_to( $destination_post_id, md5( 'link' ) );
+		$link                = $this->create_post_linking_to( $destination_post_id );
 
 		$slugs = array(
 			'smart_link_source'      => (string) $link['post_id'],
@@ -131,7 +131,7 @@ final class ContentHelperSmartLinkingTest extends TestCase {
 	public function test_smart_links_to_a_deleted_post_keep_their_destination(): void {
 		/** @var int $destination_post_id */
 		$destination_post_id = self::factory()->post->create();
-		$link                = $this->create_post_linking_to( $destination_post_id, md5( 'link' ) );
+		$link                = $this->create_post_linking_to( $destination_post_id );
 
 		wp_delete_post( $destination_post_id, true );
 		wp_cache_flush();
@@ -152,24 +152,25 @@ final class ContentHelperSmartLinkingTest extends TestCase {
 	 *
 	 * @since 3.26.1
 	 *
-	 * @param int    $destination_post_id The destination post ID.
-	 * @param string $uid                 The Smart Link UID.
+	 * @param int $destination_post_id The destination post ID.
 	 * @return array{post_id: int, smart_link_id: int} The post and Smart Link IDs.
 	 */
-	private function create_post_linking_to( int $destination_post_id, string $uid ): array {
+	private function create_post_linking_to( int $destination_post_id ): array {
 		$href = (string) get_permalink( $destination_post_id );
 
 		/** @var int $post_id */
-		$post_id = self::factory()->post->create(
-			array(
-				'post_content' => '<p><a href="' . esc_url( $href ) . '" data-smartlink="' . $uid . '">link</a></p>',
-			)
-		);
+		$post_id = self::factory()->post->create();
 
 		$smart_link = new Smart_Link( $href, 'Title', 'link', 0, $post_id );
-		$smart_link->set_uid( $uid );
 		$smart_link->set_status( Smart_Link_Status::APPLIED );
 		self::assertTrue( $smart_link->save() );
+
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => '<p><a href="' . esc_url( $href ) . '" data-smartlink="' . $smart_link->get_uid() . '">link</a></p>',
+			)
+		);
 
 		/** @var array{smart_link_id: int} $data */
 		$data = $smart_link->to_array();
