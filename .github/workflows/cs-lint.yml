@@ -22,6 +22,9 @@ concurrency:
   group: cs-lint-${{ inputs.ref || github.ref }}-${{ github.event_name }}
   cancel-in-progress: ${{ inputs.ref == '' }}
 
+permissions:
+  contents: read
+
 jobs:
   checkcs:
     name: 'Basic CS and QA checks'

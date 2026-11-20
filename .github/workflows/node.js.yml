@@ -24,6 +24,9 @@ concurrency:
   group: node.js-${{ inputs.ref || github.ref }}-${{ github.event_name }}
   cancel-in-progress: ${{ inputs.ref == '' }}
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -39,10 +42,13 @@ jobs:
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+
+      - name: Use npm 11.21.3
+        run: npm install -g --ignore-scripts npm@11.21.3
 
       - name: Test release tooling
         run: node --test tests/release/*.test.mjs

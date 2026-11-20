@@ -33,7 +33,7 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
       - name: Resolve and validate release
@@ -122,10 +122,12 @@ jobs:
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: '7.4'
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Use npm 11.21.3
+        run: npm install -g --ignore-scripts npm@11.21.3
       - name: Configure Git
         run: |
           git config user.name 'github-actions[bot]'
