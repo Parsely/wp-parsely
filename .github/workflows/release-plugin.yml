@@ -178,6 +178,19 @@ jobs:
             ${{ runner.temp }}/release-notes.md
           if-no-files-found: error
 
+      - name: Confirm this is still the current release
+        if: env.DRY_RUN != 'true'
+        run: |
+          # Re-running failed jobs keeps the resolve job's earlier outputs, so
+          # check trunk again before publishing anything.
+          git fetch --quiet origin +refs/heads/trunk:refs/remotes/origin/trunk
+          git merge-base --is-ancestor "$SOURCE_SHA" origin/trunk
+          TRUNK_VERSION=$(git show origin/trunk:wp-parsely.php | sed -n 's/^ \* Version: *//p' | xargs)
+          if [ "$VERSION" != "$TRUNK_VERSION" ]; then
+            echo "Trunk is at $TRUNK_VERSION, so $VERSION can no longer be published." >&2
+            exit 1
+          fi
+
       - name: Tag and stage GitHub release
         if: env.DRY_RUN != 'true'
         env:
