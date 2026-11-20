@@ -8,6 +8,17 @@ updates:
     labels:
       - 'Deps'
       - 'Deps: JavaScript'
+    groups:
+      wordpress-packages:
+        patterns:
+          - '@wordpress/*'
+        exclude-patterns:
+          - '@wordpress/babel-preset-default'
+          - '@wordpress/e2e-test-utils-playwright'
+          - '@wordpress/env'
+          - '@wordpress/eslint-plugin'
+          - '@wordpress/icons'
+          - '@wordpress/scripts'
 
   - package-ecosystem: 'composer'
     directory: '/'
