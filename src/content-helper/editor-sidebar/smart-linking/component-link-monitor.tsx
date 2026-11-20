@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { BlockInstance } from '@wordpress/blocks';
 import { debounce } from '@wordpress/compose';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
@@ -9,7 +8,7 @@ import { useEffect, useRef } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { BlockInstance, GutenbergFunction } from '../../../@types/gutenberg/types';
 
 /**
  * Defines the structure of a block change.

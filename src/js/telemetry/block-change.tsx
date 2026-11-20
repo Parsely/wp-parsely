@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { BlockInstance } from '@wordpress/blocks';
 import { select, subscribe } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 
@@ -14,6 +13,7 @@ import { isEditorReady } from '../../content-helper/common/utils/functions';
 /**
  * Internal dependencies
  */
+import { BlockInstance } from '../../@types/gutenberg/types';
 import { Telemetry } from './telemetry';
 
 /**
