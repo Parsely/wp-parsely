@@ -24,7 +24,7 @@ The Parse.ly plugin uses the `PHP_CodeSniffer` tool that is installed through `c
 
 The code implements strong types, so be sure to declare `strict_types=1` on new PHP files, and include type definitions for parameters and return types that are compatible with the minimum version of PHP that this plugin supports.
 
-For JavaScript, we recommend installing ESLint. This plugin includes a [.eslintrc](https://github.com/Parsely/wp-parsely/blob/develop/.eslintrc) file that defines our coding standards.
+For JavaScript, we recommend installing ESLint. This plugin includes an [eslint.config.mjs](https://github.com/Parsely/wp-parsely/blob/develop/eslint.config.mjs) file that defines our coding standards.
 
 Regarding inline documentation, we do our best to adhere to the [WordPress Inline Documentation Standards](https://developer.wordpress.org/coding-standards/inline-documentation-standards/).
 
