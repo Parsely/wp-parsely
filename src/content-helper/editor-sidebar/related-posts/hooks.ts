@@ -60,7 +60,6 @@ export function usePostData(): PostData {
 	 *               has been resolved.
 	 */
 	const postAttributes = useSelect( ( select ) => {
-		// @ts-ignore `hasFinishedResolution` and `isResolving` are not part of the core-data store type.
 		const { getEntityRecords, hasFinishedResolution, isResolving } = select( coreStore );
 
 		const editor = select( 'core/editor' ) as GutenbergFunction;
@@ -100,8 +99,6 @@ export function usePostData(): PostData {
 			tagRecords = null;
 		}
 
-		// The selectors return booleans typed as `any`, so `??` would be wrong here.
-		/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 		// Check if the data is still being fetched.
 		const isLoading = (
 			isResolving( 'getEntityRecords', [ 'root', 'user', { include: [ authorId ], context: 'view' } ] ) ||
@@ -119,7 +116,6 @@ export function usePostData(): PostData {
 			( hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'post_tag', { include: tagIds, context: 'view' } ] ) ||
 				tagRecords === null )
 		);
-		/* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
 
 		return { authorRecords, categoryRecords, tagRecords, isLoading, hasResolved };
 	}, [] );

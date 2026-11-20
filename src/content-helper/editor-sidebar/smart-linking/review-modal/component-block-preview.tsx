@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
-import { BlockInstance, cloneBlock, getBlockContent } from '@wordpress/blocks';
+import { cloneBlock, getBlockContent } from '@wordpress/blocks';
 import { Disabled } from '@wordpress/components';
 import { select } from '@wordpress/data';
 import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
+import { BlockInstance } from '../../../../@types/gutenberg/types';
 import { SmartLink } from '../provider';
 import { applyNodeToBlock } from '../utils';
 
