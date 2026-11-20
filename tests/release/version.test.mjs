@@ -103,8 +103,12 @@ test('validates the lockfile root version independently', (t) => {
 	assert.throws(() => releaseMetadata('', directory), /package-lock root/);
 });
 
-test('fails closed for absent or empty release notes', (t) => {
-	for (const changelog of ['## [3.24.3]\n\n- Old', '## [3.24.4]\n\n## [3.24.3]\n\n- Old']) {
+test('fails closed for absent, empty or heading-only release notes', (t) => {
+	for (const changelog of [
+		'## [3.24.3]\n\n- Old',
+		'## [3.24.4]\n\n## [3.24.3]\n\n- Old',
+		'## [3.24.4]\n\n### Fixed\n\n## [3.24.3]\n\n- Old',
+	]) {
 		const directory = fixture(t);
 		writeFileSync(join(directory, 'CHANGELOG.md'), changelog);
 		assert.throws(() => releaseMetadata('3.24.3', directory), /Missing changelog/);

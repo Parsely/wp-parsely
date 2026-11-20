@@ -91,7 +91,8 @@ export function releaseMetadata(previousVersion = '', directory = '.') {
 	}
 	const sections = read('CHANGELOG.md').split(/(?=^## \[)/m);
 	const notes = sections.find((section) => section.startsWith(`## [${version}]`));
-	if (!notes?.split('\n').slice(1).join('\n').trim()) {
+	const entries = notes?.split('\n').slice(1).filter((line) => !/^\s*#/.test(line));
+	if (!entries?.join('\n').trim()) {
 		throw new Error(`Missing changelog for ${version}.`);
 	}
 	return { version, release: true, notes: notes.trim() };
