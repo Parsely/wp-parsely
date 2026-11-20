@@ -142,10 +142,10 @@ jobs:
           import { readFileSync } from 'node:fs';
           console.log(JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/release.json`)).notes);
           JS
-          # setup-php stores the write token in ~/.composer for Composer. Install
-          # without plugins, then remove it before other build or deploy code runs.
+          # setup-php stores the write token in ~/.composer. Composer runs without
+          # plugins and the token is removed before other build or deploy code runs.
           if [ "$DRY_RUN" != true ] && git show-ref --verify --quiet "refs/tags/$VERSION"; then
-            COMPOSER_HOME="$HOME/.composer" composer config --global --unset github-oauth.github.com
+            COMPOSER_HOME="$HOME/.composer" composer config --global --no-plugins --unset github-oauth.github.com
             # Only resume our own snapshot of this exact source commit.
             git log -1 --format=%B "$VERSION" | grep -Fxq "Release-Source: $SOURCE_SHA"
             test "$(git rev-parse "$VERSION^1")" = "$SOURCE_SHA"
@@ -153,7 +153,7 @@ jobs:
             echo 'existing=true' >> "$GITHUB_OUTPUT"
           else
             composer install --no-dev --no-plugins --prefer-dist --optimize-autoloader --classmap-authoritative --no-interaction
-            COMPOSER_HOME="$HOME/.composer" composer config --global --unset github-oauth.github.com
+            COMPOSER_HOME="$HOME/.composer" composer config --global --no-plugins --unset github-oauth.github.com
             npm ci --ignore-scripts
             npm run build
             # Preserve built release tags for existing consumers without using
