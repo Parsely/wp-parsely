@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/named
 import { BlockInstance } from '@wordpress/blocks';
 import { dispatch } from '@wordpress/data';
 

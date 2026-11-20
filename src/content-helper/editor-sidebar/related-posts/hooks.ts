@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-// eslint-disable-next-line import/named
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
@@ -101,6 +100,8 @@ export function usePostData(): PostData {
 			tagRecords = null;
 		}
 
+		// The selectors return booleans typed as `any`, so `??` would be wrong here.
+		/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 		// Check if the data is still being fetched.
 		const isLoading = (
 			isResolving( 'getEntityRecords', [ 'root', 'user', { include: [ authorId ], context: 'view' } ] ) ||
@@ -118,6 +119,7 @@ export function usePostData(): PostData {
 			( hasFinishedResolution( 'getEntityRecords', [ 'taxonomy', 'post_tag', { include: tagIds, context: 'view' } ] ) ||
 				tagRecords === null )
 		);
+		/* eslint-enable @typescript-eslint/prefer-nullish-coalescing */
 
 		return { authorRecords, categoryRecords, tagRecords, isLoading, hasResolved };
 	}, [] );
