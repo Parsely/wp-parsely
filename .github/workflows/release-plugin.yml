@@ -52,7 +52,8 @@ jobs:
             test -n "$PREVIOUS_VERSION"
           fi
           node bin/release-version.mjs metadata "$PREVIOUS_VERSION" > "$RUNNER_TEMP/release.json"
-          if [ "$DRY_RUN" != true ]; then
+          IS_RELEASE=$(node -p "require(process.env.RUNNER_TEMP + '/release.json').release")
+          if [ "$DRY_RUN" != true ] && [ "$IS_RELEASE" = true ]; then
             TRUNK_VERSION=$(git show origin/trunk:wp-parsely.php | sed -n 's/^ \* Version: *//p' | xargs)
             RELEASE_VERSION=$(node -p "require(process.env.RUNNER_TEMP + '/release.json').version")
             test "$RELEASE_VERSION" = "$TRUNK_VERSION"
