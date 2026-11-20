@@ -17,6 +17,9 @@ import {
 	InboundLinkDetails,
 } from '../../../../src/content-helper/editor-sidebar/smart-linking/review-modal/component-inbound-link';
 
+// Divider and Tooltip log deprecation warnings, which would fail the tests.
+jest.mock( '@wordpress/deprecated' );
+
 // The real preview renders through the block editor.
 jest.mock(
 	'../../../../src/content-helper/editor-sidebar/smart-linking/review-modal/component-block-preview',
