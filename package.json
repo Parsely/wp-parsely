@@ -72,7 +72,7 @@
 		"@wordpress/url": "^5.1.0",
 		"@wordpress/wordcount": "^5.1.0",
 		"concurrently": "^10.0.7",
-		"eslint": "^9.39.5",
+		"eslint": "^10.15.0",
 		"eslint-plugin-jest": "^29.17.1",
 		"husky": "^9.1.7",
 		"lodash.debounce": "^4.0.8",
@@ -86,6 +86,17 @@
 		"@wordpress/scripts": "Don't upgrade to v28 or greater until the plugin requires WordPress 6.6. See https://github.com/WordPress/gutenberg/pull/62265/files"
 	},
 	"overrides": {
+		"@wordpress/eslint-plugin@^28.1.0": {
+			"eslint-plugin-import": {
+				"eslint": "^10.0.0"
+			},
+			"eslint-plugin-jsx-a11y": {
+				"eslint": "^10.0.0"
+			},
+			"eslint-plugin-react": {
+				"eslint": "^10.0.0"
+			}
+		},
 		"del": "^6.1.1",
 		"express": "^4.22.0",
 		"glob": "^10.5.0",
@@ -96,6 +107,7 @@
 		"qs": "^6.14.1"
 	},
 	"overridesComments": {
+		"@wordpress/eslint-plugin@^28.1.0": "Allows ESLint 10. Keep until eslint-plugin-import, eslint-plugin-jsx-a11y and eslint-plugin-react support it.",
 		"del": "Fixes `npm run build`.",
 		"express": "Security update to v4.22.0 or later. Keep until @wordpress/scripts gets upgraded.",
 		"glob": "Security update to v10.5.0 or later.",
