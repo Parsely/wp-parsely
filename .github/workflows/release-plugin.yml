@@ -113,12 +113,12 @@ jobs:
       VERSION: ${{ needs.resolve.outputs.version }}
       SOURCE_SHA: ${{ needs.resolve.outputs.sha }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
-      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.resolve.outputs.sha }}
           fetch-depth: 0
+          persist-credentials: false
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: '7.4'
@@ -141,16 +141,20 @@ jobs:
           import { readFileSync } from 'node:fs';
           console.log(JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/release.json`)).notes);
           JS
+          # setup-php stores the write token in ~/.composer for Composer. Remove
+          # it once Composer is done, before any other build or deploy code runs.
           if [ "$DRY_RUN" != true ] && git show-ref --verify --quiet "refs/tags/$VERSION"; then
+            COMPOSER_HOME="$HOME/.composer" composer config --global --unset github-oauth.github.com
             # Only resume our own snapshot of this exact source commit.
             git log -1 --format=%B "$VERSION" | grep -Fxq "Release-Source: $SOURCE_SHA"
             test "$(git rev-parse "$VERSION^1")" = "$SOURCE_SHA"
             git checkout --detach "$VERSION"
             echo 'existing=true' >> "$GITHUB_OUTPUT"
           else
+            composer install --no-dev --prefer-dist --optimize-autoloader --classmap-authoritative --no-interaction
+            COMPOSER_HOME="$HOME/.composer" composer config --global --unset github-oauth.github.com
             npm ci --ignore-scripts
             npm run build
-            composer install --no-dev --prefer-dist --optimize-autoloader --classmap-authoritative --no-interaction
             # Preserve built release tags for existing consumers without using
             # a moving *-built branch as the release input.
             git add -f vendor/ build/
@@ -195,10 +199,11 @@ jobs:
         if: env.DRY_RUN != 'true'
         env:
           EXISTING_TAG: ${{ steps.snapshot.outputs.existing }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$EXISTING_TAG" != true ]; then
             git tag -a "$VERSION" -m "wp-parsely $VERSION"
-            git push origin "refs/tags/$VERSION"
+            git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/$VERSION"
           fi
           if ! gh release view "$VERSION" > /dev/null 2>&1; then
             gh release create "$VERSION" --verify-tag --draft \
@@ -228,6 +233,8 @@ jobs:
 
       - name: Publish GitHub release with the same package
         if: env.DRY_RUN != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "$VERSION" "$RUNNER_TEMP/wp-parsely.zip" --clobber
           gh release edit "$VERSION" --draft=false
