@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-// eslint-disable-next-line import/named
 import { BlockInstance, getBlockType } from '@wordpress/blocks';
 import {
 	Disabled,

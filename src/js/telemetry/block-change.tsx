@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-// eslint-disable-next-line import/named
 import { BlockInstance } from '@wordpress/blocks';
 import { select, subscribe } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
@@ -9,7 +8,6 @@ import { useEffect } from '@wordpress/element';
 /**
  * External dependencies
  */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash/debounce';
 import { isEditorReady } from '../../content-helper/common/utils/functions';
 

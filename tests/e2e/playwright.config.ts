@@ -36,7 +36,7 @@ process.env.WP_BASE_URL = baseURL;
 /**
  * WordPress dependencies
  */
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const baseConfig = require( '@wordpress/scripts/config/playwright.config' );
 
 const config = defineConfig( {

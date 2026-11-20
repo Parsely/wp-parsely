@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
-// eslint-disable-next-line import/named
 import { BlockInstance, cloneBlock, getBlockContent } from '@wordpress/blocks';
 import { Disabled } from '@wordpress/components';
 import { select } from '@wordpress/data';

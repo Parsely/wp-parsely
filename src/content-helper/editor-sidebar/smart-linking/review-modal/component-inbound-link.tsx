@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-// eslint-disable-next-line import/named
 import { BlockInstance, parse } from '@wordpress/blocks';
 import { Button, __experimentalDivider as Divider, KeyboardShortcuts, Tooltip } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';

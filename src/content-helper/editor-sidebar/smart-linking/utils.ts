@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-// eslint-disable-next-line import/named
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { dispatch, select } from '@wordpress/data';
 
