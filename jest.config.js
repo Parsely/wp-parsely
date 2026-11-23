@@ -11,6 +11,6 @@ module.exports = {
 		'\\.mjs$': 'babel-jest',
 	},
 	transformIgnorePatterns: [
-		'node_modules/(?!(client-zip|marked|parsel-js|uuid|@wordpress/theme)/)',
+		'node_modules/(?!(.+/node_modules/)?(client-zip|marked|parsel-js|uuid|@wordpress/theme)/)',
 	],
 };
