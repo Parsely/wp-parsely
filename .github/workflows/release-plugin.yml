@@ -100,16 +100,13 @@ jobs:
     with:
       ref: ${{ needs.resolve.outputs.sha }}
 
-  publish:
+  package:
     needs: [resolve, lint, unit, javascript, integration, e2e]
     runs-on: ubuntu-24.04
-    # Only real publications share the queue. Dry runs and ordinary trunk
-    # changes must not displace a release waiting for publication.
-    concurrency:
-      group: release-wp-parsely-${{ inputs.dry_run && github.run_id || 'publish' }}
-      cancel-in-progress: false
-    permissions:
-      contents: write
+    outputs:
+      snapshot: ${{ steps.snapshot.outputs.sha }}
+      zip: ${{ steps.snapshot.outputs.zip }}
+      artifact: ${{ steps.upload.outputs.artifact-id }}
     env:
       VERSION: ${{ needs.resolve.outputs.version }}
       SOURCE_SHA: ${{ needs.resolve.outputs.sha }}
@@ -123,10 +120,10 @@ jobs:
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
         with:
           php-version: '7.4'
+      # The release build doesn't restore caches, which other runs can write.
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: npm
       - name: Use npm 11.21.3
         run: npm install -g --ignore-scripts npm@11.21.3
       - name: Configure Git
@@ -137,20 +134,20 @@ jobs:
       - name: Build or reuse the exact release snapshot
         id: snapshot
         run: |
+          mkdir -p "$RUNNER_TEMP/release"
           node bin/release-version.mjs metadata > "$RUNNER_TEMP/release.json"
-          node --input-type=module <<'JS' > "$RUNNER_TEMP/release-notes.md"
+          node --input-type=module <<'JS' > "$RUNNER_TEMP/release/release-notes.md"
           import { readFileSync } from 'node:fs';
           console.log(JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/release.json`)).notes);
           JS
-          # setup-php stores the write token in ~/.composer. Composer runs without
-          # plugins and the token is removed before other build or deploy code runs.
+          # setup-php stores the job token in ~/.composer. Composer runs without
+          # plugins and the token is removed before other build code runs.
           if [ "$DRY_RUN" != true ] && git show-ref --verify --quiet "refs/tags/$VERSION"; then
             COMPOSER_HOME="$HOME/.composer" composer config --global --no-plugins --unset github-oauth.github.com
             # Only resume our own snapshot of this exact source commit.
             git log -1 --format=%B "$VERSION" | grep -Fxq "Release-Source: $SOURCE_SHA"
             test "$(git rev-parse "$VERSION^1")" = "$SOURCE_SHA"
             git checkout --detach "$VERSION"
-            echo 'existing=true' >> "$GITHUB_OUTPUT"
           else
             composer install --no-dev --no-plugins --prefer-dist --optimize-autoloader --classmap-authoritative --no-interaction
             COMPOSER_HOME="$HOME/.composer" composer config --global --no-plugins --unset github-oauth.github.com
@@ -160,31 +157,78 @@ jobs:
             # a moving *-built branch as the release input.
             git add -f vendor/ build/
             git commit --allow-empty -m "Build wp-parsely $VERSION" -m "Release-Source: $SOURCE_SHA"
-            echo 'existing=false' >> "$GITHUB_OUTPUT"
           fi
           test -f vendor/autoload.php
-          git archive --format=zip --prefix=wp-parsely/ HEAD -o "$RUNNER_TEMP/wp-parsely.zip"
-          unzip -l "$RUNNER_TEMP/wp-parsely.zip" > "$RUNNER_TEMP/zip-files.txt"
+          git archive --format=zip --prefix=wp-parsely/ HEAD -o "$RUNNER_TEMP/release/wp-parsely.zip"
+          unzip -l "$RUNNER_TEMP/release/wp-parsely.zip" > "$RUNNER_TEMP/zip-files.txt"
           grep -q 'wp-parsely/vendor/autoload.php' "$RUNNER_TEMP/zip-files.txt"
           grep -q 'wp-parsely/build/' "$RUNNER_TEMP/zip-files.txt"
           if grep -Eq 'wp-parsely/(tests|node_modules|\.github)/' "$RUNNER_TEMP/zip-files.txt"; then
             echo 'Development files found in release ZIP' >&2
             exit 1
           fi
-          mkdir -p "$RUNNER_TEMP/package"
-          git archive HEAD | tar -x -C "$RUNNER_TEMP/package"
+          # The publish job takes the snapshot from this bundle instead of building.
+          git bundle create "$RUNNER_TEMP/release/snapshot.bundle" HEAD "^$SOURCE_SHA"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "zip=$(sha256sum "$RUNNER_TEMP/release/wp-parsely.zip" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
 
       - name: Save release package for inspection
+        id: upload
         uses: actions/upload-artifact@v7
         with:
           name: wp-parsely-${{ env.VERSION }}-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/wp-parsely.zip
-            ${{ runner.temp }}/release-notes.md
+          path: ${{ runner.temp }}/release/
           if-no-files-found: error
 
+  publish:
+    needs: [resolve, package]
+    # Dry runs end with the package job, so they never start the job that
+    # holds the release credentials.
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+    runs-on: ubuntu-24.04
+    # Only real publications run this job, so they share one queue and are
+    # never cancelled in progress.
+    concurrency:
+      group: release-wp-parsely-publish
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+      SOURCE_SHA: ${{ needs.resolve.outputs.sha }}
+      SNAPSHOT: ${{ needs.package.outputs.snapshot }}
+      ZIP_SHA256: ${{ needs.package.outputs.zip }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      # Outside the workspace: the deploy action publishes untracked files.
+      - name: Download the release package
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.package.outputs.artifact }}
+          path: ${{ runner.temp }}/release
+      - name: Configure Git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Check out the release snapshot
+        run: |
+          # No build or dependency code runs here: the snapshot comes from the
+          # package job, identified by its commit SHA.
+          [[ "$SNAPSHOT" =~ ^[0-9a-f]{40}$ && "$ZIP_SHA256" =~ ^[0-9a-f]{64}$ ]]
+          git fetch --quiet "$RUNNER_TEMP/release/snapshot.bundle" HEAD
+          git log -1 --format=%B "$SNAPSHOT" | grep -Fxq "Release-Source: $SOURCE_SHA"
+          test "$(git rev-parse "$SNAPSHOT^1")" = "$SOURCE_SHA"
+          git checkout --quiet --detach "$SNAPSHOT"
+          echo "$ZIP_SHA256  $RUNNER_TEMP/release/wp-parsely.zip" | sha256sum --check --quiet
+          mkdir -p "$RUNNER_TEMP/package"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/package"
+
       - name: Confirm this is still the current release
-        if: env.DRY_RUN != 'true'
         run: |
           # Re-running failed jobs keeps the resolve job's earlier outputs, so
           # check trunk again before publishing anything.
@@ -197,22 +241,21 @@ jobs:
           fi
 
       - name: Tag and stage GitHub release
-        if: env.DRY_RUN != 'true'
         env:
-          EXISTING_TAG: ${{ steps.snapshot.outputs.existing }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$EXISTING_TAG" != true ]; then
+          if git show-ref --verify --quiet "refs/tags/$VERSION"; then
+            test "$(git rev-parse "$VERSION^{commit}")" = "$SNAPSHOT"
+          else
             git tag -a "$VERSION" -m "wp-parsely $VERSION"
             git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/$VERSION"
           fi
           if ! gh release view "$VERSION" > /dev/null 2>&1; then
             gh release create "$VERSION" --verify-tag --draft \
-              --title "$VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
+              --title "$VERSION" --notes-file "$RUNNER_TEMP/release/release-notes.md"
           fi
 
       - name: Check for an already-published WordPress.org tag
-        if: env.DRY_RUN != 'true'
         id: svn
         run: |
           sudo apt-get update
@@ -225,7 +268,7 @@ jobs:
           fi
 
       - name: Deploy the built snapshot to WordPress.org
-        if: env.DRY_RUN != 'true' && steps.svn.outputs.published != 'true'
+        if: steps.svn.outputs.published != 'true'
         uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # stable
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
@@ -233,9 +276,8 @@ jobs:
           VERSION: ${{ env.VERSION }}
 
       - name: Publish GitHub release with the same package
-        if: env.DRY_RUN != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "$VERSION" "$RUNNER_TEMP/wp-parsely.zip" --clobber
+          gh release upload "$VERSION" "$RUNNER_TEMP/release/wp-parsely.zip" --clobber
           gh release edit "$VERSION" --draft=false
