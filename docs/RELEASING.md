@@ -44,10 +44,10 @@ bumping the plugin version.
 
 ## Failed releases and retries
 
-Rerun a failed release's jobs, or dispatch **Release wp-parsely** with the
-original source SHA and `dry_run` disabled. Real releases require a commit
-reachable from `trunk` with the current trunk version, newer than all other
-version tags, preventing branch releases and stale-version rollbacks.
+Rerun a failed release's jobs, or dispatch **Release wp-parsely** from `trunk`
+with the original source SHA and `dry_run` disabled. Real releases require a
+commit reachable from `trunk` with the current trunk version, newer than all
+other version tags, preventing branch releases and stale-version rollbacks.
 Publications are serialized and never automatically cancelled in progress. Dry
 runs and ordinary no-release pushes cannot displace a pending publication.
 There is no skip-tests option.
@@ -58,8 +58,9 @@ WordPress.org already has the version, its contents must match the package
 before the workflow resumes GitHub publication. Existing tags from the legacy
 workflow fail this provenance check: do not retag an old published version.
 
-The existing `SVN_USERNAME` and `SVN_PASSWORD` repository secrets are still
-required for actual WordPress.org deployment. GitHub publication uses the
-repository token. A deployment failure leaves the GitHub release in draft.
-Verify both destinations after success; this automation does not deploy to
-WordPress VIP or WordPress.com, send announcements, or close milestones.
+WordPress.org deployment uses the `SVN_USERNAME` and `SVN_PASSWORD` secrets of
+the `wordpress-org` environment, which only `trunk` can deploy to; don't store
+them as repository secrets. GitHub publication uses the repository token. A
+deployment failure leaves the GitHub release in draft. Verify both destinations
+after success; this automation does not deploy to WordPress VIP or
+WordPress.com, send announcements, or close milestones.

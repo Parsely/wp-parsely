@@ -190,6 +190,7 @@ jobs:
     # holds the release credentials.
     if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
     runs-on: ubuntu-24.04
+    environment: wordpress-org
     # Only real publications run this job, so they share one queue and are
     # never cancelled in progress.
     concurrency:
