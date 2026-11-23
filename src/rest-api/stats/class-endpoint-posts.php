@@ -226,12 +226,16 @@ class Endpoint_Posts extends Base_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param string|array<string> $str The string to sanitize.
+	 * @param mixed $str The value to sanitize.
 	 * @return array<string> The sanitized array.
 	 */
 	public function sanitize_string_to_array( $str ): array {
 		if ( is_array( $str ) ) {
 			return $str;
+		}
+
+		if ( ! is_string( $str ) ) {
+			return array();
 		}
 
 		return explode( ',', $str );
@@ -242,11 +246,15 @@ class Endpoint_Posts extends Base_Endpoint {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param array<string> $urls The array to sanitize.
+	 * @param mixed $urls The value to sanitize.
 	 * @return array<string> The sanitized array.
 	 */
-	public function sanitize_urls( array $urls ): array {
-		return array_map( 'sanitize_url', $urls );
+	public function sanitize_urls( $urls ): array {
+		if ( ! is_array( $urls ) ) {
+			return array();
+		}
+
+		return array_map( 'sanitize_url', array_filter( $urls, 'is_string' ) );
 	}
 
 	/**
@@ -255,7 +263,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	 * @since 3.19.0
 	 * @since 3.24.2 Rejects non-arrays and more than `MAX_URLS` items.
 	 *
-	 * @param mixed $urls The raw parameter value, as validation runs before type checks.
+	 * @param mixed $urls The raw parameter value.
 	 * @return true|WP_Error
 	 */
 	public function validate_urls( $urls ) {
@@ -288,7 +296,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param string|array<string> $string_or_array The string or array to validate.
+	 * @param mixed $string_or_array The raw parameter value.
 	 * @return true|WP_Error
 	 */
 	public function validate_max_length_is_5( $string_or_array ) {
@@ -296,8 +304,18 @@ class Endpoint_Posts extends Base_Endpoint {
 			$string_or_array = $this->sanitize_string_to_array( $string_or_array );
 		}
 
+		if ( ! is_array( $string_or_array ) ) {
+			return new WP_Error( 'invalid_param', __( 'The parameter must be a string or an array of strings.', 'wp-parsely' ) );
+		}
+
 		if ( count( $string_or_array ) > 5 ) {
 			return new WP_Error( 'invalid_param', __( 'The parameter must have at most 5 items.', 'wp-parsely' ) );
+		}
+
+		foreach ( $string_or_array as $item ) {
+			if ( ! is_string( $item ) ) {
+				return new WP_Error( 'invalid_param', __( 'The parameter must be a string or an array of strings.', 'wp-parsely' ) );
+			}
 		}
 
 		return true;

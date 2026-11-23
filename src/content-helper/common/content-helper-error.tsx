@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { escapeHTML } from '@wordpress/escape-html';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -55,12 +56,15 @@ export enum ContentHelperErrorCode {
 export class ContentHelperError extends Error {
 	public code: ContentHelperErrorCode;
 	protected hint: string | null = null;
+	// Whether the message is HTML written by the plugin, rather than text.
+	protected isHtml: boolean;
 	public retryFetch: boolean;
 
 	constructor(
 		message: string,
 		code: ContentHelperErrorCode,
-		messagePrefix: string = __( 'Error:', 'wp-parsely' )
+		messagePrefix: string = __( 'Error:', 'wp-parsely' ),
+		isHtml: boolean = false
 	) {
 		// Avoid double message prefix.
 		if ( message.startsWith( messagePrefix ) ) {
@@ -76,6 +80,7 @@ export class ContentHelperError extends Error {
 		super( messagePrefix.length > 0 ? `${ messagePrefix } ${ message }` : message );
 		this.name = this.constructor.name;
 		this.code = code;
+		this.isHtml = isHtml;
 
 		// Errors for which we should retry fetch operations. We call them soft
 		// errors as they will not terminate execution.
@@ -122,6 +127,7 @@ export class ContentHelperError extends Error {
 				'<a href="https://wpvip.com/content-helper/#content-helper-form" target="_blank" rel="noopener">here</a>.',
 				'wp-parsely'
 			);
+			this.isHtml = true;
 		} else if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiOpenAiError ||
 			this.code === ContentHelperErrorCode.ParselySuggestionsApiOpenAiUnavailable ) {
 			this.message = __(
@@ -190,7 +196,7 @@ export class ContentHelperError extends Error {
 	 * @param {string} hint The hint to display
 	 */
 	protected Hint( hint: string ): string {
-		return `<p className="content-helper-error-message-hint" data-testid="content-helper-error-message-hint"><strong>${ __( 'Hint:', 'wp-parsely' ) }</strong> ${ hint }</p>`;
+		return `<p class="content-helper-error-message-hint" data-testid="content-helper-error-message-hint"><strong>${ __( 'Hint:', 'wp-parsely' ) }</strong> ${ hint }</p>`;
 	}
 
 	/**
@@ -211,11 +217,15 @@ export class ContentHelperError extends Error {
 			return EmptyCredentialsMessage( props );
 		}
 
+		// The message can be text from the server, so it's escaped unless it's
+		// HTML written by the plugin.
+		const message = this.isHtml ? this.message : escapeHTML( this.message );
+
 		return (
 			<ContentHelperErrorMessage
 				className={ props?.className }
 				testId="error">
-				{ `<p>${ this.message }</p>${ this.hint ? this.hint : '' }` }
+				{ `<p>${ message }</p>${ this.hint ? this.hint : '' }` }
 			</ContentHelperErrorMessage>
 		);
 	}

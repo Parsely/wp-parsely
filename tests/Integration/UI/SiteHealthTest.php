@@ -123,4 +123,41 @@ final class SiteHealthTest extends TestCase {
 		self::assertTrue( $parsely_health_info['show_count'] );
 		self::assertArrayHasKey( 'fields', $parsely_health_info );
 	}
+
+	/**
+	 * Verifies that the texts that Site Health outputs as HTML are escaped, so
+	 * that markup in their translations is output as text. The actions keep
+	 * only their link.
+	 *
+	 * @since 3.26.0
+	 *
+	 * @covers \Parsely\UI\Site_Health::check_site_id
+	 * @covers \Parsely\UI\Site_Health::options_debug_info
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_settings_url
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 */
+	public function test_texts_output_as_html_are_escaped(): void {
+		self::set_options( array( 'apikey' => '' ) );
+		$this->wrap_translations_in_strong_tags();
+
+		$tests = self::$site_health->check_site_id( array( 'direct' => array() ) );
+
+		self::assertIsArray( $tests['direct'] );
+		self::assertIsArray( $tests['direct']['parsely'] );
+		self::assertIsCallable( $tests['direct']['parsely']['test'] );
+
+		/** @var array{description: string, actions?: string} $result */
+		$result = ( $tests['direct']['parsely']['test'] )();
+
+		/** @var Parsely_Health_Info $parsely_health_info */
+		$parsely_health_info = self::$site_health->options_debug_info( array() )['parsely'] ?? array();
+
+		self::assertStringStartsWith( '<p>&lt;strong&gt;', $result['description'] );
+		self::assertSame(
+			'The site ID can be set in the <a href="' . esc_url( Parsely::get_settings_url() ) . '">Parse.ly Settings Page</a>.',
+			$result['actions'] ?? null
+		);
+		self::assertStringStartsWith( '&lt;strong&gt;', $parsely_health_info['description'] );
+	}
 }

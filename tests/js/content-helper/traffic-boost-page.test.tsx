@@ -127,9 +127,6 @@ describe( 'Traffic Boost page telemetry', () => {
 			2, 'traffic_boost_page_changed', { method: 'previous' }
 		);
 		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
-
-		// NumberControl warns once per run about its deprecated default size.
-		expect( console ).toHaveWarned();
 	} );
 
 	it( 'tracks page input once after the user pauses', async () => {
