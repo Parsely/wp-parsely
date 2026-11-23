@@ -308,6 +308,40 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( screen.queryByText( 'Post 1' ) ).not.toBeInTheDocument();
 	} );
 
+	it( 'does not track results that arrive after typing resumes', async () => {
+		await renderPage();
+		let resolveGarden: ( value: unknown ) => void = () => {};
+		let resolveGardens: ( value: unknown ) => void = () => {};
+		getPostsMock.mockImplementation( ( { search: query }: { search: string } ) => new Promise( ( resolve ) => {
+			if ( 'garden' === query ) {
+				resolveGarden = resolve;
+			} else {
+				resolveGardens = resolve;
+			}
+		} ) );
+
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'garden' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'gardens' } } );
+		await act( async () => {
+			resolveGarden( { data: [ { id: 1 } ], total_items: 13, total_pages: 2 } );
+		} );
+		act( () => {
+			jest.advanceTimersByTime( 2300 );
+		} );
+		await act( async () => {
+			resolveGardens( { data: [ { id: 2 } ], total_items: 1, total_pages: 1 } );
+		} );
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 7, result_count: 1 }
+		);
+	} );
+
 	it( 'sends a pending search when the user leaves the page', async () => {
 		const { unmount } = await renderPage();
 
@@ -350,6 +384,20 @@ describe( 'Traffic Boost page telemetry', () => {
 		settle();
 
 		expect( trackEvent ).not.toHaveBeenCalled();
+	} );
+
+	it( 'does not track clearing the search box', async () => {
+		await renderPage();
+
+		await search( 'hello' );
+		settle();
+		await search( '' );
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 1 );
+		expect( trackEvent ).toHaveBeenCalledWith(
+			'traffic_boost_searched', { query_length: 5, result_count: 42 }
+		);
 	} );
 
 	it( 'keeps a pending search when the page changes before it applies', async () => {
