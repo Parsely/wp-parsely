@@ -93,8 +93,9 @@ jobs:
             --body-file "$RUNNER_TEMP/release-pr.md" \
             --assignee "$GITHUB_ACTOR" --milestone "$NEW_VERSION"
 
-      # PRs created with GITHUB_TOKEN do not trigger pull_request workflows.
-      # Explicit workflow_dispatch events do, and retain the existing check names.
+      # GitHub holds the pull_request runs of PRs created with GITHUB_TOKEN until
+      # someone approves them. Explicit workflow_dispatch events run right away
+      # and retain the existing check names.
       - name: Run checks on the generated PR
         env:
           RELEASE_BRANCH: ${{ steps.release.outputs.branch }}
