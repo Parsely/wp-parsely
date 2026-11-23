@@ -152,4 +152,6 @@ jobs:
             echo "The built commit isn't on top of $BUILT_BRANCH, so nothing was pushed." >&2
             exit 1
           fi
-          git push --quiet "$REMOTE" "$SHA:refs/heads/$BUILT_BRANCH"
+          # The lease makes the push fail if the branch changed after BASE was
+          # read, including being created or deleted.
+          git push --quiet --force-with-lease="refs/heads/$BUILT_BRANCH:$BASE" "$REMOTE" "$SHA:refs/heads/$BUILT_BRANCH"
