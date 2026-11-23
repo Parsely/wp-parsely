@@ -35,6 +35,7 @@ The following additional tasks might be needed depending on the release and its 
 **1. Update version numbers and changelog**
 - [ ] [Run the "Create wp-parsely release PR"](https://github.com/Parsely/wp-parsely/actions/workflows/bump-version.yml) GitHub Action on `develop`, choosing `patch`, `minor`, or `major`. Create the matching next-version milestone first. The workflow updates the version markers and changelog, opens a PR, and explicitly starts its checks.
 - [ ] Verify that the generated PR looks correct. You can amend it with new commits if needed.
+- [ ] Approve the PR's workflows that are awaiting approval. They include CodeQL's required `Analyze (javascript)` check.
 - [ ] Merge the PR into the target branch (usually `develop`).
 
 **2. Merge develop into trunk**
