@@ -51,7 +51,7 @@
 		"@types/react-router": "^5.1.20",
 		"@types/wordpress__wordcount": "^2.4.5",
 		"@wordpress/api-fetch": "8.1",
-		"@wordpress/babel-preset-default": "^10.1.0",
+		"@wordpress/babel-preset-default": "^10.2.0",
 		"@wordpress/block-editor": "^20.0.0",
 		"@wordpress/blocks": "^17.1.0",
 		"@wordpress/components": "^44.0.0",
