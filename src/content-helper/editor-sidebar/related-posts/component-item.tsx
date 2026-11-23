@@ -4,7 +4,7 @@
 import { Button, Dashicon, Tooltip } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { Icon, copySmall, link, seen } from '@wordpress/icons';
+import { Icon, copy, link, seen } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -82,7 +82,7 @@ export const RelatedPostItem = (
 					<VerticalDivider />
 					<div>
 						<Button
-							icon={ copySmall }
+							icon={ copy }
 							iconSize={ 24 }
 							onClick={ () => {
 								navigator.clipboard.writeText( post.rawUrl ).then( () => {
