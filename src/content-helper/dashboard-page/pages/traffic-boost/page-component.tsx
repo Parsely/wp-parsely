@@ -44,8 +44,18 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	const [ searchValue, setSearchValue ] = useState<string>( '' );
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 
+	const lastTrackedSearch = useRef<string>( '' );
+	const appliedSearch = useRef<string>( '' );
+
 	// Stable, so a re-render (a page change, say) doesn't cancel a pending search.
 	const applySearch = useCallback( ( value: string ) => {
+		// A new query starts a new search, even if it repeats the last tracked
+		// one (a search cleared and typed again, say).
+		if ( value.trim() !== appliedSearch.current ) {
+			appliedSearch.current = value.trim();
+			lastTrackedSearch.current = '';
+		}
+
 		setSearchQuery( value );
 		setCurrentPage( 1 );
 	}, [] );
@@ -54,7 +64,6 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	// Results load 300 ms after typing stops, even mid-word, so a search is
 	// tracked once its results stay up for a second (or the page is left), and
 	// not again until the query changes. The query itself is never sent.
-	const lastTrackedSearch = useRef<string>( '' );
 	const trackSearch = useCallback( ( search: string, resultCount: number ) => {
 		const query = search.trim();
 

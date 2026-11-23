@@ -476,6 +476,51 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
+	it( 'tracks a search again once it is cleared and typed again', async () => {
+		await renderPage();
+
+		await search( 'hello' );
+		settle();
+		await search( '' );
+		act( () => {
+			jest.advanceTimersByTime( 500 );
+		} );
+		await search( 'hello' );
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			2, 'traffic_boost_searched', { query_length: 5, result_count: 42 }
+		);
+	} );
+
+	it( 'does not track a search again after typing back to it', async () => {
+		await renderPage();
+		const searchbox = screen.getByRole( 'searchbox' );
+
+		await search( 'hello' );
+		settle();
+		fireEvent.change( searchbox, { target: { value: 'hellox' } } );
+		act( () => {
+			jest.advanceTimersByTime( 100 );
+		} );
+		fireEvent.change( searchbox, { target: { value: 'hello' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		fireEvent.click( getNavButtons()[ 1 ] );
+		await waitForLoad();
+		settle();
+
+		expect( trackEvent ).toHaveBeenCalledTimes( 2 );
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			1, 'traffic_boost_searched', { query_length: 5, result_count: 42 }
+		);
+		expect( trackEvent ).toHaveBeenNthCalledWith(
+			2, 'traffic_boost_page_changed', { method: 'next' }
+		);
+	} );
+
 	it( 'keeps a pending search when the page changes before it applies', async () => {
 		await renderPage();
 
