@@ -57,6 +57,10 @@ jobs:
             TRUNK_VERSION=$(git show origin/trunk:wp-parsely.php | sed -n 's/^ \* Version: *//p' | xargs)
             RELEASE_VERSION=$(node -p "require(process.env.RUNNER_TEMP + '/release.json').version")
             test "$RELEASE_VERSION" = "$TRUNK_VERSION"
+            # Releases must also be newer than all other version tags. The
+            # version's own tag is left out, so retries still pass.
+            LATEST_TAG=$(git tag --list | awk -v current="$RELEASE_VERSION" '/^[0-9]+\.[0-9]+\.[0-9]+$/ && $0 != current' | sort -V | tail -n 1)
+            node bin/release-version.mjs metadata "$LATEST_TAG" > /dev/null
           fi
           node --input-type=module <<'JS' >> "$GITHUB_OUTPUT"
           import { readFileSync } from 'node:fs';
