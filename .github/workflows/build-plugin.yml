@@ -148,7 +148,7 @@ jobs:
           git fetch --quiet "$RUNNER_TEMP/built/built.bundle" HEAD
           SHA=$(git rev-parse FETCH_HEAD)
           # Only fast-forward the built branch by the one build commit.
-          if [ -n "$BASE" ] && [ "$(git rev-parse --verify --quiet "$SHA^1")" != "$BASE" ]; then
+          if [ -n "$BASE" ] && [ "$(git rev-parse "$SHA^@")" != "$BASE" ]; then
             echo "The built commit isn't on top of $BUILT_BRANCH, so nothing was pushed." >&2
             exit 1
           fi
