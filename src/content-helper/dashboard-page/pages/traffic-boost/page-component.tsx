@@ -17,7 +17,7 @@ import './traffic-boost.scss';
 /**
  * Tracks a page change made through the posts table pagination.
  *
- * @since 3.26.0
+ * @since 3.26.1
  *
  * @param {PageChangeMethod} method How the user changed the page.
  */
@@ -28,7 +28,7 @@ const trackPageChange = ( method: PageChangeMethod ): void => {
 /**
  * Tracks a page change made through the page number input.
  *
- * @since 3.26.0
+ * @since 3.26.1
  */
 const trackPageInput = (): void => trackPageChange( 'input' );
 

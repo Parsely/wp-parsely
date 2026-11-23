@@ -27,7 +27,7 @@ import { SinglePostRow } from './components/single-post-row';
 /**
  * The ways a user can change the PostsTable page.
  *
- * @since 3.26.0
+ * @since 3.26.1
  */
 export type PageChangeMethod = 'previous' | 'next' | 'input';
 
