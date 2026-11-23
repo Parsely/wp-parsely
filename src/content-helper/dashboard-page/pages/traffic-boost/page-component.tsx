@@ -51,11 +51,9 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	}, [] );
 	const debouncedSetSearchQuery = useDebounce( applySearch, 300 );
 
-	// Results show 300 ms after typing stops, which also catches pauses partway
-	// through a word. A search is only tracked once its results have stayed up
-	// for a second (or the user leaves the page first), and not again until the
-	// query changes. Only its length and the number of results are sent, never
-	// the query.
+	// Results load 300 ms after typing stops, even mid-word, so a search is
+	// tracked once its results stay up for a second (or the page is left), and
+	// not again until the query changes. The query itself is never sent.
 	const lastTrackedSearch = useRef<string>( '' );
 	const trackSearch = useCallback( ( search: string, resultCount: number ) => {
 		const query = search.trim();

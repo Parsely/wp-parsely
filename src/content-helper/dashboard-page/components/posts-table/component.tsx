@@ -172,8 +172,8 @@ export const PostsTable = ( {
 	 */
 	useEffect( () => {
 		// Set false on cleanup, so a response that resolves after unmount (or
-		// after a newer query replaces this one) doesn't report a search the
-		// user never saw.
+		// after a newer query replaces this one) neither updates the table nor
+		// reports a search the user never saw.
 		let isActive = true;
 
 		const fetchPosts = async () => {
