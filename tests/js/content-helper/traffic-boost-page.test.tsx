@@ -149,6 +149,18 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
+	it( 'does not track page input that keeps the current page', async () => {
+		await renderPage();
+
+		// Clamped to page 1, the page already shown.
+		fireEvent.change( screen.getByRole( 'spinbutton' ), { target: { value: '0' } } );
+		act( () => {
+			jest.advanceTimersByTime( 1000 );
+		} );
+
+		expect( trackEvent ).not.toHaveBeenCalled();
+	} );
+
 	it( 'tracks a search with its length and result count, never the query', async () => {
 		await renderPage();
 
@@ -376,6 +388,34 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( trackEvent ).toHaveBeenCalledWith(
 			'traffic_boost_searched', { query_length: 7, result_count: 1 }
 		);
+	} );
+
+	it( 'does not show an error from a search the user has typed over', async () => {
+		await renderPage();
+		let rejectSlow: ( reason: unknown ) => void = () => {};
+		getPostsMock.mockImplementation( ( { search: query }: { search: string } ) => {
+			if ( 'gar' === query ) {
+				return new Promise( ( _resolve, reject ) => {
+					rejectSlow = reject;
+				} );
+			}
+			return Promise.resolve( { data: [ { id: 2 } ], total_items: 5, total_pages: 1 } );
+		} );
+
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'gar' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await search( 'garden' );
+		await act( async () => {
+			rejectSlow( new Error( 'Slow request failed' ) );
+		} );
+
+		expect( screen.getByText( 'Post 2' ) ).toBeInTheDocument();
+		expect( screen.queryByText( /Slow request failed/ ) ).not.toBeInTheDocument();
+
+		// The table logs the failed request.
+		expect( console ).toHaveErrored();
 	} );
 
 	it( 'sends a pending search when the user leaves the page', async () => {
