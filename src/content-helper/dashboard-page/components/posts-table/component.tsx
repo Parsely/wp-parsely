@@ -185,11 +185,13 @@ export const PostsTable = ( {
 					page: currentPage,
 				} );
 
+				if ( ! isActive ) {
+					return;
+				}
+
 				// Reported before the stats request, so a search is known about even
 				// when stats fail.
-				if ( isActive ) {
-					onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
-				}
+				onPostsLoadedRef.current?.( query.search ?? '', fetchedPosts.total_items );
 
 				let fetchedStats: PostStats[] = [];
 

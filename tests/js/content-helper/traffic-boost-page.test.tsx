@@ -306,6 +306,42 @@ describe( 'Traffic Boost page telemetry', () => {
 		// response that resolved afterwards must not overwrite them.
 		expect( screen.getByText( 'Post 2' ) ).toBeInTheDocument();
 		expect( screen.queryByText( 'Post 1' ) ).not.toBeInTheDocument();
+
+		// Nor are stats requested for its posts.
+		expect( mockGetStatsForPosts ).not.toHaveBeenCalledWith(
+			[ { id: 1 } ], expect.anything()
+		);
+	} );
+
+	it( 'ignores slow stats for a search the user has typed over', async () => {
+		await renderPage();
+		let resolveSlowStats: ( value: unknown ) => void = () => {};
+		getPostsMock.mockImplementation( ( { search: query }: { search: string } ) => Promise.resolve(
+			'gar' === query
+				? { data: [ { id: 1 } ], total_items: 9, total_pages: 1 }
+				: { data: [ { id: 2 } ], total_items: 5, total_pages: 1 }
+		) );
+		mockGetStatsForPosts.mockImplementation( ( posts: { id: number }[] ) => {
+			if ( 1 === posts[ 0 ].id ) {
+				return new Promise( ( resolve ) => {
+					resolveSlowStats = resolve;
+				} );
+			}
+			return Promise.resolve( [] );
+		} );
+
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'gar' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await act( async () => {} );
+		await search( 'garden' );
+		await act( async () => {
+			resolveSlowStats( [] );
+		} );
+
+		expect( screen.getByText( 'Post 2' ) ).toBeInTheDocument();
+		expect( screen.queryByText( 'Post 1' ) ).not.toBeInTheDocument();
 	} );
 
 	it( 'does not track results that arrive after typing resumes', async () => {
