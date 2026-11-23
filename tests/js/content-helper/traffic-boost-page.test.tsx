@@ -221,6 +221,29 @@ describe( 'Traffic Boost page telemetry', () => {
 		);
 	} );
 
+	it( 'does not search for text the user deletes again', async () => {
+		await renderPage();
+		const searchbox = screen.getByRole( 'searchbox' );
+
+		await search( 'hello' );
+		fireEvent.change( searchbox, { target: { value: 'hellox' } } );
+		act( () => {
+			jest.advanceTimersByTime( 100 );
+		} );
+		fireEvent.change( searchbox, { target: { value: 'hello' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+		await waitForLoad();
+		settle();
+
+		expect( getPostsMock ).not.toHaveBeenCalledWith(
+			expect.objectContaining( { search: 'hellox' } )
+		);
+		expect( searchbox ).toHaveValue( 'hello' );
+		expect( trackEvent ).not.toHaveBeenCalled();
+	} );
+
 	it( 'tracks a search with no results, without requesting stats', async () => {
 		await renderPage();
 		mockGetStatsForPosts.mockClear();

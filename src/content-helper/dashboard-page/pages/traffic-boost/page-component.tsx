@@ -3,7 +3,7 @@
  */
 import { SearchControl } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -39,6 +39,9 @@ const trackPageInput = (): void => trackPageChange( 'input' );
  */
 export const TrafficBoostPage = (): React.JSX.Element => {
 	const [ searchQuery, setSearchQuery ] = useState<string>( '' );
+	// SearchControl doesn't report edits that match its value, so it gets the
+	// typed text rather than the debounced query.
+	const [ searchValue, setSearchValue ] = useState<string>( '' );
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 
 	// Stable, so a re-render (a page change, say) doesn't cancel a pending search.
@@ -107,6 +110,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 	// the list doesn't reload and that search goes untracked; that's rarer than
 	// counting a pause as a search.
 	const handleSearchChange = useCallback( ( value: string ) => {
+		setSearchValue( value );
 		searchInput.current = value;
 		cancelSearchTracking();
 		debouncedSetSearchQuery( value );
@@ -125,6 +129,14 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 		trackPageChange( method );
 	}, [ debouncedTrackPageInput ] );
 
+	// Memoized, so the re-render on each keystroke doesn't refetch the posts.
+	const postsQuery = useMemo( () => ( {
+		status: 'publish',
+		per_page: 10,
+		search: searchQuery,
+		search_columns: [ 'post_title', 'post_excerpt' ],
+	} ), [ searchQuery ] );
+
 	return (
 		<PageContainer name="traffic-boost">
 			<PageHeader>
@@ -133,7 +145,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 			<PageBody>
 				<div className="traffic-boost-search-container">
 					<SearchControl
-						value={ searchQuery }
+						value={ searchValue }
 						onChange={ handleSearchChange }
 						label={ __( 'Search', 'wp-parsely' ) }
 						placeholder={ __( 'Search', 'wp-parsely' ) }
@@ -145,12 +157,7 @@ export const TrafficBoostPage = (): React.JSX.Element => {
 					setCurrentPage={ setCurrentPage }
 					onPageChange={ handlePageChange }
 					onPostsLoaded={ handlePostsLoaded }
-					query={ {
-						status: 'publish',
-						per_page: 10,
-						search: searchQuery,
-						search_columns: [ 'post_title', 'post_excerpt' ],
-					} }
+					query={ postsQuery }
 				/>
 			</PageBody>
 		</PageContainer>
