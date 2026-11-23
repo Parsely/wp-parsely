@@ -14,8 +14,12 @@ jobs:
   build:
     name: Build and Commit
     runs-on: ubuntu-24.04
+    # npm and Composer run code from many packages, so this job can't push.
+    # The push job publishes its commit.
     permissions:
-      contents: write
+      contents: read
+    outputs:
+      artifact: ${{ steps.upload.outputs.artifact-id }}
     steps:
       - name: Setup BUILT_BRANCH env
         run: echo "BUILT_BRANCH=${SOURCE_REF}-built" >> $GITHUB_ENV
@@ -30,6 +34,7 @@ jobs:
         with:
           ref: ${{ env.SOURCE_REF }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Fetch and checkout built branch
         run: |
@@ -89,8 +94,62 @@ jobs:
           git status -s
           # Commit the changes using the commit message file
           git commit -F final_commit_message.txt --no-verify
-          git push origin "${BUILT_BRANCH}"
+          # Bundle the new commits for the push job, leaving out the existing
+          # built branch, which the push job fetches.
+          mkdir -p "$RUNNER_TEMP/built"
+          if git rev-parse --verify --quiet "refs/remotes/origin/${BUILT_BRANCH}" > /dev/null; then
+            git bundle create "$RUNNER_TEMP/built/built.bundle" HEAD "^origin/${BUILT_BRANCH}"
+          else
+            git bundle create "$RUNNER_TEMP/built/built.bundle" HEAD
+          fi
 
       - name: Clean up commit message files
         run: |
           rm final_commit_message.txt
+
+      - name: Save the built commit for the push job
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: built-commit
+          path: ${{ runner.temp }}/built/
+          retention-days: 1
+          overwrite: true
+          if-no-files-found: error
+
+  push:
+    name: Push built branch
+    needs: build
+    runs-on: ubuntu-24.04
+    # This job holds the write token, so it runs no build or dependency code.
+    permissions:
+      contents: write
+    steps:
+      - name: Download the built commit
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact }}
+          path: ${{ runner.temp }}/built
+
+      - name: Push the built commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BUILT_BRANCH="${SOURCE_REF}-built"
+          REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git init --quiet "$RUNNER_TEMP/repo"
+          cd "$RUNNER_TEMP/repo"
+          # The bundle builds on the built branch's current head, if it has one.
+          BASE=''
+          if git ls-remote --exit-code "$REMOTE" "refs/heads/$BUILT_BRANCH" > /dev/null; then
+            git fetch --quiet "$REMOTE" "refs/heads/$BUILT_BRANCH"
+            BASE=$(git rev-parse FETCH_HEAD)
+          fi
+          git fetch --quiet "$RUNNER_TEMP/built/built.bundle" HEAD
+          SHA=$(git rev-parse FETCH_HEAD)
+          # Only fast-forward the built branch by the one build commit.
+          if [ -n "$BASE" ] && [ "$(git rev-parse --verify --quiet "$SHA^1")" != "$BASE" ]; then
+            echo "The built commit isn't on top of $BUILT_BRANCH, so nothing was pushed." >&2
+            exit 1
+          fi
+          git push --quiet "$REMOTE" "$SHA:refs/heads/$BUILT_BRANCH"
