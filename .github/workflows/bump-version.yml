@@ -27,7 +27,6 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-      actions: write
     env:
       GH_TOKEN: ${{ github.token }}
       RELEASE_TYPE: ${{ inputs.release_type }}
@@ -92,14 +91,3 @@ jobs:
             --title "Release wp-parsely $NEW_VERSION" \
             --body-file "$RUNNER_TEMP/release-pr.md" \
             --assignee "$GITHUB_ACTOR" --milestone "$NEW_VERSION"
-
-      # GitHub holds the pull_request runs of PRs created with GITHUB_TOKEN until
-      # someone approves them. Explicit workflow_dispatch events run right away
-      # and retain the existing check names.
-      - name: Run checks on the generated PR
-        env:
-          RELEASE_BRANCH: ${{ steps.release.outputs.branch }}
-        run: |
-          for workflow in cs-lint.yml unit-tests.yml node.js.yml integration-tests.yml e2e-tests.yml; do
-            gh workflow run "$workflow" --ref "$RELEASE_BRANCH"
-          done

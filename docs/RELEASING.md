@@ -11,11 +11,9 @@ WordPress.com. GitHub and WordPress.org publication is automated:
    header. The existing scripts update all version markers and generate the
    changelog from the matching milestone. Create that milestone first.
 3. Review and merge the generated PR. GitHub holds the `pull_request` workflow
-   runs of PRs created with `GITHUB_TOKEN` until someone approves them, so the
-   workflow dispatches the existing checks directly. Approve the held runs as
-   well: `develop` also requires CodeQL's `Analyze (javascript)` check, which
-   only they provide. No additional bot credential is needed; Actions must be
-   allowed to create PRs, and branch rules should require these checks.
+   runs of PRs created with `GITHUB_TOKEN` until someone approves them, so
+   approve them to run the checks that `develop` requires. No additional bot
+   credential is needed, but Actions must be allowed to create PRs.
 4. Review and merge the release PR from `develop` into `trunk`. **This merge
    authorizes publication to GitHub and WordPress.org.** Do not merge it until
    smoke testing and required communications are complete.
