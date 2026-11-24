@@ -13,7 +13,7 @@ This ticket is to be opened the week before the actual release, so we have enoug
 
 **1. Merge all outstanding work**
 - [ ] Merge any outstanding PRs due for this release to the target branch (usually `develop`).
-- [ ] Verify that all important PRs have an appropriate `Changelog` tag. PRs without a `Changelog` tag won't be added to the changelog.
+- [ ] Verify that all important PRs have an appropriate `Changelog` tag and the release's milestone. PRs without both won't be added to the changelog.
 
 **2. Conduct additional testing**
 We've got automated testing in place and also test under our local development environment during development. For impactful releases we should also:
@@ -33,20 +33,20 @@ The following additional tasks might be needed depending on the release and its 
 ## Release process
 
 **1. Update version numbers and changelog**
-- [ ] [Run the "Bump wp-parsely version"](https://github.com/Parsely/wp-parsely/actions/workflows/bump-version.yml) GitHub Action to update the version numbers in the plugin files. Use the branch you want to release from (usually `develop`).
+- [ ] [Run the "Create wp-parsely release PR"](https://github.com/Parsely/wp-parsely/actions/workflows/create-release-pr.yml) GitHub Action on `develop`, choosing `patch`, `minor`, or `major`. The workflow updates the version markers and changelog and opens a PR.
 - [ ] Verify that the generated PR looks correct. You can amend it with new commits if needed.
-- [ ] Merge the PR into the target branch (usually `develop`).
+- [ ] Approve the PR's workflows that are awaiting approval. They run the PR's required checks.
+- [ ] Merge the PR into the target branch (usually `develop`). Its commits are unsigned, so this merge and the one into `trunk` need an admin.
 
 **2. Merge develop into trunk**
 - [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/trunk...develop?quick_pull=1&title=Release+wp-parsely+x.y.z&body=This+PR+merges+the+`develop`+branch+into+the+`trunk`+branch+in+order+to+release+wp-parsely+x.y.z.) that merges the target branch (usually `develop`) into `trunk`, named _Release wp-parsely x.y.z_.
-- [ ] Merge the PR into `trunk`.
+- [ ] Merge the PR into `trunk`. **This automatically starts publication to GitHub and WordPress.org.**
 
-**3. Create release and deploy to WordPress.org**
-- [ ] Check if the `develop` and `trunk` branches built successfully. You can check it in the [GitHub Actions](https://github.com/Parsely/wp-parsely/actions/workflows/build-plugin.yml) tab.
-- [ ] [Run the "Release wp-parsely"](https://github.com/Parsely/wp-parsely/actions/workflows/release-plugin.yml) GitHub Action, on the `trunk-built` branch, inputting the new version number, and without selecting Dry run.
-- [ ] Check the action logs for any errors. If there are any, fix them and rerun the action.
-- [ ] Check the new release on the [GitHub releases page](https://github.com/Parsely/wp-parsely/releases) and verify that it is correct.
-- [ ] Verify that the release was successful by checking the [WordPress.org plugin page](https://wordpress.org/plugins/wp-parsely/).
+**3. Verify the automated release**
+- [ ] Monitor the [Release wp-parsely workflow](https://github.com/Parsely/wp-parsely/actions/workflows/release-plugin.yml) run that the merge started.
+- [ ] If a job fails, follow the [retry instructions](https://github.com/Parsely/wp-parsely/blob/develop/docs/RELEASING.md#failed-releases-and-retries).
+- [ ] Check the new release and attached ZIP on the [GitHub releases page](https://github.com/Parsely/wp-parsely/releases).
+- [ ] Verify the version on the [WordPress.org plugin page](https://wordpress.org/plugins/wp-parsely/).
 
 ## After releasing
 
