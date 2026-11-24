@@ -120,6 +120,8 @@ jest.mock( '@wordpress/rich-text', () => ( {
 	getTextContent: jest.fn(),
 	insert: jest.fn(),
 	isCollapsed: jest.fn(),
+	// Autocomplete unlocks this on import, and any locked object will do.
+	privateApis: jest.requireActual( '@wordpress/compose' ).privateApis,
 	slice: jest.fn(),
 	useAnchor: jest.fn(),
 } ) );
