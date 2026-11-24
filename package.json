@@ -68,7 +68,7 @@
 		"@wordpress/icons": "^21.0.0",
 		"@wordpress/notices": "^6.1.0",
 		"@wordpress/plugins": "^8.1.0",
-		"@wordpress/scripts": "^27.9.0",
+		"@wordpress/scripts": "^37.2.0",
 		"@wordpress/url": "^5.1.0",
 		"@wordpress/wordcount": "^5.1.0",
 		"concurrently": "^10.0.7",
