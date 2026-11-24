@@ -19,12 +19,14 @@ credentials.
 
 ## Failed releases and retries
 
-Reruns and retries use the original source SHA's code: rerun the failed jobs,
-or dispatch **Release wp-parsely** from `trunk` with that SHA as `ref` and
-`dry_run` disabled. If the fix needs a code change, merge it into `trunk`, then
-dispatch with `ref` set to `trunk`; the push alone publishes nothing, as the
-version is unchanged. The workflow only publishes the current trunk version,
-and only if it's newer than all other version tags. It reuses an existing tag
-only if it built that tag from the same source SHA. Tags are never replaced, so
-if the version's tag already exists, release the next version instead. A
-failed WordPress.org deployment leaves the GitHub release in draft.
+To retry the same code, rerun the failed jobs, or dispatch **Release
+wp-parsely** from `trunk` with the original source SHA as `ref` and `dry_run`
+disabled. Reruns keep the SHA that `resolve` found, but rerunning a failed
+`resolve` in a run dispatched with a branch as `ref` resolves the branch again.
+If the fix needs a code change, merge it into `trunk`, then dispatch with `ref`
+set to `trunk`; the push alone publishes nothing, as the version is unchanged.
+The workflow only publishes the current trunk version, and only if it's newer
+than all other version tags. It reuses an existing tag only if it built that
+tag from the same source SHA, and tags are never replaced, so a code fix that
+comes after the version's tag needs the next version. A failed WordPress.org
+deployment leaves the GitHub release in draft.
