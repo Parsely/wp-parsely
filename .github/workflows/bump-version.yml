@@ -65,7 +65,6 @@ jobs:
             echo "Create an open milestone named $NEW_VERSION before preparing this release." >&2
             exit 1
           fi
-          # Keep the existing milestone/label-based changelog generator.
           # Notes are read from the committed changelog, not exported as env.
           printf 'n\n' | env -u GITHUB_ENV php bin/release.php "$CURRENT_VERSION" "$NEW_VERSION"
           node bin/release-version.mjs metadata "$CURRENT_VERSION" > "$RUNNER_TEMP/release.json"
@@ -85,7 +84,11 @@ jobs:
           node --input-type=module <<'JS' > "$RUNNER_TEMP/release-pr.md"
           import { readFileSync } from 'node:fs';
           const release = JSON.parse(readFileSync(`${process.env.RUNNER_TEMP}/release.json`));
-          console.log(`Prepares wp-parsely ${release.version}.\n\n${release.notes}\n\nMerging the version change into trunk automatically tests, builds, and publishes to GitHub and WordPress.org.`);
+          console.log(
+            `Prepares wp-parsely ${release.version}.\n\n${release.notes}\n\n` +
+            'Merging the version change into trunk automatically tests, builds, ' +
+            'and publishes to GitHub and WordPress.org.'
+          );
           JS
           gh pr create --base "$BASE_BRANCH" --head "$RELEASE_BRANCH" \
             --title "Update version number and changelog for $NEW_VERSION release" \

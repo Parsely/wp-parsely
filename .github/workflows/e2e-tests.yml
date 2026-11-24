@@ -14,7 +14,7 @@ on:
     branches:
       - trunk
 
-# Cancels all previous workflow runs for pull requests that have not completed.
+# Cancels all previous workflow runs for the same branch that have not yet completed.
 concurrency:
   group: e2e-tests-${{ inputs.ref || github.ref }}-${{ github.event_name }}
   cancel-in-progress: ${{ inputs.ref == '' }}

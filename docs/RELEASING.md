@@ -24,12 +24,10 @@ WordPress.com. GitHub and WordPress.org publication is automated:
    and publish the GitHub release with the same ZIP.
 
 Ordinary pushes to `trunk` without a version change do not publish anything.
-Installing this automation without a version bump does not release the current
-version. The `develop`, `trunk`, and their `*-built` branches remain available;
-the release no longer waits for or reads from a moving built branch. Version
-tags continue to contain compiled assets and production Composer dependencies
-for existing consumers, with a `Release-Source:` commit trailer recording the
-tested source SHA. No plugin version is bumped by this migration.
+Releases are built from the source SHA rather than from the `*-built`
+branches, which are still updated. Version tags contain compiled assets and
+production Composer dependencies, with a `Release-Source:` commit trailer
+recording the tested source SHA.
 
 ## Dry runs
 
@@ -39,8 +37,7 @@ same validation, checks, build, and package inspection, uploading the ZIP and
 release notes as Actions artifacts. It does **not** push tags, create releases,
 or use SVN credentials. A dry run requires consistent version markers and
 nonempty notes for that version. It builds a fresh local snapshot even if that
-version was published previously, so the migration can be rehearsed without
-bumping the plugin version.
+version was published previously.
 
 ## Failed releases and retries
 

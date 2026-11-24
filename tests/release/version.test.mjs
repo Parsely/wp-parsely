@@ -17,12 +17,16 @@ function fixture( t, version = '3.24.4' ) {
 	t.after( () => rmSync( directory, { recursive: true, force: true } ) );
 	mkdirSync( join( directory, 'tests/e2e' ), { recursive: true } );
 	const files = {
-		'wp-parsely.php': `<?php\n/**\n * Version:           ${ version }\n */\nconst PARSELY_VERSION = '${ version }';\n`,
+		'wp-parsely.php':
+			`<?php\n/**\n * Version:           ${ version }\n */\n` +
+			`const PARSELY_VERSION = '${ version }';\n`,
 		'package.json': JSON.stringify( { version } ),
 		'package-lock.json': JSON.stringify( { version, packages: { '': { version } } } ),
 		'README.md': `Stable tag: ${ version }  \n`,
 		'tests/e2e/utils.ts': `export const PLUGIN_VERSION = '${ version }';\n`,
-		'CHANGELOG.md': `# Changelog\n\n## [${ version }](compare) - 2026-10-20\n\n### Fixed\n\n- A fix.\n\n## [3.24.3]\n\n- Previous release.\n`,
+		'CHANGELOG.md':
+			`# Changelog\n\n## [${ version }](compare) - 2026-10-20\n\n` +
+			'### Fixed\n\n- A fix.\n\n## [3.24.3]\n\n- Previous release.\n',
 	};
 	for ( const [ file, contents ] of Object.entries( files ) ) {
 		writeFileSync( join( directory, file ), contents );
