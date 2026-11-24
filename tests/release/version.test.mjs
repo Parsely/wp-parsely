@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import { nextVersion, parseVersion, releaseMetadata } from '../../bin/release-version.mjs';
 
 /**
- * Create a minimal plugin checkout with consistent release markers and notes.
+ * Creates a minimal plugin checkout with consistent release markers and notes.
  *
  * @param {import('node:test').TestContext} t       Test context used to clean up the checkout.
  * @param {string}                          version Stable version to write into the fixture files.

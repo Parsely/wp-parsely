@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 const semver = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
 /**
- * Parse a stable release version without losing integer precision.
+ * Parses a stable release version without losing integer precision.
  *
  * @param {string} version Bare major.minor.patch version.
  * @return {bigint[]} The major, minor, and patch components.
@@ -19,7 +19,7 @@ export function parseVersion( version ) {
 }
 
 /**
- * Increment a version component and reset all lower components to zero.
+ * Increments a version component and resets all lower components to zero.
  *
  * @param {string}                  version Current stable release version.
  * @param {'major'|'minor'|'patch'} type    Component to increment.
@@ -37,7 +37,7 @@ export function nextVersion( version, type ) {
 }
 
 /**
- * Read and validate the version declared in the plugin's PHP header.
+ * Reads and validates the version declared in the plugin's PHP header.
  *
  * @param {string} directory Plugin source directory, relative to the current directory.
  * @return {string} The plugin's stable release version.
@@ -51,7 +51,7 @@ export function pluginVersion( directory = '.' ) {
 }
 
 /**
- * Detect a release and validate its version markers and changelog.
+ * Detects a release and validates its version markers and changelog.
  *
  * An unchanged version skips release-only validation. Omitting the previous
  * version validates the current release for manual retries and dry runs.
