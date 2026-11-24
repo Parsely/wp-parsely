@@ -1,63 +1,37 @@
 # Releasing
 
-Use the [Release template](../.github/ISSUE_TEMPLATE/release-template.md) to
-track testing, communications, milestones, and distribution to VIP and
-WordPress.com. GitHub and WordPress.org publication is automated:
+Create an issue from the
+[Release template](../.github/ISSUE_TEMPLATE/release-template.md) and follow
+its steps. Merging `develop` into `trunk` starts **Release wp-parsely**
+(`release-plugin.yml`), which tests the exact source SHA and then publishes the
+same package to GitHub and WordPress.org. Pushes to `trunk` that don't change
+the plugin version publish nothing.
 
-1. Merge the intended changes into `develop`, assign them to the next version's
-   milestone, and apply the appropriate `Changelog:` labels.
-2. Run **Create wp-parsely release PR** (`bump-version.yml`) on `develop`, choosing
-   `patch`, `minor`, or `major`. The next version is calculated from the plugin
-   header. The existing scripts update all version markers and generate the
-   changelog from the matching milestone. Create that milestone first.
-3. Review and merge the generated PR. GitHub holds the `pull_request` workflow
-   runs of PRs created with `GITHUB_TOKEN` until someone approves them, so
-   approve them to run the checks that `develop` requires. No additional bot
-   credential is needed, but Actions must be allowed to create PRs.
-4. Review and merge the release PR from `develop` into `trunk`. **This merge
-   authorizes publication to GitHub and WordPress.org.** Do not merge it until
-   smoke testing and required communications are complete.
-5. The release workflow detects an increasing version, validates the changelog
-   and version markers, and runs lint, unit, JavaScript, integration, and E2E
-   checks against the exact source SHA. Only after they pass does it build a
-   production snapshot, create the bare version tag, deploy to WordPress.org,
-   and publish the GitHub release with the same ZIP.
-
-Ordinary pushes to `trunk` without a version change do not publish anything.
-Releases are built from the source SHA rather than from the `*-built`
-branches, which are still updated. Version tags contain compiled assets and
-production Composer dependencies, with a `Release-Source:` commit trailer
-recording the tested source SHA.
+Version tags contain the compiled assets and production Composer dependencies,
+with a `Release-Source:` commit trailer recording the tested source SHA.
 
 ## Dry runs
 
-Run **Release wp-parsely** (`release-plugin.yml`), choose the workflow branch,
-set `ref` to the source branch or SHA, and leave `dry_run` enabled. It runs the
-same validation, checks, build, and package inspection, uploading the ZIP and
-release notes as Actions artifacts. It does **not** push tags, create releases,
-or use SVN credentials. A dry run requires consistent version markers and
-nonempty notes for that version. It builds a fresh local snapshot even if that
-version was published previously.
+Run **Release wp-parsely** with `ref` set to a branch or SHA and `dry_run`
+enabled. It runs the checks and builds the package, uploading the ZIP and
+release notes as an Actions artifact, but doesn't tag, publish, or use the SVN
+credentials.
 
 ## Failed releases and retries
 
-Rerun a failed release's jobs, or dispatch **Release wp-parsely** from `trunk`
-with the original source SHA and `dry_run` disabled. Real releases require a
-commit reachable from `trunk` with the current trunk version, newer than all
-other version tags, preventing branch releases and stale-version rollbacks.
-Publications are serialized and never automatically cancelled in progress. Dry
-runs and ordinary no-release pushes cannot displace a pending publication.
-There is no skip-tests option.
+Reruns and retries use the original source SHA's code: rerun the failed jobs,
+or dispatch **Release wp-parsely** from `trunk` with that SHA as `ref` and
+`dry_run` disabled. If the fix needs a code change, merge it into `trunk`, then
+dispatch with `ref` set to `trunk`; the push alone publishes nothing, as the
+version is unchanged. The workflow only publishes the current trunk version,
+and only if it's newer than all other version tags. It reuses an existing tag
+only if it built that tag from the same source SHA. Tags are never replaced, so
+if the version's tag already exists, release the next version instead. A
+failed WordPress.org deployment leaves the GitHub release in draft.
 
-An existing tag is reused only when its built snapshot has that exact source
-SHA as its parent and `Release-Source:` trailer. Tags are never replaced. If
-WordPress.org already has the version, its contents must match the package
-before the workflow resumes GitHub publication. Existing tags from the legacy
-workflow fail this provenance check: do not retag an old published version.
+## Configuration
 
 WordPress.org deployment uses the `SVN_USERNAME` and `SVN_PASSWORD` secrets of
 the `wordpress-org` environment, which only `trunk` can deploy to; don't store
-them as repository secrets. GitHub publication uses the repository token. A
-deployment failure leaves the GitHub release in draft. Verify both destinations
-after success; this automation does not deploy to WordPress VIP or
-WordPress.com, send announcements, or close milestones.
+them as repository secrets. **Create wp-parsely release PR**
+(`bump-version.yml`) needs Actions to be allowed to create PRs.
