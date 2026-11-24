@@ -302,5 +302,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # A published release keeps its ZIP, as --clobber deletes the old one
+          # before uploading.
+          IS_DRAFT=$(gh release view "$VERSION" --json isDraft --jq .isDraft)
+          if [ "$IS_DRAFT" != true ]; then
+            echo "$VERSION is already published."
+            exit 0
+          fi
           gh release upload "$VERSION" "$RUNNER_TEMP/release/wp-parsely.zip" --clobber
           gh release edit "$VERSION" --draft=false
