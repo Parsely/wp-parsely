@@ -34,4 +34,4 @@ failed WordPress.org deployment leaves the GitHub release in draft.
 WordPress.org deployment uses the `SVN_USERNAME` and `SVN_PASSWORD` secrets of
 the `wordpress-org` environment, which only `trunk` can deploy to; don't store
 them as repository secrets. **Create wp-parsely release PR**
-(`bump-version.yml`) needs Actions to be allowed to create PRs.
+(`create-release-pr.yml`) needs Actions to be allowed to create PRs.
