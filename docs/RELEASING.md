@@ -28,10 +28,3 @@ and only if it's newer than all other version tags. It reuses an existing tag
 only if it built that tag from the same source SHA. Tags are never replaced, so
 if the version's tag already exists, release the next version instead. A
 failed WordPress.org deployment leaves the GitHub release in draft.
-
-## Configuration
-
-WordPress.org deployment uses the `SVN_USERNAME` and `SVN_PASSWORD` secrets of
-the `wordpress-org` environment, which only `trunk` can deploy to; don't store
-them as repository secrets. **Create wp-parsely release PR**
-(`create-release-pr.yml`) needs Actions to be allowed to create PRs.
