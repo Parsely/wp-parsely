@@ -301,7 +301,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @since 3.23.6
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::accept_suggestion
-	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::generate_placement_suggestions
@@ -321,7 +321,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 
 		$accept_request = new WP_REST_Request( 'POST' );
 		$accept_request->set_param( 'post_id', $this->destination_post_id );
-		$this->endpoint->validate_smart_link_id( $generated_data['data']['smart_link_id'], $accept_request );
+		$accept_request->set_param( 'smart_link_id', $generated_data['data']['smart_link_id'] );
 
 		$response = $this->endpoint->accept_suggestion( $accept_request );
 
@@ -355,7 +355,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
 	 */
 	public function test_placement_succeeds_on_own_source_post(): void {
@@ -374,7 +374,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
 	 */
 	public function test_editor_can_place_in_another_users_private_post(): void {
@@ -400,7 +400,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
 	 */
 	public function test_administrator_can_place_in_another_users_private_post(): void {
@@ -633,7 +633,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
 	 *
 	 * @param string $post_status The source post's status.
@@ -690,7 +690,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 */
 	public function test_discard_suggestion_denies_inaccessible_source_post(): void {
 		$smart_link_id = $this->seed_applied_link( $this->private_post_id );
@@ -719,7 +719,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	 * @uses \Parsely\Models\Inbound_Smart_Link
 	 * @uses \Parsely\Models\Smart_Link
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::validate_smart_link_id
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Traffic_Boost::get_request_inbound_link
 	 */
 	public function test_discard_suggestion_succeeds_on_own_source_post(): void {
 		$smart_link_id = $this->seed_applied_link( $this->own_post_id );
@@ -747,10 +747,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 	private function get_discard_request( int $smart_link_id ): WP_REST_Request {
 		$request = new WP_REST_Request( 'DELETE' );
 		$request->set_param( 'post_id', $this->destination_post_id );
-
-		// Mirrors the route's validate_callback, which sets the `inbound_link`
-		// param.
-		$this->endpoint->validate_smart_link_id( $smart_link_id, $request );
+		$request->set_param( 'smart_link_id', $smart_link_id );
 
 		return $request;
 	}
@@ -828,7 +825,7 @@ class EndpointTrafficBoostAuthorizationTest extends TestCase {
 
 		$accept_request = new WP_REST_Request( 'POST' );
 		$accept_request->set_param( 'post_id', $this->destination_post_id );
-		$this->endpoint->validate_smart_link_id( $generated_data['data']['smart_link_id'], $accept_request );
+		$accept_request->set_param( 'smart_link_id', $generated_data['data']['smart_link_id'] );
 
 		self::assertInstanceOf(
 			WP_REST_Response::class,
