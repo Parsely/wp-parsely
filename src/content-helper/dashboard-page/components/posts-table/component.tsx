@@ -220,6 +220,10 @@ export const PostsTable = ( {
 				setPosts( fetchedPosts.data );
 				setTotalPages( fetchedPosts.total_pages );
 				didFirstSearch.current = true;
+
+				// Cleared on success, not when a request starts, since the posts
+				// from before an error are still set and would show while it loads.
+				setError( undefined );
 			} catch ( fetchError: unknown ) {
 				console.error( fetchError ); // eslint-disable-line no-console
 
