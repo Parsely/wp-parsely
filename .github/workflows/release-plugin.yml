@@ -263,7 +263,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if git show-ref --verify --quiet "refs/tags/$VERSION"; then
-            test "$(git rev-parse "$VERSION^{commit}")" = "$SNAPSHOT"
+            if [ "$(git rev-parse "$VERSION^{commit}")" != "$SNAPSHOT" ]; then
+              echo "The $VERSION tag points to a different snapshot. Dispatch a new run" \
+                "with ref set to $SOURCE_SHA, which reuses the tag if it was built" \
+                "from that commit." >&2
+              exit 1
+            fi
           else
             git tag -a "$VERSION" -m "wp-parsely $VERSION"
             git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/$VERSION"
