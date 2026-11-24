@@ -65,6 +65,11 @@ test( 'selects only the exact release changelog section', ( t ) => {
 	assert.doesNotMatch( metadata.notes, /Previous release/ );
 } );
 
+test( 'formats the notes like earlier GitHub releases', ( t ) => {
+	const { notes } = releaseMetadata( '3.24.3', fixture( t ) );
+	assert.equal( notes, '## Fixed\n\n- A fix.' );
+} );
+
 test( 'rejects version downgrades', ( t ) => {
 	assert.throws( () => releaseMetadata( '4.0.0', fixture( t ) ), /must increase/ );
 } );

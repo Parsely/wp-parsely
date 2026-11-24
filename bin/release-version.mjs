@@ -95,7 +95,9 @@ export function releaseMetadata( previousVersion = '', directory = '.' ) {
 	if ( ! entries?.join( '\n' ).trim() ) {
 		throw new Error( `Missing changelog for ${ version }.` );
 	}
-	return { version, release: true, notes: notes.trim() };
+	// Earlier GitHub releases have no version heading and use `##` sections.
+	const body = notes.replace( /^.*\n/, '' ).replace( /^###/gm, '##' );
+	return { version, release: true, notes: body.trim() };
 }
 
 if ( process.argv[ 1 ] && import.meta.url === pathToFileURL( resolve( process.argv[ 1 ] ) ).href ) {
