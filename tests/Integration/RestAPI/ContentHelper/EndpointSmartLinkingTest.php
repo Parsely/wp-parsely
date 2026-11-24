@@ -645,11 +645,14 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @return array{uid: string, href: array{raw: string}, title: string, text: string, offset: int} The Smart Link parameters.
 	 */
 	private function get_link_params( string $name ): array {
+		$href = 'http://example.com/' . $name;
+		$text = 'Example ' . $name;
+
 		return array(
-			'uid'    => md5( $name ),
-			'href'   => array( 'raw' => 'http://example.com/' . $name ),
-			'title'  => 'Example ' . $name,
-			'text'   => 'Example ' . $name,
+			'uid'    => ( new Smart_Link( $href, $text, $text, 0 ) )->get_uid(),
+			'href'   => array( 'raw' => $href ),
+			'title'  => $text,
+			'text'   => $text,
 			'offset' => 0,
 		);
 	}

@@ -46,7 +46,7 @@ final class SmartLinkTest extends TestCase {
 	public function test_get_smart_link_does_not_find_other_posts_smart_links(): void {
 		$post_id       = $this->create_test_post();
 		$other_post_id = $this->create_test_post();
-		$uid           = $this->save_smart_link( $post_id, 'shared' );
+		$uid           = $this->save_smart_link( $post_id );
 
 		self::assertTrue(
 			Smart_Link::get_smart_link( $uid, $post_id )->exists(),
@@ -68,11 +68,11 @@ final class SmartLinkTest extends TestCase {
 	public function test_get_smart_link_finds_the_posts_own_smart_link(): void {
 		$post_id       = $this->create_test_post();
 		$other_post_id = $this->create_test_post();
-		$uid           = $this->save_smart_link( $post_id, 'shared' );
+		$uid           = $this->save_smart_link( $post_id );
 
 		self::assertSame(
 			$uid,
-			$this->save_smart_link( $other_post_id, 'shared' ),
+			$this->save_smart_link( $other_post_id, $uid ),
 			'Fixture is wrong: the UIDs should match.'
 		);
 
@@ -95,7 +95,7 @@ final class SmartLinkTest extends TestCase {
 	 */
 	public function test_get_smart_link_does_not_find_deleted_smart_links(): void {
 		$post_id    = $this->create_test_post();
-		$uid        = $this->save_smart_link( $post_id, 'deleted' );
+		$uid        = $this->save_smart_link( $post_id );
 		$smart_link = Smart_Link::get_smart_link( $uid, $post_id );
 
 		self::assertTrue( $smart_link->exists(), 'Fixture is wrong: the Smart Link should be found.' );
@@ -110,12 +110,16 @@ final class SmartLinkTest extends TestCase {
 	 * @since 3.26.1
 	 *
 	 * @param int    $post_id The ID of the post containing the link.
-	 * @param string $name    A name that sets the Smart Link's URL and UID.
+	 * @param string $uid     Optional. The UID to give the Smart Link. Default
+	 *                        empty, which keeps the generated UID.
 	 * @return string The Smart Link's UID.
 	 */
-	private function save_smart_link( int $post_id, string $name ): string {
-		$smart_link = new Smart_Link( 'http://example.com/' . $name, 'Example', 'Example', 0, $post_id );
-		$smart_link->set_uid( md5( $name ) );
+	private function save_smart_link( int $post_id, string $uid = '' ): string {
+		$smart_link = new Smart_Link( 'http://example.com/', 'Example', 'Example', 0, $post_id );
+
+		if ( '' !== $uid ) {
+			$smart_link->set_uid( $uid );
+		}
 
 		self::assertTrue( $smart_link->save(), 'Fixture is wrong: the Smart Link should be saved.' );
 
