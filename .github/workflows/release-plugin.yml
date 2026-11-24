@@ -280,8 +280,6 @@ jobs:
           sudo apt-get install -y subversion
           svn ls https://plugins.svn.wordpress.org/wp-parsely/tags/ > "$RUNNER_TEMP/svn-tags.txt"
           if grep -Fxq "$VERSION/" "$RUNNER_TEMP/svn-tags.txt"; then
-            svn export "https://plugins.svn.wordpress.org/wp-parsely/tags/$VERSION" "$RUNNER_TEMP/published"
-            diff -qr "$RUNNER_TEMP/package" "$RUNNER_TEMP/published"
             echo 'published=true' >> "$GITHUB_OUTPUT"
           fi
 
@@ -292,6 +290,13 @@ jobs:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           VERSION: ${{ env.VERSION }}
+
+      # The deploy action skips versions that already have a tag, so compare
+      # the tag with the package whether or not this run deployed it.
+      - name: Confirm WordPress.org has the same package
+        run: |
+          svn export "https://plugins.svn.wordpress.org/wp-parsely/tags/$VERSION" "$RUNNER_TEMP/published"
+          diff -qr "$RUNNER_TEMP/package" "$RUNNER_TEMP/published"
 
       - name: Publish GitHub release with the same package
         env:
