@@ -395,12 +395,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 */
 	public function test_parsely_stats_column_header_is_escaped(): void {
 		$this->set_valid_conditions_for_parsely_stats();
-		add_filter(
-			'gettext_wp-parsely',
-			function ( string $translation ): string {
-				return "<strong>{$translation}</strong>";
-			}
-		);
+		$this->wrap_translations_in_strong_tags();
 
 		self::assertSame(
 			'&lt;strong&gt;Parse.ly (7d)&lt;/strong&gt;',
