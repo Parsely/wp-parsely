@@ -418,6 +418,39 @@ describe( 'Traffic Boost page telemetry', () => {
 		expect( console ).toHaveErrored();
 	} );
 
+	it( 'clears an error once the next search loads', async () => {
+		await renderPage();
+		mockGetStatsForPosts.mockRejectedValueOnce( new Error( 'Forbidden' ) );
+
+		await search( 'hello' );
+		expect( screen.getByText( 'Error: Forbidden' ) ).toBeInTheDocument();
+
+		let resolveSearch: ( value: unknown ) => void = () => {};
+		getPostsMock.mockImplementationOnce( () => new Promise( ( resolve ) => {
+			resolveSearch = resolve;
+		} ) );
+		fireEvent.change( screen.getByRole( 'searchbox' ), { target: { value: 'garden' } } );
+		act( () => {
+			jest.advanceTimersByTime( 300 );
+		} );
+
+		// While the search loads, the error stays up rather than the rows from
+		// before it.
+		expect( screen.getByText( 'Error: Forbidden' ) ).toBeInTheDocument();
+		expect( screen.queryByText( 'Post 1' ) ).not.toBeInTheDocument();
+
+		await act( async () => {
+			resolveSearch( { data: [ { id: 3 } ], total_items: 1, total_pages: 1 } );
+		} );
+
+		expect( await screen.findByText( 'Post 3' ) ).toBeInTheDocument();
+		expect( screen.queryByText( 'Error: Forbidden' ) ).not.toBeInTheDocument();
+		expect( getNavButtons() ).toHaveLength( 2 );
+
+		// The table logs the failed stats request.
+		expect( console ).toHaveErrored();
+	} );
+
 	it( 'sends a pending search when the user leaves the page', async () => {
 		const { unmount } = await renderPage();
 
