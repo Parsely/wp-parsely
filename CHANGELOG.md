@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.26.1](https://github.com/Parsely/wp-parsely/compare/3.26.0...3.26.1) - 2026-11-24
+
+### Fixed
+
+- Improve Smart Link caching and REST request validation ([#4848](https://github.com/Parsely/wp-parsely/pull/4848))
+- Fix deleted text reappearing in the Engagement Boost Add Source Post search ([#4844](https://github.com/Parsely/wp-parsely/pull/4844))
+- Fix Engagement Boost post lists getting stuck on an error ([#4843](https://github.com/Parsely/wp-parsely/pull/4843))
+- Stop deleting unrelated Smart Link terms ([#4828](https://github.com/Parsely/wp-parsely/pull/4828))
+- Fix Content Intelligence error hint styling ([#4821](https://github.com/Parsely/wp-parsely/pull/4821))
+- Update `LeafIcon` to use standard icon viewbox and path dimensions ([#4181](https://github.com/Parsely/wp-parsely/pull/4181))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.26.1+label%3ADeps).
+
 ## [3.26.0](https://github.com/Parsely/wp-parsely/compare/3.25.1...3.26.0) - 2026-11-17
 
 ### Changed
