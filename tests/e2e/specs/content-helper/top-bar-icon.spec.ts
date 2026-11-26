@@ -103,8 +103,17 @@ test.describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', (
 
 		// Ensure that the Options menu opens without crashing the Post Editor.
 		await utils.toggleMoreMenu( 'open' );
-		expect( await page.locator( 'div.components-dropdown-menu__menu' ).textContent() )
-			.toMatch( 'Parse.ly' );
+
+		// WordPress 7.2 and later list plugin items in a Panels submenu.
+		const parselyMenuItem = page.getByRole( 'menuitemcheckbox', { name: 'Parse.ly' } );
+		const panelsSubmenu = page.getByRole( 'menuitem', { name: 'Panels', exact: true } );
+		await expect( parselyMenuItem.or( panelsSubmenu ) ).toBeVisible();
+
+		if ( await panelsSubmenu.isVisible() ) {
+			await panelsSubmenu.click();
+		}
+
+		await expect( parselyMenuItem ).toBeVisible();
 	} );
 } );
 
@@ -172,7 +181,10 @@ class Utils {
 	): Promise<void> {
 		const page = this.admin.page;
 
-		const menuToggle = page.locator( 'button[aria-haspopup="true"][aria-label="Options"]' );
+		// The block toolbar has its own Options button, so scope to the top bar.
+		const menuToggle = page
+			.getByRole( 'region', { name: 'Editor top bar' } )
+			.getByRole( 'button', { name: 'Options', exact: true } );
 		const isOpen = await menuToggle.evaluate( ( el ) => el.getAttribute( 'aria-expanded' ) );
 
 		// If opening and it's already open then exit early.
