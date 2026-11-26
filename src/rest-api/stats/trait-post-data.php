@@ -83,6 +83,7 @@ trait Post_Data_Trait {
 	 *
 	 * @since 3.10.0
 	 * @since 3.17.0 Moved from the `Base_API_Proxy` class.
+	 * @since 3.27.0 Returns the recirculation rate as a percentage.
 	 *
 	 * @param array<mixed> $item The object to extract the data from.
 	 * @return array<string, mixed> The extracted data.
@@ -102,8 +103,9 @@ trait Post_Data_Trait {
 			$data['visitors'] = number_format_i18n( $item['metrics']['visitors'] );
 		}
 
+		// The API returns the recirculation rate as a fraction.
 		if ( isset( $item['metrics']['recirculation_rate'] ) ) {
-			$data['recirculationRate'] = number_format_i18n( $item['metrics']['recirculation_rate'], 3 );
+			$data['recirculationRate'] = number_format_i18n( (float) $item['metrics']['recirculation_rate'] * 100, 2 );
 		}
 
 		// The avg_engaged metric can be in different locations depending on the
@@ -134,7 +136,7 @@ trait Post_Data_Trait {
 			}
 
 			if ( isset( $item['campaign_metrics']['recirculation_rate'] ) ) {
-				$data['campaign']['recirculationRate'] = number_format_i18n( $item['campaign_metrics']['recirculation_rate'], 3 );
+				$data['campaign']['recirculationRate'] = number_format_i18n( (float) $item['campaign_metrics']['recirculation_rate'] * 100, 2 );
 			}
 
 			if ( isset( $item['campaign_metrics']['avg_engaged'] ) ) {

@@ -3,6 +3,7 @@ export interface PerformanceData {
 	avgEngaged: string;
 	date: string;
 	id: number;
+	recirculationRate?: string;
 	referrers: PerformanceReferrerData;
 	dashUrl: string;
 	title: string;

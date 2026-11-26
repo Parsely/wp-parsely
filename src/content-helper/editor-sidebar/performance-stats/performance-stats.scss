@@ -135,10 +135,6 @@
 				font-style: normal;
 				font-weight: 590;
 				line-height: to_rem(28px); /* 140% */
-
-				&.is-small {
-					font-size: var(--font-size--medium);
-				}
 			}
 		}
 	}
