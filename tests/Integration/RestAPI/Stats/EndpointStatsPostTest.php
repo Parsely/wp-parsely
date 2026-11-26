@@ -300,6 +300,7 @@ class EndpointStatsPostTest extends BaseEndpointTest {
 						{"data":[{
 							"avg_engaged": 1.911,
 							"metrics": {
+								"recirculation_rate": 0.0773,
 								"views": 2158,
 								"visitors": 1537
 							},
@@ -321,17 +322,18 @@ class EndpointStatsPostTest extends BaseEndpointTest {
 
 		self::assertSame( 1, $dispatched );
 		self::assertSame( 200, $response->get_status() );
-		self::assertEquals(
+		self::assertSame(
 			array(
 				array(
-					'avgEngaged' => '1:55',
-					'dashUrl'    => Parsely::DASHBOARD_BASE_URL . '/example.com/find?url=https%3A%2F%2Fexample.com',
-					'id'         => 'https://example.com',
-					'postId'     => 0,
-					'url'        => 'https://example.com',
-					'views'      => '2,158',
-					'visitors'   => '1,537',
-					'rawUrl'     => 'https://example.com',
+					'views'             => '2,158',
+					'visitors'          => '1,537',
+					'recirculationRate' => '7.73',
+					'avgEngaged'        => '1:55',
+					'rawUrl'            => 'https://example.com',
+					'dashUrl'           => Parsely::DASHBOARD_BASE_URL . '/example.com/find?url=https%3A%2F%2Fexample.com',
+					'id'                => 'https://example.com',
+					'postId'            => 0,
+					'url'               => 'https://example.com',
 				),
 			),
 			$response_data['data']

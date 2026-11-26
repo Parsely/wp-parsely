@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { MenuGroup, MenuItem, Spinner } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	Icon,
 	check,
@@ -48,9 +48,8 @@ const availableDataPoints = [
 		name: 'recirculation',
 		title: __( 'Recirculation', 'wp-parsely' ),
 		icon: rotateLeft,
-		smallText: true,
 	},
-];
+] as const;
 
 /**
  * Checks if a data point is visible in the sidebar settings.
@@ -75,7 +74,6 @@ type DataPointProps = {
 	title: string;
 	value: string;
 	icon: React.JSX.Element;
-	smallText?: boolean;
 	isVisible?: boolean;
 }
 
@@ -87,7 +85,7 @@ type DataPointProps = {
  * @param {DataPointProps} props The component's props.
  */
 const DataPoint = (
-	{ title, value, icon, smallText, isVisible = true }: Readonly<DataPointProps>
+	{ title, value, icon, isVisible = true }: Readonly<DataPointProps>
 ): React.JSX.Element | null => {
 	if ( ! isVisible ) {
 		return null;
@@ -97,7 +95,7 @@ const DataPoint = (
 		<div className="data-point">
 			<Icon size={ 24 } icon={ icon } />
 			<span className="data-point-title">{ title }</span>
-			<span className={ 'data-point-value' + ( smallText ? ' is-small' : '' ) }>{ value }</span>
+			<span className="data-point-value">{ value }</span>
 		</div>
 	);
 };
@@ -123,13 +121,12 @@ const PerformanceDataPoints = (
 ): React.JSX.Element => {
 	return (
 		<div className="performance-data-points">
-			{ dataPoints.map( ( { title, value, icon, smallText, isVisible } ) => (
+			{ dataPoints.map( ( { title, value, icon, isVisible } ) => (
 				<DataPoint
 					key={ title }
 					title={ title }
 					value={ value }
 					icon={ icon }
-					smallText={ smallText }
 					isVisible={ isVisible }
 				/>
 			) ) }
@@ -258,6 +255,7 @@ type PerformanceOverviewPanelProps = {
  * The Overview panel for the Performance Stats Sidebar.
  *
  * @since 3.14.0
+ * @since 3.27.0 Shows the recirculation rate.
  *
  * @param {PerformanceOverviewPanelProps} props The component's props.
  */
@@ -281,8 +279,14 @@ export const PerformanceOverviewPanel = ( {
 				case 'avgEngaged':
 					value = data.avgEngaged;
 					break;
-				default:
-					value = __( 'Coming soon!', 'wp-parsely' );
+				case 'recirculation':
+					value = data.recirculationRate
+						? sprintf(
+							/* translators: %s: Percentage value, %%: Escaped percent sign */
+							__( '%s%%', 'wp-parsely' ),
+							data.recirculationRate
+						)
+						: __( 'N/A', 'wp-parsely' );
 					break;
 			}
 			return {
